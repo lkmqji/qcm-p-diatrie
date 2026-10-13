@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PédiaDrill — Répétition Espacée & Raisonnement IA</title>
+  
+  <meta name="description" content="Jeu de QCM pédiatrique à répétition espacée adaptative et évaluation de CROQ par IA">
+  <meta name="theme-color" content="#070b14">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/svg+xml" href="./icon-192.svg">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons & Confetti CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="./src/style.css">
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand-wrap" id="btn-home-logo" title="Retour au Dashboard">
+        <div class="brand-logo">
+          <i data-lucide="brain-circuit"></i>
+        </div>
+        <div>
+          <h1 class="brand-title">PédiaDrill</h1>
+          <p class="brand-subtitle">Répétition Espacée & Raisonnement IA</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Sync Pill -->
+        <button class="sync-pill" id="btn-open-sync" title="Synchronisation multi-appareils">
+          <span class="pulse-dot"></span>
+          <span id="header-session-code">OUAIL-2026</span>
+          <i data-lucide="refresh-cw" style="width:13px;height:13px;"></i>
+        </button>
+
+        <!-- Notebook Quick Link -->
+        <button class="icon-btn" id="btn-open-notebook-icon" title="Carnet de Raisonnement IA">
+          <i data-lucide="book-open"></i>
+        </button>
+
+        <!-- Settings -->
+        <button class="icon-btn" id="btn-open-settings" title="Paramètres & Modèles IA">
+          <i data-lucide="settings"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Views -->
+    <main id="app-main">
+      
+      <!-- ─────────────────────────────────────────────────────────────
+           VIEW 1: DASHBOARD MINIMALISTE
+           ───────────────────────────────────────────────────────────── -->
+      <section id="view-dashboard" class="dashboard-view">
+        
+        <!-- Hero Metrics: 2 Grandes Métriques Demandées -->
+        <div class="hero-metrics-grid">
+          
+          <!-- Metrique 1: QCM Restants Totaux -->
+          <div class="metric-card accent-cyan">
+            <div class="metric-header">
+              <span class="metric-title">Questions Restantes</span>
+              <span class="metric-badge" id="badge-pool-info">Sur 1 905</span>
+            </div>
+            <div class="metric-value" id="stat-remaining-questions">--</div>
+            <div class="metric-desc">Questions distinctes à éliminer (nécessitent encore des validations)</div>
+          </div>
+
+          <!-- Metrique 2: Itérations Totales pour Tout Nettoyer (3x par qcm + pénalités) -->
+          <div class="metric-card accent-purple">
+            <div class="metric-header">
+              <span class="metric-title">Itérations Requises</span>
+              <span class="metric-badge">Pour Tout Nettoyer</span>
+            </div>
+            <div class="metric-value" id="stat-required-iterations">--</div>
+            <div class="metric-desc">Réponses justes cumulées nécessaires (base 3x + pénalités de fautes)</div>
+          </div>
+
+        </div>
+
+        <!-- Secondary Stats -->
+        <div class="secondary-stats-row">
+          <div class="sub-stat-card">
+            <div class="sub-stat-label">Maîtrisées</div>
+            <div class="sub-stat-num text-emerald" id="stat-mastered-count">0</div>
+          </div>
+          <div class="sub-stat-card">
+            <div class="sub-stat-label">Fautes</div>
+            <div class="sub-stat-num text-rose" id="stat-mistakes-count">0</div>
+          </div>
+          <div class="sub-stat-card">
+            <div class="sub-stat-label">Assimilation</div>
+            <div class="sub-stat-num text-amber" id="stat-progress-pct">0%</div>
+          </div>
+        </div>
+
+        <!-- Primary Action Buttons -->
+        <div class="dashboard-actions">
+          <button class="btn-primary-large" id="btn-start-random">
+            <i data-lucide="play-circle"></i>
+            <span>Lancer le Grand Mix Aléatoire</span>
+          </button>
+
+          <button class="btn-secondary" id="btn-open-chapters">
+            <i data-lucide="layers"></i>
+            <span id="btn-chapters-label">Tous les cours (35)</span>
+          </button>
+        </div>
+
+        <!-- Quick Links / Notebook Banner -->
+        <div class="quick-links-row">
+          <button class="quick-link-btn" id="btn-open-notebook">
+            <i data-lucide="sparkles" style="color:var(--cyan)"></i>
+            <span>Ouvrir le Carnet de Raisonnement IA (<span id="notebook-count-badge">0</span> notes)</span>
+          </button>
+
+          <button class="quick-link-btn" id="btn-reset-session" style="color:var(--text-dim)">
+            <i data-lucide="rotate-ccw"></i>
+            <span>Réinitialiser la session</span>
+          </button>
+        </div>
+
+      </section>
+
+      <!-- ─────────────────────────────────────────────────────────────
+           VIEW 2: ARÈNE DE QUIZ (Minimaliste & Sans Distraction)
+           ───────────────────────────────────────────────────────────── -->
+      <section id="view-arena" class="arena-view" style="display:none;">
+        
+        <!-- Arena Top Bar -->
+        <div class="arena-top-bar">
+          <button class="btn-back" id="btn-leave-arena">
+            <i data-lucide="arrow-left"></i>
+            <span>Dashboard</span>
+          </button>
+
+          <div class="arena-pills-wrap">
+            <span class="tag-pill" id="arena-type-pill">QCU</span>
+            <span class="tag-pill progress-pill" id="arena-progress-pill">0/3</span>
+          </div>
+        </div>
+
+        <!-- Question Card -->
+        <div class="question-container">
+          
+          <div class="chapter-title-badge" id="arena-chapter-title">
+            Pédiatrie — Chapitre
+          </div>
+
+          <!-- Clinical Case Box (si présent) -->
+          <div class="clinical-case-box" id="arena-clinical-case" style="display:none;">
+            <div class="clinical-case-title">
+              <i data-lucide="stethoscope" style="width:13px;height:13px;display:inline;"></i>
+              Cas Clinique
+            </div>
+            <div id="arena-clinical-case-text"></div>
+          </div>
+
+          <!-- Question Statement -->
+          <div class="question-text" id="arena-question-text">
+            Chargement de la question...
+          </div>
+
+          <!-- Media URLs / Images (si présentes) -->
+          <div class="question-media-wrap" id="arena-media-wrap" style="display:none;"></div>
+
+          <!-- Mode QCU / QCM : Liste d'options -->
+          <div class="options-list" id="arena-options-container">
+            <!-- Dynamically populated options -->
+          </div>
+
+          <!-- Mode CROQ : Zone de texte pour réponse libre -->
+          <div class="croq-container" id="arena-croq-container" style="display:none;">
+            <textarea class="croq-textarea" id="arena-croq-input" placeholder="Rédigez votre réponse clinique détaillée ici (mots-clés, diagnostic, CAT, posologie...)..."></textarea>
+            <div class="croq-hint">
+              <i data-lucide="info" style="width:14px;height:14px;"></i>
+              <span>L'IA comparera votre réponse avec la correction officielle. Score requis : ≥ 75% pour valider.</span>
+            </div>
+          </div>
+
+          <!-- Success Notification Banner -->
+          <div class="success-banner" id="arena-success-banner" style="display:none;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <i data-lucide="check-circle" style="width:24px;height:24px;"></i>
+              <span id="arena-success-text">Bonne réponse !</span>
+            </div>
+            <button class="btn-validate" id="btn-next-question">
+              <span>Continuer (Entrée)</span>
+              <i data-lucide="arrow-right"></i>
+            </button>
+          </div>
+
+          <!-- Actions Bar -->
+          <div class="arena-actions-bar" id="arena-default-actions">
+            <span style="font-size:0.78rem;color:var(--text-dim);" id="keyboard-shortcuts-hint">
+              Raccourcis : [1-5] options, [Entrée] valider
+            </span>
+
+            <button class="btn-validate" id="btn-submit-answer" disabled>
+              <span>Valider la réponse</span>
+              <i data-lucide="arrow-right"></i>
+            </button>
+
+            <button class="btn-croq-eval" id="btn-submit-croq" style="display:none;">
+              <i data-lucide="sparkles"></i>
+              <span>Évaluer par IA (Gemini)</span>
+            </button>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ─────────────────────────────────────────────────────────────
+           VIEW 3: CARNET DE RAISONNEMENT IA (Page Dédiée)
+           ───────────────────────────────────────────────────────────── -->
+      <section id="view-notebook" class="notebook-view" style="display:none;">
+        
+        <div class="arena-top-bar">
+          <button class="btn-back" id="btn-leave-notebook">
+            <i data-lucide="arrow-left"></i>
+            <span>Retour au Dashboard</span>
+          </button>
+          <div style="font-family:var(--font-heading);font-weight:700;font-size:1.1rem;color:var(--cyan);">
+            Carnet de Raisonnement Clinique IA
+          </div>
+        </div>
+
+        <div class="notebook-search-wrap">
+          <input type="text" class="search-input" id="notebook-search-input" placeholder="Rechercher par mot-clé, cours, diagnostic ou piège...">
+        </div>
+
+        <div class="notes-grid" id="notebook-notes-list">
+          <!-- Dynamically populated notes -->
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODALE 1: ERREUR & NOTE DE RAISONNEMENT IA
+       (Popup automatique après chaque faute)
+       ───────────────────────────────────────────────────────────── -->
+  <div class="modal-overlay" id="modal-error" style="display:none;">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <div class="modal-title title-error">
+          <i data-lucide="alert-triangle"></i>
+          <span>Réponse Incorrecte</span>
+        </div>
+        <button class="close-btn" id="btn-close-error-modal">&times;</button>
+      </div>
+
+      <!-- Alerte de pénalité et de réapparition -->
+      <div class="penalty-alert-box">
+        <div class="penalty-icon">⚠️</div>
+        <div>
+          <div class="penalty-text-title" id="error-modal-penalty-title">Pénalité appliquée (+1 réussite requise)</div>
+          <div class="penalty-text-desc" id="error-modal-penalty-desc">Cette question réapparaîtra très vite (dans 2 à 3 cartes) pour ancrer la mémorisation.</div>
+        </div>
+      </div>
+
+      <!-- Recap des réponses -->
+      <div class="answer-recap-box">
+        <div class="answer-line">
+          <span class="answer-label text-rose">Votre réponse :</span>
+          <span id="error-modal-user-answer">--</span>
+        </div>
+        <div class="answer-line">
+          <span class="answer-label text-emerald">Bonne(s) réponse(s) :</span>
+          <span id="error-modal-correct-answer">--</span>
+        </div>
+      </div>
+
+      <!-- Note de Raisonnement IA -->
+      <div class="reasoning-note-box">
+        <div class="reasoning-note-header">
+          <span class="ai-badge">
+            <i data-lucide="sparkles"></i>
+            Méthode de Raisonnement Clinique
+          </span>
+          <span class="ai-model-tag" id="error-modal-model-tag">Gemini Flash</span>
+        </div>
+        <div class="reasoning-note-content" id="error-modal-ai-note">
+          Génération de la note de raisonnement clinique en cours...
+        </div>
+      </div>
+
+      <button class="btn-continue" id="btn-continue-after-error">
+        <span>Continuer le Drill (Espace / Entrée)</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODALE 2: SÉLECTION DES CHAPITRES
+       ───────────────────────────────────────────────────────────── -->
+  <div class="modal-overlay" id="modal-chapters" style="display:none;">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <div class="modal-title">
+          <i data-lucide="layers"></i>
+          <span>Sélectionner les chapitres</span>
+        </div>
+        <button class="close-btn" id="btn-close-chapters-modal">&times;</button>
+      </div>
+
+      <div style="display:flex;gap:10px;">
+        <input type="text" class="search-input" id="chapters-search-input" placeholder="Filtrer les cours...">
+        <button class="btn-secondary" id="btn-toggle-all-chapters" style="padding:8px 12px;font-size:0.8rem;">
+          Tout cocher
+        </button>
+      </div>
+
+      <div class="chapters-list" id="chapters-checkboxes-container">
+        <!-- Dynamically populated chapters -->
+      </div>
+
+      <button class="btn-primary-large" id="btn-apply-chapters">
+        <span>Valider la sélection</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODALE 3: SYNCHRONISATION MULTI-APPAREILS
+       ───────────────────────────────────────────────────────────── -->
+  <div class="modal-overlay" id="modal-sync" style="display:none;">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <div class="modal-title">
+          <i data-lucide="refresh-cw"></i>
+          <span>Synchronisation Multi-Appareils</span>
+        </div>
+        <button class="close-btn" id="btn-close-sync-modal">&times;</button>
+      </div>
+
+      <p style="font-size:0.86rem;color:var(--text-muted);line-height:1.5;">
+        Utilisez le même <strong>Code Secret de Session</strong> sur votre PC et votre smartphone Android déployé sur Vercel pour partager instantanément votre progression.
+      </p>
+
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <label style="font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;">
+          Code Secret Unique
+        </label>
+        <div style="display:flex;gap:8px;">
+          <input type="text" class="search-input" id="sync-session-code-input" value="OUAIL-2026" style="font-weight:800;letter-spacing:1px;text-transform:uppercase;">
+          <button class="btn-secondary" id="btn-save-session-code" style="padding:10px 16px;">
+            Enregistrer
+          </button>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px;">
+        <button class="btn-secondary" id="btn-cloud-push">
+          <i data-lucide="upload-cloud"></i>
+          <span>Envoyer vers le Cloud</span>
+        </button>
+        <button class="btn-secondary" id="btn-cloud-pull">
+          <i data-lucide="download-cloud"></i>
+          <span>Récupérer du Cloud</span>
+        </button>
+      </div>
+
+      <div style="font-size:0.75rem;color:var(--text-dim);text-align:center;" id="sync-status-msg">
+        Jamais synchronisé
+      </div>
+
+      <!-- Export / Import Manuel -->
+      <div style="border-top:1px solid var(--border-subtle);padding-top:14px;display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;">
+          Sauvegarde Manuelle JSON
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn-secondary" id="btn-export-json" style="flex:1;padding:8px;font-size:0.82rem;">
+            Exporter fichier JSON
+          </button>
+          <button class="btn-secondary" id="btn-import-json" style="flex:1;padding:8px;font-size:0.82rem;">
+            Importer fichier JSON
+          </button>
+          <input type="file" id="file-import-input" accept=".json" style="display:none;">
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODALE 4: PARAMÈTRES & CASCADE GEMINI
+       ───────────────────────────────────────────────────────────── -->
+  <div class="modal-overlay" id="modal-settings" style="display:none;">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <div class="modal-title">
+          <i data-lucide="settings"></i>
+          <span>Paramètres & Moteur IA</span>
+        </div>
+        <button class="close-btn" id="btn-close-settings-modal">&times;</button>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <label style="font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;">
+          Clé API Google Gemini
+        </label>
+        <input type="password" class="search-input" id="settings-gemini-key" placeholder="AQ.Ab8RN6InNmt...">
+        <div style="font-size:0.72rem;color:var(--text-dim);">
+          Votre clé est stockée uniquement en local dans votre navigateur.
+        </div>
+      </div>
+
+      <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:14px;">
+        <div style="font-size:0.78rem;font-weight:700;color:var(--cyan);text-transform:uppercase;margin-bottom:6px;">
+          Cascade Automatique de Modèles IA
+        </div>
+        <ol style="font-size:0.8rem;color:var(--text-muted);line-height:1.6;padding-left:18px;">
+          <li><strong>Gemini 3.8 Flash</strong> (Prioritaire)</li>
+          <li><strong>Gemini 3.7 Flash</strong> (Secours 1)</li>
+          <li><strong>Gemini 3.6 Flash</strong> (Secours 2)</li>
+          <li><strong>Gemini 3.5 Flash Lite</strong> (Secours 3)</li>
+          <li><strong>Gemini 3.1 Flash Lite</strong> (Secours 4)</li>
+          <li><strong>Moteur Sémantique Local</strong> (Hors-ligne)</li>
+        </ol>
+      </div>
+
+      <button class="btn-primary-large" id="btn-save-settings">
+        <span>Enregistrer les paramètres</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- Data files -->
+  <script src="./src/data/chapters.js"></script>
+  <script src="./src/data/questions.js"></script>
+
+  <!-- App Logic -->
+  <script src="./src/app.bundle.js"></script>
+
+</body>
+</html>
