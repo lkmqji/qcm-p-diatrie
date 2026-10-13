@@ -1,47 +1,33 @@
-// Vercel Serverless Function: /api/sync (CommonJS standard)
+export const config = {
+  runtime: 'edge',
+};
+
 const DEFAULT_BINS = {
   'OUAIL-2026': 'cbdabdf'
 };
 const EXTENDSCLASS_API = 'https://extendsclass.com/api/json-storage/bin';
 
-function sendJson(res, statusCode, data) {
-  res.statusCode = statusCode;
-  res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify(data));
-}
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Accept',
+};
 
-async function getRawBody(req) {
-  if (req.body) {
-    return typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
-  }
-  return new Promise((resolve) => {
-    let data = '';
-    req.on('data', chunk => data += chunk);
-    req.on('end', () => resolve(data));
-    req.on('error', () => resolve(''));
-  });
-}
-
-module.exports = async function handler(req, res) {
-  // CORS Headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
-
+export default async function handler(req) {
   if (req.method === 'OPTIONS') {
-    res.statusCode = 200;
-    return res.end();
+    return new Response(null, {
+      status: 200,
+      headers: corsHeaders,
+    });
   }
 
-  // Parse query parameters
   let code = 'OUAIL-2026';
   try {
-    const urlObj = new URL(req.url, 'http://localhost');
-    code = urlObj.searchParams.get('code') || req.query?.code || 'OUAIL-2026';
+    const url = new URL(req.url);
+    code = (url.searchParams.get('code') || 'OUAIL-2026').toUpperCase().trim();
   } catch {
-    code = req.query?.code || 'OUAIL-2026';
+    code = 'OUAIL-2026';
   }
-  code = code.toString().toUpperCase().trim();
   const binId = DEFAULT_BINS[code] || 'cbdabdf';
 
   try {
@@ -49,38 +35,60 @@ module.exports = async function handler(req, res) {
       const response = await fetch(`${EXTENDSCLASS_API}/${binId}?_t=${Date.now()}`, {
         headers: {
           'Accept': 'application/json',
-          'User-Agent': 'Mozilla/5.0'
-        }
+          'User-Agent': 'Mozilla/5.0',
+        },
       });
 
-      if (response.ok) {
-        const json = await response.json();
-        return sendJson(res, 200, json);
-      } else {
-        return sendJson(res, response.status, { error: 'Remote store unavailable' });
-      }
-    } else if (req.method === 'POST' || req.method === 'PUT') {
-      const bodyData = await getRawBody(req);
+      const data = await response.text();
+      return new Response(data, {
+        status: response.status,
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-store, no-cache, must-revalidate',
+        },
+      });
+    }
 
+    if (req.method === 'POST' || req.method === 'PUT') {
+      const body = await req.text();
       const putRes = await fetch(`${EXTENDSCLASS_API}/${binId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'User-Agent': 'Mozilla/5.0'
+          'User-Agent': 'Mozilla/5.0',
         },
-        body: bodyData || '{}'
+        body: body || '{}',
       });
 
-      if (putRes.ok) {
-        return sendJson(res, 200, { success: true, timestamp: Date.now() });
-      } else {
-        return sendJson(res, putRes.status, { error: 'Failed to write to remote store' });
-      }
-    } else {
-      return sendJson(res, 405, { error: 'Method not allowed' });
+      return new Response(JSON.stringify({
+        success: putRes.ok,
+        status: putRes.status,
+        timestamp: Date.now()
+      }), {
+        status: putRes.ok ? 200 : putRes.status,
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'application/json',
+        },
+      });
     }
+
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+      status: 405,
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json',
+      },
+    });
   } catch (err) {
-    return sendJson(res, 500, { error: err.message });
+    return new Response(JSON.stringify({ error: err.message }), {
+      status: 500,
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json',
+      },
+    });
   }
-};
+}
