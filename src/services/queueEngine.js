@@ -78,8 +78,8 @@ export class QueueEngine {
       filtered = this.allQuestions.filter(q => set.has(q.chapterId));
     }
 
-    // Ensure all filtered questions have a stats entry if not already present
-    filtered.forEach(q => {
+    // Ensure all questions across the entire bank have a stats entry if not already present
+    this.allQuestions.forEach(q => {
       if (!this.stats[q.uid]) {
         this.stats[q.uid] = {
           target: 3,
@@ -205,20 +205,18 @@ export class QueueEngine {
 
   /**
    * Compute live dashboard metrics
+   * Toujours calculé sur l'intégralité des 1 905 questions (tous les cours confondus)
+   * afin que le total d'itérations pour tout clearer (5 715) et la cadence journalière
+   * d'examen (ex: 205 QCM/j) reflètent fidèlement l'objectif global de tout nettoyer
+   * et ne diffèrent jamais lorsqu'un cours spécifique est sélectionné pour l'entraînement.
    */
   getDashboardMetrics() {
-    let pool = this.allQuestions;
-    if (this.selectedChapterIds && this.selectedChapterIds.length > 0) {
-      const set = new Set(this.selectedChapterIds);
-      pool = this.allQuestions.filter(q => set.has(q.chapterId));
-    }
-
-    const totalPoolCount = pool.length;
+    const totalPoolCount = this.allQuestions.length;
     let remainingDistinctQuestions = 0;
     let totalIterationsRequired = 0;
     let masteredCount = 0;
 
-    for (const q of pool) {
+    for (const q of this.allQuestions) {
       const st = this.stats[q.uid] || { target: 3, current: 0, mistakes: 0, done: false };
       if (st.done) {
         masteredCount++;
@@ -241,7 +239,7 @@ export class QueueEngine {
       progressPct,
       queueLength: this.queue.length,
       totalMistakes: this.totalMistakesCount,
-      selectedChaptersCount: this.selectedChapterIds.length
+      selectedChaptersCount: this.selectedChapterIds ? this.selectedChapterIds.length : 0
     };
   }
 

@@ -226,7 +226,7 @@ function updateDashboardUI() {
   if (metrics.selectedChaptersCount === 0 || metrics.selectedChaptersCount === allChapters.length) {
     chaptersBtnLabel.textContent = `Tous les cours (${allChapters.length})`;
   } else {
-    chaptersBtnLabel.textContent = `${metrics.selectedChaptersCount} cours sélectionnés`;
+    chaptersBtnLabel.textContent = `${metrics.selectedChaptersCount} cours sélectionnés (${metrics.queueLength} QCM en file)`;
   }
 
   // Notebook badge
