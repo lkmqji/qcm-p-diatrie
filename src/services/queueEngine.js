@@ -288,6 +288,39 @@ export class QueueEngine {
   /**
    * Return raw state object
    */
+  /**
+   * Daily QCM counter for current day
+   */
+  getTodayTracker() {
+    const todayStr = new Date().toISOString().slice(0, 10);
+    try {
+      const raw = localStorage.getItem('pedia_today_tracker');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed.dateStr === todayStr) {
+          return parsed;
+        }
+      }
+    } catch {}
+    const fresh = { dateStr: todayStr, count: 0 };
+    try {
+      localStorage.setItem('pedia_today_tracker', JSON.stringify(fresh));
+    } catch {}
+    return fresh;
+  }
+
+  incrementTodayCount() {
+    const tracker = this.getTodayTracker();
+    tracker.count = (tracker.count || 0) + 1;
+    try {
+      localStorage.setItem('pedia_today_tracker', JSON.stringify(tracker));
+    } catch {}
+    return tracker.count;
+  }
+
+  /**
+   * Return raw state object
+   */
   getStateObject() {
     return {
       version: 1,
@@ -297,7 +330,8 @@ export class QueueEngine {
       cursor: this.cursor,
       selectedChapterIds: this.selectedChapterIds,
       totalMistakesCount: this.totalMistakesCount,
-      reasoningNotes: this.getReasoningNotes()
+      reasoningNotes: this.getReasoningNotes(),
+      todayTracker: this.getTodayTracker()
     };
   }
 
@@ -321,6 +355,13 @@ export class QueueEngine {
       if (typeof merged.totalMistakesCount === 'number') this.totalMistakesCount = merged.totalMistakesCount;
       if (Array.isArray(merged.reasoningNotes)) {
         localStorage.setItem(REASONING_KEY, JSON.stringify(merged.reasoningNotes));
+      }
+      if (merged.todayTracker && typeof merged.todayTracker === 'object') {
+        const currentTracker = this.getTodayTracker();
+        if (merged.todayTracker.dateStr === currentTracker.dateStr) {
+          currentTracker.count = Math.max(currentTracker.count, merged.todayTracker.count || 0);
+          localStorage.setItem('pedia_today_tracker', JSON.stringify(currentTracker));
+        }
       }
       this.saveState();
       return true;

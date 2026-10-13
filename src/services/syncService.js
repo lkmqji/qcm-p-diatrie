@@ -77,6 +77,16 @@ export function mergeStates(local, remote) {
   }
 
   merged.reasoningNotes = Array.from(notesMap.values()).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+  // Merge today's QCM count non-destructively
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const localToday = (local.todayTracker && local.todayTracker.dateStr === todayStr) ? (local.todayTracker.count || 0) : 0;
+  const remoteToday = (remote.todayTracker && remote.todayTracker.dateStr === todayStr) ? (remote.todayTracker.count || 0) : 0;
+  merged.todayTracker = {
+    dateStr: todayStr,
+    count: Math.max(localToday, remoteToday)
+  };
+
   return merged;
 }
 

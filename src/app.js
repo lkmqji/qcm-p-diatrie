@@ -146,10 +146,40 @@ function switchView(viewName) {
 }
 
 // ============================================================================
+// EXAM COUNTDOWN & DAILY CADENCE CALCULATOR (Examen le 10/11/2026)
+// ============================================================================
+function getExamCountdownMetrics(totalIterationsRequired) {
+  const now = new Date();
+  const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const examDate = new Date(2026, 10, 10); // 10 Novembre 2026 (Mois 10 = Novembre)
+
+  const diffMs = examDate.getTime() - todayMidnight.getTime();
+  const daysLeft = Math.max(1, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+  const dailyIterationsRequired = Math.ceil(Math.max(0, totalIterationsRequired) / daysLeft);
+
+  return {
+    examDateStr: '10/11',
+    daysLeft,
+    dailyIterationsRequired
+  };
+}
+
+function updateArenaDailyBadge() {
+  const dailyBadge = document.getElementById('arena-daily-pill');
+  if (!dailyBadge) return;
+  const metrics = queueEngine.getDashboardMetrics();
+  const countdown = getExamCountdownMetrics(metrics.totalIterationsRequired);
+  const todayTracker = queueEngine.getTodayTracker();
+  dailyBadge.innerHTML = `<i data-lucide="target" style="width:12px;height:12px;display:inline;"></i> <span>${todayTracker.count}/${countdown.dailyIterationsRequired} auj. (J-${countdown.daysLeft})</span>`;
+  refreshLucide();
+}
+
+// ============================================================================
 // DASHBOARD RENDERING
 // ============================================================================
 function updateDashboardUI() {
   const metrics = queueEngine.getDashboardMetrics();
+  const countdown = getExamCountdownMetrics(metrics.totalIterationsRequired);
 
   document.getElementById('stat-remaining-questions').textContent = formatNumber(metrics.remainingDistinctQuestions);
   document.getElementById('stat-required-iterations').textContent = formatNumber(metrics.totalIterationsRequired);
@@ -157,6 +187,37 @@ function updateDashboardUI() {
   document.getElementById('stat-mistakes-count').textContent = formatNumber(metrics.totalMistakes);
   document.getElementById('stat-progress-pct').textContent = `${metrics.progressPct}%`;
   
+  // Daily Target & Exam Countdown
+  const badgeCountdown = document.getElementById('badge-exam-countdown');
+  if (badgeCountdown) {
+    badgeCountdown.textContent = `⏳ J-${countdown.daysLeft} • Examen 10/11`;
+  }
+
+  const dailyTargetEl = document.getElementById('stat-daily-target');
+  if (dailyTargetEl) {
+    dailyTargetEl.textContent = formatNumber(countdown.dailyIterationsRequired);
+  }
+
+  const todayTracker = queueEngine.getTodayTracker();
+  const todayDoneEl = document.getElementById('stat-today-done');
+  if (todayDoneEl) {
+    todayDoneEl.textContent = formatNumber(todayTracker.count);
+  }
+
+  const todayGoalEl = document.getElementById('stat-today-goal');
+  if (todayGoalEl) {
+    todayGoalEl.textContent = `${formatNumber(countdown.dailyIterationsRequired)} requises`;
+  }
+
+  const todayPctEl = document.getElementById('stat-today-pct');
+  const todayFillEl = document.getElementById('daily-progress-fill');
+  const pct = countdown.dailyIterationsRequired > 0 
+    ? Math.min(100, Math.round((todayTracker.count / countdown.dailyIterationsRequired) * 100))
+    : 100;
+
+  if (todayPctEl) todayPctEl.textContent = `${pct}%`;
+  if (todayFillEl) todayFillEl.style.width = `${pct}%`;
+
   document.getElementById('badge-pool-info').textContent = `Sur ${formatNumber(metrics.totalPoolCount)}`;
   document.getElementById('header-session-code').textContent = syncService.getSessionCode();
 
@@ -462,6 +523,8 @@ function loadNextArenaQuestion() {
     progressPill.className = 'tag-pill progress-pill';
   }
 
+  updateArenaDailyBadge();
+
   // Clinical Case
   const clinicalBox = document.getElementById('arena-clinical-case');
   const clinicalText = document.getElementById('arena-clinical-case-text');
@@ -658,6 +721,8 @@ async function handleSubmitCroq() {
 // ============================================================================
 function handleAnswerSuccess(score = null, feedback = null) {
   const result = queueEngine.handleSuccess(currentQuestion.uid);
+  queueEngine.incrementTodayCount();
+  updateArenaDailyBadge();
   syncService.triggerAutoPush();
 
   // Trigger celebration confetti
@@ -696,6 +761,8 @@ function triggerMasteryConfetti() {
 // ============================================================================
 async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq = false, score = 0, feedback = '') {
   const result = queueEngine.handleFailure(currentQuestion.uid);
+  queueEngine.incrementTodayCount();
+  updateArenaDailyBadge();
 
   // Populate penalty header
   document.getElementById('error-modal-penalty-title').textContent = 
