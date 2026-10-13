@@ -216,6 +216,16 @@ body {
   50% { opacity: 0.5; transform: scale(0.85); }
 }
 
+.spin {
+  animation: spinAnimation 1s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spinAnimation {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 /* Minimalist Dashboard View */
 .dashboard-view {
   display: flex;
@@ -2592,10 +2602,10 @@ class QueueEngine {
   }
 
   /**
-   * Export state as JSON string
+   * Return raw state object
    */
-  exportState() {
-    return JSON.stringify({
+  getStateObject() {
+    return {
       version: 1,
       exportedAt: new Date().toISOString(),
       stats: this.stats,
@@ -2604,7 +2614,36 @@ class QueueEngine {
       selectedChapterIds: this.selectedChapterIds,
       totalMistakesCount: this.totalMistakesCount,
       reasoningNotes: this.getReasoningNotes()
-    }, null, 2);
+    };
+  }
+
+  /**
+   * Export state as JSON string
+   */
+  exportState() {
+    return JSON.stringify(this.getStateObject(), null, 2);
+  }
+
+  /**
+   * Apply merged state object safely
+   */
+  applyMergedState(merged) {
+    if (!merged || typeof merged !== 'object') return false;
+    try {
+      if (merged.stats) this.stats = merged.stats;
+      if (Array.isArray(merged.queue)) this.queue = merged.queue;
+      if (typeof merged.cursor === 'number') this.cursor = merged.cursor;
+      if (Array.isArray(merged.selectedChapterIds)) this.selectedChapterIds = merged.selectedChapterIds;
+      if (typeof merged.totalMistakesCount === 'number') this.totalMistakesCount = merged.totalMistakesCount;
+      if (Array.isArray(merged.reasoningNotes)) {
+        localStorage.setItem(REASONING_KEY, JSON.stringify(merged.reasoningNotes));
+      }
+      this.saveState();
+      return true;
+    } catch (err) {
+      console.error("applyMergedState failed:", err);
+      return false;
+    }
   }
 
   /**
@@ -2613,16 +2652,7 @@ class QueueEngine {
   importState(jsonString) {
     try {
       const parsed = JSON.parse(jsonString);
-      if (parsed.stats) this.stats = parsed.stats;
-      if (parsed.queue) this.queue = parsed.queue;
-      if (typeof parsed.cursor === 'number') this.cursor = parsed.cursor;
-      if (parsed.selectedChapterIds) this.selectedChapterIds = parsed.selectedChapterIds;
-      if (typeof parsed.totalMistakesCount === 'number') this.totalMistakesCount = parsed.totalMistakesCount;
-      if (parsed.reasoningNotes) {
-        localStorage.setItem(REASONING_KEY, JSON.stringify(parsed.reasoningNotes));
-      }
-      this.saveState();
-      return true;
+      return this.applyMergedState(parsed);
     } catch (err) {
       console.error("Import failed:", err);
       return false;
@@ -2630,18 +2660,97 @@ class QueueEngine {
   }
 }
 
-  // Multi-device Cloud & Secret Code Sync Service
+  // Multi-device Cloud & Secret Code Sync Service for PédiaDrill
+// Enables 100% zero-friction synchronization across PC, Phone, and Tablet.
 
 const SESSION_CODE_KEY = 'pedia_session_code';
 const DEFAULT_SESSION_CODE = 'OUAIL-2026';
-const CLOUD_SYNC_API = 'https://api.jsonbin.io/v3/b'; // Or generic cloud storage endpoint
+const BIN_MAP_KEY_PREFIX = 'pedia_bin_id_';
+const KV_APP_ID = 'pediadrile_v1';
+
+// Pre-seeded dedicated persistent bin for default session code
+const DEFAULT_BINS = {
+  'OUAIL-2026': 'cbdabdf'
+};
+
+const EXTENDSCLASS_API = 'https://extendsclass.com/api/json-storage/bin';
+const KEYVALUE_API = 'https://keyvalue.immanuel.co/api/KeyVal';
+
+/**
+ * Intelligent state merger: unites local and remote progress non-destructively.
+ * - Takes highest current mastery hits
+ * - Takes highest penalty target and mistakes
+ * - Logical OR for question done state
+ * - Full union of all unique AI reasoning notes (no notes deleted)
+ */
+function mergeStates(local, remote) {
+  if (!remote || typeof remote !== 'object') return local;
+  if (!local || typeof local !== 'object') return remote;
+
+  const merged = {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    stats: {},
+    queue: Array.isArray(local.queue) && local.queue.length > 0 ? local.queue : (remote.queue || []),
+    cursor: local.cursor || remote.cursor || 0,
+    selectedChapterIds: Array.isArray(local.selectedChapterIds) && local.selectedChapterIds.length > 0
+      ? local.selectedChapterIds 
+      : (remote.selectedChapterIds || []),
+    totalMistakesCount: Math.max(local.totalMistakesCount || 0, remote.totalMistakesCount || 0),
+    reasoningNotes: []
+  };
+
+  // Merge question stats
+  const allUids = new Set([
+    ...Object.keys(local.stats || {}),
+    ...Object.keys(remote.stats || {})
+  ]);
+
+  for (const uid of allUids) {
+    const l = (local.stats && local.stats[uid]) || null;
+    const r = (remote.stats && remote.stats[uid]) || null;
+
+    if (l && r) {
+      merged.stats[uid] = {
+        current: Math.max(l.current || 0, r.current || 0),
+        target: Math.max(l.target || 3, r.target || 3),
+        mistakes: Math.max(l.mistakes || 0, r.mistakes || 0),
+        done: !!(l.done || r.done)
+      };
+      if (merged.stats[uid].current >= merged.stats[uid].target) {
+        merged.stats[uid].done = true;
+      }
+    } else if (l) {
+      merged.stats[uid] = { ...l };
+    } else if (r) {
+      merged.stats[uid] = { ...r };
+    }
+  }
+
+  // Merge reasoning notes without loss
+  const notesMap = new Map();
+  const localNotes = Array.isArray(local.reasoningNotes) ? local.reasoningNotes : [];
+  const remoteNotes = Array.isArray(remote.reasoningNotes) ? remote.reasoningNotes : [];
+
+  for (const note of [...remoteNotes, ...localNotes]) {
+    if (!note) continue;
+    const key = note.id || `${note.questionUid}_${note.timestamp}`;
+    notesMap.set(key, note);
+  }
+
+  merged.reasoningNotes = Array.from(notesMap.values()).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+  return merged;
+}
 
 class SyncService {
-  constructor(queueEngine) {
+  constructor(queueEngine, onStatusChange = null) {
     this.queueEngine = queueEngine;
     this.sessionCode = localStorage.getItem(SESSION_CODE_KEY) || DEFAULT_SESSION_CODE;
-    this.syncStatus = 'idle'; // 'idle' | 'syncing' | 'synced' | 'error'
+    this.syncStatus = 'idle'; // 'idle' | 'syncing' | 'synced' | 'error' | 'offline'
     this.lastSyncedAt = localStorage.getItem('pedia_last_synced') || null;
+    this.onStatusChange = onStatusChange;
+    this.autoPushTimer = null;
+    this.isSyncing = false;
   }
 
   getSessionCode() {
@@ -2652,6 +2761,14 @@ class SyncService {
     if (code && code.trim()) {
       this.sessionCode = code.trim().toUpperCase();
       localStorage.setItem(SESSION_CODE_KEY, this.sessionCode);
+      this.updateStatus('idle', 'Code de session mis à jour');
+    }
+  }
+
+  updateStatus(status, detail = '') {
+    this.syncStatus = status;
+    if (typeof this.onStatusChange === 'function') {
+      this.onStatusChange(status, detail, this.getLastSyncedText());
     }
   }
 
@@ -2659,65 +2776,247 @@ class SyncService {
     if (!this.lastSyncedAt) return 'Jamais synchronisé';
     try {
       const date = new Date(Number(this.lastSyncedAt));
-      return `Synchronisé le ${date.toLocaleDateString()} à ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+      const hours = date.getHours().toString().padStart(2, '0');
+      const mins = date.getMinutes().toString().padStart(2, '0');
+      return `Synchronisé aujourd'hui à ${hours}:${mins}`;
     } catch {
       return 'Synchronisé';
     }
   }
 
   /**
-   * Cloud push: Sync local state to cloud under the session code
+   * Resolve cloud bin ID for the current session code
    */
-  async pushToCloud() {
-    this.syncStatus = 'syncing';
+  async resolveBinId() {
+    const code = this.sessionCode;
+
+    // 1. Check known built-in bins
+    if (DEFAULT_BINS[code]) {
+      return DEFAULT_BINS[code];
+    }
+
+    // 2. Check local storage cache
+    const cachedBin = localStorage.getItem(BIN_MAP_KEY_PREFIX + code);
+    if (cachedBin && cachedBin.length >= 5 && cachedBin.length <= 15) {
+      return cachedBin;
+    }
+
+    // 3. Query keyvalue.immanuel.co registry
     try {
-      const payload = this.queueEngine.exportState();
-      
-      // Use kv storage or public endpoint keyed by session code
-      const endpoint = `https://kv.val.town/v1/pedia_sync_${encodeURIComponent(this.sessionCode)}`;
-      const res = await fetch(endpoint, {
+      const res = await fetch(`${KEYVALUE_API}/GetValue/${encodeURIComponent(KV_APP_ID)}/${encodeURIComponent(code)}`);
+      if (res.ok) {
+        const text = await res.text();
+        const parsed = JSON.parse(text || '""');
+        if (parsed && typeof parsed === 'string' && parsed.length >= 5 && parsed.length <= 15) {
+          localStorage.setItem(BIN_MAP_KEY_PREFIX + code, parsed);
+          return parsed;
+        }
+      }
+    } catch (e) {
+      console.warn('SyncService: Registry lookup failed:', e.message);
+    }
+
+    // 4. Create new cloud bin on extendsclass
+    try {
+      const initialPayload = JSON.stringify({
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        stats: {},
+        queue: [],
+        cursor: 0,
+        selectedChapterIds: [],
+        totalMistakesCount: 0,
+        reasoningNotes: []
+      });
+
+      const createRes = await fetch(EXTENDSCLASS_API, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: payload
-      }).catch(() => null);
+        body: initialPayload
+      });
+
+      if (createRes.ok) {
+        const data = await createRes.json();
+        if (data.id) {
+          localStorage.setItem(BIN_MAP_KEY_PREFIX + code, data.id);
+          // Register in keyvalue asynchronously
+          fetch(`${KEYVALUE_API}/UpdateValue/${encodeURIComponent(KV_APP_ID)}/${encodeURIComponent(code)}/${encodeURIComponent(data.id)}`, {
+            method: 'POST'
+          }).catch(() => null);
+          return data.id;
+        }
+      }
+    } catch (e) {
+      console.warn('SyncService: Bin creation failed:', e.message);
+    }
+
+    // Fallback default bin
+    return DEFAULT_BINS['OUAIL-2026'] || 'cbdabdf';
+  }
+
+  /**
+   * Pull state from cloud and merge with local progress non-destructively
+   */
+  async pullFromCloud() {
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      this.updateStatus('offline', 'Hors-ligne');
+      return { success: false, error: 'Connexion hors-ligne' };
+    }
+
+    this.isSyncing = true;
+    this.updateStatus('syncing', 'Récupération du Cloud...');
+
+    try {
+      const binId = await this.resolveBinId();
+      const res = await fetch(`${EXTENDSCLASS_API}/${binId}?_t=${Date.now()}`, {
+        cache: 'no-store'
+      });
+
+      if (!res.ok) {
+        throw new Error(`Session distante inaccessible (HTTP ${res.status})`);
+      }
+
+      const remoteState = await res.json();
+      const localState = this.queueEngine.getStateObject 
+        ? this.queueEngine.getStateObject() 
+        : JSON.parse(this.queueEngine.exportState());
+
+      const merged = mergeStates(localState, remoteState);
+      this.queueEngine.applyMergedState(merged);
 
       this.lastSyncedAt = Date.now().toString();
       localStorage.setItem('pedia_last_synced', this.lastSyncedAt);
-      this.syncStatus = 'synced';
+      this.updateStatus('synced', 'Synchronisé');
+      this.isSyncing = false;
+
+      return { success: true, merged };
+    } catch (err) {
+      this.isSyncing = false;
+      this.updateStatus('error', err.message);
+      return { success: false, error: err.message };
+    }
+  }
+
+  /**
+   * Push local state to cloud (first merging with remote so no remote updates are erased)
+   */
+  async pushToCloud() {
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      this.updateStatus('offline', 'Hors-ligne');
+      return { success: false, error: 'Connexion hors-ligne' };
+    }
+
+    this.isSyncing = true;
+    this.updateStatus('syncing', 'Envoi au Cloud...');
+
+    try {
+      const binId = await this.resolveBinId();
+      const localState = this.queueEngine.getStateObject 
+        ? this.queueEngine.getStateObject() 
+        : JSON.parse(this.queueEngine.exportState());
+
+      // Fetch remote state to merge before pushing
+      let toPush = localState;
+      try {
+        const remoteRes = await fetch(`${EXTENDSCLASS_API}/${binId}?_t=${Date.now()}`, { cache: 'no-store' });
+        if (remoteRes.ok) {
+          const remoteState = await remoteRes.json();
+          toPush = mergeStates(localState, remoteState);
+          this.queueEngine.applyMergedState(toPush);
+        }
+      } catch (fetchErr) {
+        console.warn('Could not fetch remote before push, pushing local:', fetchErr.message);
+      }
+
+      const payload = JSON.stringify(toPush);
+      const putRes = await fetch(`${EXTENDSCLASS_API}/${binId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload
+      });
+
+      if (!putRes.ok) {
+        throw new Error(`Échec de sauvegarde (HTTP ${putRes.status})`);
+      }
+
+      this.lastSyncedAt = Date.now().toString();
+      localStorage.setItem('pedia_last_synced', this.lastSyncedAt);
+      this.updateStatus('synced', 'Synchronisé');
+      this.isSyncing = false;
+
       return { success: true, timestamp: this.lastSyncedAt };
     } catch (err) {
-      this.syncStatus = 'error';
+      this.isSyncing = false;
+      this.updateStatus('error', err.message);
       return { success: false, error: err.message };
     }
   }
 
   /**
-   * Cloud pull: Retrieve state from cloud using session code
+   * Debounced automatic push: triggered automatically after each answered question
    */
-  async pullFromCloud() {
-    this.syncStatus = 'syncing';
+  triggerAutoPush() {
+    if (this.autoPushTimer) {
+      clearTimeout(this.autoPushTimer);
+    }
+    this.autoPushTimer = setTimeout(() => {
+      this.pushToCloud();
+    }, 1500);
+  }
+
+  /**
+   * Auto-sync on startup: pulls newer cloud progress, merges, then syncs back
+   */
+  async autoSyncOnStart(onComplete = null) {
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      this.updateStatus('offline', 'Hors-ligne');
+      if (onComplete) onComplete(false);
+      return;
+    }
+
     try {
-      const endpoint = `https://kv.val.town/v1/pedia_sync_${encodeURIComponent(this.sessionCode)}`;
-      const res = await fetch(endpoint);
-      if (!res.ok) throw new Error(`Aucune session distante trouvée pour le code ${this.sessionCode}`);
-      const data = await res.text();
-      const success = this.queueEngine.importState(data);
-      if (success) {
-        this.lastSyncedAt = Date.now().toString();
-        localStorage.setItem('pedia_last_synced', this.lastSyncedAt);
-        this.syncStatus = 'synced';
-        return { success: true };
-      } else {
-        throw new Error('Données corrompues');
+      const pullResult = await this.pullFromCloud();
+      if (pullResult.success && onComplete) {
+        onComplete(true);
       }
-    } catch (err) {
-      this.syncStatus = 'error';
-      return { success: false, error: err.message };
+      // Push back any local progress that was made offline
+      setTimeout(() => {
+        this.pushToCloud();
+      }, 1000);
+    } catch (e) {
+      console.warn('AutoSyncOnStart error:', e);
+      if (onComplete) onComplete(false);
     }
   }
 
   /**
-   * Generate an ultra-compact Base64 export string for 1-click manual sharing
+   * Setup lifecycle listeners: visibilitychange and online events
+   */
+  setupLifecycleListeners(onUpdate = null) {
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && !this.isSyncing && (typeof navigator === 'undefined' || navigator.onLine !== false)) {
+          this.pullFromCloud().then(res => {
+            if (res.success && typeof onUpdate === 'function') {
+              onUpdate();
+            }
+          });
+        }
+      });
+    }
+
+    window.addEventListener('online', () => {
+      this.updateStatus('idle', 'En ligne');
+      this.pullFromCloud().then(() => this.pushToCloud());
+    });
+
+    window.addEventListener('offline', () => {
+      this.updateStatus('offline', 'Hors-ligne');
+    });
+  }
+
+  /**
+   * Ultra-compact Base64 string for 1-click manual sharing
    */
   getQuickShareCode() {
     try {
@@ -2783,6 +3082,7 @@ function initApp() {
   updateDashboardUI();
   setupEventListeners();
   setupKeyboardShortcuts();
+  setupSyncService();
   refreshLucide();
 
   // Register Service Worker for offline PWA
@@ -2791,6 +3091,72 @@ function initApp() {
       console.warn('SW registration:', err);
     });
   }
+}
+
+function updateSyncHeaderUI(status, detail, lastSyncText) {
+  const codeEl = document.getElementById('header-session-code');
+  if (codeEl) codeEl.textContent = syncService.getSessionCode();
+
+  const syncBtn = document.getElementById('btn-open-sync');
+  const dotEl = document.querySelector('#btn-open-sync .pulse-dot');
+  const iconEl = document.querySelector('#btn-open-sync [data-lucide="refresh-cw"]');
+
+  if (syncBtn) {
+    syncBtn.title = `Multi-Appareils [${syncService.getSessionCode()}] • ${lastSyncText || 'Synchronisé'}`;
+  }
+
+  if (dotEl) {
+    if (status === 'syncing') {
+      dotEl.style.backgroundColor = 'var(--cyan)';
+      dotEl.style.boxShadow = '0 0 10px var(--cyan)';
+    } else if (status === 'synced') {
+      dotEl.style.backgroundColor = 'var(--emerald)';
+      dotEl.style.boxShadow = '0 0 10px rgba(16, 185, 129, 0.6)';
+    } else if (status === 'offline') {
+      dotEl.style.backgroundColor = 'var(--amber)';
+      dotEl.style.boxShadow = 'none';
+    } else if (status === 'error') {
+      dotEl.style.backgroundColor = 'var(--rose)';
+      dotEl.style.boxShadow = 'none';
+    } else {
+      dotEl.style.backgroundColor = 'var(--cyan)';
+    }
+  }
+
+  if (iconEl) {
+    if (status === 'syncing') {
+      iconEl.classList.add('spin');
+    } else {
+      iconEl.classList.remove('spin');
+    }
+  }
+
+  const modalStatus = document.getElementById('sync-status-msg');
+  if (modalStatus) {
+    modalStatus.textContent = detail ? `${lastSyncText} (${detail})` : lastSyncText;
+  }
+}
+
+function setupSyncService() {
+  syncService.onStatusChange = (status, detail, lastSyncText) => {
+    updateSyncHeaderUI(status, detail, lastSyncText);
+  };
+
+  updateSyncHeaderUI('idle', '', syncService.getLastSyncedText());
+
+  // Automatic background pull & merge on application startup
+  syncService.autoSyncOnStart((hasUpdated) => {
+    if (hasUpdated) {
+      updateDashboardUI();
+      if (currentView === 'notebook') renderNotebookUI();
+    }
+  });
+
+  // Background lifecycle listeners (auto-sync when returning to tab from mobile)
+  syncService.setupLifecycleListeners(() => {
+    updateDashboardUI();
+    if (currentView === 'notebook') renderNotebookUI();
+  });
 }
 
 function refreshLucide() {
@@ -3335,6 +3701,7 @@ async function handleSubmitCroq() {
 // ============================================================================
 function handleAnswerSuccess(score = null, feedback = null) {
   const result = queueEngine.handleSuccess(currentQuestion.uid);
+  syncService.triggerAutoPush();
 
   // Trigger celebration confetti
   if (result.permanentlyRemoved) {
@@ -3425,6 +3792,7 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
     timestamp: Date.now()
   };
   queueEngine.saveReasoningNote(noteRecord);
+  syncService.triggerAutoPush();
 
   // Update notebook badge in dashboard
   const notesCount = queueEngine.getReasoningNotes().length;
@@ -3856,11 +4224,24 @@ function setupEventListeners() {
     modals.sync.style.display = 'flex';
   };
   document.getElementById('btn-close-sync-modal').onclick = () => modals.sync.style.display = 'none';
-  document.getElementById('btn-save-session-code').onclick = () => {
+  document.getElementById('btn-save-session-code').onclick = async () => {
     const val = document.getElementById('sync-session-code-input').value;
     syncService.setSessionCode(val);
     document.getElementById('header-session-code').textContent = syncService.getSessionCode();
-    alert('Code de session mis à jour avec succès.');
+    
+    // Auto-pull immediately with new session code
+    const statusMsg = document.getElementById('sync-status-msg');
+    statusMsg.textContent = 'Synchronisation avec le nouveau code...';
+    const res = await syncService.pullFromCloud();
+    if (res.success) {
+      updateDashboardUI();
+      if (currentView === 'notebook') renderNotebookUI();
+      statusMsg.textContent = syncService.getLastSyncedText();
+      alert(`Code ${syncService.getSessionCode()} activé ! Progression fusionnée avec succès.`);
+    } else {
+      statusMsg.textContent = syncService.getLastSyncedText();
+      alert(`Code ${syncService.getSessionCode()} activé.`);
+    }
   };
 
   document.getElementById('btn-cloud-push').onclick = async () => {
@@ -3869,7 +4250,7 @@ function setupEventListeners() {
     const res = await syncService.pushToCloud();
     if (res.success) {
       statusMsg.textContent = syncService.getLastSyncedText();
-      alert('Progression sauvegardée dans le Cloud avec succès !');
+      alert('Progression sauvegardée dans le Cloud avec succès ! Tous vos appareils sont synchronisés.');
     } else {
       statusMsg.textContent = `Erreur : ${res.error}`;
     }
@@ -3882,7 +4263,8 @@ function setupEventListeners() {
     if (res.success) {
       statusMsg.textContent = syncService.getLastSyncedText();
       updateDashboardUI();
-      alert('Progression synchronisée depuis le Cloud !');
+      if (currentView === 'notebook') renderNotebookUI();
+      alert('Progression et carnet de raisonnement synchronisés depuis le Cloud !');
     } else {
       statusMsg.textContent = `Erreur : ${res.error}`;
     }

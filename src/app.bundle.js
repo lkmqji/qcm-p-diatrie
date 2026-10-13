@@ -532,10 +532,10 @@ class QueueEngine {
   }
 
   /**
-   * Export state as JSON string
+   * Return raw state object
    */
-  exportState() {
-    return JSON.stringify({
+  getStateObject() {
+    return {
       version: 1,
       exportedAt: new Date().toISOString(),
       stats: this.stats,
@@ -544,7 +544,36 @@ class QueueEngine {
       selectedChapterIds: this.selectedChapterIds,
       totalMistakesCount: this.totalMistakesCount,
       reasoningNotes: this.getReasoningNotes()
-    }, null, 2);
+    };
+  }
+
+  /**
+   * Export state as JSON string
+   */
+  exportState() {
+    return JSON.stringify(this.getStateObject(), null, 2);
+  }
+
+  /**
+   * Apply merged state object safely
+   */
+  applyMergedState(merged) {
+    if (!merged || typeof merged !== 'object') return false;
+    try {
+      if (merged.stats) this.stats = merged.stats;
+      if (Array.isArray(merged.queue)) this.queue = merged.queue;
+      if (typeof merged.cursor === 'number') this.cursor = merged.cursor;
+      if (Array.isArray(merged.selectedChapterIds)) this.selectedChapterIds = merged.selectedChapterIds;
+      if (typeof merged.totalMistakesCount === 'number') this.totalMistakesCount = merged.totalMistakesCount;
+      if (Array.isArray(merged.reasoningNotes)) {
+        localStorage.setItem(REASONING_KEY, JSON.stringify(merged.reasoningNotes));
+      }
+      this.saveState();
+      return true;
+    } catch (err) {
+      console.error("applyMergedState failed:", err);
+      return false;
+    }
   }
 
   /**
@@ -553,16 +582,7 @@ class QueueEngine {
   importState(jsonString) {
     try {
       const parsed = JSON.parse(jsonString);
-      if (parsed.stats) this.stats = parsed.stats;
-      if (parsed.queue) this.queue = parsed.queue;
-      if (typeof parsed.cursor === 'number') this.cursor = parsed.cursor;
-      if (parsed.selectedChapterIds) this.selectedChapterIds = parsed.selectedChapterIds;
-      if (typeof parsed.totalMistakesCount === 'number') this.totalMistakesCount = parsed.totalMistakesCount;
-      if (parsed.reasoningNotes) {
-        localStorage.setItem(REASONING_KEY, JSON.stringify(parsed.reasoningNotes));
-      }
-      this.saveState();
-      return true;
+      return this.applyMergedState(parsed);
     } catch (err) {
       console.error("Import failed:", err);
       return false;
@@ -570,18 +590,97 @@ class QueueEngine {
   }
 }
 
-  // Multi-device Cloud & Secret Code Sync Service
+  // Multi-device Cloud & Secret Code Sync Service for PédiaDrill
+// Enables 100% zero-friction synchronization across PC, Phone, and Tablet.
 
 const SESSION_CODE_KEY = 'pedia_session_code';
 const DEFAULT_SESSION_CODE = 'OUAIL-2026';
-const CLOUD_SYNC_API = 'https://api.jsonbin.io/v3/b'; // Or generic cloud storage endpoint
+const BIN_MAP_KEY_PREFIX = 'pedia_bin_id_';
+const KV_APP_ID = 'pediadrile_v1';
+
+// Pre-seeded dedicated persistent bin for default session code
+const DEFAULT_BINS = {
+  'OUAIL-2026': 'cbdabdf'
+};
+
+const EXTENDSCLASS_API = 'https://extendsclass.com/api/json-storage/bin';
+const KEYVALUE_API = 'https://keyvalue.immanuel.co/api/KeyVal';
+
+/**
+ * Intelligent state merger: unites local and remote progress non-destructively.
+ * - Takes highest current mastery hits
+ * - Takes highest penalty target and mistakes
+ * - Logical OR for question done state
+ * - Full union of all unique AI reasoning notes (no notes deleted)
+ */
+function mergeStates(local, remote) {
+  if (!remote || typeof remote !== 'object') return local;
+  if (!local || typeof local !== 'object') return remote;
+
+  const merged = {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    stats: {},
+    queue: Array.isArray(local.queue) && local.queue.length > 0 ? local.queue : (remote.queue || []),
+    cursor: local.cursor || remote.cursor || 0,
+    selectedChapterIds: Array.isArray(local.selectedChapterIds) && local.selectedChapterIds.length > 0
+      ? local.selectedChapterIds 
+      : (remote.selectedChapterIds || []),
+    totalMistakesCount: Math.max(local.totalMistakesCount || 0, remote.totalMistakesCount || 0),
+    reasoningNotes: []
+  };
+
+  // Merge question stats
+  const allUids = new Set([
+    ...Object.keys(local.stats || {}),
+    ...Object.keys(remote.stats || {})
+  ]);
+
+  for (const uid of allUids) {
+    const l = (local.stats && local.stats[uid]) || null;
+    const r = (remote.stats && remote.stats[uid]) || null;
+
+    if (l && r) {
+      merged.stats[uid] = {
+        current: Math.max(l.current || 0, r.current || 0),
+        target: Math.max(l.target || 3, r.target || 3),
+        mistakes: Math.max(l.mistakes || 0, r.mistakes || 0),
+        done: !!(l.done || r.done)
+      };
+      if (merged.stats[uid].current >= merged.stats[uid].target) {
+        merged.stats[uid].done = true;
+      }
+    } else if (l) {
+      merged.stats[uid] = { ...l };
+    } else if (r) {
+      merged.stats[uid] = { ...r };
+    }
+  }
+
+  // Merge reasoning notes without loss
+  const notesMap = new Map();
+  const localNotes = Array.isArray(local.reasoningNotes) ? local.reasoningNotes : [];
+  const remoteNotes = Array.isArray(remote.reasoningNotes) ? remote.reasoningNotes : [];
+
+  for (const note of [...remoteNotes, ...localNotes]) {
+    if (!note) continue;
+    const key = note.id || `${note.questionUid}_${note.timestamp}`;
+    notesMap.set(key, note);
+  }
+
+  merged.reasoningNotes = Array.from(notesMap.values()).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+  return merged;
+}
 
 class SyncService {
-  constructor(queueEngine) {
+  constructor(queueEngine, onStatusChange = null) {
     this.queueEngine = queueEngine;
     this.sessionCode = localStorage.getItem(SESSION_CODE_KEY) || DEFAULT_SESSION_CODE;
-    this.syncStatus = 'idle'; // 'idle' | 'syncing' | 'synced' | 'error'
+    this.syncStatus = 'idle'; // 'idle' | 'syncing' | 'synced' | 'error' | 'offline'
     this.lastSyncedAt = localStorage.getItem('pedia_last_synced') || null;
+    this.onStatusChange = onStatusChange;
+    this.autoPushTimer = null;
+    this.isSyncing = false;
   }
 
   getSessionCode() {
@@ -592,6 +691,14 @@ class SyncService {
     if (code && code.trim()) {
       this.sessionCode = code.trim().toUpperCase();
       localStorage.setItem(SESSION_CODE_KEY, this.sessionCode);
+      this.updateStatus('idle', 'Code de session mis à jour');
+    }
+  }
+
+  updateStatus(status, detail = '') {
+    this.syncStatus = status;
+    if (typeof this.onStatusChange === 'function') {
+      this.onStatusChange(status, detail, this.getLastSyncedText());
     }
   }
 
@@ -599,65 +706,247 @@ class SyncService {
     if (!this.lastSyncedAt) return 'Jamais synchronisé';
     try {
       const date = new Date(Number(this.lastSyncedAt));
-      return `Synchronisé le ${date.toLocaleDateString()} à ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+      const hours = date.getHours().toString().padStart(2, '0');
+      const mins = date.getMinutes().toString().padStart(2, '0');
+      return `Synchronisé aujourd'hui à ${hours}:${mins}`;
     } catch {
       return 'Synchronisé';
     }
   }
 
   /**
-   * Cloud push: Sync local state to cloud under the session code
+   * Resolve cloud bin ID for the current session code
    */
-  async pushToCloud() {
-    this.syncStatus = 'syncing';
+  async resolveBinId() {
+    const code = this.sessionCode;
+
+    // 1. Check known built-in bins
+    if (DEFAULT_BINS[code]) {
+      return DEFAULT_BINS[code];
+    }
+
+    // 2. Check local storage cache
+    const cachedBin = localStorage.getItem(BIN_MAP_KEY_PREFIX + code);
+    if (cachedBin && cachedBin.length >= 5 && cachedBin.length <= 15) {
+      return cachedBin;
+    }
+
+    // 3. Query keyvalue.immanuel.co registry
     try {
-      const payload = this.queueEngine.exportState();
-      
-      // Use kv storage or public endpoint keyed by session code
-      const endpoint = `https://kv.val.town/v1/pedia_sync_${encodeURIComponent(this.sessionCode)}`;
-      const res = await fetch(endpoint, {
+      const res = await fetch(`${KEYVALUE_API}/GetValue/${encodeURIComponent(KV_APP_ID)}/${encodeURIComponent(code)}`);
+      if (res.ok) {
+        const text = await res.text();
+        const parsed = JSON.parse(text || '""');
+        if (parsed && typeof parsed === 'string' && parsed.length >= 5 && parsed.length <= 15) {
+          localStorage.setItem(BIN_MAP_KEY_PREFIX + code, parsed);
+          return parsed;
+        }
+      }
+    } catch (e) {
+      console.warn('SyncService: Registry lookup failed:', e.message);
+    }
+
+    // 4. Create new cloud bin on extendsclass
+    try {
+      const initialPayload = JSON.stringify({
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        stats: {},
+        queue: [],
+        cursor: 0,
+        selectedChapterIds: [],
+        totalMistakesCount: 0,
+        reasoningNotes: []
+      });
+
+      const createRes = await fetch(EXTENDSCLASS_API, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: payload
-      }).catch(() => null);
+        body: initialPayload
+      });
+
+      if (createRes.ok) {
+        const data = await createRes.json();
+        if (data.id) {
+          localStorage.setItem(BIN_MAP_KEY_PREFIX + code, data.id);
+          // Register in keyvalue asynchronously
+          fetch(`${KEYVALUE_API}/UpdateValue/${encodeURIComponent(KV_APP_ID)}/${encodeURIComponent(code)}/${encodeURIComponent(data.id)}`, {
+            method: 'POST'
+          }).catch(() => null);
+          return data.id;
+        }
+      }
+    } catch (e) {
+      console.warn('SyncService: Bin creation failed:', e.message);
+    }
+
+    // Fallback default bin
+    return DEFAULT_BINS['OUAIL-2026'] || 'cbdabdf';
+  }
+
+  /**
+   * Pull state from cloud and merge with local progress non-destructively
+   */
+  async pullFromCloud() {
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      this.updateStatus('offline', 'Hors-ligne');
+      return { success: false, error: 'Connexion hors-ligne' };
+    }
+
+    this.isSyncing = true;
+    this.updateStatus('syncing', 'Récupération du Cloud...');
+
+    try {
+      const binId = await this.resolveBinId();
+      const res = await fetch(`${EXTENDSCLASS_API}/${binId}?_t=${Date.now()}`, {
+        cache: 'no-store'
+      });
+
+      if (!res.ok) {
+        throw new Error(`Session distante inaccessible (HTTP ${res.status})`);
+      }
+
+      const remoteState = await res.json();
+      const localState = this.queueEngine.getStateObject 
+        ? this.queueEngine.getStateObject() 
+        : JSON.parse(this.queueEngine.exportState());
+
+      const merged = mergeStates(localState, remoteState);
+      this.queueEngine.applyMergedState(merged);
 
       this.lastSyncedAt = Date.now().toString();
       localStorage.setItem('pedia_last_synced', this.lastSyncedAt);
-      this.syncStatus = 'synced';
+      this.updateStatus('synced', 'Synchronisé');
+      this.isSyncing = false;
+
+      return { success: true, merged };
+    } catch (err) {
+      this.isSyncing = false;
+      this.updateStatus('error', err.message);
+      return { success: false, error: err.message };
+    }
+  }
+
+  /**
+   * Push local state to cloud (first merging with remote so no remote updates are erased)
+   */
+  async pushToCloud() {
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      this.updateStatus('offline', 'Hors-ligne');
+      return { success: false, error: 'Connexion hors-ligne' };
+    }
+
+    this.isSyncing = true;
+    this.updateStatus('syncing', 'Envoi au Cloud...');
+
+    try {
+      const binId = await this.resolveBinId();
+      const localState = this.queueEngine.getStateObject 
+        ? this.queueEngine.getStateObject() 
+        : JSON.parse(this.queueEngine.exportState());
+
+      // Fetch remote state to merge before pushing
+      let toPush = localState;
+      try {
+        const remoteRes = await fetch(`${EXTENDSCLASS_API}/${binId}?_t=${Date.now()}`, { cache: 'no-store' });
+        if (remoteRes.ok) {
+          const remoteState = await remoteRes.json();
+          toPush = mergeStates(localState, remoteState);
+          this.queueEngine.applyMergedState(toPush);
+        }
+      } catch (fetchErr) {
+        console.warn('Could not fetch remote before push, pushing local:', fetchErr.message);
+      }
+
+      const payload = JSON.stringify(toPush);
+      const putRes = await fetch(`${EXTENDSCLASS_API}/${binId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload
+      });
+
+      if (!putRes.ok) {
+        throw new Error(`Échec de sauvegarde (HTTP ${putRes.status})`);
+      }
+
+      this.lastSyncedAt = Date.now().toString();
+      localStorage.setItem('pedia_last_synced', this.lastSyncedAt);
+      this.updateStatus('synced', 'Synchronisé');
+      this.isSyncing = false;
+
       return { success: true, timestamp: this.lastSyncedAt };
     } catch (err) {
-      this.syncStatus = 'error';
+      this.isSyncing = false;
+      this.updateStatus('error', err.message);
       return { success: false, error: err.message };
     }
   }
 
   /**
-   * Cloud pull: Retrieve state from cloud using session code
+   * Debounced automatic push: triggered automatically after each answered question
    */
-  async pullFromCloud() {
-    this.syncStatus = 'syncing';
+  triggerAutoPush() {
+    if (this.autoPushTimer) {
+      clearTimeout(this.autoPushTimer);
+    }
+    this.autoPushTimer = setTimeout(() => {
+      this.pushToCloud();
+    }, 1500);
+  }
+
+  /**
+   * Auto-sync on startup: pulls newer cloud progress, merges, then syncs back
+   */
+  async autoSyncOnStart(onComplete = null) {
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      this.updateStatus('offline', 'Hors-ligne');
+      if (onComplete) onComplete(false);
+      return;
+    }
+
     try {
-      const endpoint = `https://kv.val.town/v1/pedia_sync_${encodeURIComponent(this.sessionCode)}`;
-      const res = await fetch(endpoint);
-      if (!res.ok) throw new Error(`Aucune session distante trouvée pour le code ${this.sessionCode}`);
-      const data = await res.text();
-      const success = this.queueEngine.importState(data);
-      if (success) {
-        this.lastSyncedAt = Date.now().toString();
-        localStorage.setItem('pedia_last_synced', this.lastSyncedAt);
-        this.syncStatus = 'synced';
-        return { success: true };
-      } else {
-        throw new Error('Données corrompues');
+      const pullResult = await this.pullFromCloud();
+      if (pullResult.success && onComplete) {
+        onComplete(true);
       }
-    } catch (err) {
-      this.syncStatus = 'error';
-      return { success: false, error: err.message };
+      // Push back any local progress that was made offline
+      setTimeout(() => {
+        this.pushToCloud();
+      }, 1000);
+    } catch (e) {
+      console.warn('AutoSyncOnStart error:', e);
+      if (onComplete) onComplete(false);
     }
   }
 
   /**
-   * Generate an ultra-compact Base64 export string for 1-click manual sharing
+   * Setup lifecycle listeners: visibilitychange and online events
+   */
+  setupLifecycleListeners(onUpdate = null) {
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && !this.isSyncing && (typeof navigator === 'undefined' || navigator.onLine !== false)) {
+          this.pullFromCloud().then(res => {
+            if (res.success && typeof onUpdate === 'function') {
+              onUpdate();
+            }
+          });
+        }
+      });
+    }
+
+    window.addEventListener('online', () => {
+      this.updateStatus('idle', 'En ligne');
+      this.pullFromCloud().then(() => this.pushToCloud());
+    });
+
+    window.addEventListener('offline', () => {
+      this.updateStatus('offline', 'Hors-ligne');
+    });
+  }
+
+  /**
+   * Ultra-compact Base64 string for 1-click manual sharing
    */
   getQuickShareCode() {
     try {
@@ -723,6 +1012,7 @@ function initApp() {
   updateDashboardUI();
   setupEventListeners();
   setupKeyboardShortcuts();
+  setupSyncService();
   refreshLucide();
 
   // Register Service Worker for offline PWA
@@ -731,6 +1021,72 @@ function initApp() {
       console.warn('SW registration:', err);
     });
   }
+}
+
+function updateSyncHeaderUI(status, detail, lastSyncText) {
+  const codeEl = document.getElementById('header-session-code');
+  if (codeEl) codeEl.textContent = syncService.getSessionCode();
+
+  const syncBtn = document.getElementById('btn-open-sync');
+  const dotEl = document.querySelector('#btn-open-sync .pulse-dot');
+  const iconEl = document.querySelector('#btn-open-sync [data-lucide="refresh-cw"]');
+
+  if (syncBtn) {
+    syncBtn.title = `Multi-Appareils [${syncService.getSessionCode()}] • ${lastSyncText || 'Synchronisé'}`;
+  }
+
+  if (dotEl) {
+    if (status === 'syncing') {
+      dotEl.style.backgroundColor = 'var(--cyan)';
+      dotEl.style.boxShadow = '0 0 10px var(--cyan)';
+    } else if (status === 'synced') {
+      dotEl.style.backgroundColor = 'var(--emerald)';
+      dotEl.style.boxShadow = '0 0 10px rgba(16, 185, 129, 0.6)';
+    } else if (status === 'offline') {
+      dotEl.style.backgroundColor = 'var(--amber)';
+      dotEl.style.boxShadow = 'none';
+    } else if (status === 'error') {
+      dotEl.style.backgroundColor = 'var(--rose)';
+      dotEl.style.boxShadow = 'none';
+    } else {
+      dotEl.style.backgroundColor = 'var(--cyan)';
+    }
+  }
+
+  if (iconEl) {
+    if (status === 'syncing') {
+      iconEl.classList.add('spin');
+    } else {
+      iconEl.classList.remove('spin');
+    }
+  }
+
+  const modalStatus = document.getElementById('sync-status-msg');
+  if (modalStatus) {
+    modalStatus.textContent = detail ? `${lastSyncText} (${detail})` : lastSyncText;
+  }
+}
+
+function setupSyncService() {
+  syncService.onStatusChange = (status, detail, lastSyncText) => {
+    updateSyncHeaderUI(status, detail, lastSyncText);
+  };
+
+  updateSyncHeaderUI('idle', '', syncService.getLastSyncedText());
+
+  // Automatic background pull & merge on application startup
+  syncService.autoSyncOnStart((hasUpdated) => {
+    if (hasUpdated) {
+      updateDashboardUI();
+      if (currentView === 'notebook') renderNotebookUI();
+    }
+  });
+
+  // Background lifecycle listeners (auto-sync when returning to tab from mobile)
+  syncService.setupLifecycleListeners(() => {
+    updateDashboardUI();
+    if (currentView === 'notebook') renderNotebookUI();
+  });
 }
 
 function refreshLucide() {
@@ -792,6 +1148,254 @@ function updateDashboardUI() {
 
 function formatNumber(num) {
   return new Intl.NumberFormat('fr-FR').format(num || 0);
+}
+
+// ============================================================================
+// FORMATTING HELPERS (CROQ, QCM & CLINICAL AI REASONING)
+// ============================================================================
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function parseMarkdownInline(text) {
+  if (!text) return '';
+  let res = escapeHtml(text);
+  // Bold + Italic ***...***
+  res = res.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
+  // Bold **...**
+  res = res.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  // Italic *...*
+  res = res.replace(/(^|[^*])\*(?!\*)(.*?)(?<!\*)\*([^*]|$)/g, '$1<em>$2</em>$3');
+  return res;
+}
+
+function formatReasoningNote(noteText) {
+  if (!noteText || typeof noteText !== 'string' || !noteText.trim()) {
+    return '<div class="reasoning-cards-container"><div class="reasoning-card card-method"><div class="reasoning-card-body">Aucune note de raisonnement clinique disponible.</div></div></div>';
+  }
+
+  const raw = noteText.trim();
+
+  // Flexible section extractors (supporting 1. 🎯, 🎯, ### 🎯, PIÈGE, RÉGLE, RÈGLE, REGLE etc.)
+  const trapRegex = /(?:###\s*|\*\*|#\s*)?(?:1[\.\)]\s*)?🎯\s*PI[ÈÉEeèéê]GE[^\n:]*[:\n]([\s\S]*?)(?=(?:###\s*|\*\*|#\s*)?(?:2[\.\)]\s*)?🩺\s*M[ÉEèéê]THODE|$)/i;
+  const methodRegex = /(?:###\s*|\*\*|#\s*)?(?:2[\.\)]\s*)?🩺\s*M[ÉEèéê]THODE[^\n:]*[:\n]([\s\S]*?)(?=(?:###\s*|\*\*|#\s*)?(?:3[\.\)]\s*)?💡\s*R[ÈÉEeèéê]GLE|$)/i;
+  const ruleRegex = /(?:###\s*|\*\*|#\s*)?(?:3[\.\)]\s*)?💡\s*R[ÈÉEeèéê]GLE[^\n:]*[:\n]([\s\S]*?)$/i;
+
+  const trapMatch = raw.match(trapRegex);
+  const methodMatch = raw.match(methodRegex);
+  const ruleMatch = raw.match(ruleRegex);
+
+  const renderSectionContent = (contentRaw) => {
+    if (!contentRaw) return '';
+    let clean = contentRaw.trim().replace(/^\*\*|\*\*$/g, '').trim();
+    const lines = clean.split('\n').map(l => l.trim()).filter(Boolean);
+    let out = '';
+    let inList = false;
+
+    lines.forEach(line => {
+      if (/^[-•*]\s+/.test(line)) {
+        if (!inList) {
+          out += '<ul class="reasoning-list">';
+          inList = true;
+        }
+        const bulletText = line.replace(/^[-•*]\s+/, '');
+        out += `<li class="reasoning-list-item">${parseMarkdownInline(bulletText)}</li>`;
+      } else {
+        if (inList) {
+          out += '</ul>';
+          inList = false;
+        }
+        out += `<p class="reasoning-paragraph">${parseMarkdownInline(line)}</p>`;
+      }
+    });
+    if (inList) out += '</ul>';
+    return out;
+  };
+
+  if (trapMatch || methodMatch || ruleMatch) {
+    let html = '<div class="reasoning-cards-container">';
+
+    if (trapMatch && trapMatch[1] && trapMatch[1].trim()) {
+      html += `
+        <div class="reasoning-card card-trap">
+          <div class="reasoning-card-header">
+            <span class="reasoning-badge badge-trap">
+              <span class="badge-icon">🎯</span>
+              <span>Piège & Distracteur</span>
+            </span>
+          </div>
+          <div class="reasoning-card-body">${renderSectionContent(trapMatch[1])}</div>
+        </div>`;
+    }
+
+    if (methodMatch && methodMatch[1] && methodMatch[1].trim()) {
+      html += `
+        <div class="reasoning-card card-method">
+          <div class="reasoning-card-header">
+            <span class="reasoning-badge badge-method">
+              <span class="badge-icon">🩺</span>
+              <span>Méthode de Raisonnement</span>
+            </span>
+          </div>
+          <div class="reasoning-card-body">${renderSectionContent(methodMatch[1])}</div>
+        </div>`;
+    }
+
+    if (ruleMatch && ruleMatch[1] && ruleMatch[1].trim()) {
+      html += `
+        <div class="reasoning-card card-rule">
+          <div class="reasoning-card-header">
+            <span class="reasoning-badge badge-rule">
+              <span class="badge-icon">💡</span>
+              <span>Règle d'Or & Mémo Concours</span>
+            </span>
+          </div>
+          <div class="reasoning-card-body">${renderSectionContent(ruleMatch[1])}</div>
+        </div>`;
+    }
+
+    html += '</div>';
+    return html;
+  }
+
+  // Fallback for unstructured notes: render clean paragraphs & lists
+  return `<div class="reasoning-cards-container"><div class="reasoning-card card-method"><div class="reasoning-card-body">${renderSectionContent(raw)}</div></div></div>`;
+}
+
+function formatCroqAnswer(answerText) {
+  if (!answerText || typeof answerText !== 'string' || !answerText.trim()) {
+    return '<div class="empty-answer">Non renseignée</div>';
+  }
+
+  const trimmed = answerText.trim();
+
+  // Pattern detection: dashed items (e.g. "Intro : - Item 1 - Item 2") or numbered items
+  const hasDashes = /(?:^|\s|\.)-\s*[A-ZÀ-ÖØ-öø-ÿ0-9]/.test(trimmed) || trimmed.startsWith('-');
+  const hasNumberedPoints = /(?:^|\n|\s)\d+[\.\)]\s+/.test(trimmed);
+
+  if (hasDashes) {
+    const firstDashMatch = trimmed.match(/(?:^|\s|\.)-\s*([A-ZÀ-ÖØ-öø-ÿ0-9])/i);
+    let intro = '';
+    let itemsRaw = trimmed;
+
+    if (firstDashMatch && firstDashMatch.index > 0) {
+      intro = trimmed.slice(0, firstDashMatch.index).trim();
+      intro = intro.replace(/[:\-]$/, '').trim();
+      itemsRaw = trimmed.slice(firstDashMatch.index);
+    }
+
+    const points = itemsRaw
+      .split(/(?:^|\s|\.)-\s*/)
+      .map(p => p.trim())
+      .filter(p => p.length > 0 && p !== '-');
+
+    let html = '<div class="croq-structured-answer">';
+    if (intro) {
+      html += `<div class="croq-intro">${parseMarkdownInline(intro)} :</div>`;
+    }
+    if (points.length > 0) {
+      html += '<ul class="croq-points-list">';
+      points.forEach(point => {
+        const cleanPt = point.replace(/^-\s*/, '').replace(/\s*\.\s*$/, '');
+        if (cleanPt) {
+          html += `<li class="croq-point-item"><span class="croq-point-check">✓</span><span class="croq-point-text">${parseMarkdownInline(cleanPt)}</span></li>`;
+        }
+      });
+      html += '</ul>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  if (hasNumberedPoints) {
+    const points = trimmed.split(/(?:^|\n|\s)\d+[\.\)]\s+/).map(p => p.trim()).filter(Boolean);
+    let html = '<div class="croq-structured-answer"><ul class="croq-points-list">';
+    points.forEach((point, idx) => {
+      html += `<li class="croq-point-item"><span class="croq-point-number">${idx + 1}</span><span class="croq-point-text">${parseMarkdownInline(point)}</span></li>`;
+    });
+    html += '</ul></div>';
+    return html;
+  }
+
+  return `<div class="croq-simple-answer">${parseMarkdownInline(trimmed)}</div>`;
+}
+
+function formatAnswerComparison(userAnswer, correctAnswer, isCroq = false, score = null) {
+  let userHtml = '';
+  let correctHtml = '';
+
+  if (isCroq) {
+    const scoreBadge = (score !== null && score !== undefined)
+      ? `<span class="answer-badge ${score >= 75 ? 'badge-success' : 'badge-failure'}">Score : ${score}%</span>`
+      : '';
+
+    userHtml = `
+      <div class="answer-box box-user">
+        <div class="answer-box-header">
+          <span class="answer-box-title text-rose">
+            <span class="box-icon">✕</span> Votre proposition :
+          </span>
+          ${scoreBadge}
+        </div>
+        <div class="answer-box-content croq-user-text">
+          ${userAnswer ? parseMarkdownInline(userAnswer) : '<em>Aucune réponse saisie</em>'}
+        </div>
+      </div>
+    `;
+
+    correctHtml = `
+      <div class="answer-box box-correct">
+        <div class="answer-box-header">
+          <span class="answer-box-title text-emerald">
+            <span class="box-icon">✓</span> Réponse type officielle :
+          </span>
+          <span class="answer-badge badge-official">Référence concours</span>
+        </div>
+        <div class="answer-box-content">
+          ${formatCroqAnswer(correctAnswer)}
+        </div>
+      </div>
+    `;
+  } else {
+    userHtml = `
+      <div class="answer-box box-user">
+        <div class="answer-box-header">
+          <span class="answer-box-title text-rose">
+            <span class="box-icon">✕</span> Votre choix :
+          </span>
+        </div>
+        <div class="answer-box-content qcm-choice-text">
+          <strong>${userAnswer ? parseMarkdownInline(userAnswer) : 'Aucun'}</strong>
+        </div>
+      </div>
+    `;
+
+    correctHtml = `
+      <div class="answer-box box-correct">
+        <div class="answer-box-header">
+          <span class="answer-box-title text-emerald">
+            <span class="box-icon">✓</span> Bonne(s) réponse(s) :
+          </span>
+        </div>
+        <div class="answer-box-content qcm-choice-text">
+          <strong>${parseMarkdownInline(correctAnswer)}</strong>
+        </div>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="answer-comparison-grid">
+      ${userHtml}
+      ${correctHtml}
+    </div>
+  `;
 }
 
 // ============================================================================
@@ -1027,6 +1631,7 @@ async function handleSubmitCroq() {
 // ============================================================================
 function handleAnswerSuccess(score = null, feedback = null) {
   const result = queueEngine.handleSuccess(currentQuestion.uid);
+  syncService.triggerAutoPush();
 
   // Trigger celebration confetti
   if (result.permanentlyRemoved) {
@@ -1065,24 +1670,31 @@ function triggerMasteryConfetti() {
 async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq = false, score = 0, feedback = '') {
   const result = queueEngine.handleFailure(currentQuestion.uid);
 
-  // Populate basic error modal fields
+  // Populate penalty header
   document.getElementById('error-modal-penalty-title').textContent = 
     `Pénalité appliquée : seuil augmenté à ${result.newTarget} réussites requises`;
   document.getElementById('error-modal-penalty-desc').textContent = 
     `Cette question a été ratée (${result.mistakes} faute${result.mistakes > 1 ? 's' : ''}). Elle réapparaîtra très vite (dans ${result.pushDistance} cartes) pour ancrer le bon réflexe.`;
 
-  if (isCroq) {
-    document.getElementById('error-modal-user-answer').textContent = `${userAnswerLetters[0]} (Score: ${score}%)`;
-    document.getElementById('error-modal-correct-answer').textContent = correctAnswerText;
-  } else {
-    document.getElementById('error-modal-user-answer').textContent = userAnswerLetters.join(', ') || 'Aucune réponse cochée';
-    document.getElementById('error-modal-correct-answer').textContent = correctAnswerText;
+  // Render structured comparison in error modal
+  const userText = isCroq ? (userAnswerLetters[0] || '') : (userAnswerLetters.join(', ') || 'Aucune réponse cochée');
+  const comparisonContainer = document.getElementById('error-modal-comparison-container') 
+    || document.querySelector('.answer-recap-box');
+
+  if (comparisonContainer) {
+    comparisonContainer.outerHTML = `<div id="error-modal-comparison-container">${formatAnswerComparison(userText, correctAnswerText, isCroq, score)}</div>`;
   }
 
   // Show modal immediately
   modals.error.style.display = 'flex';
   const aiNoteContainer = document.getElementById('error-modal-ai-note');
-  aiNoteContainer.innerHTML = '<em>Consultation du professeur IA et génération de la note de raisonnement clinique en cours...</em>';
+  aiNoteContainer.innerHTML = `
+    <div class="reasoning-loader-wrap">
+      <i data-lucide="sparkles" class="spin"></i>
+      <span>Consultation du professeur IA et formulation de la méthode clinique...</span>
+    </div>
+  `;
+  refreshLucide();
 
   // Request AI reasoning note asynchronously
   const reasoningObj = await geminiService.generateReasoningNote(
@@ -1092,22 +1704,30 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
     userAnswerLetters[0] || ''
   );
 
-  aiNoteContainer.textContent = reasoningObj.note;
+  aiNoteContainer.innerHTML = formatReasoningNote(reasoningObj.note);
   document.getElementById('error-modal-model-tag').textContent = reasoningObj.modelUsed;
 
-  // Save to Notebook
+  // Save to Notebook with CROQ flag and score
   const noteRecord = {
     id: `note_${Date.now()}`,
     questionUid: currentQuestion.uid,
     questionText: currentQuestion.question,
     chapterTitle: currentQuestion.chapterTitle,
-    userAnswer: isCroq ? userAnswerLetters[0] : userAnswerLetters.join(', '),
+    userAnswer: userText,
     correctAnswer: correctAnswerText,
+    isCroq: !!isCroq,
+    score: isCroq ? score : null,
     reasoningNote: reasoningObj.note,
     modelUsed: reasoningObj.modelUsed,
     timestamp: Date.now()
   };
   queueEngine.saveReasoningNote(noteRecord);
+  syncService.triggerAutoPush();
+
+  // Update notebook badge in dashboard
+  const notesCount = queueEngine.getReasoningNotes().length;
+  const badgeEl = document.getElementById('notebook-count-badge');
+  if (badgeEl) badgeEl.textContent = notesCount;
 
   refreshLucide();
 }
@@ -1144,54 +1764,261 @@ function showVictoryScreen() {
 }
 
 // ============================================================================
-// CARNET DE RAISONNEMENT IA
+// CARNET DE RAISONNEMENT IA (Groupé par Cours & Question Unique)
 // ============================================================================
+let notebookSelectedChapter = '';
+
+function groupNotesByChapterAndQuestion(notes) {
+  const chapterMap = new Map();
+
+  notes.forEach(note => {
+    const chap = (note.chapterTitle && note.chapterTitle.trim()) || "Pédiatrie Générale";
+    const qKey = note.questionUid || note.questionText || note.id;
+
+    if (!chapterMap.has(chap)) {
+      chapterMap.set(chap, new Map());
+    }
+    const qMap = chapterMap.get(chap);
+    if (!qMap.has(qKey)) {
+      qMap.set(qKey, []);
+    }
+    qMap.get(qKey).push(note);
+  });
+
+  const result = [];
+  const sortedChapters = Array.from(chapterMap.keys()).sort((a, b) => a.localeCompare(b, 'fr'));
+
+  for (const chapTitle of sortedChapters) {
+    const qMap = chapterMap.get(chapTitle);
+    const questions = [];
+
+    for (const [qKey, attempts] of qMap.entries()) {
+      // Sort attempts: newest first
+      attempts.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+      const primary = attempts[0];
+      const isCroq = primary.isCroq || (primary.correctAnswer && primary.correctAnswer.length > 50) || (primary.userAnswer && primary.userAnswer.length > 30);
+
+      questions.push({
+        questionKey: qKey,
+        questionUid: primary.questionUid,
+        questionText: primary.questionText,
+        chapterTitle: chapTitle,
+        isCroq: !!isCroq,
+        attemptsCount: attempts.length,
+        attempts: attempts
+      });
+    }
+
+    result.push({
+      chapterTitle: chapTitle,
+      totalQuestions: questions.length,
+      totalNotes: questions.reduce((sum, q) => sum + q.attemptsCount, 0),
+      questions
+    });
+  }
+
+  return result;
+}
+
+window.switchAttemptTab = function(qDomId, activeIdx, clickedBtn) {
+  const parentBar = clickedBtn.closest('.attempts-switcher-bar');
+  if (parentBar) {
+    parentBar.querySelectorAll('.attempt-tab-btn').forEach(b => b.classList.remove('active'));
+    clickedBtn.classList.add('active');
+  }
+  const card = document.getElementById(qDomId);
+  if (card) {
+    card.querySelectorAll('.attempt-panel').forEach((p, idx) => {
+      p.style.display = (idx === activeIdx) ? 'block' : 'none';
+    });
+  }
+};
+
+window.toggleChapterGroup = function(groupId) {
+  const el = document.getElementById(groupId);
+  if (el) {
+    el.classList.toggle('collapsed');
+  }
+};
+
+window.toggleAllChapters = function() {
+  const allGroups = document.querySelectorAll('.notebook-chapter-group');
+  const hasExpanded = Array.from(allGroups).some(g => !g.classList.contains('collapsed'));
+  allGroups.forEach(g => {
+    if (hasExpanded) {
+      g.classList.add('collapsed');
+    } else {
+      g.classList.remove('collapsed');
+    }
+  });
+  const btnText = document.getElementById('btn-toggle-all-chapters-text');
+  if (btnText) {
+    btnText.textContent = hasExpanded ? 'Tout déplier' : 'Tout replier';
+  }
+};
+
 function renderNotebookUI(filterText = '') {
   const container = document.getElementById('notebook-notes-list');
   const allNotes = queueEngine.getReasoningNotes();
 
+  // Populate or update the chapter filter select if it exists
+  const chapFilterSelect = document.getElementById('notebook-chapter-filter');
+  if (chapFilterSelect) {
+    const existingChapters = Array.from(new Set(allNotes.map(n => n.chapterTitle || 'Pédiatrie Générale'))).sort((a,b) => a.localeCompare(b, 'fr'));
+    const currentVal = notebookSelectedChapter;
+    let optionsHtml = `<option value="">Tous les cours (${allNotes.length} notes)</option>`;
+    existingChapters.forEach(c => {
+      const count = allNotes.filter(n => (n.chapterTitle || 'Pédiatrie Générale') === c).length;
+      optionsHtml += `<option value="${escapeHtml(c)}" ${c === currentVal ? 'selected' : ''}>${escapeHtml(c)} (${count})</option>`;
+    });
+    chapFilterSelect.innerHTML = optionsHtml;
+  }
+
+  // Filter notes by text & chapter
   const filtered = allNotes.filter(n => {
+    if (notebookSelectedChapter && (n.chapterTitle || 'Pédiatrie Générale') !== notebookSelectedChapter) {
+      return false;
+    }
     if (!filterText) return true;
     const q = filterText.toLowerCase();
     return (n.questionText && n.questionText.toLowerCase().includes(q)) ||
            (n.chapterTitle && n.chapterTitle.toLowerCase().includes(q)) ||
-           (n.reasoningNote && n.reasoningNote.toLowerCase().includes(q));
+           (n.reasoningNote && n.reasoningNote.toLowerCase().includes(q)) ||
+           (n.userAnswer && n.userAnswer.toLowerCase().includes(q));
   });
 
+  // Update summary bar
+  const summaryBar = document.getElementById('notebook-summary-bar');
   if (filtered.length === 0) {
+    if (summaryBar) summaryBar.style.display = 'none';
     container.innerHTML = `
       <div style="text-align:center;padding:40px;color:var(--text-dim);">
         <i data-lucide="book-marked" style="width:36px;height:36px;margin:0 auto 10px;display:block;"></i>
-        ${filterText ? 'Aucune note ne correspond à votre recherche.' : 'Aucune note de raisonnement pour le moment. Vos futures erreurs seront automatiquement analysées ici !'}
+        ${filterText || notebookSelectedChapter 
+          ? 'Aucune note ne correspond à vos filtres actuels.' 
+          : 'Aucune note de raisonnement pour le moment. Vos futures erreurs seront automatiquement analysées et regroupées ici par cours !'}
       </div>
     `;
     refreshLucide();
     return;
   }
 
+  const groupedChapters = groupNotesByChapterAndQuestion(filtered);
+  const totalQuestions = groupedChapters.reduce((sum, g) => sum + g.totalQuestions, 0);
+  const totalNotes = groupedChapters.reduce((sum, g) => sum + g.totalNotes, 0);
+
+  if (summaryBar) {
+    summaryBar.style.display = 'flex';
+    summaryBar.innerHTML = `
+      <span class="notebook-stat-summary">
+        <strong>${totalQuestions}</strong> question${totalQuestions > 1 ? 's' : ''} regroupée${totalQuestions > 1 ? 's' : ''} (${totalNotes} analyse${totalNotes > 1 ? 's' : ''}) dans <strong>${groupedChapters.length}</strong> cours
+      </span>
+      <button class="notebook-toggle-all-btn" onclick="window.toggleAllChapters()">
+        <i data-lucide="chevrons-up-down" style="width:14px;height:14px;"></i>
+        <span id="btn-toggle-all-chapters-text">Tout replier</span>
+      </button>
+    `;
+  }
+
   container.innerHTML = '';
-  filtered.forEach(note => {
-    const card = document.createElement('div');
-    card.className = 'note-card';
 
-    const dateStr = note.timestamp 
-      ? new Date(note.timestamp).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
-      : '';
+  groupedChapters.forEach((g, gIdx) => {
+    const chapterGroupId = `chap_group_${gIdx}`;
+    const chapterGroupEl = document.createElement('div');
+    chapterGroupEl.className = 'notebook-chapter-group';
+    chapterGroupEl.id = chapterGroupId;
 
-    card.innerHTML = `
-      <div class="note-card-header">
-        <span class="note-chapter">${note.chapterTitle || 'Pédiatrie'}</span>
-        <span class="note-date">${dateStr}</span>
+    let questionsHtml = '';
+    g.questions.forEach((q, qIdx) => {
+      const qDomId = `qcard_${gIdx}_${qIdx}`;
+      const latestAttempt = q.attempts[0];
+      const latestDateStr = latestAttempt.timestamp 
+        ? new Date(latestAttempt.timestamp).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+        : '';
+
+      // Attempts tab switcher (if multiple attempts on the same question)
+      let switcherHtml = '';
+      if (q.attempts.length > 1) {
+        switcherHtml = `
+          <div class="attempts-switcher-bar">
+            ${q.attempts.map((att, attIdx) => {
+              const timeStr = att.timestamp 
+                ? new Date(att.timestamp).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+                : `Tentative ${q.attempts.length - attIdx}`;
+              const scoreBadge = (att.score !== null && att.score !== undefined) ? `<span class="badge-pill-micro">${att.score}%</span>` : '';
+              const label = (attIdx === 0) ? `✨ Dernière analyse (#${q.attempts.length})` : `Tentative #${q.attempts.length - attIdx}`;
+              return `
+                <button class="attempt-tab-btn ${attIdx === 0 ? 'active' : ''}" onclick="window.switchAttemptTab('${qDomId}', ${attIdx}, this)">
+                  <span>${label}</span>
+                  <span class="badge-pill-micro">${timeStr}</span>
+                  ${scoreBadge}
+                </button>
+              `;
+            }).join('')}
+          </div>
+        `;
+      }
+
+      // Pre-rendered panels for each attempt
+      const panelsHtml = q.attempts.map((att, attIdx) => {
+        const compHtml = formatAnswerComparison(att.userAnswer, att.correctAnswer, q.isCroq, att.score);
+        const reasHtml = formatReasoningNote(att.reasoningNote);
+        return `
+          <div class="attempt-panel" id="${qDomId}_att_${attIdx}" style="${attIdx === 0 ? '' : 'display:none;'}">
+            ${compHtml}
+            ${reasHtml}
+          </div>
+        `;
+      }).join('');
+
+      questionsHtml += `
+        <div class="note-card grouped-question-card" id="${qDomId}">
+          <div class="note-card-header">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="note-chapter">${escapeHtml(q.chapterTitle)}</span>
+              <span class="tag-pill ${q.isCroq ? 'tag-croq' : 'tag-qcu'}" style="font-size:0.68rem;padding:2px 8px;">
+                ${q.isCroq ? 'CROQ' : 'QCM'}
+              </span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              ${q.attemptsCount > 1 ? `
+                <span class="attempts-history-badge">
+                  <i data-lucide="history" style="width:13px;height:13px;"></i>
+                  ${q.attemptsCount} tentatives regroupées
+                </span>
+              ` : ''}
+              ${latestAttempt.modelUsed ? `<span style="font-size:0.7rem;color:var(--text-dim);font-weight:600;">${latestAttempt.modelUsed}</span>` : ''}
+              <span class="note-date">${latestDateStr}</span>
+            </div>
+          </div>
+          <div class="note-question">${parseMarkdownInline(q.questionText)}</div>
+          ${switcherHtml}
+          <div class="attempt-content-container">
+            ${panelsHtml}
+          </div>
+        </div>
+      `;
+    });
+
+    chapterGroupEl.innerHTML = `
+      <div class="notebook-chapter-header" onclick="window.toggleChapterGroup('${chapterGroupId}')">
+        <div class="notebook-chapter-title-wrap">
+          <i data-lucide="book-open" class="notebook-chapter-icon"></i>
+          <span class="notebook-chapter-title">${escapeHtml(g.chapterTitle)}</span>
+        </div>
+        <div class="notebook-chapter-badges">
+          <span class="chapter-count-pill">${g.totalQuestions} question${g.totalQuestions > 1 ? 's' : ''}</span>
+          ${g.totalNotes > g.totalQuestions ? `<span class="chapter-notes-pill">${g.totalNotes} analyses</span>` : ''}
+          <i data-lucide="chevron-down" class="chapter-chevron"></i>
+        </div>
       </div>
-      <div class="note-question">${note.questionText}</div>
-      <div style="font-size:0.8rem;color:var(--text-dim);display:flex;gap:12px;">
-        <span><strong style="color:var(--rose)">Votre choix :</strong> ${note.userAnswer}</span>
-        <span><strong style="color:var(--emerald)">Bonne réponse :</strong> ${note.correctAnswer}</span>
+      <div class="notebook-chapter-questions">
+        ${questionsHtml}
       </div>
-      <div class="note-text-body">${note.reasoningNote}</div>
     `;
 
-    container.appendChild(card);
+    container.appendChild(chapterGroupEl);
   });
 
   refreshLucide();
@@ -1298,10 +2125,18 @@ function setupEventListeners() {
   document.getElementById('btn-continue-after-error').onclick = closeErrorModalAndContinue;
   document.getElementById('btn-close-error-modal').onclick = closeErrorModalAndContinue;
 
-  // Notebook search
+  // Notebook search & chapter filter
   document.getElementById('notebook-search-input').oninput = (e) => {
     renderNotebookUI(e.target.value);
   };
+  const notebookChapFilter = document.getElementById('notebook-chapter-filter');
+  if (notebookChapFilter) {
+    notebookChapFilter.onchange = (e) => {
+      notebookSelectedChapter = e.target.value;
+      const searchVal = document.getElementById('notebook-search-input')?.value || '';
+      renderNotebookUI(searchVal);
+    };
+  }
 
   // Chapters modal search
   document.getElementById('chapters-search-input').oninput = (e) => {
@@ -1319,11 +2154,24 @@ function setupEventListeners() {
     modals.sync.style.display = 'flex';
   };
   document.getElementById('btn-close-sync-modal').onclick = () => modals.sync.style.display = 'none';
-  document.getElementById('btn-save-session-code').onclick = () => {
+  document.getElementById('btn-save-session-code').onclick = async () => {
     const val = document.getElementById('sync-session-code-input').value;
     syncService.setSessionCode(val);
     document.getElementById('header-session-code').textContent = syncService.getSessionCode();
-    alert('Code de session mis à jour avec succès.');
+    
+    // Auto-pull immediately with new session code
+    const statusMsg = document.getElementById('sync-status-msg');
+    statusMsg.textContent = 'Synchronisation avec le nouveau code...';
+    const res = await syncService.pullFromCloud();
+    if (res.success) {
+      updateDashboardUI();
+      if (currentView === 'notebook') renderNotebookUI();
+      statusMsg.textContent = syncService.getLastSyncedText();
+      alert(`Code ${syncService.getSessionCode()} activé ! Progression fusionnée avec succès.`);
+    } else {
+      statusMsg.textContent = syncService.getLastSyncedText();
+      alert(`Code ${syncService.getSessionCode()} activé.`);
+    }
   };
 
   document.getElementById('btn-cloud-push').onclick = async () => {
@@ -1332,7 +2180,7 @@ function setupEventListeners() {
     const res = await syncService.pushToCloud();
     if (res.success) {
       statusMsg.textContent = syncService.getLastSyncedText();
-      alert('Progression sauvegardée dans le Cloud avec succès !');
+      alert('Progression sauvegardée dans le Cloud avec succès ! Tous vos appareils sont synchronisés.');
     } else {
       statusMsg.textContent = `Erreur : ${res.error}`;
     }
@@ -1345,7 +2193,8 @@ function setupEventListeners() {
     if (res.success) {
       statusMsg.textContent = syncService.getLastSyncedText();
       updateDashboardUI();
-      alert('Progression synchronisée depuis le Cloud !');
+      if (currentView === 'notebook') renderNotebookUI();
+      alert('Progression et carnet de raisonnement synchronisés depuis le Cloud !');
     } else {
       statusMsg.textContent = `Erreur : ${res.error}`;
     }

@@ -286,10 +286,10 @@ export class QueueEngine {
   }
 
   /**
-   * Export state as JSON string
+   * Return raw state object
    */
-  exportState() {
-    return JSON.stringify({
+  getStateObject() {
+    return {
       version: 1,
       exportedAt: new Date().toISOString(),
       stats: this.stats,
@@ -298,7 +298,36 @@ export class QueueEngine {
       selectedChapterIds: this.selectedChapterIds,
       totalMistakesCount: this.totalMistakesCount,
       reasoningNotes: this.getReasoningNotes()
-    }, null, 2);
+    };
+  }
+
+  /**
+   * Export state as JSON string
+   */
+  exportState() {
+    return JSON.stringify(this.getStateObject(), null, 2);
+  }
+
+  /**
+   * Apply merged state object safely
+   */
+  applyMergedState(merged) {
+    if (!merged || typeof merged !== 'object') return false;
+    try {
+      if (merged.stats) this.stats = merged.stats;
+      if (Array.isArray(merged.queue)) this.queue = merged.queue;
+      if (typeof merged.cursor === 'number') this.cursor = merged.cursor;
+      if (Array.isArray(merged.selectedChapterIds)) this.selectedChapterIds = merged.selectedChapterIds;
+      if (typeof merged.totalMistakesCount === 'number') this.totalMistakesCount = merged.totalMistakesCount;
+      if (Array.isArray(merged.reasoningNotes)) {
+        localStorage.setItem(REASONING_KEY, JSON.stringify(merged.reasoningNotes));
+      }
+      this.saveState();
+      return true;
+    } catch (err) {
+      console.error("applyMergedState failed:", err);
+      return false;
+    }
   }
 
   /**
@@ -307,16 +336,7 @@ export class QueueEngine {
   importState(jsonString) {
     try {
       const parsed = JSON.parse(jsonString);
-      if (parsed.stats) this.stats = parsed.stats;
-      if (parsed.queue) this.queue = parsed.queue;
-      if (typeof parsed.cursor === 'number') this.cursor = parsed.cursor;
-      if (parsed.selectedChapterIds) this.selectedChapterIds = parsed.selectedChapterIds;
-      if (typeof parsed.totalMistakesCount === 'number') this.totalMistakesCount = parsed.totalMistakesCount;
-      if (parsed.reasoningNotes) {
-        localStorage.setItem(REASONING_KEY, JSON.stringify(parsed.reasoningNotes));
-      }
-      this.saveState();
-      return true;
+      return this.applyMergedState(parsed);
     } catch (err) {
       console.error("Import failed:", err);
       return false;
