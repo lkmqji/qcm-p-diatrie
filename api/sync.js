@@ -1,5 +1,5 @@
 // Vercel Serverless Function: /api/sync
-// Pure Vanilla Node.js - 100% framework-independent & CORS-compliant
+// Ultra-safe error-capturing handler
 
 const DEFAULT_BINS = {
   'OUAIL-2026': 'cbdabdf'
@@ -25,23 +25,28 @@ async function getRawBody(req) {
 }
 
 export default async function handler(req, res) {
-  // 1. Clean W3C CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
-
-  if (req.method === 'OPTIONS') {
-    res.statusCode = 200;
-    return res.end();
-  }
-
-  // 2. Parse query parameters
-  const urlObj = new URL(req.url, 'http://localhost');
-  const codeParam = urlObj.searchParams.get('code') || req.query?.code || 'OUAIL-2026';
-  const code = codeParam.toString().toUpperCase().trim();
-  const binId = DEFAULT_BINS[code] || 'cbdabdf';
-
   try {
+    // 1. Clean W3C CORS headers
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
+
+    if (req.method === 'OPTIONS') {
+      res.statusCode = 200;
+      return res.end();
+    }
+
+    // 2. Parse query parameters
+    let code = 'OUAIL-2026';
+    try {
+      const urlObj = new URL(req.url, 'http://localhost');
+      code = urlObj.searchParams.get('code') || req.query?.code || 'OUAIL-2026';
+    } catch {
+      code = req.query?.code || 'OUAIL-2026';
+    }
+    code = code.toString().toUpperCase().trim();
+    const binId = DEFAULT_BINS[code] || 'cbdabdf';
+
     if (req.method === 'GET') {
       const response = await fetch(`${EXTENDSCLASS_API}/${binId}?_t=${Date.now()}`, {
         headers: {
@@ -77,7 +82,14 @@ export default async function handler(req, res) {
     } else {
       return sendJson(res, 405, { error: 'Method not allowed' });
     }
-  } catch (err) {
-    return sendJson(res, 500, { error: err.message });
+  } catch (fatalErr) {
+    try {
+      res.statusCode = 500;
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ error: fatalErr.message, stack: fatalErr.stack }));
+    } catch {
+      res.end('Fatal server error: ' + fatalErr.message);
+    }
   }
 }
