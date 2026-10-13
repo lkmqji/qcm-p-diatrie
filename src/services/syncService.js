@@ -11,8 +11,16 @@ const DEFAULT_BINS = {
   'OUAIL-2026': 'cbdabdf'
 };
 
-const EXTENDSCLASS_API = 'https://extendsclass.com/api/json-storage/bin';
-const KEYVALUE_API = 'https://keyvalue.immanuel.co/api/KeyVal';
+const VERCEL_API_FALLBACK = 'https://qcm-p-diatrie-coral.vercel.app/api/sync';
+
+export function getSyncEndpoint() {
+  if (typeof window !== 'undefined' && window.location) {
+    if (window.location.protocol.startsWith('http') && window.location.hostname.includes('vercel.app')) {
+      return '/api/sync';
+    }
+  }
+  return VERCEL_API_FALLBACK;
+}
 
 /**
  * Intelligent state merger: unites local and remote progress non-destructively.
@@ -133,76 +141,6 @@ export class SyncService {
   }
 
   /**
-   * Resolve cloud bin ID for the current session code
-   */
-  async resolveBinId() {
-    const code = this.sessionCode;
-
-    // 1. Check known built-in bins
-    if (DEFAULT_BINS[code]) {
-      return DEFAULT_BINS[code];
-    }
-
-    // 2. Check local storage cache
-    const cachedBin = localStorage.getItem(BIN_MAP_KEY_PREFIX + code);
-    if (cachedBin && cachedBin.length >= 5 && cachedBin.length <= 15) {
-      return cachedBin;
-    }
-
-    // 3. Query keyvalue.immanuel.co registry
-    try {
-      const res = await fetch(`${KEYVALUE_API}/GetValue/${encodeURIComponent(KV_APP_ID)}/${encodeURIComponent(code)}`);
-      if (res.ok) {
-        const text = await res.text();
-        const parsed = JSON.parse(text || '""');
-        if (parsed && typeof parsed === 'string' && parsed.length >= 5 && parsed.length <= 15) {
-          localStorage.setItem(BIN_MAP_KEY_PREFIX + code, parsed);
-          return parsed;
-        }
-      }
-    } catch (e) {
-      console.warn('SyncService: Registry lookup failed:', e.message);
-    }
-
-    // 4. Create new cloud bin on extendsclass
-    try {
-      const initialPayload = JSON.stringify({
-        version: 1,
-        exportedAt: new Date().toISOString(),
-        stats: {},
-        queue: [],
-        cursor: 0,
-        selectedChapterIds: [],
-        totalMistakesCount: 0,
-        reasoningNotes: []
-      });
-
-      const createRes = await fetch(EXTENDSCLASS_API, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: initialPayload
-      });
-
-      if (createRes.ok) {
-        const data = await createRes.json();
-        if (data.id) {
-          localStorage.setItem(BIN_MAP_KEY_PREFIX + code, data.id);
-          // Register in keyvalue asynchronously
-          fetch(`${KEYVALUE_API}/UpdateValue/${encodeURIComponent(KV_APP_ID)}/${encodeURIComponent(code)}/${encodeURIComponent(data.id)}`, {
-            method: 'POST'
-          }).catch(() => null);
-          return data.id;
-        }
-      }
-    } catch (e) {
-      console.warn('SyncService: Bin creation failed:', e.message);
-    }
-
-    // Fallback default bin
-    return DEFAULT_BINS['OUAIL-2026'] || 'cbdabdf';
-  }
-
-  /**
    * Pull state from cloud and merge with local progress non-destructively
    */
   async pullFromCloud() {
@@ -215,13 +153,16 @@ export class SyncService {
     this.updateStatus('syncing', 'Récupération du Cloud...');
 
     try {
-      const binId = await this.resolveBinId();
-      const res = await fetch(`${EXTENDSCLASS_API}/${binId}?_t=${Date.now()}`, {
-        cache: 'no-store'
+      const endpoint = getSyncEndpoint();
+      const url = `${endpoint}?code=${encodeURIComponent(this.sessionCode)}&_t=${Date.now()}`;
+
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
       });
 
       if (!res.ok) {
-        throw new Error(`Session distante inaccessible (HTTP ${res.status})`);
+        throw new Error(`Serveur Cloud inaccessible (HTTP ${res.status})`);
       }
 
       const remoteState = await res.json();
@@ -240,8 +181,11 @@ export class SyncService {
       return { success: true, merged };
     } catch (err) {
       this.isSyncing = false;
-      this.updateStatus('error', err.message);
-      return { success: false, error: err.message };
+      const friendlyError = (err.message === 'Failed to fetch' || err.name === 'TypeError')
+        ? 'Impossible de joindre le serveur Cloud (vérifiez votre connexion internet).'
+        : err.message;
+      this.updateStatus('error', friendlyError);
+      return { success: false, error: friendlyError };
     }
   }
 
@@ -258,7 +202,7 @@ export class SyncService {
     this.updateStatus('syncing', 'Envoi au Cloud...');
 
     try {
-      const binId = await this.resolveBinId();
+      const endpoint = getSyncEndpoint();
       const localState = this.queueEngine.getStateObject 
         ? this.queueEngine.getStateObject() 
         : JSON.parse(this.queueEngine.exportState());
@@ -266,7 +210,11 @@ export class SyncService {
       // Fetch remote state to merge before pushing
       let toPush = localState;
       try {
-        const remoteRes = await fetch(`${EXTENDSCLASS_API}/${binId}?_t=${Date.now()}`, { cache: 'no-store' });
+        const pullUrl = `${endpoint}?code=${encodeURIComponent(this.sessionCode)}&_t=${Date.now()}`;
+        const remoteRes = await fetch(pullUrl, {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' }
+        });
         if (remoteRes.ok) {
           const remoteState = await remoteRes.json();
           toPush = mergeStates(localState, remoteState);
@@ -276,15 +224,15 @@ export class SyncService {
         console.warn('Could not fetch remote before push, pushing local:', fetchErr.message);
       }
 
-      const payload = JSON.stringify(toPush);
-      const putRes = await fetch(`${EXTENDSCLASS_API}/${binId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: payload
+      const pushUrl = `${endpoint}?code=${encodeURIComponent(this.sessionCode)}`;
+      const putRes = await fetch(pushUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(toPush)
       });
 
       if (!putRes.ok) {
-        throw new Error(`Échec de sauvegarde (HTTP ${putRes.status})`);
+        throw new Error(`Échec de sauvegarde sur le Cloud (HTTP ${putRes.status})`);
       }
 
       this.lastSyncedAt = Date.now().toString();
@@ -295,8 +243,11 @@ export class SyncService {
       return { success: true, timestamp: this.lastSyncedAt };
     } catch (err) {
       this.isSyncing = false;
-      this.updateStatus('error', err.message);
-      return { success: false, error: err.message };
+      const friendlyError = (err.message === 'Failed to fetch' || err.name === 'TypeError')
+        ? 'Impossible de joindre le serveur Cloud (vérifiez votre connexion internet).'
+        : err.message;
+      this.updateStatus('error', friendlyError);
+      return { success: false, error: friendlyError };
     }
   }
 
