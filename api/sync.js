@@ -1,23 +1,44 @@
 // Vercel Serverless Function: /api/sync
-// Ultra-fast, 100% CORS-compliant gateway for PédiaDrill multi-device sync
+// Pure Vanilla Node.js - 100% framework-independent & CORS-compliant
 
 const DEFAULT_BINS = {
   'OUAIL-2026': 'cbdabdf'
 };
 const EXTENDSCLASS_API = 'https://extendsclass.com/api/json-storage/bin';
 
+function sendJson(res, statusCode, data) {
+  res.statusCode = statusCode;
+  res.setHeader('Content-Type', 'application/json');
+  res.end(JSON.stringify(data));
+}
+
+async function getRawBody(req) {
+  if (req.body) {
+    return typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+  }
+  return new Promise((resolve) => {
+    let data = '';
+    req.on('data', chunk => data += chunk);
+    req.on('end', () => resolve(data));
+    req.on('error', () => resolve(''));
+  });
+}
+
 export default async function handler(req, res) {
-  // 1. Clean W3C-compliant CORS headers
+  // 1. Clean W3C CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
 
   if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+    res.statusCode = 200;
+    return res.end();
   }
 
-  // 2. Resolve session code and cloud bin
-  const code = (req.query?.code || 'OUAIL-2026').toString().toUpperCase().trim();
+  // 2. Parse query parameters
+  const urlObj = new URL(req.url, 'http://localhost');
+  const codeParam = urlObj.searchParams.get('code') || req.query?.code || 'OUAIL-2026';
+  const code = codeParam.toString().toUpperCase().trim();
   const binId = DEFAULT_BINS[code] || 'cbdabdf';
 
   try {
@@ -31,15 +52,12 @@ export default async function handler(req, res) {
 
       if (response.ok) {
         const json = await response.json();
-        return res.status(200).json(json);
+        return sendJson(res, 200, json);
       } else {
-        return res.status(response.status).json({ error: 'Remote store unavailable', status: response.status });
+        return sendJson(res, response.status, { error: 'Remote store unavailable' });
       }
     } else if (req.method === 'POST' || req.method === 'PUT') {
-      let bodyData = req.body;
-      if (typeof bodyData !== 'string') {
-        bodyData = JSON.stringify(bodyData || {});
-      }
+      const bodyData = await getRawBody(req);
 
       const putRes = await fetch(`${EXTENDSCLASS_API}/${binId}`, {
         method: 'PUT',
@@ -48,18 +66,18 @@ export default async function handler(req, res) {
           'Accept': 'application/json',
           'User-Agent': 'Mozilla/5.0'
         },
-        body: bodyData
+        body: bodyData || '{}'
       });
 
       if (putRes.ok) {
-        return res.status(200).json({ success: true, timestamp: Date.now() });
+        return sendJson(res, 200, { success: true, timestamp: Date.now() });
       } else {
-        return res.status(putRes.status).json({ error: 'Failed to write to remote store', status: putRes.status });
+        return sendJson(res, putRes.status, { error: 'Failed to write to remote store' });
       }
     } else {
-      return res.status(405).json({ error: 'Method not allowed' });
+      return sendJson(res, 405, { error: 'Method not allowed' });
     }
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    return sendJson(res, 500, { error: err.message });
   }
 }
