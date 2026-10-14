@@ -2,6 +2,7 @@
 import { geminiService } from './services/gemini.js';
 import { QueueEngine } from './services/queueEngine.js';
 import { SyncService } from './services/syncService.js';
+import { FirebaseSyncService } from './services/firebaseSyncService.js';
 
 // Global Data Access
 const allQuestions = window.PEDIA_QUESTIONS || [];
@@ -10,6 +11,7 @@ const allChapters = window.PEDIA_CHAPTERS || [];
 // Services
 const queueEngine = new QueueEngine(allQuestions, allChapters);
 const syncService = new SyncService(queueEngine);
+const firebaseSyncService = new FirebaseSyncService(queueEngine);
 
 // Local State
 let currentQuestion = null;
@@ -40,6 +42,7 @@ function initApp() {
   setupEventListeners();
   setupKeyboardShortcuts();
   setupSyncService();
+  setupFirebaseService();
   refreshLucide();
 
   // Register Service Worker for offline PWA
@@ -114,6 +117,75 @@ function setupSyncService() {
     updateDashboardUI();
     if (currentView === 'notebook') renderNotebookUI();
   });
+}
+
+function updateGoogleAccountUI(status, detail, user, lastSyncText) {
+  const btnHeaderLogin = document.getElementById('btn-header-google-login');
+  const badgeUserProfile = document.getElementById('btn-open-user-profile');
+  const headerAvatar = document.getElementById('header-user-avatar');
+  const headerName = document.getElementById('header-user-name');
+
+  const cardDisconnected = document.getElementById('google-disconnected-card');
+  const cardConnected = document.getElementById('google-connected-card');
+  const modalAvatar = document.getElementById('modal-user-avatar');
+  const modalName = document.getElementById('modal-user-name');
+  const modalEmail = document.getElementById('modal-user-email');
+
+  const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'><circle cx='12' cy='8' r='4'/><path d='M20 21a8 8 0 0 0-16 0'/></svg>";
+
+  if (user) {
+    if (btnHeaderLogin) btnHeaderLogin.style.display = 'none';
+    if (badgeUserProfile) badgeUserProfile.style.display = 'inline-flex';
+
+    const avatarUrl = user.photoURL || defaultAvatar;
+    const firstName = user.displayName ? user.displayName.split(' ')[0] : (user.email ? user.email.split('@')[0] : 'Google');
+
+    if (headerAvatar) headerAvatar.src = avatarUrl;
+    if (headerName) headerName.textContent = firstName;
+
+    if (cardDisconnected) cardDisconnected.style.display = 'none';
+    if (cardConnected) cardConnected.style.display = 'flex';
+    if (modalAvatar) modalAvatar.src = avatarUrl;
+    if (modalName) modalName.textContent = user.displayName || 'Utilisateur Google';
+    if (modalEmail) modalEmail.textContent = user.email || '';
+  } else {
+    if (btnHeaderLogin) btnHeaderLogin.style.display = 'inline-flex';
+    if (badgeUserProfile) badgeUserProfile.style.display = 'none';
+
+    if (cardDisconnected) cardDisconnected.style.display = 'flex';
+    if (cardConnected) cardConnected.style.display = 'none';
+  }
+
+  const modalStatus = document.getElementById('sync-status-msg');
+  if (modalStatus) {
+    const accountTag = user ? `[${user.email || 'Google'}]` : `[${syncService.getSessionCode()}]`;
+    modalStatus.textContent = detail ? `${lastSyncText} • ${accountTag} (${detail})` : `${lastSyncText} • ${accountTag}`;
+  }
+
+  updateSyncHeaderUI(status, detail, lastSyncText);
+  refreshLucide();
+}
+
+function setupFirebaseService() {
+  firebaseSyncService.onStateChange = (status, detail, user, lastSyncText) => {
+    updateGoogleAccountUI(status, detail, user, lastSyncText);
+  };
+
+  // Auto-init with saved config
+  firebaseSyncService.init();
+
+  // Populate form fields with saved config
+  const cfg = firebaseSyncService.getSavedConfig();
+  if (cfg) {
+    const keyEl = document.getElementById('fb-api-key');
+    const projEl = document.getElementById('fb-project-id');
+    const authEl = document.getElementById('fb-auth-domain');
+    const appEl = document.getElementById('fb-app-id');
+    if (keyEl && cfg.apiKey) keyEl.value = cfg.apiKey;
+    if (projEl && cfg.projectId) projEl.value = cfg.projectId;
+    if (authEl && cfg.authDomain) authEl.value = cfg.authDomain;
+    if (appEl && cfg.appId) appEl.value = cfg.appId;
+  }
 }
 
 function refreshLucide() {
@@ -724,6 +796,7 @@ function handleAnswerSuccess(score = null, feedback = null) {
   queueEngine.incrementTodayCount();
   updateArenaDailyBadge();
   syncService.triggerAutoPush();
+  firebaseSyncService.triggerAutoPush();
 
   // Trigger celebration confetti
   if (result.permanentlyRemoved) {
@@ -817,6 +890,7 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
   };
   queueEngine.saveReasoningNote(noteRecord);
   syncService.triggerAutoPush();
+  firebaseSyncService.triggerAutoPush();
 
   // Update notebook badge in dashboard
   const notesCount = queueEngine.getReasoningNotes().length;
@@ -1241,13 +1315,129 @@ function setupEventListeners() {
     });
   };
 
-  // Sync Modal
-  document.getElementById('btn-open-sync').onclick = () => {
+  // Google Auth & Sync Modal Triggers
+  const openSyncModal = () => {
     document.getElementById('sync-session-code-input').value = syncService.getSessionCode();
-    document.getElementById('sync-status-msg').textContent = syncService.getLastSyncedText();
+    const currentUser = firebaseSyncService.user;
+    updateGoogleAccountUI(
+      firebaseSyncService.status, 
+      '', 
+      currentUser, 
+      currentUser ? firebaseSyncService.getLastSyncedText() : syncService.getLastSyncedText()
+    );
     modals.sync.style.display = 'flex';
   };
+
+  const btnHeaderLogin = document.getElementById('btn-header-google-login');
+  if (btnHeaderLogin) btnHeaderLogin.onclick = openSyncModal;
+
+  const btnUserProfile = document.getElementById('btn-open-user-profile');
+  if (btnUserProfile) btnUserProfile.onclick = openSyncModal;
+
+  document.getElementById('btn-open-sync').onclick = openSyncModal;
   document.getElementById('btn-close-sync-modal').onclick = () => modals.sync.style.display = 'none';
+
+  // Modal Google Login Button
+  const btnModalGoogleLogin = document.getElementById('btn-modal-google-login');
+  if (btnModalGoogleLogin) {
+    btnModalGoogleLogin.onclick = async () => {
+      if (!firebaseSyncService.hasConfig()) {
+        const panel = document.getElementById('firebase-config-panel');
+        if (panel) panel.style.display = 'flex';
+        const chevron = document.getElementById('firebase-chevron');
+        if (chevron) chevron.style.transform = 'rotate(180deg)';
+        alert('Veuillez renseigner les identifiants de votre projet Firebase dans le panneau ci-dessous pour connecter Google.');
+        return;
+      }
+
+      btnModalGoogleLogin.disabled = true;
+      btnModalGoogleLogin.innerHTML = '<span>Connexion Google en cours...</span>';
+      
+      const res = await firebaseSyncService.signInWithGoogle();
+      btnModalGoogleLogin.disabled = false;
+      btnModalGoogleLogin.innerHTML = `
+        <svg class="google-icon" viewBox="0 0 24 24" width="18" height="18">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+        </svg>
+        <span>Se connecter avec Google</span>
+      `;
+
+      if (res.success && res.user) {
+        updateDashboardUI();
+        if (currentView === 'notebook') renderNotebookUI();
+        alert(`Bienvenue ${res.user.displayName || res.user.email} ! Votre progression est désormais synchronisée en direct avec votre compte Google.`);
+      } else if (!res.success && res.error) {
+        alert(res.error);
+      }
+    };
+  }
+
+  // Modal Google Logout Button
+  const btnGoogleLogout = document.getElementById('btn-google-logout');
+  if (btnGoogleLogout) {
+    btnGoogleLogout.onclick = async () => {
+      if (confirm('Voulez-vous vous déconnecter de votre compte Google sur cet appareil ? (Vos données locales restent conservées)')) {
+        await firebaseSyncService.signOut();
+        updateDashboardUI();
+        alert('Déconnecté du compte Google.');
+      }
+    };
+  }
+
+  // Modal Firestore Force Sync Button
+  const btnFirestoreForceSync = document.getElementById('btn-firestore-force-sync');
+  if (btnFirestoreForceSync) {
+    btnFirestoreForceSync.onclick = async () => {
+      btnFirestoreForceSync.disabled = true;
+      btnFirestoreForceSync.innerHTML = '<span>Synchronisation en cours...</span>';
+      await firebaseSyncService.syncOnLogin();
+      btnFirestoreForceSync.disabled = false;
+      btnFirestoreForceSync.innerHTML = '<i data-lucide="refresh-cw"></i> <span>Synchro Firestore en direct</span>';
+      refreshLucide();
+      updateDashboardUI();
+      if (currentView === 'notebook') renderNotebookUI();
+      alert('Synchronisation en direct terminée avec succès !');
+    };
+  }
+
+  // Toggle Firebase Configuration Panel
+  const btnToggleFb = document.getElementById('btn-toggle-firebase-config');
+  if (btnToggleFb) {
+    btnToggleFb.onclick = () => {
+      const panel = document.getElementById('firebase-config-panel');
+      if (!panel) return;
+      const isHidden = panel.style.display === 'none';
+      panel.style.display = isHidden ? 'flex' : 'none';
+      const chevron = document.getElementById('firebase-chevron');
+      if (chevron) chevron.style.transform = isHidden ? 'rotate(180deg)' : 'none';
+    };
+  }
+
+  // Save Firebase Configuration Button
+  const btnSaveFb = document.getElementById('btn-save-firebase-config');
+  if (btnSaveFb) {
+    btnSaveFb.onclick = () => {
+      const config = {
+        apiKey: document.getElementById('fb-api-key').value.trim(),
+        projectId: document.getElementById('fb-project-id').value.trim(),
+        authDomain: document.getElementById('fb-auth-domain').value.trim(),
+        appId: document.getElementById('fb-app-id').value.trim()
+      };
+
+      if (!config.apiKey || !config.projectId) {
+        alert('Veuillez renseigner au minimum la clé API et l\'ID de projet Firebase.');
+        return;
+      }
+
+      firebaseSyncService.saveConfig(config);
+      alert('Configuration Firebase enregistrée et initialisée ! Vous pouvez maintenant vous connecter avec Google.');
+    };
+  }
+
+  // Legacy Code Sync Button
   document.getElementById('btn-save-session-code').onclick = async () => {
     const val = document.getElementById('sync-session-code-input').value;
     syncService.setSessionCode(val);

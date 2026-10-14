@@ -3,7 +3,7 @@
 // PédiaDrill Unified Client Bundle
 // ==========================================
 (function() {
-  // Gemini API Service with Resilience Cascade & Local Fallback
+// Gemini API Service with Resilience Cascade & Local Fallback
 const DEFAULT_GEMINI_KEY = "AQ.Ab8RN6InNmt_sD2jtOWtfP5veazlJgMEJ85vNfXf2B6St-_gVw";
 
 const MODEL_CASCADE = [
@@ -244,7 +244,7 @@ EXPLICATION OFFICIELLE : ${question.explanation || "Non fournie"}`;
 
 const geminiService = new GeminiService();
 
-  // Spaced Repetition Queue Engine with Dynamic Penalty & Mastery Thresholds
+// Spaced Repetition Queue Engine with Dynamic Penalty & Mastery Thresholds
 
 const STORAGE_KEY = 'pedia_drill_state_v1';
 const REASONING_KEY = 'pedia_drill_reasoning_notes_v1';
@@ -629,7 +629,7 @@ class QueueEngine {
   }
 }
 
-  // Multi-device Cloud & Secret Code Sync Service for PédiaDrill
+// Multi-device Cloud & Secret Code Sync Service for PédiaDrill
 // Enables 100% zero-friction synchronization across PC, Phone, and Tablet.
 
 const SESSION_CODE_KEY = 'pedia_session_code';
@@ -971,7 +971,355 @@ class SyncService {
   }
 }
 
-  // PédiaDrill - Application Controller & Orchestration
+// Firebase Authentication (Google Sign-In) & Firestore Real-time Sync Service for PédiaDrill
+// Provides seamless multi-device progress sync across PC, Smartphone, and Tablet.
+
+
+
+const FIREBASE_CONFIG_STORAGE_KEY = 'pedia_firebase_config';
+
+// Official production Firebase configuration for qcm-pediatr
+const DEFAULT_FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAyTJf9A0mMtcnPM1cGfVzFoLZu2rA0qpA",
+  authDomain: "qcm-pediatr.firebaseapp.com",
+  projectId: "qcm-pediatr",
+  storageBucket: "qcm-pediatr.firebasestorage.app",
+  messagingSenderId: "1028938391462",
+  appId: "1:1028938391462:web:c37c4f146fe3e72b633967"
+};
+
+class FirebaseSyncService {
+  constructor(queueEngine, onStateChange = null) {
+    this.queueEngine = queueEngine;
+    this.onStateChange = onStateChange; // (status, detail, user) => void
+    this.user = null;
+    this.isInitialized = false;
+    this.firestoreUnsubscribe = null;
+    this.autoPushTimer = null;
+    this.isPushing = false;
+    this.lastSyncedAt = localStorage.getItem('pedia_firebase_last_synced') || null;
+    this.status = 'idle'; // 'idle' | 'syncing' | 'synced' | 'error' | 'offline'
+  }
+
+  getSavedConfig() {
+    try {
+      const saved = localStorage.getItem(FIREBASE_CONFIG_STORAGE_KEY);
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch (e) {
+      console.warn('Error reading saved Firebase config:', e);
+    }
+    return DEFAULT_FIREBASE_CONFIG;
+  }
+
+  saveConfig(config) {
+    try {
+      localStorage.setItem(FIREBASE_CONFIG_STORAGE_KEY, JSON.stringify(config));
+      // Re-initialize with new config
+      this.init(true);
+      return true;
+    } catch (e) {
+      console.error('Error saving Firebase config:', e);
+      return false;
+    }
+  }
+
+  hasConfig() {
+    const config = this.getSavedConfig();
+    return !!(config && config.apiKey && config.projectId);
+  }
+
+  init(forceReinit = false) {
+    if (typeof window === 'undefined' || !window.firebase) {
+      console.warn('Firebase SDK not loaded in window.');
+      return false;
+    }
+
+    const config = this.getSavedConfig();
+    if (!config || !config.apiKey || !config.projectId) {
+      this.isInitialized = false;
+      this.updateStatus('idle', 'Compte Google prêt à être configuré');
+      return false;
+    }
+
+    try {
+      if (window.firebase.apps.length > 0) {
+        if (forceReinit) {
+          window.firebase.app().delete().then(() => {
+            window.firebase.initializeApp(config);
+            this.setupAuthListener();
+          });
+          return true;
+        }
+      } else {
+        window.firebase.initializeApp(config);
+      }
+
+      this.isInitialized = true;
+      this.setupAuthListener();
+      return true;
+    } catch (err) {
+      console.error('Firebase initialization error:', err);
+      this.updateStatus('error', `Erreur initialisation Firebase: ${err.message}`);
+      return false;
+    }
+  }
+
+  updateStatus(status, detail = '') {
+    this.status = status;
+    if (typeof this.onStateChange === 'function') {
+      this.onStateChange(this.status, detail, this.user, this.getLastSyncedText());
+    }
+  }
+
+  getLastSyncedText() {
+    if (!this.lastSyncedAt) return 'Jamais synchronisé avec Firestore';
+    try {
+      const date = new Date(Number(this.lastSyncedAt));
+      const hours = date.getHours().toString().padStart(2, '0');
+      const mins = date.getMinutes().toString().padStart(2, '0');
+      return `Synchronisé aujourd'hui à ${hours}:${mins}`;
+    } catch {
+      return 'Synchronisé';
+    }
+  }
+
+  setupAuthListener() {
+    if (!window.firebase || !window.firebase.auth) return;
+
+    window.firebase.auth().onAuthStateChanged(async (user) => {
+      this.user = user;
+      if (user) {
+        console.log('Firebase User logged in:', user.displayName || user.email);
+        this.updateStatus('syncing', `Connecté : ${user.displayName || user.email}`);
+        this.setupFirestoreListener();
+        // Initial sync on sign-in: Pull remote, merge, and push back
+        await this.syncOnLogin();
+      } else {
+        console.log('Firebase User logged out.');
+        if (this.firestoreUnsubscribe) {
+          this.firestoreUnsubscribe();
+          this.firestoreUnsubscribe = null;
+        }
+        this.updateStatus('idle', 'Non connecté');
+      }
+    });
+  }
+
+  /**
+   * Launch official Google Sign-In with popup, fallback to redirect if popup is blocked
+   */
+  async signInWithGoogle() {
+    if (!this.isInitialized) {
+      const ok = this.init();
+      if (!ok) {
+        return {
+          success: false,
+          error: 'Veuillez renseigner votre configuration Firebase dans les Paramètres pour activer la connexion Google.'
+        };
+      }
+    }
+
+    try {
+      this.updateStatus('syncing', 'Ouverture de la fenêtre Google...');
+      const provider = new window.firebase.auth.GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' });
+
+      try {
+        const result = await window.firebase.auth().signInWithPopup(provider);
+        this.user = result.user;
+        this.updateStatus('synced', `Connecté avec ${this.user.displayName || this.user.email}`);
+        return { success: true, user: this.user };
+      } catch (popupErr) {
+        if (popupErr.code === 'auth/popup-blocked' || popupErr.code === 'auth/popup-closed-by-user') {
+          console.warn('Popup blocked, attempting signInWithRedirect...');
+          await window.firebase.auth().signInWithRedirect(provider);
+          return { success: true, redirecting: true };
+        }
+        throw popupErr;
+      }
+    } catch (err) {
+      console.error('Google Sign-In error:', err);
+      const friendlyMsg = this.getFriendlyAuthError(err);
+      this.updateStatus('error', friendlyMsg);
+      return { success: false, error: friendlyMsg };
+    }
+  }
+
+  async signOut() {
+    if (!window.firebase || !window.firebase.auth) return;
+    try {
+      if (this.firestoreUnsubscribe) {
+        this.firestoreUnsubscribe();
+        this.firestoreUnsubscribe = null;
+      }
+      await window.firebase.auth().signOut();
+      this.user = null;
+      this.updateStatus('idle', 'Déconnecté du compte Google');
+      return { success: true };
+    } catch (err) {
+      console.error('Sign out error:', err);
+      return { success: false, error: err.message };
+    }
+  }
+
+  /**
+   * Real-time Firestore subscription: automatically receives changes made from other devices
+   */
+  setupFirestoreListener() {
+    if (!this.user || !window.firebase || !window.firebase.firestore) return;
+
+    if (this.firestoreUnsubscribe) {
+      this.firestoreUnsubscribe();
+    }
+
+    try {
+      const db = window.firebase.firestore();
+      const docRef = db.collection('users').doc(this.user.uid).collection('pedia').doc('progress');
+
+      this.firestoreUnsubscribe = docRef.onSnapshot((doc) => {
+        if (!doc.exists) {
+          console.log('No Firestore progress document yet for user, will create on first push.');
+          return;
+        }
+
+        const remoteData = doc.data();
+        if (!remoteData || this.isPushing) return;
+
+        console.log('Real-time update received from Firestore');
+        const localState = this.queueEngine.getStateObject 
+          ? this.queueEngine.getStateObject() 
+          : JSON.parse(this.queueEngine.exportState());
+
+        const merged = mergeStates(localState, remoteData);
+        this.queueEngine.applyMergedState(merged);
+
+        this.lastSyncedAt = Date.now().toString();
+        localStorage.setItem('pedia_firebase_last_synced', this.lastSyncedAt);
+        this.updateStatus('synced', 'Synchronisé en direct avec Firestore');
+      }, (err) => {
+        console.warn('Firestore snapshot error:', err);
+        this.updateStatus('error', `Erreur synchronisation Firestore: ${err.message}`);
+      });
+    } catch (e) {
+      console.warn('Could not setup Firestore listener:', e);
+    }
+  }
+
+  /**
+   * Synchronize on user login: pulls remote progress, merges with current device progress, and uploads
+   */
+  async syncOnLogin() {
+    if (!this.user || !window.firebase || !window.firebase.firestore) return;
+
+    try {
+      const db = window.firebase.firestore();
+      const docRef = db.collection('users').doc(this.user.uid).collection('pedia').doc('progress');
+
+      const doc = await docRef.get();
+      const localState = this.queueEngine.getStateObject 
+        ? this.queueEngine.getStateObject() 
+        : JSON.parse(this.queueEngine.exportState());
+
+      let merged = localState;
+      if (doc.exists) {
+        const remoteData = doc.data();
+        merged = mergeStates(localState, remoteData);
+        this.queueEngine.applyMergedState(merged);
+      }
+
+      // Save unified state back to Firestore
+      await this.pushToFirestore(merged);
+      this.lastSyncedAt = Date.now().toString();
+      localStorage.setItem('pedia_firebase_last_synced', this.lastSyncedAt);
+      this.updateStatus('synced', 'Progression fusionnée et synchronisée avec votre compte Google !');
+    } catch (err) {
+      console.error('Sync on login error:', err);
+      this.updateStatus('error', `Erreur synchro Firestore: ${err.message}`);
+    }
+  }
+
+  /**
+   * Push current state to Firestore
+   */
+  async pushToFirestore(explicitState = null) {
+    if (!this.user || !window.firebase || !window.firebase.firestore) return { success: false, error: 'Non connecté' };
+
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      this.updateStatus('offline', 'Hors-ligne');
+      return { success: false, error: 'Hors-ligne' };
+    }
+
+    this.isPushing = true;
+    this.updateStatus('syncing', 'Sauvegarde Cloud en cours...');
+
+    try {
+      const db = window.firebase.firestore();
+      const docRef = db.collection('users').doc(this.user.uid).collection('pedia').doc('progress');
+
+      const state = explicitState || (this.queueEngine.getStateObject 
+        ? this.queueEngine.getStateObject() 
+        : JSON.parse(this.queueEngine.exportState()));
+
+      const toSave = {
+        ...state,
+        userEmail: this.user.email || '',
+        userDisplayName: this.user.displayName || '',
+        updatedAt: window.firebase.firestore.FieldValue.serverTimestamp(),
+        lastClientTimestamp: Date.now()
+      };
+
+      await docRef.set(toSave, { merge: true });
+
+      this.lastSyncedAt = Date.now().toString();
+      localStorage.setItem('pedia_firebase_last_synced', this.lastSyncedAt);
+      this.updateStatus('synced', 'Synchronisé');
+      this.isPushing = false;
+      return { success: true };
+    } catch (err) {
+      this.isPushing = false;
+      console.error('Push to Firestore error:', err);
+      this.updateStatus('error', `Échec d'envoi Firestore: ${err.message}`);
+      return { success: false, error: err.message };
+    }
+  }
+
+  /**
+   * Debounced automatic push: triggered automatically after each answered question
+   */
+  triggerAutoPush() {
+    if (!this.user || !this.isInitialized) return;
+
+    if (this.autoPushTimer) {
+      clearTimeout(this.autoPushTimer);
+    }
+    this.autoPushTimer = setTimeout(() => {
+      this.pushToFirestore();
+    }, 1500);
+  }
+
+  getFriendlyAuthError(err) {
+    if (!err || !err.code) return err.message || 'Erreur inconnue';
+    switch (err.code) {
+      case 'auth/popup-blocked':
+        return 'La fenêtre de connexion Google a été bloquée par le navigateur. Veuillez autoriser les popups.';
+      case 'auth/popup-closed-by-user':
+        return 'Connexion annulée par l\'utilisateur.';
+      case 'auth/network-request-failed':
+        return 'Erreur réseau : vérifiez votre connexion Internet.';
+      case 'auth/unauthorized-domain':
+        return 'Ce domaine n\'est pas encore autorisé dans la console Firebase (Authentication > Settings > Authorized Domains).';
+      case 'auth/operation-not-allowed':
+        return 'La connexion Google n\'est pas encore activée dans la console Firebase (Authentication > Sign-in method > Google).';
+      default:
+        return err.message;
+    }
+  }
+}
+
+// PédiaDrill - Application Controller & Orchestration
+
 
 
 
@@ -983,6 +1331,7 @@ const allChapters = window.PEDIA_CHAPTERS || [];
 // Services
 const queueEngine = new QueueEngine(allQuestions, allChapters);
 const syncService = new SyncService(queueEngine);
+const firebaseSyncService = new FirebaseSyncService(queueEngine);
 
 // Local State
 let currentQuestion = null;
@@ -1013,6 +1362,7 @@ function initApp() {
   setupEventListeners();
   setupKeyboardShortcuts();
   setupSyncService();
+  setupFirebaseService();
   refreshLucide();
 
   // Register Service Worker for offline PWA
@@ -1087,6 +1437,75 @@ function setupSyncService() {
     updateDashboardUI();
     if (currentView === 'notebook') renderNotebookUI();
   });
+}
+
+function updateGoogleAccountUI(status, detail, user, lastSyncText) {
+  const btnHeaderLogin = document.getElementById('btn-header-google-login');
+  const badgeUserProfile = document.getElementById('btn-open-user-profile');
+  const headerAvatar = document.getElementById('header-user-avatar');
+  const headerName = document.getElementById('header-user-name');
+
+  const cardDisconnected = document.getElementById('google-disconnected-card');
+  const cardConnected = document.getElementById('google-connected-card');
+  const modalAvatar = document.getElementById('modal-user-avatar');
+  const modalName = document.getElementById('modal-user-name');
+  const modalEmail = document.getElementById('modal-user-email');
+
+  const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'><circle cx='12' cy='8' r='4'/><path d='M20 21a8 8 0 0 0-16 0'/></svg>";
+
+  if (user) {
+    if (btnHeaderLogin) btnHeaderLogin.style.display = 'none';
+    if (badgeUserProfile) badgeUserProfile.style.display = 'inline-flex';
+
+    const avatarUrl = user.photoURL || defaultAvatar;
+    const firstName = user.displayName ? user.displayName.split(' ')[0] : (user.email ? user.email.split('@')[0] : 'Google');
+
+    if (headerAvatar) headerAvatar.src = avatarUrl;
+    if (headerName) headerName.textContent = firstName;
+
+    if (cardDisconnected) cardDisconnected.style.display = 'none';
+    if (cardConnected) cardConnected.style.display = 'flex';
+    if (modalAvatar) modalAvatar.src = avatarUrl;
+    if (modalName) modalName.textContent = user.displayName || 'Utilisateur Google';
+    if (modalEmail) modalEmail.textContent = user.email || '';
+  } else {
+    if (btnHeaderLogin) btnHeaderLogin.style.display = 'inline-flex';
+    if (badgeUserProfile) badgeUserProfile.style.display = 'none';
+
+    if (cardDisconnected) cardDisconnected.style.display = 'flex';
+    if (cardConnected) cardConnected.style.display = 'none';
+  }
+
+  const modalStatus = document.getElementById('sync-status-msg');
+  if (modalStatus) {
+    const accountTag = user ? `[${user.email || 'Google'}]` : `[${syncService.getSessionCode()}]`;
+    modalStatus.textContent = detail ? `${lastSyncText} • ${accountTag} (${detail})` : `${lastSyncText} • ${accountTag}`;
+  }
+
+  updateSyncHeaderUI(status, detail, lastSyncText);
+  refreshLucide();
+}
+
+function setupFirebaseService() {
+  firebaseSyncService.onStateChange = (status, detail, user, lastSyncText) => {
+    updateGoogleAccountUI(status, detail, user, lastSyncText);
+  };
+
+  // Auto-init with saved config
+  firebaseSyncService.init();
+
+  // Populate form fields with saved config
+  const cfg = firebaseSyncService.getSavedConfig();
+  if (cfg) {
+    const keyEl = document.getElementById('fb-api-key');
+    const projEl = document.getElementById('fb-project-id');
+    const authEl = document.getElementById('fb-auth-domain');
+    const appEl = document.getElementById('fb-app-id');
+    if (keyEl && cfg.apiKey) keyEl.value = cfg.apiKey;
+    if (projEl && cfg.projectId) projEl.value = cfg.projectId;
+    if (authEl && cfg.authDomain) authEl.value = cfg.authDomain;
+    if (appEl && cfg.appId) appEl.value = cfg.appId;
+  }
 }
 
 function refreshLucide() {
@@ -1697,6 +2116,7 @@ function handleAnswerSuccess(score = null, feedback = null) {
   queueEngine.incrementTodayCount();
   updateArenaDailyBadge();
   syncService.triggerAutoPush();
+  firebaseSyncService.triggerAutoPush();
 
   // Trigger celebration confetti
   if (result.permanentlyRemoved) {
@@ -1790,6 +2210,7 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
   };
   queueEngine.saveReasoningNote(noteRecord);
   syncService.triggerAutoPush();
+  firebaseSyncService.triggerAutoPush();
 
   // Update notebook badge in dashboard
   const notesCount = queueEngine.getReasoningNotes().length;
@@ -2214,13 +2635,129 @@ function setupEventListeners() {
     });
   };
 
-  // Sync Modal
-  document.getElementById('btn-open-sync').onclick = () => {
+  // Google Auth & Sync Modal Triggers
+  const openSyncModal = () => {
     document.getElementById('sync-session-code-input').value = syncService.getSessionCode();
-    document.getElementById('sync-status-msg').textContent = syncService.getLastSyncedText();
+    const currentUser = firebaseSyncService.user;
+    updateGoogleAccountUI(
+      firebaseSyncService.status, 
+      '', 
+      currentUser, 
+      currentUser ? firebaseSyncService.getLastSyncedText() : syncService.getLastSyncedText()
+    );
     modals.sync.style.display = 'flex';
   };
+
+  const btnHeaderLogin = document.getElementById('btn-header-google-login');
+  if (btnHeaderLogin) btnHeaderLogin.onclick = openSyncModal;
+
+  const btnUserProfile = document.getElementById('btn-open-user-profile');
+  if (btnUserProfile) btnUserProfile.onclick = openSyncModal;
+
+  document.getElementById('btn-open-sync').onclick = openSyncModal;
   document.getElementById('btn-close-sync-modal').onclick = () => modals.sync.style.display = 'none';
+
+  // Modal Google Login Button
+  const btnModalGoogleLogin = document.getElementById('btn-modal-google-login');
+  if (btnModalGoogleLogin) {
+    btnModalGoogleLogin.onclick = async () => {
+      if (!firebaseSyncService.hasConfig()) {
+        const panel = document.getElementById('firebase-config-panel');
+        if (panel) panel.style.display = 'flex';
+        const chevron = document.getElementById('firebase-chevron');
+        if (chevron) chevron.style.transform = 'rotate(180deg)';
+        alert('Veuillez renseigner les identifiants de votre projet Firebase dans le panneau ci-dessous pour connecter Google.');
+        return;
+      }
+
+      btnModalGoogleLogin.disabled = true;
+      btnModalGoogleLogin.innerHTML = '<span>Connexion Google en cours...</span>';
+      
+      const res = await firebaseSyncService.signInWithGoogle();
+      btnModalGoogleLogin.disabled = false;
+      btnModalGoogleLogin.innerHTML = `
+        <svg class="google-icon" viewBox="0 0 24 24" width="18" height="18">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+        </svg>
+        <span>Se connecter avec Google</span>
+      `;
+
+      if (res.success && res.user) {
+        updateDashboardUI();
+        if (currentView === 'notebook') renderNotebookUI();
+        alert(`Bienvenue ${res.user.displayName || res.user.email} ! Votre progression est désormais synchronisée en direct avec votre compte Google.`);
+      } else if (!res.success && res.error) {
+        alert(res.error);
+      }
+    };
+  }
+
+  // Modal Google Logout Button
+  const btnGoogleLogout = document.getElementById('btn-google-logout');
+  if (btnGoogleLogout) {
+    btnGoogleLogout.onclick = async () => {
+      if (confirm('Voulez-vous vous déconnecter de votre compte Google sur cet appareil ? (Vos données locales restent conservées)')) {
+        await firebaseSyncService.signOut();
+        updateDashboardUI();
+        alert('Déconnecté du compte Google.');
+      }
+    };
+  }
+
+  // Modal Firestore Force Sync Button
+  const btnFirestoreForceSync = document.getElementById('btn-firestore-force-sync');
+  if (btnFirestoreForceSync) {
+    btnFirestoreForceSync.onclick = async () => {
+      btnFirestoreForceSync.disabled = true;
+      btnFirestoreForceSync.innerHTML = '<span>Synchronisation en cours...</span>';
+      await firebaseSyncService.syncOnLogin();
+      btnFirestoreForceSync.disabled = false;
+      btnFirestoreForceSync.innerHTML = '<i data-lucide="refresh-cw"></i> <span>Synchro Firestore en direct</span>';
+      refreshLucide();
+      updateDashboardUI();
+      if (currentView === 'notebook') renderNotebookUI();
+      alert('Synchronisation en direct terminée avec succès !');
+    };
+  }
+
+  // Toggle Firebase Configuration Panel
+  const btnToggleFb = document.getElementById('btn-toggle-firebase-config');
+  if (btnToggleFb) {
+    btnToggleFb.onclick = () => {
+      const panel = document.getElementById('firebase-config-panel');
+      if (!panel) return;
+      const isHidden = panel.style.display === 'none';
+      panel.style.display = isHidden ? 'flex' : 'none';
+      const chevron = document.getElementById('firebase-chevron');
+      if (chevron) chevron.style.transform = isHidden ? 'rotate(180deg)' : 'none';
+    };
+  }
+
+  // Save Firebase Configuration Button
+  const btnSaveFb = document.getElementById('btn-save-firebase-config');
+  if (btnSaveFb) {
+    btnSaveFb.onclick = () => {
+      const config = {
+        apiKey: document.getElementById('fb-api-key').value.trim(),
+        projectId: document.getElementById('fb-project-id').value.trim(),
+        authDomain: document.getElementById('fb-auth-domain').value.trim(),
+        appId: document.getElementById('fb-app-id').value.trim()
+      };
+
+      if (!config.apiKey || !config.projectId) {
+        alert('Veuillez renseigner au minimum la clé API et l\'ID de projet Firebase.');
+        return;
+      }
+
+      firebaseSyncService.saveConfig(config);
+      alert('Configuration Firebase enregistrée et initialisée ! Vous pouvez maintenant vous connecter avec Google.');
+    };
+  }
+
+  // Legacy Code Sync Button
   document.getElementById('btn-save-session-code').onclick = async () => {
     const val = document.getElementById('sync-session-code-input').value;
     syncService.setSessionCode(val);
@@ -2364,6 +2901,4 @@ if (document.readyState === 'loading') {
 } else {
   initApp();
 }
-
-
 })();

@@ -1,0 +1,2328 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PédiaDrill — Répétition Espacée & Raisonnement IA (Édition Autonome)</title>
+  
+  <meta name="description" content="Jeu de QCM pédiatrique à répétition espacée adaptative et évaluation de CROQ par IA">
+  <meta name="theme-color" content="#070b14">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Firebase SDK (v10.8.0 compat for browser & PWA) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <!-- Lucide Icons & Confetti CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+/* PédiaDrill - Modern Minimalist Medical Design System */
+
+:root {
+  --bg-deep: #070b14;
+  --bg-surface: #0d1527;
+  --bg-card: #121d33;
+  --bg-card-hover: #172644;
+  --bg-input: #0a1120;
+  
+  --border-subtle: #1c2b48;
+  --border-active: #00d4ff;
+  --border-glow: rgba(0, 212, 255, 0.25);
+  
+  --cyan: #00d4ff;
+  --cyan-dim: #0284c7;
+  --cyan-glow: rgba(0, 212, 255, 0.15);
+  
+  --emerald: #10b981;
+  --emerald-dim: #059669;
+  --emerald-glow: rgba(16, 185, 129, 0.2);
+  
+  --amber: #f59e0b;
+  --amber-glow: rgba(245, 158, 11, 0.2);
+  
+  --rose: #ef4444;
+  --rose-glow: rgba(239, 68, 68, 0.25);
+  
+  --purple: #8b5cf6;
+  --purple-glow: rgba(139, 92, 246, 0.2);
+  
+  --text-main: #f3f6fc;
+  --text-muted: #8ca2c4;
+  --text-dim: #4d6282;
+  
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+  
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.45);
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-deep);
+  color: var(--text-main);
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(0, 212, 255, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.05) 0%, transparent 45%);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--cyan-dim); }
+
+/* App Container */
+.app-wrapper {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .app-wrapper {
+    padding: 24px 20px;
+  }
+}
+
+/* Header */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 24px;
+  gap: 12px;
+}
+
+.brand-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.brand-logo {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(139, 92, 246, 0.2));
+  border: 1px solid var(--border-active);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cyan);
+  box-shadow: 0 0 20px var(--cyan-glow);
+}
+
+.brand-title {
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #ffffff, var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-subtitle {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.icon-btn:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  background: var(--bg-card-hover);
+}
+
+/* Google Auth Header & Profile */
+.btn-google-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--radius-full);
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #ffffff;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-google-header:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 12px rgba(66, 133, 244, 0.25);
+  transform: translateY(-1px);
+}
+
+.user-profile-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px 4px 5px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: var(--radius-full);
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.user-profile-badge:hover {
+  background: rgba(16, 185, 129, 0.16);
+  border-color: var(--emerald);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+}
+
+.user-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid var(--emerald);
+  background: var(--bg-surface);
+}
+
+.google-account-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: rgba(13, 21, 39, 0.8);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  margin-bottom: 12px;
+}
+
+.google-account-avatar-large {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--emerald);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
+}
+
+.google-account-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.google-account-name {
+  font-family: var(--font-heading);
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: #ffffff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.google-account-email {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btn-google-primary {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 20px;
+  background: #ffffff;
+  color: #1f2937;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  transition: var(--transition);
+}
+
+.btn-google-primary:hover {
+  background: #f1f5f9;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(66, 133, 244, 0.3);
+}
+
+.sync-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(0, 212, 255, 0.08);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--cyan);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.sync-pill:hover {
+  background: rgba(0, 212, 255, 0.16);
+  border-color: var(--cyan);
+}
+
+.pulse-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--emerald);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--emerald);
+  animation: pulseAnimation 2s infinite;
+}
+
+@keyframes pulseAnimation {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+.spin {
+  animation: spinAnimation 1s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spinAnimation {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Minimalist Dashboard View */
+.dashboard-view {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  animation: fadeIn 0.25s ease-out;
+}
+
+/* Hero Metric Cards */
+.hero-metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 600px) {
+  .hero-metrics-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.metric-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--card-accent, var(--cyan)), transparent);
+  opacity: 0.8;
+}
+
+.metric-card.accent-cyan {
+  --card-accent: var(--cyan);
+  background: linear-gradient(145deg, #121d33, #0e1728);
+}
+
+.metric-card.accent-purple {
+  --card-accent: var(--purple);
+  background: linear-gradient(145deg, #161833, #0f1228);
+}
+
+.metric-card:hover {
+  border-color: var(--card-accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.metric-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.metric-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+}
+
+.metric-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--card-accent);
+}
+
+.metric-value {
+  font-family: var(--font-heading);
+  font-size: 3.2rem;
+  font-weight: 900;
+  line-height: 1;
+  color: #ffffff;
+  letter-spacing: -1.5px;
+  margin-bottom: 8px;
+}
+
+.metric-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Secondary Stats Row */
+.secondary-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.sub-stat-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px 12px;
+  text-align: center;
+}
+
+.sub-stat-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.sub-stat-num {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.sub-stat-num.text-emerald { color: var(--emerald); }
+.sub-stat-num.text-rose { color: var(--rose); }
+.sub-stat-num.text-amber { color: var(--amber); }
+
+/* Action Buttons Grid */
+.dashboard-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+@media (min-width: 600px) {
+  .dashboard-actions {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.btn-primary-large {
+  background: linear-gradient(135deg, #00d4ff, #0284c7);
+  color: #051024;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 18px 24px;
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 8px 24px rgba(0, 212, 255, 0.3);
+  transition: var(--transition);
+}
+
+.btn-primary-large:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0, 212, 255, 0.45);
+}
+
+.btn-primary-large:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: var(--transition);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.quick-links-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+  padding: 12px 16px;
+  background: rgba(13, 21, 39, 0.6);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.quick-link-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition);
+}
+
+.quick-link-btn:hover {
+  color: var(--cyan);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   QUIZ ARENA (Minimalist Question View)
+   ───────────────────────────────────────────────────────────── */
+.arena-view {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.arena-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.btn-back {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition);
+}
+
+.btn-back:hover {
+  color: var(--text-main);
+  border-color: var(--text-muted);
+}
+
+.arena-pills-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tag-pill {
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+}
+
+.tag-pill.tag-qcu {
+  color: var(--cyan);
+  border-color: rgba(0, 212, 255, 0.3);
+  background: rgba(0, 212, 255, 0.08);
+}
+
+.tag-pill.tag-qcm {
+  color: var(--purple);
+  border-color: rgba(139, 92, 246, 0.3);
+  background: rgba(139, 92, 246, 0.08);
+}
+
+.tag-pill.tag-croq {
+  color: var(--amber);
+  border-color: rgba(245, 158, 11, 0.3);
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.tag-pill.progress-pill {
+  color: var(--emerald);
+  border-color: rgba(16, 185, 129, 0.3);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.tag-pill.progress-penalized {
+  color: var(--rose);
+  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+/* Question Box */
+.question-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: var(--shadow-sm);
+}
+
+.chapter-title-badge {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--cyan);
+}
+
+.clinical-case-box {
+  background: rgba(10, 16, 32, 0.85);
+  border: 1px solid var(--border-subtle);
+  border-left: 3px solid var(--purple);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.clinical-case-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--purple);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.question-text {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: var(--text-main);
+  white-space: pre-line;
+}
+
+/* Media preview if exists */
+.question-media-wrap {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 8px 0;
+}
+
+.media-thumbnail {
+  max-height: 200px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.media-thumbnail:hover {
+  transform: scale(1.02);
+  border-color: var(--cyan);
+}
+
+/* Options List (QCU & QCM) */
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.option-item {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  user-select: none;
+}
+
+.option-item:hover {
+  border-color: var(--cyan);
+  background: var(--bg-card-hover);
+}
+
+.option-item.selected {
+  border-color: var(--cyan);
+  background: rgba(0, 212, 255, 0.08);
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.15);
+}
+
+.option-letter {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-family: var(--font-heading);
+  font-size: 0.88rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+
+.option-item.selected .option-letter {
+  background: var(--cyan);
+  color: #051024;
+  border-color: var(--cyan);
+}
+
+.option-text {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--text-main);
+  flex: 1;
+}
+
+/* CROQ Input Area */
+.croq-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.croq-textarea {
+  width: 100%;
+  min-height: 120px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+  transition: var(--transition);
+}
+
+.croq-textarea:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 16px var(--cyan-glow);
+}
+
+.croq-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Arena Bottom Action Bar */
+.arena-actions-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 12px;
+}
+
+.btn-validate {
+  background: var(--cyan);
+  color: #051024;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 14px 28px;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-validate:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-validate:not(:disabled):hover {
+  background: #38bdf8;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px var(--cyan-glow);
+}
+
+.btn-croq-eval {
+  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 14px 24px;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-croq-eval:hover {
+  box-shadow: 0 8px 24px var(--purple-glow);
+}
+
+/* Success Card Banner */
+.success-banner {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid var(--emerald);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  color: var(--emerald);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  animation: slideUp 0.2s ease-out;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   MODALS (Error Modal, Chapter Selector, Sync Modal)
+   ───────────────────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 7, 15, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-content {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 640px;
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: var(--shadow-lg);
+  animation: scaleIn 0.2s ease-out;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 14px;
+}
+
+.modal-title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-title.title-error {
+  color: var(--rose);
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: var(--transition);
+}
+
+.close-btn:hover {
+  color: var(--rose);
+}
+
+/* Error Modal Specifics */
+.penalty-alert-box {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.penalty-icon {
+  font-size: 1.5rem;
+  color: var(--rose);
+}
+
+.penalty-text-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--rose);
+}
+
+.penalty-text-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Error Modal Recap & Comparison */
+.answer-comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+}
+
+@media (max-width: 680px) {
+  .answer-comparison-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+.answer-box {
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid var(--border-subtle);
+  transition: var(--transition);
+}
+
+.answer-box.box-user {
+  background: rgba(244, 63, 94, 0.05);
+  border-color: rgba(244, 63, 94, 0.3);
+}
+
+.answer-box.box-user:hover {
+  border-color: var(--rose);
+}
+
+.answer-box.box-correct {
+  background: rgba(16, 185, 129, 0.05);
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+.answer-box.box-correct:hover {
+  border-color: var(--emerald);
+}
+
+.answer-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 6px;
+}
+
+.answer-box-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.answer-box-title.text-rose { color: var(--rose); }
+.answer-box-title.text-emerald { color: var(--emerald); }
+
+.box-icon {
+  font-weight: 900;
+  font-size: 0.9rem;
+}
+
+.answer-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+}
+
+.badge-failure {
+  background: rgba(244, 63, 94, 0.2);
+  color: #fb7185;
+  border: 1px solid rgba(244, 63, 94, 0.35);
+}
+
+.badge-success {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.badge-official {
+  background: rgba(0, 212, 255, 0.15);
+  color: var(--cyan);
+  border: 1px solid rgba(0, 212, 255, 0.25);
+}
+
+.croq-user-text {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #f1f5f9;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.qcm-choice-text {
+  font-size: 0.95rem;
+  color: #f1f5f9;
+}
+
+/* Structured CROQ list */
+.croq-structured-answer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.croq-intro {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-bottom: 2px;
+}
+
+.croq-points-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.croq-point-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.85rem;
+  line-height: 1.48;
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.025);
+  padding: 5px 8px;
+  border-radius: 6px;
+  border-left: 2px solid var(--emerald);
+}
+
+.croq-point-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  min-width: 17px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--emerald);
+  font-weight: 800;
+  font-size: 0.7rem;
+  margin-top: 1px;
+}
+
+.croq-point-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  min-width: 17px;
+  border-radius: 50%;
+  background: rgba(0, 212, 255, 0.2);
+  color: var(--cyan);
+  font-weight: 800;
+  font-size: 0.7rem;
+  margin-top: 1px;
+}
+
+.croq-point-text {
+  flex: 1;
+}
+
+.croq-simple-answer {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #e2e8f0;
+}
+
+/* AI Reasoning Note Box */
+.reasoning-note-box {
+  background: linear-gradient(145deg, rgba(14, 23, 42, 0.95), rgba(18, 30, 56, 0.95));
+  border: 1px solid rgba(0, 212, 255, 0.35);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.08);
+}
+
+.reasoning-note-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ai-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+.ai-model-tag {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.reasoning-note-content {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: #e2e8f0;
+}
+
+/* Structured AI Reasoning Cards (3 Cards) */
+.reasoning-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.reasoning-card {
+  border-radius: var(--radius-md);
+  padding: 12px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  transition: transform 0.18s ease, border-color 0.18s ease;
+}
+
+.reasoning-card:hover {
+  transform: translateY(-1px);
+}
+
+/* 1. Piège & Distracteur (Rose/Ambre) */
+.reasoning-card.card-trap {
+  background: linear-gradient(145deg, rgba(244, 63, 94, 0.08), rgba(251, 191, 36, 0.03));
+  border-color: rgba(244, 63, 94, 0.35);
+  border-left: 4px solid var(--rose);
+}
+
+/* 2. Méthode de Raisonnement (Cyan) */
+.reasoning-card.card-method {
+  background: linear-gradient(145deg, rgba(0, 212, 255, 0.08), rgba(59, 130, 246, 0.03));
+  border-color: rgba(0, 212, 255, 0.35);
+  border-left: 4px solid var(--cyan);
+}
+
+/* 3. Règle d'or & Mémo concours (Émeraude/Or) */
+.reasoning-card.card-rule {
+  background: linear-gradient(145deg, rgba(16, 185, 129, 0.08), rgba(245, 158, 11, 0.04));
+  border-color: rgba(16, 185, 129, 0.35);
+  border-left: 4px solid var(--emerald);
+}
+
+.reasoning-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.reasoning-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.badge-trap {
+  background: rgba(244, 63, 94, 0.16);
+  color: #fb7185;
+  border: 1px solid rgba(244, 63, 94, 0.3);
+}
+
+.badge-method {
+  background: rgba(0, 212, 255, 0.16);
+  color: var(--cyan);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+.badge-rule {
+  background: rgba(16, 185, 129, 0.16);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.reasoning-card-body {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: #e2e8f0;
+}
+
+.reasoning-paragraph {
+  margin: 0 0 6px 0;
+  color: #e2e8f0;
+}
+
+.reasoning-paragraph:last-child {
+  margin-bottom: 0;
+}
+
+.reasoning-list {
+  list-style: none;
+  padding: 0;
+  margin: 6px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.reasoning-list-item {
+  position: relative;
+  padding-left: 18px;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: #cbd5e1;
+}
+
+.reasoning-list-item::before {
+  content: '▪';
+  position: absolute;
+  left: 4px;
+  top: 0;
+  color: var(--cyan);
+  font-size: 0.95rem;
+}
+
+.reasoning-card-body strong {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.reasoning-card-body em {
+  color: var(--amber);
+  font-style: italic;
+}
+
+.reasoning-loader-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 8px;
+  color: var(--cyan);
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.btn-continue {
+  background: linear-gradient(135deg, var(--cyan), var(--cyan-dim));
+  color: #051024;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+}
+
+.btn-continue:hover {
+  background: #38bdf8;
+  transform: translateY(-1px);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   CARNET DE RAISONNEMENT IA (Dedicated Page - Grouped by Chapter & Question)
+   ───────────────────────────────────────────────────────────── */
+.notebook-view {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.notebook-toolbar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 240px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  color: var(--text-main);
+  outline: none;
+  font-size: 0.9rem;
+  transition: var(--transition);
+}
+
+.search-input:focus {
+  border-color: var(--cyan);
+}
+
+.notebook-chapter-select {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  color: var(--text-main);
+  outline: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-width: 220px;
+  transition: var(--transition);
+}
+
+.notebook-chapter-select:focus {
+  border-color: var(--cyan);
+}
+
+.notebook-summary-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  background: rgba(14, 23, 42, 0.4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.notebook-stat-summary strong {
+  color: var(--cyan);
+}
+
+.notebook-toggle-all-btn {
+  background: none;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--cyan);
+  padding: 5px 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition);
+}
+
+.notebook-toggle-all-btn:hover {
+  background: rgba(0, 212, 255, 0.1);
+  border-color: var(--cyan);
+}
+
+.notes-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Chapter Accordion Group */
+.notebook-chapter-group {
+  background: rgba(14, 23, 42, 0.6);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.notebook-chapter-group.collapsed .notebook-chapter-questions {
+  display: none;
+}
+
+.notebook-chapter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: var(--bg-card);
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid var(--border-subtle);
+  transition: var(--transition);
+}
+
+.notebook-chapter-group.collapsed .notebook-chapter-header {
+  border-bottom: none;
+}
+
+.notebook-chapter-header:hover {
+  background: var(--bg-card-hover);
+}
+
+.notebook-chapter-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.notebook-chapter-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--cyan);
+}
+
+.notebook-chapter-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--text-main);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.notebook-chapter-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chapter-count-pill {
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(0, 212, 255, 0.12);
+  color: var(--cyan);
+  border: 1px solid rgba(0, 212, 255, 0.25);
+}
+
+.chapter-notes-pill {
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--amber);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.chapter-chevron {
+  transition: transform 0.2s ease;
+  color: var(--text-dim);
+  width: 18px;
+  height: 18px;
+}
+
+.notebook-chapter-group.collapsed .chapter-chevron {
+  transform: rotate(-90deg);
+}
+
+.notebook-chapter-questions {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: rgba(7, 11, 20, 0.4);
+}
+
+/* Grouped Question Card */
+.note-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: var(--transition);
+}
+
+.note-card:hover {
+  border-color: var(--cyan);
+}
+
+.note-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.note-chapter {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--cyan);
+  text-transform: uppercase;
+}
+
+.note-date {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+.note-question {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.05rem;
+  line-height: 1.45;
+  color: var(--text-main);
+  padding-bottom: 2px;
+}
+
+.attempts-history-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--amber);
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.attempts-switcher-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 0 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.attempt-tab-btn {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.attempt-tab-btn:hover {
+  border-color: var(--cyan);
+  color: var(--text-main);
+}
+
+.attempt-tab-btn.active {
+  background: rgba(0, 212, 255, 0.12);
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.attempt-tab-btn .badge-pill-micro {
+  font-size: 0.68rem;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.attempt-content-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.note-text-body {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: #e2e8f0;
+}
+
+/* Chapter Selection Modal */
+.chapters-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 50vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.chapter-select-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.chapter-select-item:hover {
+  border-color: var(--cyan);
+}
+
+.chapter-select-item.checked {
+  background: rgba(0, 212, 255, 0.08);
+  border-color: var(--cyan);
+}
+
+.chapter-checkbox-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chapter-item-count {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+  </style>
+</head>
+<body>
+<div class="app-wrapper">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand-wrap" id="btn-home-logo" title="Retour au Dashboard">
+        <div class="brand-logo">
+          <i data-lucide="brain-circuit"></i>
+        </div>
+        <div>
+          <h1 class="brand-title">PédiaDrill</h1>
+          <p class="brand-subtitle">Répétition Espacée & Raisonnement IA</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Google Sign-In Button (Shown when disconnected) -->
+        <button class="btn-google-header" id="btn-header-google-login" title="Se connecter avec Google pour synchroniser vos appareils">
+          <svg class="google-icon" viewBox="0 0 24 24" width="15" height="15">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+          </svg>
+          <span>Compte Google</span>
+        </button>
+
+        <!-- Google User Profile Badge (Shown when connected) -->
+        <button class="user-profile-badge" id="btn-open-user-profile" style="display:none;" title="Compte Google connecté • Gérer la synchronisation">
+          <img id="header-user-avatar" class="user-avatar" src="" alt="Avatar Google" />
+          <span id="header-user-name">Ouail</span>
+          <span class="pulse-dot"></span>
+        </button>
+
+        <!-- Sync Pill -->
+        <button class="sync-pill" id="btn-open-sync" title="Synchronisation multi-appareils">
+          <span class="pulse-dot"></span>
+          <span id="header-session-code">OUAIL-2026</span>
+          <i data-lucide="refresh-cw" style="width:13px;height:13px;"></i>
+        </button>
+
+        <!-- Notebook Quick Link -->
+        <button class="icon-btn" id="btn-open-notebook-icon" title="Carnet de Raisonnement IA">
+          <i data-lucide="book-open"></i>
+        </button>
+
+        <!-- Settings -->
+        <button class="icon-btn" id="btn-open-settings" title="Paramètres & Modèles IA">
+          <i data-lucide="settings"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Views -->
+    <main id="app-main">
+      
+      <!-- ─────────────────────────────────────────────────────────────
+           VIEW 1: DASHBOARD MINIMALISTE
+           ───────────────────────────────────────────────────────────── -->
+      <section id="view-dashboard" class="dashboard-view">
+        
+        <!-- Hero Metrics: 2 Grandes Métriques Demandées -->
+        <div class="hero-metrics-grid">
+          
+          <!-- Metrique 1: QCM Restants Totaux -->
+          <div class="metric-card accent-cyan">
+            <div class="metric-header">
+              <span class="metric-title">Questions Restantes</span>
+              <span class="metric-badge" id="badge-pool-info">Sur 1 905</span>
+            </div>
+            <div class="metric-value" id="stat-remaining-questions">--</div>
+            <div class="metric-desc">Questions distinctes à éliminer sur l'ensemble des 35 cours</div>
+          </div>
+
+          <!-- Metrique 2: Itérations Totales pour Tout Nettoyer (3x par qcm + pénalités) -->
+          <div class="metric-card accent-purple">
+            <div class="metric-header">
+              <span class="metric-title">Itérations Requises</span>
+              <span class="metric-badge" id="badge-exam-countdown">⏳ J-28 • Examen 10/11</span>
+            </div>
+            
+            <div class="metric-value-row">
+              <div class="metric-value" id="stat-required-iterations">--</div>
+              <div class="metric-sub-target" title="Cadence calculée automatiquement pour éliminer tous les QCM avant le 10/11">
+                <span class="sub-target-label">À FAIRE PAR JOUR</span>
+                <span class="sub-target-value">
+                  <span id="stat-daily-target">--</span> <small>QCM/j</small>
+                </span>
+              </div>
+            </div>
+
+            <div class="metric-desc">Réponses justes cumulées pour tout nettoyer (programme complet) avant le 10/11.</div>
+
+            <!-- Barre de progression quotidienne en direct -->
+            <div class="daily-progress-container">
+              <div class="daily-progress-header">
+                <span class="daily-progress-title">
+                  <i data-lucide="check-circle-2" style="width:13px;height:13px;display:inline-block;vertical-align:-1px;color:#c084fc;"></i>
+                  Faites aujourd'hui : <strong id="stat-today-done">0</strong> / <span id="stat-today-goal">--</span>
+                </span>
+                <span class="daily-progress-pct" id="stat-today-pct">0%</span>
+              </div>
+              <div class="daily-progress-track">
+                <div class="daily-progress-fill" id="daily-progress-fill" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Secondary Stats -->
+        <div class="secondary-stats-row">
+          <div class="sub-stat-card">
+            <div class="sub-stat-label">Maîtrisées</div>
+            <div class="sub-stat-num text-emerald" id="stat-mastered-count">0</div>
+          </div>
+          <div class="sub-stat-card">
+            <div class="sub-stat-label">Fautes</div>
+            <div class="sub-stat-num text-rose" id="stat-mistakes-count">0</div>
+          </div>
+          <div class="sub-stat-card">
+            <div class="sub-stat-label">Assimilation</div>
+            <div class="sub-stat-num text-amber" id="stat-progress-pct">0%</div>
+          </div>
+        </div>
+
+        <!-- Primary Action Buttons -->
+        <div class="dashboard-actions">
+          <button class="btn-primary-large" id="btn-start-random">
+            <i data-lucide="play-circle"></i>
+            <span>Lancer le Grand Mix Aléatoire</span>
+          </button>
+
+          <button class="btn-secondary" id="btn-open-chapters">
+            <i data-lucide="layers"></i>
+            <span id="btn-chapters-label">Tous les cours (35)</span>
+          </button>
+        </div>
+
+        <!-- Quick Links / Notebook Banner -->
+        <div class="quick-links-row">
+          <button class="quick-link-btn" id="btn-open-notebook">
+            <i data-lucide="sparkles" style="color:var(--cyan)"></i>
+            <span>Ouvrir le Carnet de Raisonnement IA (<span id="notebook-count-badge">0</span> notes)</span>
+          </button>
+
+          <button class="quick-link-btn" id="btn-reset-session" style="color:var(--text-dim)">
+            <i data-lucide="rotate-ccw"></i>
+            <span>Réinitialiser la session</span>
+          </button>
+        </div>
+
+      </section>
+
+      <!-- ─────────────────────────────────────────────────────────────
+           VIEW 2: ARÈNE DE QUIZ (Minimaliste & Sans Distraction)
+           ───────────────────────────────────────────────────────────── -->
+      <section id="view-arena" class="arena-view" style="display:none;">
+        
+        <!-- Arena Top Bar -->
+        <div class="arena-top-bar">
+          <button class="btn-back" id="btn-leave-arena">
+            <i data-lucide="arrow-left"></i>
+            <span>Dashboard</span>
+          </button>
+
+          <div class="arena-pills-wrap">
+            <span class="tag-pill" id="arena-type-pill">QCU</span>
+            <span class="tag-pill progress-pill" id="arena-progress-pill">0/3</span>
+            <span class="tag-pill daily-pill" id="arena-daily-pill" title="Progression quotidienne (Examen 10/11 • J-28)">🎯 0/-- auj.</span>
+          </div>
+        </div>
+
+        <!-- Question Card -->
+        <div class="question-container">
+          
+          <div class="chapter-title-badge" id="arena-chapter-title">
+            Pédiatrie — Chapitre
+          </div>
+
+          <!-- Clinical Case Box (si présent) -->
+          <div class="clinical-case-box" id="arena-clinical-case" style="display:none;">
+            <div class="clinical-case-title">
+              <i data-lucide="stethoscope" style="width:13px;height:13px;display:inline;"></i>
+              Cas Clinique
+            </div>
+            <div id="arena-clinical-case-text"></div>
+          </div>
+
+          <!-- Question Statement -->
+          <div class="question-text" id="arena-question-text">
+            Chargement de la question...
+          </div>
+
+          <!-- Media URLs / Images (si présentes) -->
+          <div class="question-media-wrap" id="arena-media-wrap" style="display:none;"></div>
+
+          <!-- Mode QCU / QCM : Liste d'options -->
+          <div class="options-list" id="arena-options-container">
+            <!-- Dynamically populated options -->
+          </div>
+
+          <!-- Mode CROQ : Zone de texte pour réponse libre -->
+          <div class="croq-container" id="arena-croq-container" style="display:none;">
+            <textarea class="croq-textarea" id="arena-croq-input" placeholder="Rédigez votre réponse clinique détaillée ici (mots-clés, diagnostic, CAT, posologie...)..."></textarea>
+            <div class="croq-hint">
+              <i data-lucide="info" style="width:14px;height:14px;"></i>
+              <span>L'IA comparera votre réponse avec la correction officielle. Score requis : ≥ 75% pour valider.</span>
+            </div>
+          </div>
+
+          <!-- Success Notification Banner -->
+          <div class="success-banner" id="arena-success-banner" style="display:none;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <i data-lucide="check-circle" style="width:24px;height:24px;"></i>
+              <span id="arena-success-text">Bonne réponse !</span>
+            </div>
+            <button class="btn-validate" id="btn-next-question">
+              <span>Continuer (Entrée)</span>
+              <i data-lucide="arrow-right"></i>
+            </button>
+          </div>
+
+          <!-- Actions Bar -->
+          <div class="arena-actions-bar" id="arena-default-actions">
+            <span style="font-size:0.78rem;color:var(--text-dim);" id="keyboard-shortcuts-hint">
+              Raccourcis : [1-5] options, [Entrée] valider
+            </span>
+
+            <button class="btn-validate" id="btn-submit-answer" disabled>
+              <span>Valider la réponse</span>
+              <i data-lucide="arrow-right"></i>
+            </button>
+
+            <button class="btn-croq-eval" id="btn-submit-croq" style="display:none;">
+              <i data-lucide="sparkles"></i>
+              <span>Évaluer par IA (Gemini)</span>
+            </button>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ─────────────────────────────────────────────────────────────
+           VIEW 3: CARNET DE RAISONNEMENT IA (Page Dédiée)
+           ───────────────────────────────────────────────────────────── -->
+      <section id="view-notebook" class="notebook-view" style="display:none;">
+        
+        <div class="arena-top-bar">
+          <button class="btn-back" id="btn-leave-notebook">
+            <i data-lucide="arrow-left"></i>
+            <span>Retour au Dashboard</span>
+          </button>
+          <div style="font-family:var(--font-heading);font-weight:700;font-size:1.1rem;color:var(--cyan);">
+            Carnet de Raisonnement Clinique IA
+          </div>
+        </div>
+
+        <div class="notebook-toolbar">
+          <input type="text" class="search-input" id="notebook-search-input" placeholder="Rechercher par mot-clé, cours, question ou piège...">
+          <select id="notebook-chapter-filter" class="notebook-chapter-select">
+            <option value="">Tous les cours</option>
+          </select>
+        </div>
+        <div class="notebook-summary-bar" id="notebook-summary-bar" style="display:none;"></div>
+
+        <div class="notes-grid" id="notebook-notes-list">
+          <!-- Dynamically populated notes -->
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODALE 1: ERREUR & NOTE DE RAISONNEMENT IA
+       (Popup automatique après chaque faute)
+       ───────────────────────────────────────────────────────────── -->
+  <div class="modal-overlay" id="modal-error" style="display:none;">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <div class="modal-title title-error">
+          <i data-lucide="alert-triangle"></i>
+          <span>Réponse Incorrecte</span>
+        </div>
+        <button class="close-btn" id="btn-close-error-modal">&times;</button>
+      </div>
+
+      <!-- Alerte de pénalité et de réapparition -->
+      <div class="penalty-alert-box">
+        <div class="penalty-icon">⚠️</div>
+        <div>
+          <div class="penalty-text-title" id="error-modal-penalty-title">Pénalité appliquée (+1 réussite requise)</div>
+          <div class="penalty-text-desc" id="error-modal-penalty-desc">Cette question réapparaîtra très vite (dans 2 à 3 cartes) pour ancrer la mémorisation.</div>
+        </div>
+      </div>
+
+      <!-- Recap des réponses -->
+      <div id="error-modal-comparison-container">
+        <div class="answer-recap-box">
+          <div class="answer-line">
+            <span class="answer-label text-rose">Votre réponse :</span>
+            <span id="error-modal-user-answer">--</span>
+          </div>
+          <div class="answer-line">
+            <span class="answer-label text-emerald">Bonne(s) réponse(s) :</span>
+            <span id="error-modal-correct-answer">--</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Note de Raisonnement IA -->
+      <div class="reasoning-note-box">
+        <div class="reasoning-note-header">
+          <span class="ai-badge">
+            <i data-lucide="sparkles"></i>
+            Méthode de Raisonnement Clinique
+          </span>
+          <span class="ai-model-tag" id="error-modal-model-tag">Gemini Flash</span>
+        </div>
+        <div class="reasoning-note-content" id="error-modal-ai-note">
+          Génération de la note de raisonnement clinique en cours...
+        </div>
+      </div>
+
+      <button class="btn-continue" id="btn-continue-after-error">
+        <span>Continuer le Drill (Espace / Entrée)</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODALE 2: SÉLECTION DES CHAPITRES
+       ───────────────────────────────────────────────────────────── -->
+  <div class="modal-overlay" id="modal-chapters" style="display:none;">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <div class="modal-title">
+          <i data-lucide="layers"></i>
+          <span>Sélectionner les chapitres</span>
+        </div>
+        <button class="close-btn" id="btn-close-chapters-modal">&times;</button>
+      </div>
+
+      <div style="display:flex;gap:10px;">
+        <input type="text" class="search-input" id="chapters-search-input" placeholder="Filtrer les cours...">
+        <button class="btn-secondary" id="btn-toggle-all-chapters" style="padding:8px 12px;font-size:0.8rem;">
+          Tout cocher
+        </button>
+      </div>
+
+      <div class="chapters-list" id="chapters-checkboxes-container">
+        <!-- Dynamically populated chapters -->
+      </div>
+
+      <button class="btn-primary-large" id="btn-apply-chapters">
+        <span>Valider la sélection</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODALE 3: COMPTE GOOGLE & SYNCHRONISATION MULTI-APPAREILS
+       ───────────────────────────────────────────────────────────── -->
+  <div class="modal-overlay" id="modal-sync" style="display:none;">
+    <div class="modal-content" style="max-width:540px;">
+      
+      <div class="modal-header">
+        <div class="modal-title">
+          <i data-lucide="refresh-cw"></i>
+          <span>Compte Google & Synchronisation</span>
+        </div>
+        <button class="close-btn" id="btn-close-sync-modal">&times;</button>
+      </div>
+
+      <!-- SECTION 1: ÉTAT GOOGLE AUTH -->
+      <!-- État A: Non Connecté -->
+      <div id="google-disconnected-card" style="display:flex;flex-direction:column;gap:12px;background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:18px;">
+        <div style="display:flex;align-items:flex-start;gap:12px;">
+          <div style="background:rgba(66, 133, 244, 0.12);padding:10px;border-radius:var(--radius-sm);color:#4285F4;">
+            <svg viewBox="0 0 24 24" width="24" height="24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+          </div>
+          <div>
+            <div style="font-family:var(--font-heading);font-weight:700;font-size:0.95rem;color:#ffffff;">
+              Connexion avec votre Compte Google
+            </div>
+            <div style="font-size:0.8rem;color:var(--text-muted);line-height:1.45;margin-top:2px;">
+              Synchronisez automatiquement votre progression, vos réussites et votre carnet d'erreurs en temps réel entre votre PC, votre smartphone Android et votre tablette via Google Firestore.
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-google-primary" id="btn-modal-google-login">
+          <svg class="google-icon" viewBox="0 0 24 24" width="18" height="18">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+          </svg>
+          <span>Se connecter avec Google</span>
+        </button>
+      </div>
+
+      <!-- État B: Connecté avec Google -->
+      <div id="google-connected-card" style="display:none;flex-direction:column;gap:12px;">
+        <div class="google-account-banner">
+          <img id="modal-user-avatar" class="google-account-avatar-large" src="" alt="Photo Google" />
+          <div class="google-account-info">
+            <div id="modal-user-name" class="google-account-name">Ouail Bensalem</div>
+            <div id="modal-user-email" class="google-account-email">ouailwb@gmail.com</div>
+            <div style="font-size:0.74rem;color:var(--emerald);font-weight:700;display:flex;align-items:center;gap:6px;margin-top:2px;">
+              <span class="pulse-dot"></span>
+              <span>Cloud Firestore Actif & Synchronisé</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:10px;">
+          <button class="btn-primary-large" id="btn-firestore-force-sync" style="padding:12px 16px;font-size:0.9rem;">
+            <i data-lucide="refresh-cw"></i>
+            <span>Synchro Firestore en direct</span>
+          </button>
+          <button class="btn-secondary" id="btn-google-logout" style="padding:12px;font-size:0.86rem;color:var(--rose);">
+            <i data-lucide="log-out"></i>
+            <span>Déconnexion</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Statut de synchronisation -->
+      <div style="font-size:0.75rem;color:var(--text-dim);text-align:center;padding:4px 0;" id="sync-status-msg">
+        Jamais synchronisé
+      </div>
+
+      <!-- SECTION 2: GESTIONNAIRE DE CONFIGURATION FIREBASE (1-CLIC) -->
+      <div style="border-top:1px solid var(--border-subtle);padding-top:12px;">
+        <button class="btn-secondary" id="btn-toggle-firebase-config" type="button" style="width:100%;padding:10px 14px;font-size:0.8rem;justify-content:space-between;">
+          <span style="display:flex;align-items:center;gap:8px;">
+            <i data-lucide="database" style="width:15px;height:15px;color:var(--amber);"></i>
+            <span>Paramètres du Projet Firebase (Clés API & Firestore)</span>
+          </span>
+          <i data-lucide="chevron-down" id="firebase-chevron" style="width:15px;height:15px;"></i>
+        </button>
+
+        <div id="firebase-config-panel" style="display:none;margin-top:10px;flex-direction:column;gap:8px;background:var(--bg-surface);padding:14px;border-radius:var(--radius-sm);border:1px solid var(--border-subtle);">
+          <div style="font-size:0.76rem;color:var(--text-muted);line-height:1.45;">
+            Configurez votre projet Firebase (trouvable dans <em>Project Settings > General > Your apps</em> sur console.firebase.google.com). Vos clés sont enregistrées localement dans votre navigateur.
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <input type="text" class="search-input" id="fb-api-key" value="AIzaSyAyTJf9A0mMtcnPM1cGfVzFoLZu2rA0qpA" placeholder="API Key (ex: AIzaSy...)">
+            <input type="text" class="search-input" id="fb-project-id" value="qcm-pediatr" placeholder="Project ID (ex: qcm-pediatrie)">
+            <input type="text" class="search-input" id="fb-auth-domain" value="qcm-pediatr.firebaseapp.com" placeholder="Auth Domain (ex: qcm-pediatrie.firebaseapp.com)">
+            <input type="text" class="search-input" id="fb-app-id" value="1:1028938391462:web:c37c4f146fe3e72b633967" placeholder="App ID (ex: 1:1234567890:web:abcdef)">
+          </div>
+          <button class="btn-secondary" id="btn-save-firebase-config" style="padding:10px;font-size:0.82rem;border-color:var(--cyan);color:var(--cyan);margin-top:4px;">
+            <i data-lucide="save"></i>
+            <span>Enregistrer la Configuration Firebase</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- SECTION 3: CODE DE SECOURS & EXPORT JSON (SÉCURITÉ SUPPLÉMENTAIRE) -->
+      <div style="border-top:1px solid var(--border-subtle);padding-top:12px;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;">
+            Code de Secours Anonyme
+          </span>
+          <span style="font-size:0.72rem;color:var(--text-dim);">(En cas d'utilisation hors compte Google)</span>
+        </div>
+
+        <div style="display:flex;gap:8px;">
+          <input type="text" class="search-input" id="sync-session-code-input" value="OUAIL-2026" style="font-weight:800;letter-spacing:1px;text-transform:uppercase;">
+          <button class="btn-secondary" id="btn-save-session-code" style="padding:10px 16px;">
+            Sauvegarder
+          </button>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <button class="btn-secondary" id="btn-cloud-push" style="padding:8px;font-size:0.8rem;">
+            <i data-lucide="upload-cloud"></i>
+            <span>Envoyer (Code)</span>
+          </button>
+          <button class="btn-secondary" id="btn-cloud-pull" style="padding:8px;font-size:0.8rem;">
+            <i data-lucide="download-cloud"></i>
+            <span>Récupérer (Code)</span>
+          </button>
+        </div>
+
+        <!-- Export / Import Manuel -->
+        <div style="display:flex;gap:8px;margin-top:2px;">
+          <button class="btn-secondary" id="btn-export-json" style="flex:1;padding:8px;font-size:0.78rem;">
+            <i data-lucide="download"></i>
+            <span>Exporter fichier JSON</span>
+          </button>
+          <button class="btn-secondary" id="btn-import-json" style="flex:1;padding:8px;font-size:0.78rem;">
+            <i data-lucide="upload"></i>
+            <span>Importer fichier JSON</span>
+          </button>
+          <input type="file" id="file-import-input" accept=".json" style="display:none;">
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODALE 4: PARAMÈTRES & CASCADE GEMINI
+       ───────────────────────────────────────────────────────────── -->
+  <div class="modal-overlay" id="modal-settings" style="display:none;">
+    <div class="modal-content">
+      
+      <div class="modal-header">
+        <div class="modal-title">
+          <i data-lucide="settings"></i>
+          <span>Paramètres & Moteur IA</span>
+        </div>
+        <button class="close-btn" id="btn-close-settings-modal">&times;</button>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <label style="font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;">
+          Clé API Google Gemini
+        </label>
+        <input type="password" class="search-input" id="settings-gemini-key" placeholder="AQ.Ab8RN6InNmt...">
+        <div style="font-size:0.72rem;color:var(--text-dim);">
+          Votre clé est stockée uniquement en local dans votre navigateur.
+        </div>
+      </div>
+
+      <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:14px;">
+        <div style="font-size:0.78rem;font-weight:700;color:var(--cyan);text-transform:uppercase;margin-bottom:6px;">
+          Cascade Automatique de Modèles IA
+        </div>
+        <ol style="font-size:0.8rem;color:var(--text-muted);line-height:1.6;padding-left:18px;">
+          <li><strong>Gemini 3.8 Flash</strong> (Prioritaire)</li>
+          <li><strong>Gemini 3.7 Flash</strong> (Secours 1)</li>
+          <li><strong>Gemini 3.6 Flash</strong> (Secours 2)</li>
+          <li><strong>Gemini 3.5 Flash Lite</strong> (Secours 3)</li>
+          <li><strong>Gemini 3.1 Flash Lite</strong> (Secours 4)</li>
+          <li><strong>Moteur Sémantique Local</strong> (Hors-ligne)</li>
+        </ol>
+      </div>
+
+      <button class="btn-primary-large" id="btn-save-settings">
+        <span>Enregistrer les paramètres</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- Data files -->
+  
+  
+
+  <!-- App Logic -->
+
+  <!-- Embedded Datasets -->
+  
+
+  <!-- Embedded Application Logic -->
+  
+</body>
+</html>
