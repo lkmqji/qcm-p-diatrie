@@ -3920,8 +3920,8 @@ function updateDashboardUI() {
   if (todayPctEl) todayPctEl.textContent = `${pct}%`;
   if (todayFillEl) todayFillEl.style.width = `${pct}%`;
 
-  document.getElementById('badge-pool-info').textContent = `Sur ${formatNumber(metrics.totalPoolCount)}`;
-  document.getElementById('header-session-code').textContent = syncService.getSessionCode();
+  const poolInfoEl = document.getElementById('badge-pool-info');
+  if (poolInfoEl) poolInfoEl.textContent = `Sur ${formatNumber(metrics.totalPoolCount)}`;
 
   // Chapters label
   const chaptersBtnLabel = document.getElementById('btn-chapters-label');
