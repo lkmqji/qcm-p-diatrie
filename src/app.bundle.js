@@ -629,29 +629,20 @@ class QueueEngine {
   }
 }
 
-// Multi-device Cloud & Secret Code Sync Service for PédiaDrill
-// Enables 100% zero-friction synchronization across PC, Phone, and Tablet.
+// Firebase Authentication (Google Sign-In) & Firestore Real-time Sync Service for PédiaDrill
+// Provides seamless multi-device progress sync across PC, Smartphone, and Tablet.
 
-const SESSION_CODE_KEY = 'pedia_session_code';
-const DEFAULT_SESSION_CODE = 'OUAIL-2026';
-const BIN_MAP_KEY_PREFIX = 'pedia_bin_id_';
-const KV_APP_ID = 'pediadrile_v1';
+const FIREBASE_CONFIG_STORAGE_KEY = 'pedia_firebase_config';
 
-// Pre-seeded dedicated persistent bin for default session code
-const DEFAULT_BINS = {
-  'OUAIL-2026': 'cbdabdf'
+// Official production Firebase configuration for qcm-pediatr
+const DEFAULT_FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAyTJf9A0mMtcnPM1cGfVzFoLZu2rA0qpA",
+  authDomain: "qcm-pediatr.firebaseapp.com",
+  projectId: "qcm-pediatr",
+  storageBucket: "qcm-pediatr.firebasestorage.app",
+  messagingSenderId: "1028938391462",
+  appId: "1:1028938391462:web:c37c4f146fe3e72b633967"
 };
-
-const VERCEL_API_FALLBACK = 'https://qcm-p-diatrie-coral.vercel.app/api/sync';
-
-function getSyncEndpoint() {
-  if (typeof window !== 'undefined' && window.location) {
-    if (window.location.protocol.startsWith('http') && window.location.hostname.includes('vercel.app')) {
-      return '/api/sync';
-    }
-  }
-  return VERCEL_API_FALLBACK;
-}
 
 /**
  * Intelligent state merger: unites local and remote progress non-destructively.
@@ -711,6 +702,10 @@ function mergeStates(local, remote) {
 
   for (const note of [...remoteNotes, ...localNotes]) {
     if (!note) continue;
+    // Ensure every note has a unique stable ID
+    if (!note.id) {
+      note.id = `note_${note.timestamp || Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+    }
     const key = note.id || `${note.questionUid}_${note.timestamp}`;
     notesMap.set(key, note);
   }
@@ -729,269 +724,21 @@ function mergeStates(local, remote) {
   return merged;
 }
 
-class SyncService {
-  constructor(queueEngine, onStatusChange = null) {
-    this.queueEngine = queueEngine;
-    this.sessionCode = localStorage.getItem(SESSION_CODE_KEY) || DEFAULT_SESSION_CODE;
-    this.syncStatus = 'idle'; // 'idle' | 'syncing' | 'synced' | 'error' | 'offline'
-    this.lastSyncedAt = localStorage.getItem('pedia_last_synced') || null;
-    this.onStatusChange = onStatusChange;
-    this.autoPushTimer = null;
-    this.isSyncing = false;
-  }
-
-  getSessionCode() {
-    return this.sessionCode;
-  }
-
-  setSessionCode(code) {
-    if (code && code.trim()) {
-      this.sessionCode = code.trim().toUpperCase();
-      localStorage.setItem(SESSION_CODE_KEY, this.sessionCode);
-      this.updateStatus('idle', 'Code de session mis à jour');
-    }
-  }
-
-  updateStatus(status, detail = '') {
-    this.syncStatus = status;
-    if (typeof this.onStatusChange === 'function') {
-      this.onStatusChange(status, detail, this.getLastSyncedText());
-    }
-  }
-
-  getLastSyncedText() {
-    if (!this.lastSyncedAt) return 'Jamais synchronisé';
-    try {
-      const date = new Date(Number(this.lastSyncedAt));
-      const hours = date.getHours().toString().padStart(2, '0');
-      const mins = date.getMinutes().toString().padStart(2, '0');
-      return `Synchronisé aujourd'hui à ${hours}:${mins}`;
-    } catch {
-      return 'Synchronisé';
-    }
-  }
-
-  /**
-   * Pull state from cloud and merge with local progress non-destructively
-   */
-  async pullFromCloud() {
-    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
-      this.updateStatus('offline', 'Hors-ligne');
-      return { success: false, error: 'Connexion hors-ligne' };
-    }
-
-    this.isSyncing = true;
-    this.updateStatus('syncing', 'Récupération du Cloud...');
-
-    try {
-      const endpoint = getSyncEndpoint();
-      const url = `${endpoint}?code=${encodeURIComponent(this.sessionCode)}&_t=${Date.now()}`;
-
-      const res = await fetch(url, {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' }
-      });
-
-      if (!res.ok) {
-        throw new Error(`Serveur Cloud inaccessible (HTTP ${res.status})`);
-      }
-
-      const remoteState = await res.json();
-      const localState = this.queueEngine.getStateObject 
-        ? this.queueEngine.getStateObject() 
-        : JSON.parse(this.queueEngine.exportState());
-
-      const merged = mergeStates(localState, remoteState);
-      this.queueEngine.applyMergedState(merged);
-
-      this.lastSyncedAt = Date.now().toString();
-      localStorage.setItem('pedia_last_synced', this.lastSyncedAt);
-      this.updateStatus('synced', 'Synchronisé');
-      this.isSyncing = false;
-
-      return { success: true, merged };
-    } catch (err) {
-      this.isSyncing = false;
-      const friendlyError = (err.message === 'Failed to fetch' || err.name === 'TypeError')
-        ? 'Impossible de joindre le serveur Cloud (vérifiez votre connexion internet).'
-        : err.message;
-      this.updateStatus('error', friendlyError);
-      return { success: false, error: friendlyError };
-    }
-  }
-
-  /**
-   * Push local state to cloud (first merging with remote so no remote updates are erased)
-   */
-  async pushToCloud() {
-    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
-      this.updateStatus('offline', 'Hors-ligne');
-      return { success: false, error: 'Connexion hors-ligne' };
-    }
-
-    this.isSyncing = true;
-    this.updateStatus('syncing', 'Envoi au Cloud...');
-
-    try {
-      const endpoint = getSyncEndpoint();
-      const localState = this.queueEngine.getStateObject 
-        ? this.queueEngine.getStateObject() 
-        : JSON.parse(this.queueEngine.exportState());
-
-      // Fetch remote state to merge before pushing
-      let toPush = localState;
-      try {
-        const pullUrl = `${endpoint}?code=${encodeURIComponent(this.sessionCode)}&_t=${Date.now()}`;
-        const remoteRes = await fetch(pullUrl, {
-          method: 'GET',
-          headers: { 'Accept': 'application/json' }
-        });
-        if (remoteRes.ok) {
-          const remoteState = await remoteRes.json();
-          toPush = mergeStates(localState, remoteState);
-          this.queueEngine.applyMergedState(toPush);
-        }
-      } catch (fetchErr) {
-        console.warn('Could not fetch remote before push, pushing local:', fetchErr.message);
-      }
-
-      const pushUrl = `${endpoint}?code=${encodeURIComponent(this.sessionCode)}`;
-      const putRes = await fetch(pushUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(toPush)
-      });
-
-      if (!putRes.ok) {
-        throw new Error(`Échec de sauvegarde sur le Cloud (HTTP ${putRes.status})`);
-      }
-
-      this.lastSyncedAt = Date.now().toString();
-      localStorage.setItem('pedia_last_synced', this.lastSyncedAt);
-      this.updateStatus('synced', 'Synchronisé');
-      this.isSyncing = false;
-
-      return { success: true, timestamp: this.lastSyncedAt };
-    } catch (err) {
-      this.isSyncing = false;
-      const friendlyError = (err.message === 'Failed to fetch' || err.name === 'TypeError')
-        ? 'Impossible de joindre le serveur Cloud (vérifiez votre connexion internet).'
-        : err.message;
-      this.updateStatus('error', friendlyError);
-      return { success: false, error: friendlyError };
-    }
-  }
-
-  /**
-   * Debounced automatic push: triggered automatically after each answered question
-   */
-  triggerAutoPush() {
-    if (this.autoPushTimer) {
-      clearTimeout(this.autoPushTimer);
-    }
-    this.autoPushTimer = setTimeout(() => {
-      this.pushToCloud();
-    }, 1500);
-  }
-
-  /**
-   * Auto-sync on startup: pulls newer cloud progress, merges, then syncs back
-   */
-  async autoSyncOnStart(onComplete = null) {
-    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
-      this.updateStatus('offline', 'Hors-ligne');
-      if (onComplete) onComplete(false);
-      return;
-    }
-
-    try {
-      const pullResult = await this.pullFromCloud();
-      if (pullResult.success && onComplete) {
-        onComplete(true);
-      }
-      // Push back any local progress that was made offline
-      setTimeout(() => {
-        this.pushToCloud();
-      }, 1000);
-    } catch (e) {
-      console.warn('AutoSyncOnStart error:', e);
-      if (onComplete) onComplete(false);
-    }
-  }
-
-  /**
-   * Setup lifecycle listeners: visibilitychange and online events
-   */
-  setupLifecycleListeners(onUpdate = null) {
-    if (typeof document !== 'undefined') {
-      document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible' && !this.isSyncing && (typeof navigator === 'undefined' || navigator.onLine !== false)) {
-          this.pullFromCloud().then(res => {
-            if (res.success && typeof onUpdate === 'function') {
-              onUpdate();
-            }
-          });
-        }
-      });
-    }
-
-    window.addEventListener('online', () => {
-      this.updateStatus('idle', 'En ligne');
-      this.pullFromCloud().then(() => this.pushToCloud());
-    });
-
-    window.addEventListener('offline', () => {
-      this.updateStatus('offline', 'Hors-ligne');
-    });
-  }
-
-  /**
-   * Ultra-compact Base64 string for 1-click manual sharing
-   */
-  getQuickShareCode() {
-    try {
-      const str = this.queueEngine.exportState();
-      return btoa(unescape(encodeURIComponent(str)));
-    } catch {
-      return '';
-    }
-  }
-
-  /**
-   * Load from Base64 quick share string
-   */
-  importQuickShareCode(base64Str) {
-    try {
-      const json = decodeURIComponent(escape(atob(base64Str.trim())));
-      return this.queueEngine.importState(json);
-    } catch (err) {
-      console.error('Import quick share failed:', err);
-      return false;
-    }
-  }
+/**
+ * Sanitize any object for Firestore: converts undefined to null or omits them
+ */
+function sanitizeForFirestore(obj) {
+  if (obj === undefined) return null;
+  return JSON.parse(JSON.stringify(obj, (key, value) => {
+    return value === undefined ? null : value;
+  }));
 }
 
-// Firebase Authentication (Google Sign-In) & Firestore Real-time Sync Service for PédiaDrill
-// Provides seamless multi-device progress sync across PC, Smartphone, and Tablet.
-
-
-
-const FIREBASE_CONFIG_STORAGE_KEY = 'pedia_firebase_config';
-
-// Official production Firebase configuration for qcm-pediatr
-const DEFAULT_FIREBASE_CONFIG = {
-  apiKey: "AIzaSyAyTJf9A0mMtcnPM1cGfVzFoLZu2rA0qpA",
-  authDomain: "qcm-pediatr.firebaseapp.com",
-  projectId: "qcm-pediatr",
-  storageBucket: "qcm-pediatr.firebasestorage.app",
-  messagingSenderId: "1028938391462",
-  appId: "1:1028938391462:web:c37c4f146fe3e72b633967"
-};
-
 class FirebaseSyncService {
-  constructor(queueEngine, onStateChange = null) {
+  constructor(queueEngine, onStateChange = null, onDataMerged = null) {
     this.queueEngine = queueEngine;
-    this.onStateChange = onStateChange; // (status, detail, user) => void
+    this.onStateChange = onStateChange; // (status, detail, user, lastSyncText) => void
+    this.onDataMerged = onDataMerged;   // (mergedState) => void - Re-renders UI
     this.user = null;
     this.isInitialized = false;
     this.firestoreUnsubscribe = null;
@@ -1016,7 +763,6 @@ class FirebaseSyncService {
   saveConfig(config) {
     try {
       localStorage.setItem(FIREBASE_CONFIG_STORAGE_KEY, JSON.stringify(config));
-      // Re-initialize with new config
       this.init(true);
       return true;
     } catch (e) {
@@ -1048,6 +794,7 @@ class FirebaseSyncService {
         if (forceReinit) {
           window.firebase.app().delete().then(() => {
             window.firebase.initializeApp(config);
+            this.configureFirestoreSettings();
             this.setupAuthListener();
           });
           return true;
@@ -1056,6 +803,7 @@ class FirebaseSyncService {
         window.firebase.initializeApp(config);
       }
 
+      this.configureFirestoreSettings();
       this.isInitialized = true;
       this.setupAuthListener();
       return true;
@@ -1063,6 +811,17 @@ class FirebaseSyncService {
       console.error('Firebase initialization error:', err);
       this.updateStatus('error', `Erreur initialisation Firebase: ${err.message}`);
       return false;
+    }
+  }
+
+  configureFirestoreSettings() {
+    try {
+      if (window.firebase && window.firebase.firestore) {
+        const db = window.firebase.firestore();
+        db.settings({ ignoreUndefinedProperties: true });
+      }
+    } catch (e) {
+      // Settings can only be applied before any firestore operation, ignore if already set
     }
   }
 
@@ -1188,19 +947,25 @@ class FirebaseSyncService {
         if (!remoteData || this.isPushing) return;
 
         console.log('Real-time update received from Firestore');
-        const localState = this.queueEngine.getStateObject 
-          ? this.queueEngine.getStateObject() 
-          : JSON.parse(this.queueEngine.exportState());
+        const localState = this.queueEngine.getStateObject();
 
         const merged = mergeStates(localState, remoteData);
         this.queueEngine.applyMergedState(merged);
 
         this.lastSyncedAt = Date.now().toString();
         localStorage.setItem('pedia_firebase_last_synced', this.lastSyncedAt);
-        this.updateStatus('synced', 'Synchronisé en direct avec Firestore');
+
+        // Notify app to re-render UI
+        if (typeof this.onDataMerged === 'function') {
+          this.onDataMerged(merged);
+        }
+
+        const notesCount = (merged.reasoningNotes || []).length;
+        this.updateStatus('synced', `En direct : ${notesCount} note${notesCount > 1 ? 's' : ''} synchronisée${notesCount > 1 ? 's' : ''}`);
       }, (err) => {
         console.warn('Firestore snapshot error:', err);
-        this.updateStatus('error', `Erreur synchronisation Firestore: ${err.message}`);
+        const friendly = this.getFriendlyFirestoreError(err);
+        this.updateStatus('error', friendly);
       });
     } catch (e) {
       console.warn('Could not setup Firestore listener:', e);
@@ -1218,9 +983,7 @@ class FirebaseSyncService {
       const docRef = db.collection('users').doc(this.user.uid).collection('pedia').doc('progress');
 
       const doc = await docRef.get();
-      const localState = this.queueEngine.getStateObject 
-        ? this.queueEngine.getStateObject() 
-        : JSON.parse(this.queueEngine.exportState());
+      const localState = this.queueEngine.getStateObject();
 
       let merged = localState;
       if (doc.exists) {
@@ -1229,14 +992,65 @@ class FirebaseSyncService {
         this.queueEngine.applyMergedState(merged);
       }
 
+      // Notify app to re-render UI with merged state
+      if (typeof this.onDataMerged === 'function') {
+        this.onDataMerged(merged);
+      }
+
       // Save unified state back to Firestore
       await this.pushToFirestore(merged);
       this.lastSyncedAt = Date.now().toString();
       localStorage.setItem('pedia_firebase_last_synced', this.lastSyncedAt);
-      this.updateStatus('synced', 'Progression fusionnée et synchronisée avec votre compte Google !');
+      
+      const notesCount = (merged.reasoningNotes || []).length;
+      this.updateStatus('synced', `Progression & ${notesCount} note${notesCount > 1 ? 's' : ''} synchronisée${notesCount > 1 ? 's' : ''} avec votre compte Google !`);
     } catch (err) {
       console.error('Sync on login error:', err);
-      this.updateStatus('error', `Erreur synchro Firestore: ${err.message}`);
+      const friendly = this.getFriendlyFirestoreError(err);
+      this.updateStatus('error', friendly);
+    }
+  }
+
+  /**
+   * Pull state from Firestore manually
+   */
+  async pullFromFirestore() {
+    if (!this.user || !window.firebase || !window.firebase.firestore) {
+      return { success: false, error: 'Veuillez vous connecter avec votre compte Google.' };
+    }
+
+    this.updateStatus('syncing', 'Récupération depuis Google Cloud...');
+
+    try {
+      const db = window.firebase.firestore();
+      const docRef = db.collection('users').doc(this.user.uid).collection('pedia').doc('progress');
+
+      const doc = await docRef.get();
+      if (!doc.exists) {
+        this.updateStatus('synced', 'Aucune progression distante sur ce compte Google');
+        return { success: true, empty: true };
+      }
+
+      const remoteData = doc.data();
+      const localState = this.queueEngine.getStateObject();
+      const merged = mergeStates(localState, remoteData);
+      this.queueEngine.applyMergedState(merged);
+
+      this.lastSyncedAt = Date.now().toString();
+      localStorage.setItem('pedia_firebase_last_synced', this.lastSyncedAt);
+
+      if (typeof this.onDataMerged === 'function') {
+        this.onDataMerged(merged);
+      }
+
+      const notesCount = (merged.reasoningNotes || []).length;
+      this.updateStatus('synced', `Succès : ${notesCount} note${notesCount > 1 ? 's' : ''} récupérée${notesCount > 1 ? 's' : ''} depuis Google Cloud !`);
+      return { success: true, merged };
+    } catch (err) {
+      console.error('Pull from Firestore error:', err);
+      const friendly = this.getFriendlyFirestoreError(err);
+      this.updateStatus('error', friendly);
+      return { success: false, error: friendly };
     }
   }
 
@@ -1244,7 +1058,9 @@ class FirebaseSyncService {
    * Push current state to Firestore
    */
   async pushToFirestore(explicitState = null) {
-    if (!this.user || !window.firebase || !window.firebase.firestore) return { success: false, error: 'Non connecté' };
+    if (!this.user || !window.firebase || !window.firebase.firestore) {
+      return { success: false, error: 'Non connecté à Google' };
+    }
 
     if (typeof navigator !== 'undefined' && navigator.onLine === false) {
       this.updateStatus('offline', 'Hors-ligne');
@@ -1252,36 +1068,39 @@ class FirebaseSyncService {
     }
 
     this.isPushing = true;
-    this.updateStatus('syncing', 'Sauvegarde Cloud en cours...');
+    this.updateStatus('syncing', 'Sauvegarde vers Google Cloud...');
 
     try {
       const db = window.firebase.firestore();
       const docRef = db.collection('users').doc(this.user.uid).collection('pedia').doc('progress');
 
-      const state = explicitState || (this.queueEngine.getStateObject 
-        ? this.queueEngine.getStateObject() 
-        : JSON.parse(this.queueEngine.exportState()));
+      const state = explicitState || this.queueEngine.getStateObject();
 
-      const toSave = {
+      const toSave = sanitizeForFirestore({
         ...state,
         userEmail: this.user.email || '',
         userDisplayName: this.user.displayName || '',
-        updatedAt: window.firebase.firestore.FieldValue.serverTimestamp(),
         lastClientTimestamp: Date.now()
-      };
+      });
+
+      // Add server timestamp safely
+      toSave.updatedAt = window.firebase.firestore.FieldValue.serverTimestamp();
 
       await docRef.set(toSave, { merge: true });
 
       this.lastSyncedAt = Date.now().toString();
       localStorage.setItem('pedia_firebase_last_synced', this.lastSyncedAt);
-      this.updateStatus('synced', 'Synchronisé');
+
+      const notesCount = (state.reasoningNotes || []).length;
+      this.updateStatus('synced', `Enregistré : ${notesCount} note${notesCount > 1 ? 's' : ''} sauvegardée${notesCount > 1 ? 's' : ''} sur Google Cloud`);
       this.isPushing = false;
       return { success: true };
     } catch (err) {
       this.isPushing = false;
       console.error('Push to Firestore error:', err);
-      this.updateStatus('error', `Échec d'envoi Firestore: ${err.message}`);
-      return { success: false, error: err.message };
+      const friendly = this.getFriendlyFirestoreError(err);
+      this.updateStatus('error', friendly);
+      return { success: false, error: friendly };
     }
   }
 
@@ -1297,6 +1116,18 @@ class FirebaseSyncService {
     this.autoPushTimer = setTimeout(() => {
       this.pushToFirestore();
     }, 1500);
+  }
+
+  getFriendlyFirestoreError(err) {
+    if (!err) return 'Erreur Firestore inconnue';
+    const msg = err.message || '';
+    if (err.code === 'permission-denied' || msg.includes('Missing or insufficient permissions') || msg.includes('PERMISSION_DENIED')) {
+      return '⚠️ Permissions Firestore refusées. Veuillez activer les règles de lecture/écriture dans la console Firebase (Firestore > Règles).';
+    }
+    if (err.code === 'unavailable' || msg.includes('unavailable')) {
+      return 'Connexion Firestore temporairement indisponible (vérifiez votre connexion internet).';
+    }
+    return msg || 'Erreur Firestore';
   }
 
   getFriendlyAuthError(err) {
@@ -1323,15 +1154,26 @@ class FirebaseSyncService {
 
 
 
-
 // Global Data Access
 const allQuestions = window.PEDIA_QUESTIONS || [];
 const allChapters = window.PEDIA_CHAPTERS || [];
 
 // Services
 const queueEngine = new QueueEngine(allQuestions, allChapters);
-const syncService = new SyncService(queueEngine);
-const firebaseSyncService = new FirebaseSyncService(queueEngine);
+const firebaseSyncService = new FirebaseSyncService(
+  queueEngine,
+  (status, detail, user, lastSyncText) => {
+    updateGoogleAccountUI(status, detail, user, lastSyncText);
+  },
+  (mergedState) => {
+    // Whenever Firestore data is received and merged
+    updateDashboardUI();
+    if (currentView === 'notebook') renderNotebookUI();
+    updateArenaDailyBadge();
+    updateModalLocalSummary();
+    refreshLucide();
+  }
+);
 
 // Local State
 let currentQuestion = null;
@@ -1361,7 +1203,6 @@ function initApp() {
   updateDashboardUI();
   setupEventListeners();
   setupKeyboardShortcuts();
-  setupSyncService();
   setupFirebaseService();
   refreshLucide();
 
@@ -1373,70 +1214,12 @@ function initApp() {
   }
 }
 
-function updateSyncHeaderUI(status, detail, lastSyncText) {
-  const codeEl = document.getElementById('header-session-code');
-  if (codeEl) codeEl.textContent = syncService.getSessionCode();
-
-  const syncBtn = document.getElementById('btn-open-sync');
-  const dotEl = document.querySelector('#btn-open-sync .pulse-dot');
-  const iconEl = document.querySelector('#btn-open-sync [data-lucide="refresh-cw"]');
-
-  if (syncBtn) {
-    syncBtn.title = `Multi-Appareils [${syncService.getSessionCode()}] • ${lastSyncText || 'Synchronisé'}`;
-  }
-
-  if (dotEl) {
-    if (status === 'syncing') {
-      dotEl.style.backgroundColor = 'var(--cyan)';
-      dotEl.style.boxShadow = '0 0 10px var(--cyan)';
-    } else if (status === 'synced') {
-      dotEl.style.backgroundColor = 'var(--emerald)';
-      dotEl.style.boxShadow = '0 0 10px rgba(16, 185, 129, 0.6)';
-    } else if (status === 'offline') {
-      dotEl.style.backgroundColor = 'var(--amber)';
-      dotEl.style.boxShadow = 'none';
-    } else if (status === 'error') {
-      dotEl.style.backgroundColor = 'var(--rose)';
-      dotEl.style.boxShadow = 'none';
-    } else {
-      dotEl.style.backgroundColor = 'var(--cyan)';
-    }
-  }
-
-  if (iconEl) {
-    if (status === 'syncing') {
-      iconEl.classList.add('spin');
-    } else {
-      iconEl.classList.remove('spin');
-    }
-  }
-
-  const modalStatus = document.getElementById('sync-status-msg');
-  if (modalStatus) {
-    modalStatus.textContent = detail ? `${lastSyncText} (${detail})` : lastSyncText;
-  }
-}
-
-function setupSyncService() {
-  syncService.onStatusChange = (status, detail, lastSyncText) => {
-    updateSyncHeaderUI(status, detail, lastSyncText);
-  };
-
-  updateSyncHeaderUI('idle', '', syncService.getLastSyncedText());
-
-  // Automatic background pull & merge on application startup
-  syncService.autoSyncOnStart((hasUpdated) => {
-    if (hasUpdated) {
-      updateDashboardUI();
-      if (currentView === 'notebook') renderNotebookUI();
-    }
-  });
-
-  // Background lifecycle listeners (auto-sync when returning to tab from mobile)
-  syncService.setupLifecycleListeners(() => {
-    updateDashboardUI();
-    if (currentView === 'notebook') renderNotebookUI();
-  });
+function updateModalLocalSummary() {
+  const summaryEl = document.getElementById('sync-local-summary');
+  if (!summaryEl) return;
+  const metrics = queueEngine.getDashboardMetrics();
+  const notesCount = queueEngine.getReasoningNotes().length;
+  summaryEl.textContent = `${metrics.masteredCount} maîtrisées • ${notesCount} note${notesCount > 1 ? 's' : ''} IA`;
 }
 
 function updateGoogleAccountUI(status, detail, user, lastSyncText) {
@@ -1478,20 +1261,15 @@ function updateGoogleAccountUI(status, detail, user, lastSyncText) {
 
   const modalStatus = document.getElementById('sync-status-msg');
   if (modalStatus) {
-    const accountTag = user ? `[${user.email || 'Google'}]` : `[${syncService.getSessionCode()}]`;
+    const accountTag = user ? `[${user.email || 'Google'}]` : '[Non connecté]';
     modalStatus.textContent = detail ? `${lastSyncText} • ${accountTag} (${detail})` : `${lastSyncText} • ${accountTag}`;
   }
 
-  updateSyncHeaderUI(status, detail, lastSyncText);
+  updateModalLocalSummary();
   refreshLucide();
 }
 
 function setupFirebaseService() {
-  firebaseSyncService.onStateChange = (status, detail, user, lastSyncText) => {
-    updateGoogleAccountUI(status, detail, user, lastSyncText);
-  };
-
-  // Auto-init with saved config
   firebaseSyncService.init();
 
   // Populate form fields with saved config
@@ -2115,7 +1893,6 @@ function handleAnswerSuccess(score = null, feedback = null) {
   const result = queueEngine.handleSuccess(currentQuestion.uid);
   queueEngine.incrementTodayCount();
   updateArenaDailyBadge();
-  syncService.triggerAutoPush();
   firebaseSyncService.triggerAutoPush();
 
   // Trigger celebration confetti
@@ -2209,7 +1986,6 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
     timestamp: Date.now()
   };
   queueEngine.saveReasoningNote(noteRecord);
-  syncService.triggerAutoPush();
   firebaseSyncService.triggerAutoPush();
 
   // Update notebook badge in dashboard
@@ -2637,13 +2413,13 @@ function setupEventListeners() {
 
   // Google Auth & Sync Modal Triggers
   const openSyncModal = () => {
-    document.getElementById('sync-session-code-input').value = syncService.getSessionCode();
+    updateModalLocalSummary();
     const currentUser = firebaseSyncService.user;
     updateGoogleAccountUI(
       firebaseSyncService.status, 
       '', 
       currentUser, 
-      currentUser ? firebaseSyncService.getLastSyncedText() : syncService.getLastSyncedText()
+      currentUser ? firebaseSyncService.getLastSyncedText() : 'Non connecté'
     );
     modals.sync.style.display = 'flex';
   };
@@ -2654,7 +2430,6 @@ function setupEventListeners() {
   const btnUserProfile = document.getElementById('btn-open-user-profile');
   if (btnUserProfile) btnUserProfile.onclick = openSyncModal;
 
-  document.getElementById('btn-open-sync').onclick = openSyncModal;
   document.getElementById('btn-close-sync-modal').onclick = () => modals.sync.style.display = 'none';
 
   // Modal Google Login Button
@@ -2707,19 +2482,43 @@ function setupEventListeners() {
     };
   }
 
-  // Modal Firestore Force Sync Button
-  const btnFirestoreForceSync = document.getElementById('btn-firestore-force-sync');
-  if (btnFirestoreForceSync) {
-    btnFirestoreForceSync.onclick = async () => {
-      btnFirestoreForceSync.disabled = true;
-      btnFirestoreForceSync.innerHTML = '<span>Synchronisation en cours...</span>';
-      await firebaseSyncService.syncOnLogin();
-      btnFirestoreForceSync.disabled = false;
-      btnFirestoreForceSync.innerHTML = '<i data-lucide="refresh-cw"></i> <span>Synchro Firestore en direct</span>';
+  // Modal Firestore Push Button
+  const btnFirestorePush = document.getElementById('btn-firestore-push');
+  if (btnFirestorePush) {
+    btnFirestorePush.onclick = async () => {
+      btnFirestorePush.disabled = true;
+      btnFirestorePush.innerHTML = '<span>Sauvegarde vers le Cloud...</span>';
+      const res = await firebaseSyncService.pushToFirestore();
+      btnFirestorePush.disabled = false;
+      btnFirestorePush.innerHTML = '<i data-lucide="upload-cloud"></i> <span>📤 Envoyer au Cloud</span>';
       refreshLucide();
-      updateDashboardUI();
-      if (currentView === 'notebook') renderNotebookUI();
-      alert('Synchronisation en direct terminée avec succès !');
+      updateModalLocalSummary();
+      if (res.success) {
+        alert('✅ Progression & notes de raisonnement sauvegardées sur votre compte Google Cloud !');
+      } else {
+        alert('❌ ' + (res.error || 'Échec de sauvegarde'));
+      }
+    };
+  }
+
+  // Modal Firestore Pull Button
+  const btnFirestorePull = document.getElementById('btn-firestore-pull');
+  if (btnFirestorePull) {
+    btnFirestorePull.onclick = async () => {
+      btnFirestorePull.disabled = true;
+      btnFirestorePull.innerHTML = '<span>Récupération du Cloud...</span>';
+      const res = await firebaseSyncService.pullFromFirestore();
+      btnFirestorePull.disabled = false;
+      btnFirestorePull.innerHTML = '<i data-lucide="download-cloud"></i> <span>📥 Récupérer du Cloud</span>';
+      refreshLucide();
+      updateModalLocalSummary();
+      if (res.success) {
+        updateDashboardUI();
+        if (currentView === 'notebook') renderNotebookUI();
+        alert('✅ Progression et notes récupérées et fusionnées avec succès depuis Google Cloud !');
+      } else {
+        alert('❌ ' + (res.error || 'Échec de récupération'));
+      }
     };
   }
 
@@ -2756,53 +2555,6 @@ function setupEventListeners() {
       alert('Configuration Firebase enregistrée et initialisée ! Vous pouvez maintenant vous connecter avec Google.');
     };
   }
-
-  // Legacy Code Sync Button
-  document.getElementById('btn-save-session-code').onclick = async () => {
-    const val = document.getElementById('sync-session-code-input').value;
-    syncService.setSessionCode(val);
-    document.getElementById('header-session-code').textContent = syncService.getSessionCode();
-    
-    // Auto-pull immediately with new session code
-    const statusMsg = document.getElementById('sync-status-msg');
-    statusMsg.textContent = 'Synchronisation avec le nouveau code...';
-    const res = await syncService.pullFromCloud();
-    if (res.success) {
-      updateDashboardUI();
-      if (currentView === 'notebook') renderNotebookUI();
-      statusMsg.textContent = syncService.getLastSyncedText();
-      alert(`Code ${syncService.getSessionCode()} activé ! Progression fusionnée avec succès.`);
-    } else {
-      statusMsg.textContent = syncService.getLastSyncedText();
-      alert(`Code ${syncService.getSessionCode()} activé.`);
-    }
-  };
-
-  document.getElementById('btn-cloud-push').onclick = async () => {
-    const statusMsg = document.getElementById('sync-status-msg');
-    statusMsg.textContent = 'Envoi vers le Cloud en cours...';
-    const res = await syncService.pushToCloud();
-    if (res.success) {
-      statusMsg.textContent = syncService.getLastSyncedText();
-      alert('Progression sauvegardée dans le Cloud avec succès ! Tous vos appareils sont synchronisés.');
-    } else {
-      statusMsg.textContent = `Erreur : ${res.error}`;
-    }
-  };
-
-  document.getElementById('btn-cloud-pull').onclick = async () => {
-    const statusMsg = document.getElementById('sync-status-msg');
-    statusMsg.textContent = 'Récupération depuis le Cloud en cours...';
-    const res = await syncService.pullFromCloud();
-    if (res.success) {
-      statusMsg.textContent = syncService.getLastSyncedText();
-      updateDashboardUI();
-      if (currentView === 'notebook') renderNotebookUI();
-      alert('Progression et carnet de raisonnement synchronisés depuis le Cloud !');
-    } else {
-      statusMsg.textContent = `Erreur : ${res.error}`;
-    }
-  };
 
   document.getElementById('btn-export-json').onclick = () => {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(queueEngine.exportState());

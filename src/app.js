@@ -1,7 +1,6 @@
 // PédiaDrill - Application Controller & Orchestration
 import { geminiService } from './services/gemini.js';
 import { QueueEngine } from './services/queueEngine.js';
-import { SyncService } from './services/syncService.js';
 import { FirebaseSyncService } from './services/firebaseSyncService.js';
 
 // Global Data Access
@@ -10,8 +9,20 @@ const allChapters = window.PEDIA_CHAPTERS || [];
 
 // Services
 const queueEngine = new QueueEngine(allQuestions, allChapters);
-const syncService = new SyncService(queueEngine);
-const firebaseSyncService = new FirebaseSyncService(queueEngine);
+const firebaseSyncService = new FirebaseSyncService(
+  queueEngine,
+  (status, detail, user, lastSyncText) => {
+    updateGoogleAccountUI(status, detail, user, lastSyncText);
+  },
+  (mergedState) => {
+    // Whenever Firestore data is received and merged
+    updateDashboardUI();
+    if (currentView === 'notebook') renderNotebookUI();
+    updateArenaDailyBadge();
+    updateModalLocalSummary();
+    refreshLucide();
+  }
+);
 
 // Local State
 let currentQuestion = null;
@@ -41,7 +52,6 @@ function initApp() {
   updateDashboardUI();
   setupEventListeners();
   setupKeyboardShortcuts();
-  setupSyncService();
   setupFirebaseService();
   refreshLucide();
 
@@ -53,70 +63,12 @@ function initApp() {
   }
 }
 
-function updateSyncHeaderUI(status, detail, lastSyncText) {
-  const codeEl = document.getElementById('header-session-code');
-  if (codeEl) codeEl.textContent = syncService.getSessionCode();
-
-  const syncBtn = document.getElementById('btn-open-sync');
-  const dotEl = document.querySelector('#btn-open-sync .pulse-dot');
-  const iconEl = document.querySelector('#btn-open-sync [data-lucide="refresh-cw"]');
-
-  if (syncBtn) {
-    syncBtn.title = `Multi-Appareils [${syncService.getSessionCode()}] • ${lastSyncText || 'Synchronisé'}`;
-  }
-
-  if (dotEl) {
-    if (status === 'syncing') {
-      dotEl.style.backgroundColor = 'var(--cyan)';
-      dotEl.style.boxShadow = '0 0 10px var(--cyan)';
-    } else if (status === 'synced') {
-      dotEl.style.backgroundColor = 'var(--emerald)';
-      dotEl.style.boxShadow = '0 0 10px rgba(16, 185, 129, 0.6)';
-    } else if (status === 'offline') {
-      dotEl.style.backgroundColor = 'var(--amber)';
-      dotEl.style.boxShadow = 'none';
-    } else if (status === 'error') {
-      dotEl.style.backgroundColor = 'var(--rose)';
-      dotEl.style.boxShadow = 'none';
-    } else {
-      dotEl.style.backgroundColor = 'var(--cyan)';
-    }
-  }
-
-  if (iconEl) {
-    if (status === 'syncing') {
-      iconEl.classList.add('spin');
-    } else {
-      iconEl.classList.remove('spin');
-    }
-  }
-
-  const modalStatus = document.getElementById('sync-status-msg');
-  if (modalStatus) {
-    modalStatus.textContent = detail ? `${lastSyncText} (${detail})` : lastSyncText;
-  }
-}
-
-function setupSyncService() {
-  syncService.onStatusChange = (status, detail, lastSyncText) => {
-    updateSyncHeaderUI(status, detail, lastSyncText);
-  };
-
-  updateSyncHeaderUI('idle', '', syncService.getLastSyncedText());
-
-  // Automatic background pull & merge on application startup
-  syncService.autoSyncOnStart((hasUpdated) => {
-    if (hasUpdated) {
-      updateDashboardUI();
-      if (currentView === 'notebook') renderNotebookUI();
-    }
-  });
-
-  // Background lifecycle listeners (auto-sync when returning to tab from mobile)
-  syncService.setupLifecycleListeners(() => {
-    updateDashboardUI();
-    if (currentView === 'notebook') renderNotebookUI();
-  });
+function updateModalLocalSummary() {
+  const summaryEl = document.getElementById('sync-local-summary');
+  if (!summaryEl) return;
+  const metrics = queueEngine.getDashboardMetrics();
+  const notesCount = queueEngine.getReasoningNotes().length;
+  summaryEl.textContent = `${metrics.masteredCount} maîtrisées • ${notesCount} note${notesCount > 1 ? 's' : ''} IA`;
 }
 
 function updateGoogleAccountUI(status, detail, user, lastSyncText) {
@@ -158,20 +110,15 @@ function updateGoogleAccountUI(status, detail, user, lastSyncText) {
 
   const modalStatus = document.getElementById('sync-status-msg');
   if (modalStatus) {
-    const accountTag = user ? `[${user.email || 'Google'}]` : `[${syncService.getSessionCode()}]`;
+    const accountTag = user ? `[${user.email || 'Google'}]` : '[Non connecté]';
     modalStatus.textContent = detail ? `${lastSyncText} • ${accountTag} (${detail})` : `${lastSyncText} • ${accountTag}`;
   }
 
-  updateSyncHeaderUI(status, detail, lastSyncText);
+  updateModalLocalSummary();
   refreshLucide();
 }
 
 function setupFirebaseService() {
-  firebaseSyncService.onStateChange = (status, detail, user, lastSyncText) => {
-    updateGoogleAccountUI(status, detail, user, lastSyncText);
-  };
-
-  // Auto-init with saved config
   firebaseSyncService.init();
 
   // Populate form fields with saved config
@@ -795,7 +742,6 @@ function handleAnswerSuccess(score = null, feedback = null) {
   const result = queueEngine.handleSuccess(currentQuestion.uid);
   queueEngine.incrementTodayCount();
   updateArenaDailyBadge();
-  syncService.triggerAutoPush();
   firebaseSyncService.triggerAutoPush();
 
   // Trigger celebration confetti
@@ -889,7 +835,6 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
     timestamp: Date.now()
   };
   queueEngine.saveReasoningNote(noteRecord);
-  syncService.triggerAutoPush();
   firebaseSyncService.triggerAutoPush();
 
   // Update notebook badge in dashboard
@@ -1317,13 +1262,13 @@ function setupEventListeners() {
 
   // Google Auth & Sync Modal Triggers
   const openSyncModal = () => {
-    document.getElementById('sync-session-code-input').value = syncService.getSessionCode();
+    updateModalLocalSummary();
     const currentUser = firebaseSyncService.user;
     updateGoogleAccountUI(
       firebaseSyncService.status, 
       '', 
       currentUser, 
-      currentUser ? firebaseSyncService.getLastSyncedText() : syncService.getLastSyncedText()
+      currentUser ? firebaseSyncService.getLastSyncedText() : 'Non connecté'
     );
     modals.sync.style.display = 'flex';
   };
@@ -1334,7 +1279,6 @@ function setupEventListeners() {
   const btnUserProfile = document.getElementById('btn-open-user-profile');
   if (btnUserProfile) btnUserProfile.onclick = openSyncModal;
 
-  document.getElementById('btn-open-sync').onclick = openSyncModal;
   document.getElementById('btn-close-sync-modal').onclick = () => modals.sync.style.display = 'none';
 
   // Modal Google Login Button
@@ -1387,19 +1331,43 @@ function setupEventListeners() {
     };
   }
 
-  // Modal Firestore Force Sync Button
-  const btnFirestoreForceSync = document.getElementById('btn-firestore-force-sync');
-  if (btnFirestoreForceSync) {
-    btnFirestoreForceSync.onclick = async () => {
-      btnFirestoreForceSync.disabled = true;
-      btnFirestoreForceSync.innerHTML = '<span>Synchronisation en cours...</span>';
-      await firebaseSyncService.syncOnLogin();
-      btnFirestoreForceSync.disabled = false;
-      btnFirestoreForceSync.innerHTML = '<i data-lucide="refresh-cw"></i> <span>Synchro Firestore en direct</span>';
+  // Modal Firestore Push Button
+  const btnFirestorePush = document.getElementById('btn-firestore-push');
+  if (btnFirestorePush) {
+    btnFirestorePush.onclick = async () => {
+      btnFirestorePush.disabled = true;
+      btnFirestorePush.innerHTML = '<span>Sauvegarde vers le Cloud...</span>';
+      const res = await firebaseSyncService.pushToFirestore();
+      btnFirestorePush.disabled = false;
+      btnFirestorePush.innerHTML = '<i data-lucide="upload-cloud"></i> <span>📤 Envoyer au Cloud</span>';
       refreshLucide();
-      updateDashboardUI();
-      if (currentView === 'notebook') renderNotebookUI();
-      alert('Synchronisation en direct terminée avec succès !');
+      updateModalLocalSummary();
+      if (res.success) {
+        alert('✅ Progression & notes de raisonnement sauvegardées sur votre compte Google Cloud !');
+      } else {
+        alert('❌ ' + (res.error || 'Échec de sauvegarde'));
+      }
+    };
+  }
+
+  // Modal Firestore Pull Button
+  const btnFirestorePull = document.getElementById('btn-firestore-pull');
+  if (btnFirestorePull) {
+    btnFirestorePull.onclick = async () => {
+      btnFirestorePull.disabled = true;
+      btnFirestorePull.innerHTML = '<span>Récupération du Cloud...</span>';
+      const res = await firebaseSyncService.pullFromFirestore();
+      btnFirestorePull.disabled = false;
+      btnFirestorePull.innerHTML = '<i data-lucide="download-cloud"></i> <span>📥 Récupérer du Cloud</span>';
+      refreshLucide();
+      updateModalLocalSummary();
+      if (res.success) {
+        updateDashboardUI();
+        if (currentView === 'notebook') renderNotebookUI();
+        alert('✅ Progression et notes récupérées et fusionnées avec succès depuis Google Cloud !');
+      } else {
+        alert('❌ ' + (res.error || 'Échec de récupération'));
+      }
     };
   }
 
@@ -1436,53 +1404,6 @@ function setupEventListeners() {
       alert('Configuration Firebase enregistrée et initialisée ! Vous pouvez maintenant vous connecter avec Google.');
     };
   }
-
-  // Legacy Code Sync Button
-  document.getElementById('btn-save-session-code').onclick = async () => {
-    const val = document.getElementById('sync-session-code-input').value;
-    syncService.setSessionCode(val);
-    document.getElementById('header-session-code').textContent = syncService.getSessionCode();
-    
-    // Auto-pull immediately with new session code
-    const statusMsg = document.getElementById('sync-status-msg');
-    statusMsg.textContent = 'Synchronisation avec le nouveau code...';
-    const res = await syncService.pullFromCloud();
-    if (res.success) {
-      updateDashboardUI();
-      if (currentView === 'notebook') renderNotebookUI();
-      statusMsg.textContent = syncService.getLastSyncedText();
-      alert(`Code ${syncService.getSessionCode()} activé ! Progression fusionnée avec succès.`);
-    } else {
-      statusMsg.textContent = syncService.getLastSyncedText();
-      alert(`Code ${syncService.getSessionCode()} activé.`);
-    }
-  };
-
-  document.getElementById('btn-cloud-push').onclick = async () => {
-    const statusMsg = document.getElementById('sync-status-msg');
-    statusMsg.textContent = 'Envoi vers le Cloud en cours...';
-    const res = await syncService.pushToCloud();
-    if (res.success) {
-      statusMsg.textContent = syncService.getLastSyncedText();
-      alert('Progression sauvegardée dans le Cloud avec succès ! Tous vos appareils sont synchronisés.');
-    } else {
-      statusMsg.textContent = `Erreur : ${res.error}`;
-    }
-  };
-
-  document.getElementById('btn-cloud-pull').onclick = async () => {
-    const statusMsg = document.getElementById('sync-status-msg');
-    statusMsg.textContent = 'Récupération depuis le Cloud en cours...';
-    const res = await syncService.pullFromCloud();
-    if (res.success) {
-      statusMsg.textContent = syncService.getLastSyncedText();
-      updateDashboardUI();
-      if (currentView === 'notebook') renderNotebookUI();
-      alert('Progression et carnet de raisonnement synchronisés depuis le Cloud !');
-    } else {
-      statusMsg.textContent = `Erreur : ${res.error}`;
-    }
-  };
 
   document.getElementById('btn-export-json').onclick = () => {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(queueEngine.exportState());

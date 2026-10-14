@@ -1786,12 +1786,6 @@ body {
           <span class="pulse-dot"></span>
         </button>
 
-        <!-- Sync Pill -->
-        <button class="sync-pill" id="btn-open-sync" title="Synchronisation multi-appareils">
-          <span class="pulse-dot"></span>
-          <span id="header-session-code">OUAIL-2026</span>
-          <i data-lucide="refresh-cw" style="width:13px;height:13px;"></i>
-        </button>
 
         <!-- Notebook Quick Link -->
         <button class="icon-btn" id="btn-open-notebook-icon" title="Carnet de Raisonnement IA">
@@ -2180,16 +2174,27 @@ body {
           </div>
         </div>
 
-        <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:10px;">
-          <button class="btn-primary-large" id="btn-firestore-force-sync" style="padding:12px 16px;font-size:0.9rem;">
-            <i data-lucide="refresh-cw"></i>
-            <span>Synchro Firestore en direct</span>
+        <!-- Local Data Summary -->
+        <div style="background:var(--bg-deep);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;">
+          <span style="color:var(--text-muted);">Données actuelles sur cet appareil :</span>
+          <span id="sync-local-summary" style="color:var(--cyan);font-weight:700;">Chargement...</span>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <button class="btn-primary-large" id="btn-firestore-push" style="padding:12px;font-size:0.84rem;background:linear-gradient(135deg, #0284c7, #0ea5e9);">
+            <i data-lucide="upload-cloud"></i>
+            <span>📤 Envoyer au Cloud</span>
           </button>
-          <button class="btn-secondary" id="btn-google-logout" style="padding:12px;font-size:0.86rem;color:var(--rose);">
-            <i data-lucide="log-out"></i>
-            <span>Déconnexion</span>
+          <button class="btn-primary-large" id="btn-firestore-pull" style="padding:12px;font-size:0.84rem;background:linear-gradient(135deg, #059669, #10b981);">
+            <i data-lucide="download-cloud"></i>
+            <span>📥 Récupérer du Cloud</span>
           </button>
         </div>
+
+        <button class="btn-secondary" id="btn-google-logout" style="width:100%;padding:10px;font-size:0.85rem;color:var(--rose);border-color:rgba(239, 68, 68, 0.3);margin-top:2px;">
+          <i data-lucide="log-out"></i>
+          <span>Se déconnecter du compte Google</span>
+        </button>
       </div>
 
       <!-- Statut de synchronisation -->
@@ -2224,35 +2229,12 @@ body {
         </div>
       </div>
 
-      <!-- SECTION 3: CODE DE SECOURS & EXPORT JSON (SÉCURITÉ SUPPLÉMENTAIRE) -->
-      <div style="border-top:1px solid var(--border-subtle);padding-top:12px;display:flex;flex-direction:column;gap:10px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;">
-          <span style="font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;">
-            Code de Secours Anonyme
-          </span>
-          <span style="font-size:0.72rem;color:var(--text-dim);">(En cas d'utilisation hors compte Google)</span>
+      <!-- SECTION 3: SAUVEGARDE SUR FICHIER JSON (SECOURS HORS-LIGNE) -->
+      <div style="border-top:1px solid var(--border-subtle);padding-top:12px;display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;">
+          Sauvegarde locale sur fichier (Optionnel)
         </div>
-
         <div style="display:flex;gap:8px;">
-          <input type="text" class="search-input" id="sync-session-code-input" value="OUAIL-2026" style="font-weight:800;letter-spacing:1px;text-transform:uppercase;">
-          <button class="btn-secondary" id="btn-save-session-code" style="padding:10px 16px;">
-            Sauvegarder
-          </button>
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-          <button class="btn-secondary" id="btn-cloud-push" style="padding:8px;font-size:0.8rem;">
-            <i data-lucide="upload-cloud"></i>
-            <span>Envoyer (Code)</span>
-          </button>
-          <button class="btn-secondary" id="btn-cloud-pull" style="padding:8px;font-size:0.8rem;">
-            <i data-lucide="download-cloud"></i>
-            <span>Récupérer (Code)</span>
-          </button>
-        </div>
-
-        <!-- Export / Import Manuel -->
-        <div style="display:flex;gap:8px;margin-top:2px;">
           <button class="btn-secondary" id="btn-export-json" style="flex:1;padding:8px;font-size:0.78rem;">
             <i data-lucide="download"></i>
             <span>Exporter fichier JSON</span>
