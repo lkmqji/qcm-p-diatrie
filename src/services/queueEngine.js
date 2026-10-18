@@ -146,8 +146,8 @@ export class QueueEngine {
       this.queue.splice(this.cursor, 1);
       // Cursor stays on next item (which slid into current index)
     } else {
-      // Re-insert further back (+15 to 20 cards)
-      pushDistance = Math.floor(Math.random() * 6) + 15; // 15 to 20
+      // Re-insert further back (+30 to 40 cards)
+      pushDistance = Math.floor(Math.random() * 11) + 30; // 30 to 40
       this.queue.splice(this.cursor, 1); // remove from current
       
       const insertIndex = Math.min(this.queue.length, this.cursor + pushDistance);
@@ -173,7 +173,7 @@ export class QueueEngine {
   /**
    * Process an incorrect response
    * Penalizes target (3 -> 4 -> 5 -> 6...)
-   * Reappears quickly (in the next 2-3 cards)
+   * Reappears in 5 to 7 cards to reinforce the reflex
    */
   handleFailure(uid) {
     const st = this.getQuestionStats(uid);
@@ -181,8 +181,8 @@ export class QueueEngine {
     st.target = 3 + st.mistakes; // Penalty applied!
     this.totalMistakesCount += 1;
 
-    // Remove from current position and re-insert very soon (+2 to +3 cards)
-    const pushDistance = Math.floor(Math.random() * 2) + 2; // 2 or 3
+    // Remove from current position and re-insert in 5 to 7 cards
+    const pushDistance = Math.floor(Math.random() * 3) + 5; // 5 to 7
     this.queue.splice(this.cursor, 1);
 
     const insertIndex = Math.min(this.queue.length, this.cursor + pushDistance);

@@ -2,12 +2,7 @@
 export const DEFAULT_GEMINI_KEY = "AQ.Ab8RN6InNmt_sD2jtOWtfP5veazlJgMEJ85vNfXf2B6St-_gVw";
 
 export const MODEL_CASCADE = [
-  "gemini-3.8-flash",
-  "gemini-3.7-flash",
-  "gemini-3.6-flash",
-  "gemini-3.5-flash-lite",
-  "gemini-3.1-flash-lite",
-  "gemini-2.5-flash"
+  "gemini-3.8-flash"
 ];
 
 class GeminiService {
@@ -30,9 +25,9 @@ class GeminiService {
   }
 
   /**
-   * Execute API call with automatic cascading through MODEL_CASCADE
+   * Execute API call strictly with Gemini 3.8 Flash
    */
-  async callWithFallback(prompt, systemInstruction = '', maxTokens = 800) {
+  async callWithFallback(prompt, systemInstruction = '', maxTokens = 4096) {
     const errors = [];
 
     for (const model of MODEL_CASCADE) {
@@ -46,11 +41,11 @@ class GeminiService {
         }
       } catch (err) {
         errors.push({ model, error: err.message });
-        console.warn(`[Gemini Cascade] ${model} failed (${err.message}), falling back to next model...`);
+        console.warn(`[Gemini] ${model} failed (${err.message})`);
       }
     }
 
-    throw new Error(`All Gemini models in cascade failed: ${JSON.stringify(errors)}`);
+    throw new Error(`Gemini 3.8 Flash call failed: ${JSON.stringify(errors)}`);
   }
 
   async _callModel(model, prompt, systemInstruction, maxTokens) {
@@ -78,7 +73,7 @@ class GeminiService {
     }
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 12000); // 12s timeout
+    const timeoutId = setTimeout(() => controller.abort(), 25000); // 25s timeout for complete clinical reasoning
 
     const response = await fetch(url, {
       method: "POST",
@@ -115,12 +110,13 @@ Critères d'évaluation :
 - Sois rigoureux sur le plan sémantique et médical (synonymes médicaux, acronymes reconnus, termes équivalents doivent être acceptés).
 - Attribue une note de 0 à 100%.
 - Si le score est >= 75%, la réponse est considérée comme juste.
+- Fournis une analyse détaillée et complète sans abréger.
 - Réponds STRICTEMENT au format JSON valide suivant, sans aucun markdown ni texte avant ou après :
 {
   "score": 85,
   "isValid": true,
-  "feedback": "Analyse concise de la réponse : éléments clés présents et manquants.",
-  "reasoningNote": "Conseil méthodologique court pour retenir ce point clinique."
+  "feedback": "Analyse exhaustive de la réponse : éléments clés validés, oublis et précisions cliniques requises.",
+  "reasoningNote": "Conseil méthodologique et réflexe clinique complet pour retenir ce point."
 }`;
 
     const userPrompt = `CONTEXTE CLINIQUE : ${clinicalCase || "Aucun"}
@@ -128,10 +124,10 @@ QUESTION CROQ : ${questionText}
 RÉPONSE MODÈLE OFFICIELLE : ${expectedAnswer}
 RÉPONSE DONNÉE PAR L'ÉTUDIANT : ${userAnswer}
 
-Évalue la réponse de l'étudiant et retourne UNIQUEMENT l'objet JSON.`;
+Évalue la réponse de l'étudiant et retourne UNIQUEMENT l'objet JSON complet.`;
 
     try {
-      const result = await this.callWithFallback(userPrompt, systemPrompt, 500);
+      const result = await this.callWithFallback(userPrompt, systemPrompt, 2048);
       const cleaned = result.text.replace(/```json/g, '').replace(/```/g, '').trim();
       const parsed = JSON.parse(cleaned);
       const score = Math.max(0, Math.min(100, Math.round(Number(parsed.score) || 0)));
@@ -196,41 +192,63 @@ RÉPONSE DONNÉE PAR L'ÉTUDIANT : ${userAnswer}
   }
 
   /**
-   * Generate short clinical reasoning note for mistake
+   * Generate complete, exhaustive clinical reasoning note for mistake or review
    */
   async generateReasoningNote(question, selectedLetters, isCroq = false, studentCroq = "") {
     const correctOptions = (question.options || []).filter(o => o.is_correct);
     const correctLetters = correctOptions.map(o => o.letter).join(", ");
-    const correctTexts = correctOptions.map(o => `${o.letter}: ${o.text}`).join("\n");
     const allOptionsText = (question.options || []).map(o => `${o.letter}) ${o.text}`).join("\n");
 
-    const systemPrompt = `Tu es un chef de clinique en pédiatrie préparant un étudiant pour le concours de résidanat et major de promotion.
-L'étudiant vient de commettre une erreur sur un QCM ou un CROQ.
-Génère une note COURTE, PERCUTANTE et CLINIQUE (maximum 120-150 mots) structurée exactement comme suit :
-1. 🎯 PIÈGE & DISTRACTEUR : Explique en 1-2 phrases pourquoi cette réponse trompe souvent et où réside le piège.
-2. 🩺 MÉTHODE DE RAISONNEMENT : La démarche diagnostique/physiopathologique étape par étape pour trouver la bonne réponse sans hésiter.
-3. 💡 RÈGLE D'OR (MÉMO CONCOURS) : Une formule mnémotechnique ou règle courte à mémoriser pour ne plus jamais se tromper.
-Sois direct, bienveillant et médicalement rigoureux.`;
+    const systemPrompt = `Tu es un Professeur de pédiatrie et jury de concours de résidanat en médecine.
+L'étudiant s'entraîne sur un QCM/CROQ et a besoin d'une explication CLINIQUE COMPLÈTE, PARFAITEMENT STRUCTURÉE et EXHAUSTIVE.
+La réponse doit être TOTALE et NE DOIT JAMAIS ÊTRE COUPÉE.
+Structure OBLIGATOIREMENT ton retour selon ces 4 sections détaillées :
 
-    const userPrompt = `MODULE : Pédiatrie - ${question.chapterTitle || ""}
+1. 🎯 PIÈGE CLINIQUE & ANALYSE DE L'ERREUR :
+Explique précisément pourquoi la réponse cochée par l'étudiant est fausse, le piège classique posé dans l'énoncé et la confusion fréquente en pédiatrie.
+
+2. 📋 JUSTIFICATION PROPOSITION PAR PROPOSITION (EXHAUSTIVE & COMPLÈTE) :
+Passe impérativement en revue TOUTES les propositions (A, B, C, D, E le cas échéant) SANS AUCUNE EXCEPTION NI OUBLI.
+Pour CHAQUE proposition (A, B, C, D, E), donne la lettre, l'énoncé de la proposition et justifie rigoureusement pourquoi elle est VRAIE ou FAUSSE sur les plans sémiologique, physiopathologique ou thérapeutique. Chaque proposition doit avoir sa justification détaillée et complète jusqu'au bout.
+
+3. 🩺 DÉMARCHE DE RAISONNEMENT & CONDUITE CLINIQUE :
+Détaille la démarche diagnostique et thérapeutique pas-à-pas : quel est le maître-symptôme, quelles données de l'âge de l'enfant orientent immédiatement, et comment éliminer les diagnostics différentiels.
+
+4. 💡 RÈGLE D'OR & MÉMO CONCOURS :
+Formule une règle mémo claire, percutante et mémorisable pour ne plus jamais hésiter sur ce dossier au concours.
+
+Rédige en français médical soigné, rigoureux et complet. Ne coupe aucune phrase, ne saute aucune étape.`;
+
+    const userPrompt = `MODULE : Pédiatrie - ${question.chapterTitle || "Pédiatrie Générale"}
 QUESTION : ${question.question}
-${question.clinical_case ? `CAS CLINIQUE : ${question.clinical_case}\n` : ""}
-OPTIONS DISPONIBLES :
-${allOptionsText}
-RÉPONSE(S) OFFICIELLEMENT JUSTE(S) : ${correctLetters || question.croq_answer}
-RÉPONSE COCHÉE PAR L'ÉTUDIANT : ${isCroq ? studentCroq : selectedLetters.join(", ")}
-EXPLICATION OFFICIELLE : ${question.explanation || "Non fournie"}`;
+${question.clinical_case ? `CAS CLINIQUE COMPLET : ${question.clinical_case}\n` : ""}
+PROPOSITIONS PROPOSÉES :
+${allOptionsText || "Question ouverte (CROQ)"}
+
+RÉPONSE(S) OFFICIELLEMENT CORRECTE(S) : ${correctLetters || question.croq_answer}
+RÉPONSE SÉLECTIONNÉE PAR L'ÉTUDIANT : ${isCroq ? studentCroq : (selectedLetters.join(", ") || "Aucune")}
+EXPLICATION OFFICIELLE DISPONIBLE DANS LA BASE : ${question.explanation || "Aucune explication fournie dans la base."}
+
+Rédige l'explication clinique complète et approfondie sans aucune coupure. À l'étape 2, justifie impérativement et de façon complète chaque proposition une par une.`;
 
     try {
-      const result = await this.callWithFallback(userPrompt, systemPrompt, 500);
+      const result = await this.callWithFallback(userPrompt, systemPrompt, 4096);
       return {
         note: result.text,
         modelUsed: result.modelUsed
       };
     } catch (err) {
       console.warn("Reasoning note generation failed, fallback to structured official explanation:", err);
+      let localNote = `### 🎯 PIÈGE CLINIQUE & RAPPEL OFFICIEL\n\n`;
+      if (question.explanation && question.explanation.trim()) {
+        localNote += `${question.explanation.trim()}\n\n`;
+      } else {
+        localNote += `Revoir attentivement les critères diagnostiques et recommandations du cours *${question.chapterTitle || 'Pédiatrie'}*.\n\n`;
+      }
+      localNote += `### 💡 RÈGLE D'OR CONCOURS\nEn pédiatrie, toujours vérifier l'âge de l'enfant, l'état vaccinal et les signes de détresse vitale avant de poser un diagnostic.`;
+      
       return {
-        note: `🎯 **PIÈGE & RAPPEL CLÉ**\n${question.explanation || "Revoir les critères diagnostiques et recommandations officielles du cours."}\n\n💡 **RÈGLE D'OR**\nToujours relire attentivement l'énoncé pédiatrique pour repérer les signes de gravité et les valeurs normales selon l'âge.`,
+        note: localNote,
         modelUsed: "Synthèse Clinique Locale"
       };
     }

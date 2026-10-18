@@ -1,4 +1,3 @@
-
 // ==========================================
 // PédiaDrill Unified Client Bundle
 // ==========================================
@@ -7,12 +6,7 @@
 const DEFAULT_GEMINI_KEY = "AQ.Ab8RN6InNmt_sD2jtOWtfP5veazlJgMEJ85vNfXf2B6St-_gVw";
 
 const MODEL_CASCADE = [
-  "gemini-3.8-flash",
-  "gemini-3.7-flash",
-  "gemini-3.6-flash",
-  "gemini-3.5-flash-lite",
-  "gemini-3.1-flash-lite",
-  "gemini-2.5-flash"
+  "gemini-3.8-flash"
 ];
 
 class GeminiService {
@@ -35,9 +29,9 @@ class GeminiService {
   }
 
   /**
-   * Execute API call with automatic cascading through MODEL_CASCADE
+   * Execute API call strictly with Gemini 3.8 Flash
    */
-  async callWithFallback(prompt, systemInstruction = '', maxTokens = 800) {
+  async callWithFallback(prompt, systemInstruction = '', maxTokens = 4096) {
     const errors = [];
 
     for (const model of MODEL_CASCADE) {
@@ -51,11 +45,11 @@ class GeminiService {
         }
       } catch (err) {
         errors.push({ model, error: err.message });
-        console.warn(`[Gemini Cascade] ${model} failed (${err.message}), falling back to next model...`);
+        console.warn(`[Gemini] ${model} failed (${err.message})`);
       }
     }
 
-    throw new Error(`All Gemini models in cascade failed: ${JSON.stringify(errors)}`);
+    throw new Error(`Gemini 3.8 Flash call failed: ${JSON.stringify(errors)}`);
   }
 
   async _callModel(model, prompt, systemInstruction, maxTokens) {
@@ -83,7 +77,7 @@ class GeminiService {
     }
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 12000); // 12s timeout
+    const timeoutId = setTimeout(() => controller.abort(), 25000); // 25s timeout for complete clinical reasoning
 
     const response = await fetch(url, {
       method: "POST",
@@ -120,12 +114,13 @@ Critères d'évaluation :
 - Sois rigoureux sur le plan sémantique et médical (synonymes médicaux, acronymes reconnus, termes équivalents doivent être acceptés).
 - Attribue une note de 0 à 100%.
 - Si le score est >= 75%, la réponse est considérée comme juste.
+- Fournis une analyse détaillée et complète sans abréger.
 - Réponds STRICTEMENT au format JSON valide suivant, sans aucun markdown ni texte avant ou après :
 {
   "score": 85,
   "isValid": true,
-  "feedback": "Analyse concise de la réponse : éléments clés présents et manquants.",
-  "reasoningNote": "Conseil méthodologique court pour retenir ce point clinique."
+  "feedback": "Analyse exhaustive de la réponse : éléments clés validés, oublis et précisions cliniques requises.",
+  "reasoningNote": "Conseil méthodologique et réflexe clinique complet pour retenir ce point."
 }`;
 
     const userPrompt = `CONTEXTE CLINIQUE : ${clinicalCase || "Aucun"}
@@ -133,10 +128,10 @@ QUESTION CROQ : ${questionText}
 RÉPONSE MODÈLE OFFICIELLE : ${expectedAnswer}
 RÉPONSE DONNÉE PAR L'ÉTUDIANT : ${userAnswer}
 
-Évalue la réponse de l'étudiant et retourne UNIQUEMENT l'objet JSON.`;
+Évalue la réponse de l'étudiant et retourne UNIQUEMENT l'objet JSON complet.`;
 
     try {
-      const result = await this.callWithFallback(userPrompt, systemPrompt, 500);
+      const result = await this.callWithFallback(userPrompt, systemPrompt, 2048);
       const cleaned = result.text.replace(/```json/g, '').replace(/```/g, '').trim();
       const parsed = JSON.parse(cleaned);
       const score = Math.max(0, Math.min(100, Math.round(Number(parsed.score) || 0)));
@@ -201,41 +196,63 @@ RÉPONSE DONNÉE PAR L'ÉTUDIANT : ${userAnswer}
   }
 
   /**
-   * Generate short clinical reasoning note for mistake
+   * Generate complete, exhaustive clinical reasoning note for mistake or review
    */
   async generateReasoningNote(question, selectedLetters, isCroq = false, studentCroq = "") {
     const correctOptions = (question.options || []).filter(o => o.is_correct);
     const correctLetters = correctOptions.map(o => o.letter).join(", ");
-    const correctTexts = correctOptions.map(o => `${o.letter}: ${o.text}`).join("\n");
     const allOptionsText = (question.options || []).map(o => `${o.letter}) ${o.text}`).join("\n");
 
-    const systemPrompt = `Tu es un chef de clinique en pédiatrie préparant un étudiant pour le concours de résidanat et major de promotion.
-L'étudiant vient de commettre une erreur sur un QCM ou un CROQ.
-Génère une note COURTE, PERCUTANTE et CLINIQUE (maximum 120-150 mots) structurée exactement comme suit :
-1. 🎯 PIÈGE & DISTRACTEUR : Explique en 1-2 phrases pourquoi cette réponse trompe souvent et où réside le piège.
-2. 🩺 MÉTHODE DE RAISONNEMENT : La démarche diagnostique/physiopathologique étape par étape pour trouver la bonne réponse sans hésiter.
-3. 💡 RÈGLE D'OR (MÉMO CONCOURS) : Une formule mnémotechnique ou règle courte à mémoriser pour ne plus jamais se tromper.
-Sois direct, bienveillant et médicalement rigoureux.`;
+    const systemPrompt = `Tu es un Professeur de pédiatrie et jury de concours de résidanat en médecine.
+L'étudiant s'entraîne sur un QCM/CROQ et a besoin d'une explication CLINIQUE COMPLÈTE, PARFAITEMENT STRUCTURÉE et EXHAUSTIVE.
+La réponse doit être TOTALE et NE DOIT JAMAIS ÊTRE COUPÉE.
+Structure OBLIGATOIREMENT ton retour selon ces 4 sections détaillées :
 
-    const userPrompt = `MODULE : Pédiatrie - ${question.chapterTitle || ""}
+1. 🎯 PIÈGE CLINIQUE & ANALYSE DE L'ERREUR :
+Explique précisément pourquoi la réponse cochée par l'étudiant est fausse, le piège classique posé dans l'énoncé et la confusion fréquente en pédiatrie.
+
+2. 📋 JUSTIFICATION PROPOSITION PAR PROPOSITION (EXHAUSTIVE & COMPLÈTE) :
+Passe impérativement en revue TOUTES les propositions (A, B, C, D, E le cas échéant) SANS AUCUNE EXCEPTION NI OUBLI.
+Pour CHAQUE proposition (A, B, C, D, E), donne la lettre, l'énoncé de la proposition et justifie rigoureusement pourquoi elle est VRAIE ou FAUSSE sur les plans sémiologique, physiopathologique ou thérapeutique. Chaque proposition doit avoir sa justification détaillée et complète jusqu'au bout.
+
+3. 🩺 DÉMARCHE DE RAISONNEMENT & CONDUITE CLINIQUE :
+Détaille la démarche diagnostique et thérapeutique pas-à-pas : quel est le maître-symptôme, quelles données de l'âge de l'enfant orientent immédiatement, et comment éliminer les diagnostics différentiels.
+
+4. 💡 RÈGLE D'OR & MÉMO CONCOURS :
+Formule une règle mémo claire, percutante et mémorisable pour ne plus jamais hésiter sur ce dossier au concours.
+
+Rédige en français médical soigné, rigoureux et complet. Ne coupe aucune phrase, ne saute aucune étape.`;
+
+    const userPrompt = `MODULE : Pédiatrie - ${question.chapterTitle || "Pédiatrie Générale"}
 QUESTION : ${question.question}
-${question.clinical_case ? `CAS CLINIQUE : ${question.clinical_case}\n` : ""}
-OPTIONS DISPONIBLES :
-${allOptionsText}
-RÉPONSE(S) OFFICIELLEMENT JUSTE(S) : ${correctLetters || question.croq_answer}
-RÉPONSE COCHÉE PAR L'ÉTUDIANT : ${isCroq ? studentCroq : selectedLetters.join(", ")}
-EXPLICATION OFFICIELLE : ${question.explanation || "Non fournie"}`;
+${question.clinical_case ? `CAS CLINIQUE COMPLET : ${question.clinical_case}\n` : ""}
+PROPOSITIONS PROPOSÉES :
+${allOptionsText || "Question ouverte (CROQ)"}
+
+RÉPONSE(S) OFFICIELLEMENT CORRECTE(S) : ${correctLetters || question.croq_answer}
+RÉPONSE SÉLECTIONNÉE PAR L'ÉTUDIANT : ${isCroq ? studentCroq : (selectedLetters.join(", ") || "Aucune")}
+EXPLICATION OFFICIELLE DISPONIBLE DANS LA BASE : ${question.explanation || "Aucune explication fournie dans la base."}
+
+Rédige l'explication clinique complète et approfondie sans aucune coupure. À l'étape 2, justifie impérativement et de façon complète chaque proposition une par une.`;
 
     try {
-      const result = await this.callWithFallback(userPrompt, systemPrompt, 500);
+      const result = await this.callWithFallback(userPrompt, systemPrompt, 4096);
       return {
         note: result.text,
         modelUsed: result.modelUsed
       };
     } catch (err) {
       console.warn("Reasoning note generation failed, fallback to structured official explanation:", err);
+      let localNote = `### 🎯 PIÈGE CLINIQUE & RAPPEL OFFICIEL\n\n`;
+      if (question.explanation && question.explanation.trim()) {
+        localNote += `${question.explanation.trim()}\n\n`;
+      } else {
+        localNote += `Revoir attentivement les critères diagnostiques et recommandations du cours *${question.chapterTitle || 'Pédiatrie'}*.\n\n`;
+      }
+      localNote += `### 💡 RÈGLE D'OR CONCOURS\nEn pédiatrie, toujours vérifier l'âge de l'enfant, l'état vaccinal et les signes de détresse vitale avant de poser un diagnostic.`;
+      
       return {
-        note: `🎯 **PIÈGE & RAPPEL CLÉ**\n${question.explanation || "Revoir les critères diagnostiques et recommandations officielles du cours."}\n\n💡 **RÈGLE D'OR**\nToujours relire attentivement l'énoncé pédiatrique pour repérer les signes de gravité et les valeurs normales selon l'âge.`,
+        note: localNote,
         modelUsed: "Synthèse Clinique Locale"
       };
     }
@@ -243,6 +260,7 @@ EXPLICATION OFFICIELLE : ${question.explanation || "Non fournie"}`;
 }
 
 const geminiService = new GeminiService();
+
 
 // Spaced Repetition Queue Engine with Dynamic Penalty & Mastery Thresholds
 
@@ -392,8 +410,8 @@ class QueueEngine {
       this.queue.splice(this.cursor, 1);
       // Cursor stays on next item (which slid into current index)
     } else {
-      // Re-insert further back (+15 to 20 cards)
-      pushDistance = Math.floor(Math.random() * 6) + 15; // 15 to 20
+      // Re-insert further back (+30 to 40 cards)
+      pushDistance = Math.floor(Math.random() * 11) + 30; // 30 to 40
       this.queue.splice(this.cursor, 1); // remove from current
       
       const insertIndex = Math.min(this.queue.length, this.cursor + pushDistance);
@@ -419,7 +437,7 @@ class QueueEngine {
   /**
    * Process an incorrect response
    * Penalizes target (3 -> 4 -> 5 -> 6...)
-   * Reappears quickly (in the next 2-3 cards)
+   * Reappears in 5 to 7 cards to reinforce the reflex
    */
   handleFailure(uid) {
     const st = this.getQuestionStats(uid);
@@ -427,8 +445,8 @@ class QueueEngine {
     st.target = 3 + st.mistakes; // Penalty applied!
     this.totalMistakesCount += 1;
 
-    // Remove from current position and re-insert very soon (+2 to +3 cards)
-    const pushDistance = Math.floor(Math.random() * 2) + 2; // 2 or 3
+    // Remove from current position and re-insert in 5 to 7 cards
+    const pushDistance = Math.floor(Math.random() * 3) + 5; // 5 to 7
     this.queue.splice(this.cursor, 1);
 
     const insertIndex = Math.min(this.queue.length, this.cursor + pushDistance);
@@ -628,6 +646,7 @@ class QueueEngine {
     }
   }
 }
+
 
 // Firebase Authentication (Google Sign-In) & Firestore Real-time Sync Service for PédiaDrill
 // Provides seamless multi-device progress sync across PC, Smartphone, and Tablet.
@@ -1149,10 +1168,8 @@ class FirebaseSyncService {
   }
 }
 
+
 // PédiaDrill - Application Controller & Orchestration
-
-
-
 
 // Global Data Access
 const allQuestions = window.PEDIA_QUESTIONS || [];
@@ -1440,14 +1457,16 @@ function formatReasoningNote(noteText) {
 
   const raw = noteText.trim();
 
-  // Flexible section extractors (supporting 1. 🎯, 🎯, ### 🎯, PIÈGE, RÉGLE, RÈGLE, REGLE etc.)
-  const trapRegex = /(?:###\s*|\*\*|#\s*)?(?:1[\.\)]\s*)?🎯\s*PI[ÈÉEeèéê]GE[^\n:]*[:\n]([\s\S]*?)(?=(?:###\s*|\*\*|#\s*)?(?:2[\.\)]\s*)?🩺\s*M[ÉEèéê]THODE|$)/i;
-  const methodRegex = /(?:###\s*|\*\*|#\s*)?(?:2[\.\)]\s*)?🩺\s*M[ÉEèéê]THODE[^\n:]*[:\n]([\s\S]*?)(?=(?:###\s*|\*\*|#\s*)?(?:3[\.\)]\s*)?💡\s*R[ÈÉEeèéê]GLE|$)/i;
-  const ruleRegex = /(?:###\s*|\*\*|#\s*)?(?:3[\.\)]\s*)?💡\s*R[ÈÉEeèéê]GLE[^\n:]*[:\n]([\s\S]*?)$/i;
+  // Regex patterns to capture the 4 structured sections from Gemini 3.8 Flash
+  const sec1Regex = /(?:###\s*|\*\*|#\s*)?(?:1[\.\)]\s*)?🎯\s*PI[ÈÉEeèéê]GE[^\n:]*[:\n]([\s\S]*?)(?=(?:###\s*|\*\*|#\s*)?(?:2[\.\)]\s*)?📋\s*JUSTIFICATION|(?:###\s*|\*\*|#\s*)?(?:3[\.\)]\s*)?🩺\s*D[ÉEèéê]MARCHE|(?:###\s*|\*\*|#\s*)?(?:2[\.\)]\s*)?🩺\s*M[ÉEèéê]THODE|$)/i;
+  const sec2Regex = /(?:###\s*|\*\*|#\s*)?(?:2[\.\)]\s*)?📋\s*JUSTIFICATION[^\n:]*[:\n]([\s\S]*?)(?=(?:###\s*|\*\*|#\s*)?(?:3[\.\)]\s*)?🩺\s*D[ÉEèéê]MARCHE|(?:###\s*|\*\*|#\s*)?(?:4[\.\)]\s*)?💡\s*R[ÈÉEeèéê]GLE|$)/i;
+  const sec3Regex = /(?:###\s*|\*\*|#\s*)?(?:[23][\.\)]\s*)?🩺\s*(?:D[ÉEèéê]MARCHE|M[ÉEèéê]THODE)[^\n:]*[:\n]([\s\S]*?)(?=(?:###\s*|\*\*|#\s*)?(?:[34][\.\)]\s*)?💡\s*R[ÈÉEeèéê]GLE|$)/i;
+  const sec4Regex = /(?:###\s*|\*\*|#\s*)?(?:[34][\.\)]\s*)?💡\s*R[ÈÉEeèéê]GLE[^\n:]*[:\n]([\s\S]*?)$/i;
 
-  const trapMatch = raw.match(trapRegex);
-  const methodMatch = raw.match(methodRegex);
-  const ruleMatch = raw.match(ruleRegex);
+  const match1 = raw.match(sec1Regex);
+  const match2 = raw.match(sec2Regex);
+  const match3 = raw.match(sec3Regex);
+  const match4 = raw.match(sec4Regex);
 
   const renderSectionContent = (contentRaw) => {
     if (!contentRaw) return '';
@@ -1476,36 +1495,49 @@ function formatReasoningNote(noteText) {
     return out;
   };
 
-  if (trapMatch || methodMatch || ruleMatch) {
+  if (match1 || match2 || match3 || match4) {
     let html = '<div class="reasoning-cards-container">';
 
-    if (trapMatch && trapMatch[1] && trapMatch[1].trim()) {
+    if (match1 && match1[1] && match1[1].trim()) {
       html += `
         <div class="reasoning-card card-trap">
           <div class="reasoning-card-header">
             <span class="reasoning-badge badge-trap">
               <span class="badge-icon">🎯</span>
-              <span>Piège & Distracteur</span>
+              <span>Piège Clinique & Analyse de l'Erreur</span>
             </span>
           </div>
-          <div class="reasoning-card-body">${renderSectionContent(trapMatch[1])}</div>
+          <div class="reasoning-card-body">${renderSectionContent(match1[1])}</div>
         </div>`;
     }
 
-    if (methodMatch && methodMatch[1] && methodMatch[1].trim()) {
+    if (match2 && match2[1] && match2[1].trim()) {
+      html += `
+        <div class="reasoning-card card-options-analysis">
+          <div class="reasoning-card-header">
+            <span class="reasoning-badge badge-options-analysis">
+              <span class="badge-icon">📋</span>
+              <span>Justification Proposition par Proposition</span>
+            </span>
+          </div>
+          <div class="reasoning-card-body">${renderSectionContent(match2[1])}</div>
+        </div>`;
+    }
+
+    if (match3 && match3[1] && match3[1].trim()) {
       html += `
         <div class="reasoning-card card-method">
           <div class="reasoning-card-header">
             <span class="reasoning-badge badge-method">
               <span class="badge-icon">🩺</span>
-              <span>Méthode de Raisonnement</span>
+              <span>Démarche Clinique & Raisonnement</span>
             </span>
           </div>
-          <div class="reasoning-card-body">${renderSectionContent(methodMatch[1])}</div>
+          <div class="reasoning-card-body">${renderSectionContent(match3[1])}</div>
         </div>`;
     }
 
-    if (ruleMatch && ruleMatch[1] && ruleMatch[1].trim()) {
+    if (match4 && match4[1] && match4[1].trim()) {
       html += `
         <div class="reasoning-card card-rule">
           <div class="reasoning-card-header">
@@ -1514,7 +1546,7 @@ function formatReasoningNote(noteText) {
               <span>Règle d'Or & Mémo Concours</span>
             </span>
           </div>
-          <div class="reasoning-card-body">${renderSectionContent(ruleMatch[1])}</div>
+          <div class="reasoning-card-body">${renderSectionContent(match4[1])}</div>
         </div>`;
     }
 
@@ -1584,74 +1616,226 @@ function formatCroqAnswer(answerText) {
   return `<div class="croq-simple-answer">${parseMarkdownInline(trimmed)}</div>`;
 }
 
-function formatAnswerComparison(userAnswer, correctAnswer, isCroq = false, score = null) {
-  let userHtml = '';
-  let correctHtml = '';
+/**
+ * Format complete structured recap: Full Question Statement, All Options (A-E),
+ * Student's Choice, Correct Choice and Official Database Explanation
+ */
+function formatQuestionMistakeRecap(question, userSelectedLetters, isCroq = false, userCroqText = '', score = null) {
+  if (!question) return '';
+
+  const lettersArr = Array.isArray(userSelectedLetters)
+    ? userSelectedLetters
+    : (userSelectedLetters ? String(userSelectedLetters).split(',').map(s => s.trim().toUpperCase()) : []);
+
+  let clinicalHtml = '';
+  if (question.clinical_case && question.clinical_case.trim()) {
+    clinicalHtml = `
+      <div class="mistake-clinical-box">
+        <div class="mistake-clinical-header">
+          <i data-lucide="stethoscope"></i>
+          <span>Cas Clinique</span>
+        </div>
+        <div class="mistake-clinical-text">${parseMarkdownInline(question.clinical_case.trim())}</div>
+      </div>
+    `;
+  }
+
+  let optionsOrCroqHtml = '';
 
   if (isCroq) {
     const scoreBadge = (score !== null && score !== undefined)
       ? `<span class="answer-badge ${score >= 75 ? 'badge-success' : 'badge-failure'}">Score : ${score}%</span>`
       : '';
-
-    userHtml = `
-      <div class="answer-box box-user">
-        <div class="answer-box-header">
-          <span class="answer-box-title text-rose">
-            <span class="box-icon">✕</span> Votre proposition :
-          </span>
-          ${scoreBadge}
+    optionsOrCroqHtml = `
+      <div class="answer-comparison-grid">
+        <div class="answer-box box-user">
+          <div class="answer-box-header">
+            <span class="answer-box-title text-rose">
+              <span class="box-icon">✕</span> Votre proposition :
+            </span>
+            ${scoreBadge}
+          </div>
+          <div class="answer-box-content croq-user-text">
+            ${userCroqText ? parseMarkdownInline(userCroqText) : '<em>Aucune réponse saisie</em>'}
+          </div>
         </div>
-        <div class="answer-box-content croq-user-text">
-          ${userAnswer ? parseMarkdownInline(userAnswer) : '<em>Aucune réponse saisie</em>'}
-        </div>
-      </div>
-    `;
-
-    correctHtml = `
-      <div class="answer-box box-correct">
-        <div class="answer-box-header">
-          <span class="answer-box-title text-emerald">
-            <span class="box-icon">✓</span> Réponse type officielle :
-          </span>
-          <span class="answer-badge badge-official">Référence concours</span>
-        </div>
-        <div class="answer-box-content">
-          ${formatCroqAnswer(correctAnswer)}
+        <div class="answer-box box-correct">
+          <div class="answer-box-header">
+            <span class="answer-box-title text-emerald">
+              <span class="box-icon">✓</span> Réponse type officielle :
+            </span>
+            <span class="answer-badge badge-official">Référence concours</span>
+          </div>
+          <div class="answer-box-content">
+            ${formatCroqAnswer(question.croq_answer || '')}
+          </div>
         </div>
       </div>
     `;
   } else {
-    userHtml = `
-      <div class="answer-box box-user">
-        <div class="answer-box-header">
-          <span class="answer-box-title text-rose">
-            <span class="box-icon">✕</span> Votre choix :
-          </span>
+    // QCM / QCU - Show ALL options with full texts and color-coded status
+    const options = question.options || [];
+    const correctOptions = options.filter(o => o.is_correct);
+    const correctLetters = correctOptions.map(o => o.letter).sort();
+
+    // User selected options with FULL text
+    const userSelectedOptions = options.filter(o => lettersArr.includes(o.letter));
+
+    let userOptionsHtml = '';
+    if (userSelectedOptions.length > 0) {
+      userOptionsHtml = `
+        <div class="mistake-answer-full-list">
+          ${userSelectedOptions.map(opt => `
+            <div class="mistake-answer-item ${opt.is_correct ? 'item-correct' : 'item-wrong'}">
+              <span class="mistake-item-letter">${escapeHtml(opt.letter)}</span>
+              <span class="mistake-item-text">${parseMarkdownInline(opt.text)}</span>
+            </div>
+          `).join('')}
         </div>
-        <div class="answer-box-content qcm-choice-text">
-          <strong>${userAnswer ? parseMarkdownInline(userAnswer) : 'Aucun'}</strong>
-        </div>
+      `;
+    } else {
+      userOptionsHtml = '<div class="mistake-empty-choice"><em>Aucune proposition cochée</em></div>';
+    }
+
+    // Correct options with FULL text
+    const correctOptionsHtml = `
+      <div class="mistake-answer-full-list">
+        ${correctOptions.map(opt => `
+          <div class="mistake-answer-item item-correct">
+            <span class="mistake-item-letter">${escapeHtml(opt.letter)}</span>
+            <span class="mistake-item-text">${parseMarkdownInline(opt.text)}</span>
+          </div>
+        `).join('')}
       </div>
     `;
 
-    correctHtml = `
-      <div class="answer-box box-correct">
-        <div class="answer-box-header">
-          <span class="answer-box-title text-emerald">
-            <span class="box-icon">✓</span> Bonne(s) réponse(s) :
-          </span>
+    optionsOrCroqHtml = `
+      <!-- Bloc Comparatif Direct avec Textes Complets -->
+      <div class="answer-comparison-grid">
+        <div class="answer-box box-user">
+          <div class="answer-box-header">
+            <span class="answer-box-title text-rose">
+              <span class="box-icon">✕</span> Ma réponse :
+            </span>
+            <span class="answer-badge ${lettersArr.length > 0 ? 'badge-failure' : 'badge-neutral'}">
+              ${lettersArr.length > 0 ? lettersArr.join(', ') : 'Aucune'}
+            </span>
+          </div>
+          <div class="answer-box-content">
+            ${userOptionsHtml}
+          </div>
         </div>
-        <div class="answer-box-content qcm-choice-text">
-          <strong>${parseMarkdownInline(correctAnswer)}</strong>
+        <div class="answer-box box-correct">
+          <div class="answer-box-header">
+            <span class="answer-box-title text-emerald">
+              <span class="box-icon">✓</span> Bonne(s) réponse(s) juste(s) attendue(s) :
+            </span>
+            <span class="answer-badge badge-success">${correctLetters.join(', ')}</span>
+          </div>
+          <div class="answer-box-content">
+            ${correctOptionsHtml}
+          </div>
+        </div>
+      </div>
+
+      <!-- Examen Exhaustif de Toutes les Propositions (A à E) -->
+      <div class="mistake-options-container">
+        <div class="mistake-options-header">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <i data-lucide="list-checks" style="width:16px;height:16px;color:var(--cyan);"></i>
+            <span style="font-weight:700;font-size:0.88rem;color:var(--text-main);">Toutes les propositions (A à E) &amp; Statut détaillé :</span>
+          </div>
+          <div style="font-size:0.75rem;color:var(--text-muted);">
+            Bonne(s) réponse(s) : <strong class="text-emerald">${correctLetters.join(', ')}</strong>
+          </div>
+        </div>
+        <div class="mistake-options-list">
+          ${options.map(opt => {
+            const isCorrect = !!opt.is_correct;
+            const isUserSelected = lettersArr.includes(opt.letter);
+
+            let rowClass = 'opt-row-neutral';
+            let badgeHtml = '';
+
+            if (isUserSelected && !isCorrect) {
+              rowClass = 'opt-row-wrong'; // RED
+              badgeHtml = `<span class="opt-status-badge badge-wrong"><i data-lucide="x"></i> Mon choix (Faux)</span>`;
+            } else if (isUserSelected && isCorrect) {
+              rowClass = 'opt-row-correct-chosen'; // GREEN
+              badgeHtml = `<span class="opt-status-badge badge-correct"><i data-lucide="check"></i> Mon choix (Juste)</span>`;
+            } else if (!isUserSelected && isCorrect) {
+              rowClass = 'opt-row-correct-missed'; // GREEN border / subtle green
+              badgeHtml = `<span class="opt-status-badge badge-correct"><i data-lucide="check"></i> Réponse juste attendue</span>`;
+            } else {
+              badgeHtml = `<span class="opt-status-badge badge-neutral">Distracteur faux</span>`;
+            }
+
+            return `
+              <div class="mistake-option-row ${rowClass}">
+                <div class="mistake-option-letter">${escapeHtml(opt.letter)}</div>
+                <div class="mistake-option-text">${parseMarkdownInline(opt.text)}</div>
+                <div class="mistake-option-badge-wrap">${badgeHtml}</div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  let explanationHtml = '';
+  if (question.explanation && question.explanation.trim()) {
+    explanationHtml = `
+      <div class="mistake-official-explanation-box">
+        <div class="mistake-explanation-title">
+          <i data-lucide="book-open" style="width:15px;height:15px;color:var(--cyan);"></i>
+          <span>Explication &amp; Source Officielle (Base de Données)</span>
+        </div>
+        <div class="mistake-explanation-body">
+          ${parseMarkdownInline(question.explanation.trim())}
         </div>
       </div>
     `;
   }
 
   return `
+    <div class="mistake-recap-wrapper">
+      <div class="mistake-question-card">
+        <div class="mistake-question-header">
+          <span class="tag-pill tag-qcu" style="font-size:0.7rem;padding:2px 8px;">${escapeHtml(question.chapterTitle || 'Pédiatrie')}</span>
+          <span class="tag-pill ${isCroq ? 'tag-croq' : 'tag-qcu'}" style="font-size:0.7rem;padding:2px 8px;">${isCroq ? 'CROQ' : 'QCM'}</span>
+        </div>
+        ${clinicalHtml}
+        <div class="mistake-question-statement">
+          ${parseMarkdownInline(question.question || question.statement || '')}
+        </div>
+      </div>
+      ${optionsOrCroqHtml}
+      ${explanationHtml}
+    </div>
+  `;
+}
+
+// Backward-compatible fallback helper
+function formatAnswerComparison(userAnswer, correctAnswer, isCroq = false, score = null) {
+  if (currentQuestion) {
+    const letters = userAnswer ? userAnswer.split(',').map(s => s.trim().toUpperCase()) : [];
+    return formatQuestionMistakeRecap(currentQuestion, letters, isCroq, userAnswer, score);
+  }
+  return `
     <div class="answer-comparison-grid">
-      ${userHtml}
-      ${correctHtml}
+      <div class="answer-box box-user">
+        <div class="answer-box-header">
+          <span class="answer-box-title text-rose"><span class="box-icon">✕</span> Votre choix :</span>
+        </div>
+        <div class="answer-box-content"><strong>${escapeHtml(userAnswer || 'Aucun')}</strong></div>
+      </div>
+      <div class="answer-box box-correct">
+        <div class="answer-box-header">
+          <span class="answer-box-title text-emerald"><span class="box-icon">✓</span> Bonne réponse :</span>
+        </div>
+        <div class="answer-box-content"><strong>${escapeHtml(correctAnswer || '')}</strong></div>
+      </div>
     </div>
   `;
 }
@@ -1664,8 +1848,11 @@ function loadNextArenaQuestion() {
   selectedOptionIds.clear();
   isEvaluating = false;
 
-  // Hide success banner, show default actions
+  // Hide success banner & explanation box, remove highlights, show default actions
   document.getElementById('arena-success-banner').style.display = 'none';
+  const arenaExpBox = document.getElementById('arena-explanation-box');
+  if (arenaExpBox) arenaExpBox.style.display = 'none';
+  document.querySelectorAll('.option-item').forEach(el => el.classList.remove('correct-highlight', 'wrong-highlight'));
   document.getElementById('arena-default-actions').style.display = 'flex';
 
   if (!currentQuestion) {
@@ -1749,13 +1936,13 @@ function loadNextArenaQuestion() {
     btnSubmitAnswer.disabled = true;
     shortcutHint.textContent = 'Raccourcis : [1-5] pour cocher, [Entrée] pour valider';
 
-    renderOptionsList(currentQuestion.options || [], currentQuestion.type === 'QCM');
+    renderOptionsList(currentQuestion.options || []);
   }
 
   refreshLucide();
 }
 
-function renderOptionsList(options, isMultiChoice) {
+function renderOptionsList(options) {
   const container = document.getElementById('arena-options-container');
   container.innerHTML = '';
 
@@ -1771,28 +1958,21 @@ function renderOptionsList(options, isMultiChoice) {
     `;
 
     item.addEventListener('click', () => {
-      toggleOptionSelection(item, isMultiChoice);
+      toggleOptionSelection(item);
     });
 
     container.appendChild(item);
   });
 }
 
-function toggleOptionSelection(itemElement, isMultiChoice) {
+function toggleOptionSelection(itemElement) {
   const optId = itemElement.dataset.optId;
 
-  if (isMultiChoice) {
-    if (selectedOptionIds.has(optId)) {
-      selectedOptionIds.delete(optId);
-      itemElement.classList.remove('selected');
-    } else {
-      selectedOptionIds.add(optId);
-      itemElement.classList.add('selected');
-    }
+  // Multi-choice selection enabled for all questions (A, B, C...)
+  if (selectedOptionIds.has(optId)) {
+    selectedOptionIds.delete(optId);
+    itemElement.classList.remove('selected');
   } else {
-    // Single Choice (QCU)
-    selectedOptionIds.clear();
-    document.querySelectorAll('.option-item').forEach(el => el.classList.remove('selected'));
     selectedOptionIds.add(optId);
     itemElement.classList.add('selected');
   }
@@ -1806,8 +1986,7 @@ function selectOptionByIndex(index) {
   if (!currentQuestion || currentQuestion.is_croq) return;
   const options = document.querySelectorAll('.option-item');
   if (options[index]) {
-    const isMulti = currentQuestion.type === 'QCM';
-    toggleOptionSelection(options[index], isMulti);
+    toggleOptionSelection(options[index]);
   }
 }
 
@@ -1887,7 +2066,7 @@ async function handleSubmitCroq() {
 }
 
 // ============================================================================
-// SUCCESS HANDLER
+// SUCCESS HANDLER WITH LIVE EXPLANATION
 // ============================================================================
 function handleAnswerSuccess(score = null, feedback = null) {
   const result = queueEngine.handleSuccess(currentQuestion.uid);
@@ -1913,6 +2092,31 @@ function handleAnswerSuccess(score = null, feedback = null) {
   }
 
   banner.style.display = 'flex';
+
+  // Highlight correct options visually in arena
+  if (currentQuestion && currentQuestion.options) {
+    document.querySelectorAll('.option-item').forEach(el => {
+      const letter = el.dataset.letter;
+      const isCor = (currentQuestion.options || []).some(o => o.letter === letter && o.is_correct);
+      if (isCor) {
+        el.classList.add('correct-highlight');
+      }
+    });
+  }
+
+  // Live Official Explanation Box right in the Arena (displayed for both right & wrong answers)
+  const expBox = document.getElementById('arena-explanation-box');
+  const expText = document.getElementById('arena-explanation-text');
+  if (expBox && expText) {
+    if (currentQuestion.explanation && currentQuestion.explanation.trim()) {
+      expText.innerHTML = parseMarkdownInline(currentQuestion.explanation.trim());
+      expBox.style.display = 'flex';
+    } else {
+      expText.innerHTML = `<em>Réponse officielle validée conformément aux critères du cours <strong>${escapeHtml(currentQuestion.chapterTitle || 'Pédiatrie')}</strong>.</em>`;
+      expBox.style.display = 'flex';
+    }
+  }
+
   refreshLucide();
 }
 
@@ -1938,15 +2142,31 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
   document.getElementById('error-modal-penalty-title').textContent = 
     `Pénalité appliquée : seuil augmenté à ${result.newTarget} réussites requises`;
   document.getElementById('error-modal-penalty-desc').textContent = 
-    `Cette question a été ratée (${result.mistakes} faute${result.mistakes > 1 ? 's' : ''}). Elle réapparaîtra très vite (dans ${result.pushDistance} cartes) pour ancrer le bon réflexe.`;
+    `Cette question a été ratée (${result.mistakes} faute${result.mistakes > 1 ? 's' : ''}). Elle réapparaîtra dans ${result.pushDistance} cartes pour ancrer le bon réflexe.`;
 
-  // Render structured comparison in error modal
+  // Render structured comparison in error modal with full question statement, all choices A-E, my choice, and correct choice!
   const userText = isCroq ? (userAnswerLetters[0] || '') : (userAnswerLetters.join(', ') || 'Aucune réponse cochée');
   const comparisonContainer = document.getElementById('error-modal-comparison-container') 
     || document.querySelector('.answer-recap-box');
 
   if (comparisonContainer) {
-    comparisonContainer.outerHTML = `<div id="error-modal-comparison-container">${formatAnswerComparison(userText, correctAnswerText, isCroq, score)}</div>`;
+    const recapHtml = formatQuestionMistakeRecap(currentQuestion, userAnswerLetters, isCroq, userText, score);
+    comparisonContainer.outerHTML = `<div id="error-modal-comparison-container">${recapHtml}</div>`;
+  }
+
+  // Highlight options visually in Arena (red for wrong choices, green for correct)
+  if (currentQuestion && currentQuestion.options) {
+    document.querySelectorAll('.option-item').forEach(el => {
+      const letter = el.dataset.letter;
+      const isSelected = userAnswerLetters.includes(letter);
+      const isCor = (currentQuestion.options || []).some(o => o.letter === letter && o.is_correct);
+
+      if (isSelected && !isCor) {
+        el.classList.add('wrong-highlight');
+      } else if (isCor) {
+        el.classList.add('correct-highlight');
+      }
+    });
   }
 
   // Show modal immediately
@@ -1955,7 +2175,7 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
   aiNoteContainer.innerHTML = `
     <div class="reasoning-loader-wrap">
       <i data-lucide="sparkles" class="spin"></i>
-      <span>Consultation du professeur IA et formulation de la méthode clinique...</span>
+      <span>Consultation de Gemini 3.8 Flash et formulation de la démarche clinique complète...</span>
     </div>
   `;
   refreshLucide();
@@ -1971,14 +2191,18 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
   aiNoteContainer.innerHTML = formatReasoningNote(reasoningObj.note);
   document.getElementById('error-modal-model-tag').textContent = reasoningObj.modelUsed;
 
-  // Save to Notebook with CROQ flag and score
+  // Save to Notebook with complete question metadata and options
   const noteRecord = {
     id: `note_${Date.now()}`,
     questionUid: currentQuestion.uid,
     questionText: currentQuestion.question,
+    clinicalCase: currentQuestion.clinical_case || null,
     chapterTitle: currentQuestion.chapterTitle,
+    options: currentQuestion.options ? JSON.parse(JSON.stringify(currentQuestion.options)) : [],
     userAnswer: userText,
+    userAnswerLetters: Array.isArray(userAnswerLetters) ? userAnswerLetters : [userAnswerLetters],
     correctAnswer: correctAnswerText,
+    officialExplanation: currentQuestion.explanation || '',
     isCroq: !!isCroq,
     score: isCroq ? score : null,
     reasoningNote: reasoningObj.note,
@@ -2139,17 +2363,23 @@ function renderNotebookUI(filterText = '') {
     chapFilterSelect.innerHTML = optionsHtml;
   }
 
-  // Filter notes by text & chapter
+  // Filter notes by text & chapter (including question, options, explanation and reasoning)
   const filtered = allNotes.filter(n => {
     if (notebookSelectedChapter && (n.chapterTitle || 'Pédiatrie Générale') !== notebookSelectedChapter) {
       return false;
     }
     if (!filterText) return true;
     const q = filterText.toLowerCase();
+    const fullQ = allQuestions.find(item => item.uid === n.questionUid);
+    const optionsText = fullQ && fullQ.options ? fullQ.options.map(o => o.text).join(' ').toLowerCase() : '';
+    const explanationText = (fullQ && fullQ.explanation ? fullQ.explanation.toLowerCase() : '') || (n.officialExplanation ? n.officialExplanation.toLowerCase() : '');
+
     return (n.questionText && n.questionText.toLowerCase().includes(q)) ||
            (n.chapterTitle && n.chapterTitle.toLowerCase().includes(q)) ||
            (n.reasoningNote && n.reasoningNote.toLowerCase().includes(q)) ||
-           (n.userAnswer && n.userAnswer.toLowerCase().includes(q));
+           (n.userAnswer && n.userAnswer.toLowerCase().includes(q)) ||
+           optionsText.includes(q) ||
+           explanationText.includes(q);
   });
 
   // Update summary bar
@@ -2224,14 +2454,33 @@ function renderNotebookUI(filterText = '') {
         `;
       }
 
-      // Pre-rendered panels for each attempt
+      // Pre-rendered panels for each attempt with complete fiches
       const panelsHtml = q.attempts.map((att, attIdx) => {
-        const compHtml = formatAnswerComparison(att.userAnswer, att.correctAnswer, q.isCroq, att.score);
+        // Resolve full question object from allQuestions or stored options
+        const fullQ = allQuestions.find(item => item.uid === att.questionUid) || {
+          uid: att.questionUid,
+          question: att.questionText,
+          clinical_case: att.clinicalCase || null,
+          chapterTitle: att.chapterTitle || q.chapterTitle,
+          options: att.options || [],
+          explanation: att.officialExplanation || '',
+          croq_answer: att.correctAnswer || ''
+        };
+
+        const letters = att.userAnswerLetters || (att.userAnswer ? att.userAnswer.split(',').map(s => s.trim().toUpperCase()) : []);
+        const recapHtml = formatQuestionMistakeRecap(fullQ, letters, q.isCroq, att.userAnswer, att.score);
         const reasHtml = formatReasoningNote(att.reasoningNote);
+
         return `
           <div class="attempt-panel" id="${qDomId}_att_${attIdx}" style="${attIdx === 0 ? '' : 'display:none;'}">
-            ${compHtml}
-            ${reasHtml}
+            ${recapHtml}
+            <div class="notebook-reasoning-section">
+              <div class="notebook-reasoning-title">
+                <i data-lucide="sparkles" style="width:16px;height:16px;color:var(--cyan);"></i>
+                <span>Méthode &amp; Analyse Clinique Approfondie (Gemini 3.8 Flash)</span>
+              </div>
+              ${reasHtml}
+            </div>
           </div>
         `;
       }).join('');
@@ -2252,11 +2501,10 @@ function renderNotebookUI(filterText = '') {
                   ${q.attemptsCount} tentatives regroupées
                 </span>
               ` : ''}
-              ${latestAttempt.modelUsed ? `<span style="font-size:0.7rem;color:var(--text-dim);font-weight:600;">${latestAttempt.modelUsed}</span>` : ''}
+              <span style="font-size:0.7rem;color:var(--cyan);font-weight:600;">Gemini 3.8 Flash</span>
               <span class="note-date">${latestDateStr}</span>
             </div>
           </div>
-          <div class="note-question">${parseMarkdownInline(q.questionText)}</div>
           ${switcherHtml}
           <div class="attempt-content-container">
             ${panelsHtml}
@@ -2653,4 +2901,6 @@ if (document.readyState === 'loading') {
 } else {
   initApp();
 }
+
+
 })();
