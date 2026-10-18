@@ -272,7 +272,17 @@ function escapeHtml(str) {
 
 function parseMarkdownInline(text) {
   if (!text) return '';
-  let res = escapeHtml(text);
+  let clean = String(text)
+    .replace(/\$SpO_2\$/gi, 'SpO₂')
+    .replace(/\$SpO2\$/gi, 'SpO₂')
+    .replace(/SpO_2/gi, 'SpO₂')
+    .replace(/\$PaO_2\$/gi, 'PaO₂')
+    .replace(/\$PaCO_2\$/gi, 'PaCO₂')
+    .replace(/\$([^\$]+)\$/g, '$1');
+
+  let res = escapeHtml(clean);
+  // Code block inline `...`
+  res = res.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
   // Bold + Italic ***...***
   res = res.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
   // Bold **...**
@@ -296,12 +306,34 @@ function formatMedicalContent(raw) {
   // 1. Remove zero-width characters and normalize BOM
   text = text.replace(/[\u200B-\u200D\uFEFF]/g, '');
 
-  // 2. Un-glue common section headings when stuck to preceding text
+  // 2. Un-glue bullets (➢, ⁃, •, ►, ▶, ✔, ✓)
+  text = text.replace(/([^\n\r])\s*([➢⁃•►▶✔✓])\s*/g, '$1\n$2 ');
+
+  // 3. Un-glue multi-space or NBSP columns (slide tables e.g. "Streptocoque B    E. Coli    Listeria")
+  text = text.replace(/[\u00a0\s]{3,}([A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ0-9<])/g, '\n- $1');
+
+  // 4. Un-glue squished words where lowercase is immediately followed by real French uppercase
+  // e.g. "vaccinéContamination", "pneumonieLes", "marastiqueMaladie", "hyperpigmentationBiologie"
+  text = text.replace(/([a-zàâäéèêëîïôöùûüç]{3,})([A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ][a-zàâäéèêëîïôöùûüç]{2,})/g, '$1.\n\n$2');
+
+  // 5. Un-glue sentence boundaries missing spaces after periods or closing parens
+  // e.g. "(TCA).Amyotrophie", "interstitiel.B/ Vrai", "peau5- Vrai", "oncotique.D/ Faux"
+  text = text.replace(/([a-z0-9\)])\s*\.\s*([A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ])/g, '$1. $2');
+  text = text.replace(/([a-z0-9\)])\s*\.\s*(Amyotrophie|H[ée]patom[ée]galie|Distension|L[ée]sions|Biologie|An[ée]mie|Troubles?|Signes?|Phase|Aspect|Examens?|Culture|Ponction|Traitement|Diagnostic|Pronostic|Surveillance|Lutte|Am[ée]lioration|Inconv[ée]nient|Lorsque|Elle|Il|Les|La|Le|Des|En|Pour|Dans)\b/g, '$1.\n\n$2');
+
+  // 6. Un-glue Proposition justifications: "A-Vrai", "A/ Vrai", "A : Faux", "1- Vrai", "1-Perplexe"
+  // e.g. "A-Vrai :", "assurésB-Vrai:", "oncotique.D/ Faux.", "peau5- Vrai,", "l'œdème.B : Vrai,"
+  text = text.replace(/(^|[^\n\r])\s*([a-eA-E])\s*[-–/:]\s*(?:-?\s*)?(Vrai|Faux|VRAI|FAUX|Fausse|Juste|Perplexe)\b/gi, '$1\n- **$2) $3** : ');
+  text = text.replace(/(^|[^\n\r])\s*(\d+)\s*[-–/:]\s*(?:-?\s*)?(Vrai|Faux|VRAI|FAUX|Fausse|Juste|Perplexe)\b/gi, '$1\n- **Item $2 ($3)** : ');
+
+  // 7. Un-glue comprehensive medical section headings
   const headings = [
     'Rappel\\s*:',
+    'Rappel\\s+sur[^:]+:',
+    'DEFINITION\\s+D[\'’]UNE[^:]+:',
     'D[ée]finition(?:\\s+d[\'’][\\w\\s]+)?\\s*:',
     'Remarque\\s*:',
-    'Source(?:\\s+[\\w\\s0-9]+)?\\s*:',
+    'Source(?:\\s+[\\w\\s0-9]+)?\\s*[:;]',
     'NB\\s*:',
     'Attention\\s*:',
     'Conduite\\s+[aà]\\s+tenir\\s*:',
@@ -309,8 +341,25 @@ function formatMedicalContent(raw) {
     'Traitement\\s*:',
     'Diagnostic\\s*:',
     'Crit[èe]res\\s*:',
-    'Signes\\s+cliniques\\s*:',
-    'Examens?\\s+compl[ée]mentaires?\\s*:',
+    'Signes\\s+(?:cliniques|physiques|fonctionnels|biologiques|dermatologiques)\\s*:',
+    'Tableau\\s+clinique(?:\\s+de[^:]+)?\\s*:',
+    'Examens?\\s+(?:compl[ée]mentaires?|syst[ée]matiques?)\\s*:',
+    'Physiopathologie\\s*:',
+    'Biologie\\s*:',
+    'Causes?\\s*:',
+    '[ÉEe]tiologies\\s*:',
+    'Troubles?\\s+(?:du\\s+comportement|digestifs|neurologiques|h[ée]modynamiques|des\\s+phan[èe]res|cutan[ée]s)\\s*:',
+    'L[ée]sions\\s+dermatologiques\\s*:',
+    'Phase\\s+d[\'’][ée]tat\\s*:',
+    'Aspect\\s+g[ée]n[ée]ral\\s*:',
+    'Classifications?(?:\\s+des\\s+MPE)?\\s*:',
+    'Classification\\s+de\\s+[\\w\\s]+:',
+    'Chez\\s+le\\s+(?:jeune\\s+)?nourrisson(?:\\s+de\\s+[^:]+)?\\s*:',
+    'Chez\\s+l[\'’]enfant\\s*:',
+    '2\\s+ans\\s+et\\s+grand\\s+enfant\\s*:',
+    'Le\\s+kwashiorkor(?:\\s+marastique)?\\s*:',
+    'Le\\s+marasme\\s*:',
+    'La\\s+m[ée]ningite(?:\\s+[aà][^:]+)?\\s*:',
     'Question\\s*\\d+\\s*:',
     'Q\\d+\\s*:',
     'En\\s+r[ée]sum[ée]\\s*:'
@@ -321,29 +370,19 @@ function formatMedicalContent(raw) {
     text = text.replace(re, '$1\n\n$2');
   });
 
-  // 3. Un-glue bullets (➢, ⁃, •, ►, ▶, ✔, ✓)
-  text = text.replace(/([^\n\r])\s*([➢⁃•►▶✔✓])\s*/g, '$1\n$2 ');
+  // 8. Un-glue 'Source' at end of sentence
+  text = text.replace(/([^\n\r])\s*(Source\s+diapositive|Source\s*[:;])/gi, '$1\n\n$2');
 
-  // 4. Un-glue 'Source' at end of sentence if stuck (e.g. "vaccin)Source diapositive")
-  text = text.replace(/([^\n\r])\s*(Source\s+diapositive|Source\s*:)/gi, '$1\n\n$2');
+  // 9. Un-glue QCM sub-items: "1- ...", "2- ...", "1. ...", "1) ..."
+  text = text.replace(/([^\n\r])\s+(\d+[\.\)-]\s+[A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ])/g, '$1\n$2');
+  text = text.replace(/([^\n\r])\s+([a-eA-E][\.\)]\s+[A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ])/g, '$1\n$2');
 
-  // 5. Un-glue QCM sub-items: "1- ...", "2- ...", "1. ...", "1) ..."
-  text = text.replace(/([^\n\r])\s+(\d+[\.\)-]\s+[A-ZÀ-ÖØ-ö])/g, '$1\n$2');
-  text = text.replace(/([^\n\r])\s+([a-eA-E][\.\)]\s+[A-ZÀ-ÖØ-ö])/g, '$1\n$2');
-
-  // 6. Un-glue "RJ" / "RF" followed immediately by number
-  text = text.replace(/(RJ|RF|CS|DP)\s*[:\-]?\s*(\d+[\.\)-]\s*)/gi, '$1 :\n$2');
-
-  // 7. Split multiple consecutive non-breaking or normal spaces (like table columns) into new lines
-  text = text.replace(/([^\n\r:;])[\u00a0\s]{3,}([A-ZÀ-ÖØ-ö0-9<])/g, '$1\n- $2');
-
-  // 8. Clean up multiple empty lines
+  // 10. Clean up multiple empty lines
   text = text.replace(/\n{3,}/g, '\n\n');
 
-  // 9. Split into lines
+  // 11. Split into lines
   const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
 
-  // 10. Build semantic, beautiful HTML
   let html = '<div class="medical-formatted-content">';
   let inBulletList = false;
   let inNumList = false;
@@ -354,30 +393,41 @@ function formatMedicalContent(raw) {
   };
 
   lines.forEach(line => {
-    // A. Section titles (Rappel, Définition, Question XX, Source, etc.)
-    const isSectionHeader = /^(?:Rappel|D[ée]finition|Remarque|Source|NB|Attention|Conduite|CAT|Traitement|Diagnostic|Crit[èe]res|Signes|Examens|Question\s*\d+|Q\d+)\s*:/i.test(line) ||
-                            /^Source\s+diapositive/i.test(line);
+    // Check if line is a Section Title (or starts with a section title)
+    const headerMatch = line.match(/^((?:Rappel|D[ée]finition|DEFINITION|Remarque|Source|NB|Attention|Conduite|CAT|Traitement|Diagnostic|Crit[èe]res|Signes|Tableau|Examens|Physiopathologie|Biologie|Causes|Etiologies|[ÉEe]tiologies|Troubles|L[ée]sions|Phase|Aspect|Classifications?|Chez|2\s+ans|Le\s+kwashiorkor|Le\s+marasme|La\s+m[ée]ningite|Question\s*\d+|Q\d+)[^:]*[:;])\s*(.*)$/i);
 
-    if (isSectionHeader) {
+    if (headerMatch) {
       closeLists();
+      const titleText = headerMatch[1].trim();
+      const afterText = headerMatch[2] ? headerMatch[2].trim() : '';
+
       let icon = 'info';
       let titleClass = 'medical-section-title';
-      if (/rappel/i.test(line)) {
+      if (/rappel/i.test(titleText)) {
         icon = 'bookmark';
         titleClass += ' title-rappel';
-      } else if (/source/i.test(line)) {
+      } else if (/source/i.test(titleText)) {
         icon = 'book-open';
         titleClass += ' title-source';
-      } else if (/question/i.test(line)) {
+      } else if (/question|q\d+/i.test(titleText)) {
         icon = 'help-circle';
         titleClass += ' title-question';
+      } else if (/biologie|examen/i.test(titleText)) {
+        icon = 'activity';
+        titleClass += ' title-bio';
+      } else if (/signe|tableau|trouble/i.test(titleText)) {
+        icon = 'stethoscope';
+        titleClass += ' title-clinical';
       }
 
-      html += `<div class="${titleClass}"><i data-lucide="${icon}"></i><span>${parseMarkdownInline(line)}</span></div>`;
+      html += `<div class="${titleClass}"><i data-lucide="${icon}"></i><span>${parseMarkdownInline(titleText)}</span></div>`;
+      if (afterText) {
+        html += `<p class="medical-paragraph">${parseMarkdownInline(afterText)}</p>`;
+      }
       return;
     }
 
-    // B. Bullet items (➢, ⁃, •, ►, ▶, ✔, ✓, -, *)
+    // Bullet items
     const bulletMatch = line.match(/^([➢⁃•►▶✔✓\*\-]\s*)(.*)$/);
     if (bulletMatch) {
       if (inNumList) { html += '</ul>'; inNumList = false; }
@@ -388,7 +438,7 @@ function formatMedicalContent(raw) {
       return;
     }
 
-    // C. Numbered items (1-, 2-, 1., 2., 1), 2))
+    // Numbered items
     const numMatch = line.match(/^(\d+)(?:[-–\.]|\))\s+(.*)$/);
     if (numMatch) {
       if (inBulletList) { html += '</ul>'; inBulletList = false; }
@@ -399,7 +449,7 @@ function formatMedicalContent(raw) {
       return;
     }
 
-    // D. Regular paragraph
+    // Regular paragraph
     closeLists();
     html += `<p class="medical-paragraph">${parseMarkdownInline(line)}</p>`;
   });
@@ -429,12 +479,32 @@ function formatReasoningNote(noteText) {
 
   const renderSectionContent = (contentRaw) => {
     if (!contentRaw) return '';
-    let clean = contentRaw.trim().replace(/^\*\*|\*\*$/g, '').trim();
+    let clean = contentRaw.trim()
+      .replace(/^[\s\-–—*]{3,}\s*$/gm, '') // Strip horizontal rule lines
+      .trim();
+
     const lines = clean.split('\n').map(l => l.trim()).filter(Boolean);
     let out = '';
     let inList = false;
+    let inQuote = false;
 
     lines.forEach(line => {
+      // Skip divider lines
+      if (/^[\-–—*]{3,}$/.test(line)) return;
+
+      // Blockquotes (> ...) for golden memos and rules
+      const quoteMatch = line.match(/^>\s*(.*)$/);
+      if (quoteMatch) {
+        if (inList) { out += '</ul>'; inList = false; }
+        if (!inQuote) { out += '<blockquote class="reasoning-callout-quote">'; inQuote = true; }
+        out += `<p>${parseMarkdownInline(quoteMatch[1])}</p>`;
+        return;
+      } else if (inQuote) {
+        out += '</blockquote>';
+        inQuote = false;
+      }
+
+      // Bullet items (-, •, *)
       if (/^[-•*]\s+/.test(line)) {
         if (!inList) {
           out += '<ul class="reasoning-list">';
@@ -450,7 +520,9 @@ function formatReasoningNote(noteText) {
         out += `<p class="reasoning-paragraph">${parseMarkdownInline(line)}</p>`;
       }
     });
+
     if (inList) out += '</ul>';
+    if (inQuote) out += '</blockquote>';
     return out;
   };
 

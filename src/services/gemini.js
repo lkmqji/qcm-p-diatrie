@@ -2,7 +2,12 @@
 export const DEFAULT_GEMINI_KEY = "AQ.Ab8RN6InNmt_sD2jtOWtfP5veazlJgMEJ85vNfXf2B6St-_gVw";
 
 export const MODEL_CASCADE = [
-  "gemini-3.8-flash"
+  "gemini-3.8-flash",         // Priorité #1 : modèle privilégié principal
+  "gemini-3.7-flash",         // Secours #2
+  "gemini-3.5-flash-lite",    // Secours #3 : ultra-réactif et disponible sans blocage de quota
+  "gemini-3.1-flash-lite",    // Secours #4
+  "gemini-flash-lite-latest", // Secours #5
+  "gemini-3-flash-preview"    // Secours #6
 ];
 
 class GeminiService {
@@ -25,7 +30,8 @@ class GeminiService {
   }
 
   /**
-   * Execute API call strictly with Gemini 3.8 Flash
+   * Execute API call in cascade: always starts with Gemini 3.8 Flash,
+   * seamlessly falls back to resilient models if quota 429 or rate limits are reached.
    */
   async callWithFallback(prompt, systemInstruction = '', maxTokens = 4096) {
     const errors = [];
@@ -41,11 +47,11 @@ class GeminiService {
         }
       } catch (err) {
         errors.push({ model, error: err.message });
-        console.warn(`[Gemini] ${model} failed (${err.message})`);
+        console.warn(`[Gemini Cascade] ${model} failed (${err.message}) -> Trying next fallback...`);
       }
     }
 
-    throw new Error(`Gemini 3.8 Flash call failed: ${JSON.stringify(errors)}`);
+    throw new Error(`All Gemini cascade models failed: ${JSON.stringify(errors)}`);
   }
 
   async _callModel(model, prompt, systemInstruction, maxTokens) {
@@ -239,20 +245,43 @@ Rédige l'explication clinique complète et approfondie sans aucune coupure. À 
       };
     } catch (err) {
       console.warn("Reasoning note generation failed, fallback to structured official explanation:", err);
-      let localNote = `### 🎯 PIÈGE CLINIQUE & RAPPEL OFFICIEL\n\n`;
-      if (question.explanation && question.explanation.trim()) {
-        localNote += `${question.explanation.trim()}\n\n`;
+      const chosenStr = isCroq ? studentCroq : (selectedLetters.join(", ") || "Aucune");
+      const expStr = question.explanation ? question.explanation.trim() : "Se référer aux critères diagnostiques officiels de pédiatrie.";
+      const corrStr = correctLetters || question.croq_answer || "Réponse officielle";
+
+      let localNote = `### 1. 🎯 PIÈGE CLINIQUE & ANALYSE DE L'ERREUR :\n`;
+      localNote += `* **Votre sélection :** ${chosenStr}\n`;
+      localNote += `* **Réponse attendue :** ${corrStr}\n`;
+      localNote += `* **Analyse & Piège :** ${expStr}\n\n`;
+
+      localNote += `### 2. 📋 JUSTIFICATION PROPOSITION PAR PROPOSITION :\n`;
+      if (question.options && question.options.length > 0) {
+        question.options.forEach(o => {
+          const status = o.is_correct ? "VRAIE" : "FAUSSE";
+          localNote += `* **${o.letter}) ${o.text}** : **${status}**\n`;
+        });
       } else {
-        localNote += `Revoir attentivement les critères diagnostiques et recommandations du cours *${question.chapterTitle || 'Pédiatrie'}*.\n\n`;
+        localNote += `* **Réponse type attendue :** ${question.croq_answer || expStr}\n`;
       }
-      localNote += `### 💡 RÈGLE D'OR CONCOURS\nEn pédiatrie, toujours vérifier l'âge de l'enfant, l'état vaccinal et les signes de détresse vitale avant de poser un diagnostic.`;
-      
+      localNote += `\n`;
+
+      localNote += `### 3. 🩺 DÉMARCHE DE RAISONNEMENT & CONDUITE CLINIQUE :\n`;
+      localNote += `* **Thème clé :** *${question.chapterTitle || 'Pédiatrie Générale'}*\n`;
+      if (question.clinical_case) {
+        localNote += `* **Contexte clinique :** ${question.clinical_case.slice(0, 180)}...\n`;
+      }
+      localNote += `* **Conduite pratique :** Toujours hiérarchiser les signes de gravité vitale (détresse respiratoire, hémodynamique, neurologique) avant tout examen invasif ou traitement d'épreuve.\n\n`;
+
+      localNote += `### 4. 💡 RÈGLE D'OR & MÉMO CONCOURS :\n`;
+      localNote += `> **Règle d'or :** En pédiatrie (*${question.chapterTitle || 'Pédiatrie'}*), toujours retenir la notion clé : **${corrStr}** (conforme aux recommandations HAS et consensus officiels).`;
+
       return {
         note: localNote,
-        modelUsed: "Synthèse Clinique Locale"
+        modelUsed: "Synthèse Clinique Locale (Hors-Ligne)"
       };
     }
   }
 }
 
 export const geminiService = new GeminiService();
+

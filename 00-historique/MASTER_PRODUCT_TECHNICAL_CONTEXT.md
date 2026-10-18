@@ -72,7 +72,10 @@ L'apprentissage repose sur une file d'attente circulaire dynamique (`activeQueue
 - **Persistance locale & Cloud** : Tout l'état (`activeQueue`, `stats`, `cursor`, `reasoningNotes`, `todayTracker`) est sauvegardé dans `localStorage` sous la clé `pedia_drill_state_v1` et synchronisé via `FirebaseSyncService`.
 
 ### 3.2. Évaluation IA & Raisonnement Clinique (`src/services/gemini.js`)
-- **Modèle exclusif** : Verrouillé strictement sur `gemini-3.8-flash` (`MODEL_CASCADE = ["gemini-3.8-flash"]`).
+- **Modèle principal privilégié & Cascade de résilience** :
+  - Priorité absolue systématique à `gemini-3.8-flash` (position #1 de `MODEL_CASCADE`).
+  - Cascade automatique ordonnée si le quota quotidien (20 requêtes/jour sur Free Tier) est épuisé ou en cas d'erreur réseau : `gemini-3.7-flash` -> `gemini-3.5-flash-lite` -> `gemini-3.1-flash-lite` -> `gemini-flash-lite-latest` -> `gemini-3-flash-preview`.
+  - Le basculement sur `gemini-3.5-flash-lite` garantit une continuité de service ininterrompue avec une génération pédiatrique complète (~6 500 caractères) en moins de 4 secondes.
 - **Paramètres de génération** :
   - `temperature: 0.2` (haute rigueur médicale et reproductibilité).
   - `maxOutputTokens: 4096` (garantie de réponses complètes sans coupure de phrases).
@@ -82,7 +85,8 @@ L'apprentissage repose sur une file d'attente circulaire dynamique (`activeQueue
   - Retourne un score de 0 à 100%. Validation accordée si `score >= 75%`.
   - Fallback hors-ligne : analyse sémantique par sac de mots-clés normalisés.
 - **Génération de la note de raisonnement clinique (`generateReasoningNote`)** :
-  Organisée strictement en 4 sections cliniques :
+  Organisée strictement en 4 sections cliniques avec parseur de mémo optimisé (`.reasoning-callout-quote`) :
+
   1. `🎯 PIÈGE CLINIQUE & ANALYSE DE L'ERREUR` : explication du piège et de la confusion médicale.
   2. `📋 JUSTIFICATION PROPOSITION PAR PROPOSITION (EXHAUSTIVE & COMPLÈTE)` : analyse systématique de TOUTES les options (A, B, C, D, E) avec texte intégral et justification de véracité.
   3. `🩺 DÉMARCHE DE RAISONNEMENT & CONDUITE CLINIQUE` : maître-symptôme, impact de l'âge de l'enfant, diagnostics différentiels.
@@ -117,9 +121,12 @@ Lorsqu'une réponse est incorrecte (dans la modale d'erreur ou dans le carnet) :
 
 ### 3.7. Moteur de Formatage Médical Intelligent (`formatMedicalContent`)
 Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes issus de l'extraction de cours :
+- **Dégel des justifications de propositions (ex: `A-Vrai`, `A/ Vrai`, `B : Faux`, `1- Vrai`, `1-Perplexe`)** : Détection et conversion systématique en listes à puces avec badges en gras (`- **A) Vrai** :`).
+- **Dégel des colonnes multi-espaces de diapositives** : Détection des énumérations séparées par de multiples espaces insécables (`\u00A0`) et conversion en éléments de liste à puces individuels.
+- **Séparation des phrases compactées** : Détection des mots et phrases collées sans espace ou sans point (`(TCA).Amyotrophie`, `assurésB-Vrai`, `interstitiel.B/ Vrai`, `vaccinéContamination`, `hyperpigmentationBiologie`).
 - **Dégel des puces (`➢`, `⁃`, `•`, `►`, `▶`, `✔`, `✓`, `-`, `*`)** : Détection regex et insertion de retours à la ligne avec génération de listes HTML `<ul class="medical-bullet-list">` et puces stylisées.
 - **Dégel des énumérations d'énoncés (ex: `1-`, `2-`, `1.`, `2.`)** : Rendu sous forme de listes ordonnées avec badges colorés `<ul class="medical-num-list">` et `<span class="medical-num-badge">`.
-- **Mise en valeur des en-têtes médicaux** : Détection des marqueurs clés (`Rappel :`, `Définition :`, `Question 01 :`, `Remarque :`, `Source :`, `NB :`, `Attention :`, `CAT :`, `Traitement :`, `Diagnostic :`) avec badges thématiques `<div class="medical-section-title">` et icônes Lucide.
+- **Mise en valeur et découpage des en-têtes médicaux** : Détection des marqueurs clés (`Rappel :`, `Définition :`, `Question 01 :`, `Remarque :`, `Source :`, `NB :`, `Attention :`, `CAT :`, `Traitement :`, `Diagnostic :`, `Signes cliniques :`, `Biologie :`, `Physiopathologie :`, `Tableau clinique :`, `Examens :`) avec découpage immédiat du titre et de son paragraphe associé, badges thématiques `<div class="medical-section-title">` et icônes Lucide.
 - **Nettoyage et espacement** : Élimination des BOM (`\uFEFF`) et des blocs d'espaces insécables (`\u00A0`), découpage en paragraphes espacés `<p class="medical-paragraph">` avec `line-height: 1.6`.
 - **Application omni-présente** :
   - Arène : Énoncé (`#arena-question-text`), Cas clinique (`#arena-clinical-case-text`), Explication officielle en direct (`#arena-explanation-text`).

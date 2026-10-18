@@ -876,6 +876,20 @@ body {
   background: rgba(139, 92, 246, 0.09);
 }
 
+.medical-section-title.title-bio {
+  color: #38bdf8;
+  border-color: rgba(56, 189, 248, 0.35);
+  border-left-color: #0284c7;
+  background: rgba(2, 132, 199, 0.09);
+}
+
+.medical-section-title.title-clinical {
+  color: #34d399;
+  border-color: rgba(52, 211, 153, 0.35);
+  border-left-color: var(--emerald);
+  background: rgba(16, 185, 129, 0.09);
+}
+
 /* Medical Bullet Lists (➢, ⁃, •, -, *) */
 .medical-bullet-list {
   list-style: none;
@@ -1609,6 +1623,37 @@ body {
 .reasoning-card-body em {
   color: var(--amber);
   font-style: italic;
+}
+
+.reasoning-callout-quote {
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-left: 4px solid var(--amber);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin: 6px 0;
+  color: #fef08a;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.08);
+}
+
+.reasoning-callout-quote p {
+  margin: 0 0 4px 0;
+}
+
+.reasoning-callout-quote p:last-child {
+  margin-bottom: 0;
+}
+
+.inline-code {
+  font-family: monospace;
+  background: rgba(0, 212, 255, 0.12);
+  border: 1px solid rgba(0, 212, 255, 0.25);
+  color: var(--cyan);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.82rem;
 }
 
 .reasoning-loader-wrap {
@@ -3378,7 +3423,12 @@ window.PEDIA_QUESTIONS = [{"uid":"meningo-encephalites_1","chapterId":"meningo-e
 const DEFAULT_GEMINI_KEY = "AQ.Ab8RN6InNmt_sD2jtOWtfP5veazlJgMEJ85vNfXf2B6St-_gVw";
 
 const MODEL_CASCADE = [
-  "gemini-3.8-flash"
+  "gemini-3.8-flash",         // Priorité #1 : modèle privilégié principal
+  "gemini-3.7-flash",         // Secours #2
+  "gemini-3.5-flash-lite",    // Secours #3 : ultra-réactif et disponible sans blocage de quota
+  "gemini-3.1-flash-lite",    // Secours #4
+  "gemini-flash-lite-latest", // Secours #5
+  "gemini-3-flash-preview"    // Secours #6
 ];
 
 class GeminiService {
@@ -3401,7 +3451,8 @@ class GeminiService {
   }
 
   /**
-   * Execute API call strictly with Gemini 3.8 Flash
+   * Execute API call in cascade: always starts with Gemini 3.8 Flash,
+   * seamlessly falls back to resilient models if quota 429 or rate limits are reached.
    */
   async callWithFallback(prompt, systemInstruction = '', maxTokens = 4096) {
     const errors = [];
@@ -3417,11 +3468,11 @@ class GeminiService {
         }
       } catch (err) {
         errors.push({ model, error: err.message });
-        console.warn(`[Gemini] ${model} failed (${err.message})`);
+        console.warn(`[Gemini Cascade] ${model} failed (${err.message}) -> Trying next fallback...`);
       }
     }
 
-    throw new Error(`Gemini 3.8 Flash call failed: ${JSON.stringify(errors)}`);
+    throw new Error(`All Gemini cascade models failed: ${JSON.stringify(errors)}`);
   }
 
   async _callModel(model, prompt, systemInstruction, maxTokens) {
@@ -3615,23 +3666,46 @@ Rédige l'explication clinique complète et approfondie sans aucune coupure. À 
       };
     } catch (err) {
       console.warn("Reasoning note generation failed, fallback to structured official explanation:", err);
-      let localNote = `### 🎯 PIÈGE CLINIQUE & RAPPEL OFFICIEL\n\n`;
-      if (question.explanation && question.explanation.trim()) {
-        localNote += `${question.explanation.trim()}\n\n`;
+      const chosenStr = isCroq ? studentCroq : (selectedLetters.join(", ") || "Aucune");
+      const expStr = question.explanation ? question.explanation.trim() : "Se référer aux critères diagnostiques officiels de pédiatrie.";
+      const corrStr = correctLetters || question.croq_answer || "Réponse officielle";
+
+      let localNote = `### 1. 🎯 PIÈGE CLINIQUE & ANALYSE DE L'ERREUR :\n`;
+      localNote += `* **Votre sélection :** ${chosenStr}\n`;
+      localNote += `* **Réponse attendue :** ${corrStr}\n`;
+      localNote += `* **Analyse & Piège :** ${expStr}\n\n`;
+
+      localNote += `### 2. 📋 JUSTIFICATION PROPOSITION PAR PROPOSITION :\n`;
+      if (question.options && question.options.length > 0) {
+        question.options.forEach(o => {
+          const status = o.is_correct ? "VRAIE" : "FAUSSE";
+          localNote += `* **${o.letter}) ${o.text}** : **${status}**\n`;
+        });
       } else {
-        localNote += `Revoir attentivement les critères diagnostiques et recommandations du cours *${question.chapterTitle || 'Pédiatrie'}*.\n\n`;
+        localNote += `* **Réponse type attendue :** ${question.croq_answer || expStr}\n`;
       }
-      localNote += `### 💡 RÈGLE D'OR CONCOURS\nEn pédiatrie, toujours vérifier l'âge de l'enfant, l'état vaccinal et les signes de détresse vitale avant de poser un diagnostic.`;
-      
+      localNote += `\n`;
+
+      localNote += `### 3. 🩺 DÉMARCHE DE RAISONNEMENT & CONDUITE CLINIQUE :\n`;
+      localNote += `* **Thème clé :** *${question.chapterTitle || 'Pédiatrie Générale'}*\n`;
+      if (question.clinical_case) {
+        localNote += `* **Contexte clinique :** ${question.clinical_case.slice(0, 180)}...\n`;
+      }
+      localNote += `* **Conduite pratique :** Toujours hiérarchiser les signes de gravité vitale (détresse respiratoire, hémodynamique, neurologique) avant tout examen invasif ou traitement d'épreuve.\n\n`;
+
+      localNote += `### 4. 💡 RÈGLE D'OR & MÉMO CONCOURS :\n`;
+      localNote += `> **Règle d'or :** En pédiatrie (*${question.chapterTitle || 'Pédiatrie'}*), toujours retenir la notion clé : **${corrStr}** (conforme aux recommandations HAS et consensus officiels).`;
+
       return {
         note: localNote,
-        modelUsed: "Synthèse Clinique Locale"
+        modelUsed: "Synthèse Clinique Locale (Hors-Ligne)"
       };
     }
   }
 }
 
 const geminiService = new GeminiService();
+
 
 
 // Spaced Repetition Queue Engine with Dynamic Penalty & Mastery Thresholds
@@ -4823,7 +4897,17 @@ function escapeHtml(str) {
 
 function parseMarkdownInline(text) {
   if (!text) return '';
-  let res = escapeHtml(text);
+  let clean = String(text)
+    .replace(/\$SpO_2\$/gi, 'SpO₂')
+    .replace(/\$SpO2\$/gi, 'SpO₂')
+    .replace(/SpO_2/gi, 'SpO₂')
+    .replace(/\$PaO_2\$/gi, 'PaO₂')
+    .replace(/\$PaCO_2\$/gi, 'PaCO₂')
+    .replace(/\$([^\$]+)\$/g, '$1');
+
+  let res = escapeHtml(clean);
+  // Code block inline `...`
+  res = res.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
   // Bold + Italic ***...***
   res = res.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
   // Bold **...**
@@ -4847,12 +4931,34 @@ function formatMedicalContent(raw) {
   // 1. Remove zero-width characters and normalize BOM
   text = text.replace(/[\u200B-\u200D\uFEFF]/g, '');
 
-  // 2. Un-glue common section headings when stuck to preceding text
+  // 2. Un-glue bullets (➢, ⁃, •, ►, ▶, ✔, ✓)
+  text = text.replace(/([^\n\r])\s*([➢⁃•►▶✔✓])\s*/g, '$1\n$2 ');
+
+  // 3. Un-glue multi-space or NBSP columns (slide tables e.g. "Streptocoque B    E. Coli    Listeria")
+  text = text.replace(/[\u00a0\s]{3,}([A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ0-9<])/g, '\n- $1');
+
+  // 4. Un-glue squished words where lowercase is immediately followed by real French uppercase
+  // e.g. "vaccinéContamination", "pneumonieLes", "marastiqueMaladie", "hyperpigmentationBiologie"
+  text = text.replace(/([a-zàâäéèêëîïôöùûüç]{3,})([A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ][a-zàâäéèêëîïôöùûüç]{2,})/g, '$1.\n\n$2');
+
+  // 5. Un-glue sentence boundaries missing spaces after periods or closing parens
+  // e.g. "(TCA).Amyotrophie", "interstitiel.B/ Vrai", "peau5- Vrai", "oncotique.D/ Faux"
+  text = text.replace(/([a-z0-9\)])\s*\.\s*([A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ])/g, '$1. $2');
+  text = text.replace(/([a-z0-9\)])\s*\.\s*(Amyotrophie|H[ée]patom[ée]galie|Distension|L[ée]sions|Biologie|An[ée]mie|Troubles?|Signes?|Phase|Aspect|Examens?|Culture|Ponction|Traitement|Diagnostic|Pronostic|Surveillance|Lutte|Am[ée]lioration|Inconv[ée]nient|Lorsque|Elle|Il|Les|La|Le|Des|En|Pour|Dans)\b/g, '$1.\n\n$2');
+
+  // 6. Un-glue Proposition justifications: "A-Vrai", "A/ Vrai", "A : Faux", "1- Vrai", "1-Perplexe"
+  // e.g. "A-Vrai :", "assurésB-Vrai:", "oncotique.D/ Faux.", "peau5- Vrai,", "l'œdème.B : Vrai,"
+  text = text.replace(/(^|[^\n\r])\s*([a-eA-E])\s*[-–/:]\s*(?:-?\s*)?(Vrai|Faux|VRAI|FAUX|Fausse|Juste|Perplexe)\b/gi, '$1\n- **$2) $3** : ');
+  text = text.replace(/(^|[^\n\r])\s*(\d+)\s*[-–/:]\s*(?:-?\s*)?(Vrai|Faux|VRAI|FAUX|Fausse|Juste|Perplexe)\b/gi, '$1\n- **Item $2 ($3)** : ');
+
+  // 7. Un-glue comprehensive medical section headings
   const headings = [
     'Rappel\\s*:',
+    'Rappel\\s+sur[^:]+:',
+    'DEFINITION\\s+D[\'’]UNE[^:]+:',
     'D[ée]finition(?:\\s+d[\'’][\\w\\s]+)?\\s*:',
     'Remarque\\s*:',
-    'Source(?:\\s+[\\w\\s0-9]+)?\\s*:',
+    'Source(?:\\s+[\\w\\s0-9]+)?\\s*[:;]',
     'NB\\s*:',
     'Attention\\s*:',
     'Conduite\\s+[aà]\\s+tenir\\s*:',
@@ -4860,8 +4966,25 @@ function formatMedicalContent(raw) {
     'Traitement\\s*:',
     'Diagnostic\\s*:',
     'Crit[èe]res\\s*:',
-    'Signes\\s+cliniques\\s*:',
-    'Examens?\\s+compl[ée]mentaires?\\s*:',
+    'Signes\\s+(?:cliniques|physiques|fonctionnels|biologiques|dermatologiques)\\s*:',
+    'Tableau\\s+clinique(?:\\s+de[^:]+)?\\s*:',
+    'Examens?\\s+(?:compl[ée]mentaires?|syst[ée]matiques?)\\s*:',
+    'Physiopathologie\\s*:',
+    'Biologie\\s*:',
+    'Causes?\\s*:',
+    '[ÉEe]tiologies\\s*:',
+    'Troubles?\\s+(?:du\\s+comportement|digestifs|neurologiques|h[ée]modynamiques|des\\s+phan[èe]res|cutan[ée]s)\\s*:',
+    'L[ée]sions\\s+dermatologiques\\s*:',
+    'Phase\\s+d[\'’][ée]tat\\s*:',
+    'Aspect\\s+g[ée]n[ée]ral\\s*:',
+    'Classifications?(?:\\s+des\\s+MPE)?\\s*:',
+    'Classification\\s+de\\s+[\\w\\s]+:',
+    'Chez\\s+le\\s+(?:jeune\\s+)?nourrisson(?:\\s+de\\s+[^:]+)?\\s*:',
+    'Chez\\s+l[\'’]enfant\\s*:',
+    '2\\s+ans\\s+et\\s+grand\\s+enfant\\s*:',
+    'Le\\s+kwashiorkor(?:\\s+marastique)?\\s*:',
+    'Le\\s+marasme\\s*:',
+    'La\\s+m[ée]ningite(?:\\s+[aà][^:]+)?\\s*:',
     'Question\\s*\\d+\\s*:',
     'Q\\d+\\s*:',
     'En\\s+r[ée]sum[ée]\\s*:'
@@ -4872,29 +4995,19 @@ function formatMedicalContent(raw) {
     text = text.replace(re, '$1\n\n$2');
   });
 
-  // 3. Un-glue bullets (➢, ⁃, •, ►, ▶, ✔, ✓)
-  text = text.replace(/([^\n\r])\s*([➢⁃•►▶✔✓])\s*/g, '$1\n$2 ');
+  // 8. Un-glue 'Source' at end of sentence
+  text = text.replace(/([^\n\r])\s*(Source\s+diapositive|Source\s*[:;])/gi, '$1\n\n$2');
 
-  // 4. Un-glue 'Source' at end of sentence if stuck (e.g. "vaccin)Source diapositive")
-  text = text.replace(/([^\n\r])\s*(Source\s+diapositive|Source\s*:)/gi, '$1\n\n$2');
+  // 9. Un-glue QCM sub-items: "1- ...", "2- ...", "1. ...", "1) ..."
+  text = text.replace(/([^\n\r])\s+(\d+[\.\)-]\s+[A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ])/g, '$1\n$2');
+  text = text.replace(/([^\n\r])\s+([a-eA-E][\.\)]\s+[A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ])/g, '$1\n$2');
 
-  // 5. Un-glue QCM sub-items: "1- ...", "2- ...", "1. ...", "1) ..."
-  text = text.replace(/([^\n\r])\s+(\d+[\.\)-]\s+[A-ZÀ-ÖØ-ö])/g, '$1\n$2');
-  text = text.replace(/([^\n\r])\s+([a-eA-E][\.\)]\s+[A-ZÀ-ÖØ-ö])/g, '$1\n$2');
-
-  // 6. Un-glue "RJ" / "RF" followed immediately by number
-  text = text.replace(/(RJ|RF|CS|DP)\s*[:\-]?\s*(\d+[\.\)-]\s*)/gi, '$1 :\n$2');
-
-  // 7. Split multiple consecutive non-breaking or normal spaces (like table columns) into new lines
-  text = text.replace(/([^\n\r:;])[\u00a0\s]{3,}([A-ZÀ-ÖØ-ö0-9<])/g, '$1\n- $2');
-
-  // 8. Clean up multiple empty lines
+  // 10. Clean up multiple empty lines
   text = text.replace(/\n{3,}/g, '\n\n');
 
-  // 9. Split into lines
+  // 11. Split into lines
   const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
 
-  // 10. Build semantic, beautiful HTML
   let html = '<div class="medical-formatted-content">';
   let inBulletList = false;
   let inNumList = false;
@@ -4905,30 +5018,41 @@ function formatMedicalContent(raw) {
   };
 
   lines.forEach(line => {
-    // A. Section titles (Rappel, Définition, Question XX, Source, etc.)
-    const isSectionHeader = /^(?:Rappel|D[ée]finition|Remarque|Source|NB|Attention|Conduite|CAT|Traitement|Diagnostic|Crit[èe]res|Signes|Examens|Question\s*\d+|Q\d+)\s*:/i.test(line) ||
-                            /^Source\s+diapositive/i.test(line);
+    // Check if line is a Section Title (or starts with a section title)
+    const headerMatch = line.match(/^((?:Rappel|D[ée]finition|DEFINITION|Remarque|Source|NB|Attention|Conduite|CAT|Traitement|Diagnostic|Crit[èe]res|Signes|Tableau|Examens|Physiopathologie|Biologie|Causes|Etiologies|[ÉEe]tiologies|Troubles|L[ée]sions|Phase|Aspect|Classifications?|Chez|2\s+ans|Le\s+kwashiorkor|Le\s+marasme|La\s+m[ée]ningite|Question\s*\d+|Q\d+)[^:]*[:;])\s*(.*)$/i);
 
-    if (isSectionHeader) {
+    if (headerMatch) {
       closeLists();
+      const titleText = headerMatch[1].trim();
+      const afterText = headerMatch[2] ? headerMatch[2].trim() : '';
+
       let icon = 'info';
       let titleClass = 'medical-section-title';
-      if (/rappel/i.test(line)) {
+      if (/rappel/i.test(titleText)) {
         icon = 'bookmark';
         titleClass += ' title-rappel';
-      } else if (/source/i.test(line)) {
+      } else if (/source/i.test(titleText)) {
         icon = 'book-open';
         titleClass += ' title-source';
-      } else if (/question/i.test(line)) {
+      } else if (/question|q\d+/i.test(titleText)) {
         icon = 'help-circle';
         titleClass += ' title-question';
+      } else if (/biologie|examen/i.test(titleText)) {
+        icon = 'activity';
+        titleClass += ' title-bio';
+      } else if (/signe|tableau|trouble/i.test(titleText)) {
+        icon = 'stethoscope';
+        titleClass += ' title-clinical';
       }
 
-      html += `<div class="${titleClass}"><i data-lucide="${icon}"></i><span>${parseMarkdownInline(line)}</span></div>`;
+      html += `<div class="${titleClass}"><i data-lucide="${icon}"></i><span>${parseMarkdownInline(titleText)}</span></div>`;
+      if (afterText) {
+        html += `<p class="medical-paragraph">${parseMarkdownInline(afterText)}</p>`;
+      }
       return;
     }
 
-    // B. Bullet items (➢, ⁃, •, ►, ▶, ✔, ✓, -, *)
+    // Bullet items
     const bulletMatch = line.match(/^([➢⁃•►▶✔✓\*\-]\s*)(.*)$/);
     if (bulletMatch) {
       if (inNumList) { html += '</ul>'; inNumList = false; }
@@ -4939,7 +5063,7 @@ function formatMedicalContent(raw) {
       return;
     }
 
-    // C. Numbered items (1-, 2-, 1., 2., 1), 2))
+    // Numbered items
     const numMatch = line.match(/^(\d+)(?:[-–\.]|\))\s+(.*)$/);
     if (numMatch) {
       if (inBulletList) { html += '</ul>'; inBulletList = false; }
@@ -4950,7 +5074,7 @@ function formatMedicalContent(raw) {
       return;
     }
 
-    // D. Regular paragraph
+    // Regular paragraph
     closeLists();
     html += `<p class="medical-paragraph">${parseMarkdownInline(line)}</p>`;
   });
@@ -4980,12 +5104,32 @@ function formatReasoningNote(noteText) {
 
   const renderSectionContent = (contentRaw) => {
     if (!contentRaw) return '';
-    let clean = contentRaw.trim().replace(/^\*\*|\*\*$/g, '').trim();
+    let clean = contentRaw.trim()
+      .replace(/^[\s\-–—*]{3,}\s*$/gm, '') // Strip horizontal rule lines
+      .trim();
+
     const lines = clean.split('\n').map(l => l.trim()).filter(Boolean);
     let out = '';
     let inList = false;
+    let inQuote = false;
 
     lines.forEach(line => {
+      // Skip divider lines
+      if (/^[\-–—*]{3,}$/.test(line)) return;
+
+      // Blockquotes (> ...) for golden memos and rules
+      const quoteMatch = line.match(/^>\s*(.*)$/);
+      if (quoteMatch) {
+        if (inList) { out += '</ul>'; inList = false; }
+        if (!inQuote) { out += '<blockquote class="reasoning-callout-quote">'; inQuote = true; }
+        out += `<p>${parseMarkdownInline(quoteMatch[1])}</p>`;
+        return;
+      } else if (inQuote) {
+        out += '</blockquote>';
+        inQuote = false;
+      }
+
+      // Bullet items (-, •, *)
       if (/^[-•*]\s+/.test(line)) {
         if (!inList) {
           out += '<ul class="reasoning-list">';
@@ -5001,7 +5145,9 @@ function formatReasoningNote(noteText) {
         out += `<p class="reasoning-paragraph">${parseMarkdownInline(line)}</p>`;
       }
     });
+
     if (inList) out += '</ul>';
+    if (inQuote) out += '</blockquote>';
     return out;
   };
 

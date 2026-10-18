@@ -52,3 +52,27 @@
   - Préservation intégrale du bloc comparatif (« Votre proposition » vs « Réponse type officielle ») pour les questions rédactionnelles CROQ, où la comparaison textuelle reste indispensable.
 - **Recompilation & Déploiement** :
   - Mise à jour du bundle autonome `src/app.bundle.js`, `index.html` et `dist/index.html`.
+
+### 21:30 - Activation de la cascade multi-modèles de résilience & Rendu soigné du Mémo Concours
+- **Cascade intelligente de résilience Gemini (`src/services/gemini.js`)** :
+  - Priorité absolue accordée à `gemini-3.8-flash` en position #1 de la cascade (`MODEL_CASCADE`).
+  - Ajout d'une cascade ordonnée de modèles de secours haute disponibilité en cas d'épuisement de quota (HTTP 429) ou d'erreur réseau : `gemini-3.7-flash` -> `gemini-3.5-flash-lite` -> `gemini-3.1-flash-lite` -> `gemini-flash-lite-latest` -> `gemini-3-flash-preview`.
+  - Si le quota quotidien gratuit de `gemini-3.8-flash` (20 requêtes/jour) est saturé, l'application bascule automatiquement et de manière transparente sur `gemini-3.5-flash-lite` (quota actif et vitesse de génération exceptionnelle de ~4s pour ~6 500 caractères).
+  - Enrichissement du fallback local hors-ligne : si l'appareil est complètement déconnecté d'Internet, le système génère désormais les 4 sections structurées complètes et spécifiques au dossier (analyse du piège, statut vrai/faux de chaque option A à E, démarche clinique ciblée et mémo de concours contextualisé).
+- **Formatage élégant du Mémo et des règles d'or (`src/app.js` & `src/style.css`)** :
+  - Nettoyage des caractères parasites de citation (`>`) et des traits d'union `---` générés par les modèles.
+  - Encapsulation des citations de règles d'or dans des blocs stylisés dédiés `.reasoning-callout-quote` avec bordure ambre, fond chaleureux et ombrage doux.
+  - Nettoyage et conversion automatique des indices mathématiques et gazimétriques médicaux (`SpO₂`, `PaO₂`, `PaCO₂`) dans `parseMarkdownInline`.
+- **Recompilation & Déploiement** :
+  - Recompilation réussie avec `build-bundle.cjs` (`src/app.bundle.js`, `index.html`, `dist/index.html`).
+
+### 21:35 - Découpage et mise en page aérée des explications de cours
+- **Dégel approfondi des explications médicales (`formatMedicalContent`)** :
+  - Résolution des textes d'explications compacts et sans retours à la ligne issus de diapositives de cours ou d'extractions OCR :
+    - **Justifications de propositions A-E** : Détection et séparation automatique des justifications collées (`A-Vrai`, `A/ Vrai`, `A : Faux`, `1- Vrai`, `1-Perplexe`, etc.) en listes à puces aérées avec badges en gras (`- **A) Vrai** :`).
+    - **Dégel des colonnes multi-espaces** : Conversion automatique des listes bactériennes et tableaux de diapositives séparés par de multiples espaces insécables (`\u00A0`) en listes à puces distinctes.
+    - **Séparation des phrases collées** : Détection des frontières de phrases compactes (`(TCA).Amyotrophie`, `assurésB-Vrai`, `interstitiel.B/ Vrai`, `vaccinéContamination`, `hyperpigmentationBiologie`) avec insertion de ponctuation et sauts de lignes adaptés.
+    - **Découpage des titres de sections et du contenu associé** : Lorsqu'un en-tête médical figure sur la même ligne que son texte (ex: `Question 01 : ...`, `Signes cliniques: ...`, `Biologie: ...`, `Rappel : ...`), séparation immédiate du titre dans son badge dédié et placement du texte dans un paragraphe fluide.
+    - **Prise en charge étendue des titres médicaux** : Ajout de styles et badges Lucide pour la biologie (`.title-bio`), la sémiologie (`.title-clinical`), les définitions, examens, classifications et physiopathologie.
+- **Recompilation & Déploiement** :
+  - Recompilation complète via `build-bundle.cjs` (`src/app.bundle.js`, `index.html`, `dist/index.html`).
