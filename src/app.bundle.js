@@ -303,6 +303,14 @@ class QueueEngine {
       if (saved) {
         const parsed = JSON.parse(saved);
         this.stats = parsed.stats || {};
+        // Ensure all loaded targets respect the maximum threshold of 10
+        if (this.stats && typeof this.stats === 'object') {
+          Object.values(this.stats).forEach(st => {
+            if (st && typeof st === 'object' && typeof st.target === 'number' && st.target > 10) {
+              st.target = 10;
+            }
+          });
+        }
         this.queue = parsed.queue || [];
         this.cursor = parsed.cursor || 0;
         this.selectedChapterIds = parsed.selectedChapterIds || [];
@@ -387,13 +395,16 @@ class QueueEngine {
     if (!this.stats[uid]) {
       this.stats[uid] = { target: 3, current: 0, mistakes: 0, done: false };
     }
+    if (this.stats[uid].target > 10) {
+      this.stats[uid].target = 10;
+    }
     return this.stats[uid];
   }
 
   /**
    * Process a correct response
-   * Pushed far back (15 to 20 cards)
-   * If threshold met (3, or 4/5/6 if penalized), disappears permanently!
+   * Pushed far back (30 to 40 cards)
+   * If threshold met (3, or up to max 10 if penalized), disappears permanently!
    */
   handleSuccess(uid) {
     const st = this.getQuestionStats(uid);
@@ -436,13 +447,13 @@ class QueueEngine {
 
   /**
    * Process an incorrect response
-   * Penalizes target (3 -> 4 -> 5 -> 6...)
+   * Penalizes target (3 -> 4 -> 5 ... up to a max cap of 10)
    * Reappears in 5 to 7 cards to reinforce the reflex
    */
   handleFailure(uid) {
     const st = this.getQuestionStats(uid);
     st.mistakes += 1;
-    st.target = 3 + st.mistakes; // Penalty applied!
+    st.target = Math.min(10, 3 + st.mistakes); // Penalty applied, capped at max 10!
     this.totalMistakesCount += 1;
 
     // Remove from current position and re-insert in 5 to 7 cards
@@ -700,7 +711,7 @@ function mergeStates(local, remote) {
     if (l && r) {
       merged.stats[uid] = {
         current: Math.max(l.current || 0, r.current || 0),
-        target: Math.max(l.target || 3, r.target || 3),
+        target: Math.min(10, Math.max(l.target || 3, r.target || 3)),
         mistakes: Math.max(l.mistakes || 0, r.mistakes || 0),
         done: !!(l.done || r.done)
       };
@@ -708,9 +719,9 @@ function mergeStates(local, remote) {
         merged.stats[uid].done = true;
       }
     } else if (l) {
-      merged.stats[uid] = { ...l };
+      merged.stats[uid] = { ...l, target: Math.min(10, l.target || 3) };
     } else if (r) {
-      merged.stats[uid] = { ...r };
+      merged.stats[uid] = { ...r, target: Math.min(10, r.target || 3) };
     }
   }
 
@@ -1450,6 +1461,133 @@ function parseMarkdownInline(text) {
   return res;
 }
 
+/**
+ * Advanced Medical Rich Text Formatter
+ * Un-glues squished questions, clinical cases, and explanations,
+ * turning them into readable, structured paragraphs, medical section headers,
+ * and styled bullet/numbered lists with proper vertical spacing and breathing room.
+ */
+function formatMedicalContent(raw) {
+  if (!raw || typeof raw !== 'string') return '';
+
+  let text = raw.trim();
+
+  // 1. Remove zero-width characters and normalize BOM
+  text = text.replace(/[\u200B-\u200D\uFEFF]/g, '');
+
+  // 2. Un-glue common section headings when stuck to preceding text
+  const headings = [
+    'Rappel\\s*:',
+    'D[ée]finition(?:\\s+d[\'’][\\w\\s]+)?\\s*:',
+    'Remarque\\s*:',
+    'Source(?:\\s+[\\w\\s0-9]+)?\\s*:',
+    'NB\\s*:',
+    'Attention\\s*:',
+    'Conduite\\s+[aà]\\s+tenir\\s*:',
+    'CAT\\s*:',
+    'Traitement\\s*:',
+    'Diagnostic\\s*:',
+    'Crit[èe]res\\s*:',
+    'Signes\\s+cliniques\\s*:',
+    'Examens?\\s+compl[ée]mentaires?\\s*:',
+    'Question\\s*\\d+\\s*:',
+    'Q\\d+\\s*:',
+    'En\\s+r[ée]sum[ée]\\s*:'
+  ];
+
+  headings.forEach(pattern => {
+    const re = new RegExp('([^\\n\\r])\\s*(' + pattern + ')', 'gi');
+    text = text.replace(re, '$1\n\n$2');
+  });
+
+  // 3. Un-glue bullets (➢, ⁃, •, ►, ▶, ✔, ✓)
+  text = text.replace(/([^\n\r])\s*([➢⁃•►▶✔✓])\s*/g, '$1\n$2 ');
+
+  // 4. Un-glue 'Source' at end of sentence if stuck (e.g. "vaccin)Source diapositive")
+  text = text.replace(/([^\n\r])\s*(Source\s+diapositive|Source\s*:)/gi, '$1\n\n$2');
+
+  // 5. Un-glue QCM sub-items: "1- ...", "2- ...", "1. ...", "1) ..."
+  text = text.replace(/([^\n\r])\s+(\d+[\.\)-]\s+[A-ZÀ-ÖØ-ö])/g, '$1\n$2');
+  text = text.replace(/([^\n\r])\s+([a-eA-E][\.\)]\s+[A-ZÀ-ÖØ-ö])/g, '$1\n$2');
+
+  // 6. Un-glue "RJ" / "RF" followed immediately by number
+  text = text.replace(/(RJ|RF|CS|DP)\s*[:\-]?\s*(\d+[\.\)-]\s*)/gi, '$1 :\n$2');
+
+  // 7. Split multiple consecutive non-breaking or normal spaces (like table columns) into new lines
+  text = text.replace(/([^\n\r:;])[\u00a0\s]{3,}([A-ZÀ-ÖØ-ö0-9<])/g, '$1\n- $2');
+
+  // 8. Clean up multiple empty lines
+  text = text.replace(/\n{3,}/g, '\n\n');
+
+  // 9. Split into lines
+  const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+
+  // 10. Build semantic, beautiful HTML
+  let html = '<div class="medical-formatted-content">';
+  let inBulletList = false;
+  let inNumList = false;
+
+  const closeLists = () => {
+    if (inBulletList) { html += '</ul>'; inBulletList = false; }
+    if (inNumList) { html += '</ul>'; inNumList = false; }
+  };
+
+  lines.forEach(line => {
+    // A. Section titles (Rappel, Définition, Question XX, Source, etc.)
+    const isSectionHeader = /^(?:Rappel|D[ée]finition|Remarque|Source|NB|Attention|Conduite|CAT|Traitement|Diagnostic|Crit[èe]res|Signes|Examens|Question\s*\d+|Q\d+)\s*:/i.test(line) ||
+                            /^Source\s+diapositive/i.test(line);
+
+    if (isSectionHeader) {
+      closeLists();
+      let icon = 'info';
+      let titleClass = 'medical-section-title';
+      if (/rappel/i.test(line)) {
+        icon = 'bookmark';
+        titleClass += ' title-rappel';
+      } else if (/source/i.test(line)) {
+        icon = 'book-open';
+        titleClass += ' title-source';
+      } else if (/question/i.test(line)) {
+        icon = 'help-circle';
+        titleClass += ' title-question';
+      }
+
+      html += `<div class="${titleClass}"><i data-lucide="${icon}"></i><span>${parseMarkdownInline(line)}</span></div>`;
+      return;
+    }
+
+    // B. Bullet items (➢, ⁃, •, ►, ▶, ✔, ✓, -, *)
+    const bulletMatch = line.match(/^([➢⁃•►▶✔✓\*\-]\s*)(.*)$/);
+    if (bulletMatch) {
+      if (inNumList) { html += '</ul>'; inNumList = false; }
+      if (!inBulletList) { html += '<ul class="medical-bullet-list">'; inBulletList = true; }
+      const bulletChar = bulletMatch[1].trim() || '•';
+      const content = bulletMatch[2].trim();
+      html += `<li class="medical-bullet-item"><span class="medical-bullet-icon">${escapeHtml(bulletChar)}</span><div class="medical-bullet-text">${parseMarkdownInline(content)}</div></li>`;
+      return;
+    }
+
+    // C. Numbered items (1-, 2-, 1., 2., 1), 2))
+    const numMatch = line.match(/^(\d+)(?:[-–\.]|\))\s+(.*)$/);
+    if (numMatch) {
+      if (inBulletList) { html += '</ul>'; inBulletList = false; }
+      if (!inNumList) { html += '<ul class="medical-num-list">'; inNumList = true; }
+      const num = numMatch[1];
+      const content = numMatch[2].trim();
+      html += `<li class="medical-num-item"><span class="medical-num-badge">${escapeHtml(num)}</span><div class="medical-num-text">${parseMarkdownInline(content)}</div></li>`;
+      return;
+    }
+
+    // D. Regular paragraph
+    closeLists();
+    html += `<p class="medical-paragraph">${parseMarkdownInline(line)}</p>`;
+  });
+
+  closeLists();
+  html += '</div>';
+  return html;
+}
+
 function formatReasoningNote(noteText) {
   if (!noteText || typeof noteText !== 'string' || !noteText.trim()) {
     return '<div class="reasoning-cards-container"><div class="reasoning-card card-method"><div class="reasoning-card-body">Aucune note de raisonnement clinique disponible.</div></div></div>';
@@ -1623,6 +1761,8 @@ function formatCroqAnswer(answerText) {
 function formatQuestionMistakeRecap(question, userSelectedLetters, isCroq = false, userCroqText = '', score = null) {
   if (!question) return '';
 
+  const effectiveIsCroq = isCroq || (question && question.type === 'CROQ');
+
   const lettersArr = Array.isArray(userSelectedLetters)
     ? userSelectedLetters
     : (userSelectedLetters ? String(userSelectedLetters).split(',').map(s => s.trim().toUpperCase()) : []);
@@ -1635,14 +1775,14 @@ function formatQuestionMistakeRecap(question, userSelectedLetters, isCroq = fals
           <i data-lucide="stethoscope"></i>
           <span>Cas Clinique</span>
         </div>
-        <div class="mistake-clinical-text">${parseMarkdownInline(question.clinical_case.trim())}</div>
+        <div class="mistake-clinical-text">${formatMedicalContent(question.clinical_case.trim())}</div>
       </div>
     `;
   }
 
   let optionsOrCroqHtml = '';
 
-  if (isCroq) {
+  if (effectiveIsCroq) {
     const scoreBadge = (score !== null && score !== undefined)
       ? `<span class="answer-badge ${score >= 75 ? 'badge-success' : 'badge-failure'}">Score : ${score}%</span>`
       : '';
@@ -1673,72 +1813,13 @@ function formatQuestionMistakeRecap(question, userSelectedLetters, isCroq = fals
       </div>
     `;
   } else {
-    // QCM / QCU - Show ALL options with full texts and color-coded status
+    // QCM / QCU - Afficher uniquement la liste exhaustive des propositions (A à E) avec coloration et statut
     const options = question.options || [];
     const correctOptions = options.filter(o => o.is_correct);
     const correctLetters = correctOptions.map(o => o.letter).sort();
 
-    // User selected options with FULL text
-    const userSelectedOptions = options.filter(o => lettersArr.includes(o.letter));
-
-    let userOptionsHtml = '';
-    if (userSelectedOptions.length > 0) {
-      userOptionsHtml = `
-        <div class="mistake-answer-full-list">
-          ${userSelectedOptions.map(opt => `
-            <div class="mistake-answer-item ${opt.is_correct ? 'item-correct' : 'item-wrong'}">
-              <span class="mistake-item-letter">${escapeHtml(opt.letter)}</span>
-              <span class="mistake-item-text">${parseMarkdownInline(opt.text)}</span>
-            </div>
-          `).join('')}
-        </div>
-      `;
-    } else {
-      userOptionsHtml = '<div class="mistake-empty-choice"><em>Aucune proposition cochée</em></div>';
-    }
-
-    // Correct options with FULL text
-    const correctOptionsHtml = `
-      <div class="mistake-answer-full-list">
-        ${correctOptions.map(opt => `
-          <div class="mistake-answer-item item-correct">
-            <span class="mistake-item-letter">${escapeHtml(opt.letter)}</span>
-            <span class="mistake-item-text">${parseMarkdownInline(opt.text)}</span>
-          </div>
-        `).join('')}
-      </div>
-    `;
-
     optionsOrCroqHtml = `
-      <!-- Bloc Comparatif Direct avec Textes Complets -->
-      <div class="answer-comparison-grid">
-        <div class="answer-box box-user">
-          <div class="answer-box-header">
-            <span class="answer-box-title text-rose">
-              <span class="box-icon">✕</span> Ma réponse :
-            </span>
-            <span class="answer-badge ${lettersArr.length > 0 ? 'badge-failure' : 'badge-neutral'}">
-              ${lettersArr.length > 0 ? lettersArr.join(', ') : 'Aucune'}
-            </span>
-          </div>
-          <div class="answer-box-content">
-            ${userOptionsHtml}
-          </div>
-        </div>
-        <div class="answer-box box-correct">
-          <div class="answer-box-header">
-            <span class="answer-box-title text-emerald">
-              <span class="box-icon">✓</span> Bonne(s) réponse(s) juste(s) attendue(s) :
-            </span>
-            <span class="answer-badge badge-success">${correctLetters.join(', ')}</span>
-          </div>
-          <div class="answer-box-content">
-            ${correctOptionsHtml}
-          </div>
-        </div>
-      </div>
-
-      <!-- Examen Exhaustif de Toutes les Propositions (A à E) -->
+      <!-- Examen Exhaustif de Toutes les Propositions (A à E) avec Coloration & Statut -->
       <div class="mistake-options-container">
         <div class="mistake-options-header">
           <div style="display:flex;align-items:center;gap:6px;">
@@ -1792,7 +1873,7 @@ function formatQuestionMistakeRecap(question, userSelectedLetters, isCroq = fals
           <span>Explication &amp; Source Officielle (Base de Données)</span>
         </div>
         <div class="mistake-explanation-body">
-          ${parseMarkdownInline(question.explanation.trim())}
+          ${formatMedicalContent(question.explanation.trim())}
         </div>
       </div>
     `;
@@ -1807,7 +1888,7 @@ function formatQuestionMistakeRecap(question, userSelectedLetters, isCroq = fals
         </div>
         ${clinicalHtml}
         <div class="mistake-question-statement">
-          ${parseMarkdownInline(question.question || question.statement || '')}
+          ${formatMedicalContent(question.question || question.statement || '')}
         </div>
       </div>
       ${optionsOrCroqHtml}
@@ -1886,14 +1967,14 @@ function loadNextArenaQuestion() {
   const clinicalBox = document.getElementById('arena-clinical-case');
   const clinicalText = document.getElementById('arena-clinical-case-text');
   if (currentQuestion.clinical_case && currentQuestion.clinical_case.trim()) {
-    clinicalText.textContent = currentQuestion.clinical_case.trim();
+    clinicalText.innerHTML = formatMedicalContent(currentQuestion.clinical_case.trim());
     clinicalBox.style.display = 'block';
   } else {
     clinicalBox.style.display = 'none';
   }
 
   // Question Statement
-  document.getElementById('arena-question-text').textContent = currentQuestion.question || currentQuestion.statement;
+  document.getElementById('arena-question-text').innerHTML = formatMedicalContent(currentQuestion.question || currentQuestion.statement);
 
   // Media preview
   const mediaWrap = document.getElementById('arena-media-wrap');
@@ -2109,7 +2190,7 @@ function handleAnswerSuccess(score = null, feedback = null) {
   const expText = document.getElementById('arena-explanation-text');
   if (expBox && expText) {
     if (currentQuestion.explanation && currentQuestion.explanation.trim()) {
-      expText.innerHTML = parseMarkdownInline(currentQuestion.explanation.trim());
+      expText.innerHTML = formatMedicalContent(currentQuestion.explanation.trim());
       expBox.style.display = 'flex';
     } else {
       expText.innerHTML = `<em>Réponse officielle validée conformément aux critères du cours <strong>${escapeHtml(currentQuestion.chapterTitle || 'Pédiatrie')}</strong>.</em>`;
@@ -2139,8 +2220,10 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
   updateArenaDailyBadge();
 
   // Populate penalty header
-  document.getElementById('error-modal-penalty-title').textContent = 
-    `Pénalité appliquée : seuil augmenté à ${result.newTarget} réussites requises`;
+  const penaltyTitle = result.newTarget >= 10
+    ? `Pénalité maximale : seuil plafonné à 10 réussites requises`
+    : `Pénalité appliquée : seuil augmenté à ${result.newTarget} réussites requises`;
+  document.getElementById('error-modal-penalty-title').textContent = penaltyTitle;
   document.getElementById('error-modal-penalty-desc').textContent = 
     `Cette question a été ratée (${result.mistakes} faute${result.mistakes > 1 ? 's' : ''}). Elle réapparaîtra dans ${result.pushDistance} cartes pour ancrer le bon réflexe.`;
 

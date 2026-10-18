@@ -50,7 +50,7 @@ export function mergeStates(local, remote) {
     if (l && r) {
       merged.stats[uid] = {
         current: Math.max(l.current || 0, r.current || 0),
-        target: Math.max(l.target || 3, r.target || 3),
+        target: Math.min(10, Math.max(l.target || 3, r.target || 3)),
         mistakes: Math.max(l.mistakes || 0, r.mistakes || 0),
         done: !!(l.done || r.done)
       };
@@ -58,9 +58,9 @@ export function mergeStates(local, remote) {
         merged.stats[uid].done = true;
       }
     } else if (l) {
-      merged.stats[uid] = { ...l };
+      merged.stats[uid] = { ...l, target: Math.min(10, l.target || 3) };
     } else if (r) {
-      merged.stats[uid] = { ...r };
+      merged.stats[uid] = { ...r, target: Math.min(10, r.target || 3) };
     }
   }
 

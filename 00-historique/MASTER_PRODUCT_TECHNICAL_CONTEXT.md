@@ -56,16 +56,20 @@ qcm-p-diatrie/
 ### 3.1. Moteur de Répétition Espacée (`src/services/queueEngine.js`)
 L'apprentissage repose sur une file d'attente circulaire dynamique (`activeQueue`) :
 - **Seuil de maîtrise de base** : Une question doit être validée **3 fois consécutives** pour être définitivement éliminée (`permanentlyRemoved: true`).
+- **Plafonnement maximal de la pénalité (Plafond strict de 10)** :
+  - La cible de répétition (`target`) augmente à chaque faute selon la règle `st.target = Math.min(10, 3 + st.mistakes)`.
+  - Le nombre maximal de réussites requises est **strictement plafonné à 10** pour éviter toute répétition infinie ou punitive.
+  - Tout état persistant antérieur ou fusionné depuis Firestore ayant un `target > 10` est automatiquement nettoyé et ramené à 10 lors du chargement.
 - **Gestion des erreurs (`handleFailure`)** :
   - Incrémente le compteur de fautes de la question (`mistakes++`).
-  - Pénalité : augmente le seuil cible requis (`target++`).
+  - Pénalité : recalcule le seuil cible requis (`target = Math.min(10, 3 + mistakes)`).
   - Réinitialise le compteur de réussites actuelles (`current = 0`).
   - **Repousse la question à une distance courte de 5 à 7 cartes** (`Math.floor(Math.random() * 3) + 5`) pour réactiver la mémoire immédiate.
 - **Gestion des réussites (`handleSuccess`)** :
   - Incrémente les réussites (`current++`).
   - Si `current >= target` : la question est marquée maîtrisée et retirée de la file.
   - Sinon : **la question est repoussée à une distance de 30 à 40 cartes** (`Math.floor(Math.random() * 11) + 30`) pour consolider l'assimilation à moyen terme.
-- **Persistance locale** : Tout l'état (`activeQueue`, `questionStats`, `masteredUids`, `notes`, `todayCount`) est sauvegardé dans `localStorage` sous la clé `pedia_state_v1`.
+- **Persistance locale & Cloud** : Tout l'état (`activeQueue`, `stats`, `cursor`, `reasoningNotes`, `todayTracker`) est sauvegardé dans `localStorage` sous la clé `pedia_drill_state_v1` et synchronisé via `FirebaseSyncService`.
 
 ### 3.2. Évaluation IA & Raisonnement Clinique (`src/services/gemini.js`)
 - **Modèle exclusif** : Verrouillé strictement sur `gemini-3.8-flash` (`MODEL_CASCADE = ["gemini-3.8-flash"]`).
@@ -86,18 +90,18 @@ L'apprentissage repose sur une file d'attente circulaire dynamique (`activeQueue
 
 ### 3.3. Affichage Complet des Erreurs (`formatQuestionMistakeRecap`)
 Lorsqu'une réponse est incorrecte (dans la modale d'erreur ou dans le carnet) :
-1. **Énoncé complet** : Cas clinique intégral (avec stéthoscope) + Question intégrale en gras.
-2. **Grille comparative en deux blocs avec libellé complet** :
-   - ❌ **Ma réponse** : liste de chaque proposition cochée avec sa lettre et son **texte intégral complet**, taguée rouge (`item-wrong` ou `item-correct`).
-   - ✅ **Bonne(s) réponse(s) juste(s) attendue(s)** : liste de chaque bonne réponse avec sa lettre et son **texte intégral complet**, taguée verte (`item-correct`).
-3. **Examen exhaustif de toutes les propositions (A à E)** :
-   - Chaque ligne affiche la lettre, le texte complet et un badge explicite :
-     - 🔴 `Mon choix (Faux)`
-     - 🟢 `Mon choix (Juste)`
-     - 🟢 `Réponse juste attendue` (en cas d'omission)
-     - ⚪ `Distracteur faux`
-4. **Explication officielle de cours** : encadré dédié reprenant `question.explanation` en clair.
-5. **Surbrillance en direct dans l'arène** : Les cartes de l'arène sont immédiatement colorées (`wrong-highlight` en rouge, `correct-highlight` en vert).
+1. **Énoncé complet** : Cas clinique intégral (avec stéthoscope) + Question médicale intégrale mise en forme avec le parseur intelligent.
+2. **Affichage adapté selon le format de question** :
+   - **Pour les QCM / QCU** : Suppression du bloc comparatif supérieur redondant (« Ma réponse » / « Bonne(s) réponse(s) ») afin de ne pas dupliquer l'information. L'interface affiche directement la liste exhaustive des propositions (A à E) avec code couleur et badges :
+     - 🔴 `Mon choix (Faux)` avec fond et bordure rouge (`opt-row-wrong`)
+     - 🟢 `Mon choix (Juste)` avec fond et bordure verte (`opt-row-correct-chosen`)
+     - 🟢 `Réponse juste attendue` avec bordure verte (`opt-row-correct-missed`)
+     - ⚪ `Distracteur faux` neutre (`opt-row-neutral`)
+   - **Pour les CROQ (questions rédactionnelles)** : Conservation du bloc comparatif en 2 boîtes :
+     - ❌ `Votre proposition :` texte saisi par l'étudiant avec badge de score.
+     - ✅ `Réponse type officielle :` réponse de référence concours découpée et structurée.
+3. **Explication officielle de cours** : Encadré dédié reprenant `question.explanation` structuré avec titres, puces et sauts de ligne aérés.
+4. **Surbrillance en direct dans l'arène** : Les cartes de l'arène sont immédiatement colorées (`wrong-highlight` en rouge, `correct-highlight` en vert).
 
 ### 3.4. Sélection Multiple Systématique
 - La restriction sur les types de questions a été levée dans `toggleOptionSelection` : toutes les questions permettent de cocher librement une ou plusieurs options (ex: A + B + C) simultanément.
@@ -111,12 +115,26 @@ Lorsqu'une réponse est incorrecte (dans la modale d'erreur ou dans le carnet) :
 - Fiches de tentatives détaillées affichant la synthèse complète (`formatQuestionMistakeRecap`) et les 4 cartes IA stylisées.
 - Recherche multi-critères : filtrage en direct par mot-clé sur les questions, les énoncés, les choix d'options, les explications et les notes IA.
 
+### 3.7. Moteur de Formatage Médical Intelligent (`formatMedicalContent`)
+Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes issus de l'extraction de cours :
+- **Dégel des puces (`➢`, `⁃`, `•`, `►`, `▶`, `✔`, `✓`, `-`, `*`)** : Détection regex et insertion de retours à la ligne avec génération de listes HTML `<ul class="medical-bullet-list">` et puces stylisées.
+- **Dégel des énumérations d'énoncés (ex: `1-`, `2-`, `1.`, `2.`)** : Rendu sous forme de listes ordonnées avec badges colorés `<ul class="medical-num-list">` et `<span class="medical-num-badge">`.
+- **Mise en valeur des en-têtes médicaux** : Détection des marqueurs clés (`Rappel :`, `Définition :`, `Question 01 :`, `Remarque :`, `Source :`, `NB :`, `Attention :`, `CAT :`, `Traitement :`, `Diagnostic :`) avec badges thématiques `<div class="medical-section-title">` et icônes Lucide.
+- **Nettoyage et espacement** : Élimination des BOM (`\uFEFF`) et des blocs d'espaces insécables (`\u00A0`), découpage en paragraphes espacés `<p class="medical-paragraph">` avec `line-height: 1.6`.
+- **Application omni-présente** :
+  - Arène : Énoncé (`#arena-question-text`), Cas clinique (`#arena-clinical-case-text`), Explication officielle en direct (`#arena-explanation-text`).
+  - Modale d'erreur : Énoncé complet, cas clinique et explication officielle dans `formatQuestionMistakeRecap`.
+  - Carnet : Rendu fidèle et aéré dans toutes les fiches d'historique.
+
 ---
 
 ## 4. Spécificités UI, Responsive & Mobile First
 
 - **Design System** : Palette médicale sombre moderne (fond `#070b14`, cartes `#121d33`, accents cyan `#00d4ff`, émeraude `#10b981`, rose `#ef4444`, ambre `#f59e0b`, violet `#8b5cf6`).
-- **Typographie** : `Outfit` (titres et badges) et `Inter` (corps médical et justifications).
+- **Typographie Médicale Structurée** :
+  - `Outfit` : Titres de sections, badges numérotés et badges de métriques.
+  - `Inter` : Corps de texte médical, justifications sémiologiques et listes à puces.
+  - Hauteur de ligne aérée (`line-height: 1.55` à `1.6`) avec espacement entre paragraphes pour une lecture sans fatigue oculaire.
 - **Adaptation Mobile & Portrait (`@media (max-width: 768px)`)** :
   - Réduction générale d'échelle de ~15% pour une densité optimale sans défilement excessif.
   - Padding ajusté (`10px 8px 18px 8px`), marges et gap réduits.

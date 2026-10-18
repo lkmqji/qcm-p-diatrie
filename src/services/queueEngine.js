@@ -39,6 +39,14 @@ export class QueueEngine {
       if (saved) {
         const parsed = JSON.parse(saved);
         this.stats = parsed.stats || {};
+        // Ensure all loaded targets respect the maximum threshold of 10
+        if (this.stats && typeof this.stats === 'object') {
+          Object.values(this.stats).forEach(st => {
+            if (st && typeof st === 'object' && typeof st.target === 'number' && st.target > 10) {
+              st.target = 10;
+            }
+          });
+        }
         this.queue = parsed.queue || [];
         this.cursor = parsed.cursor || 0;
         this.selectedChapterIds = parsed.selectedChapterIds || [];
@@ -123,13 +131,16 @@ export class QueueEngine {
     if (!this.stats[uid]) {
       this.stats[uid] = { target: 3, current: 0, mistakes: 0, done: false };
     }
+    if (this.stats[uid].target > 10) {
+      this.stats[uid].target = 10;
+    }
     return this.stats[uid];
   }
 
   /**
    * Process a correct response
-   * Pushed far back (15 to 20 cards)
-   * If threshold met (3, or 4/5/6 if penalized), disappears permanently!
+   * Pushed far back (30 to 40 cards)
+   * If threshold met (3, or up to max 10 if penalized), disappears permanently!
    */
   handleSuccess(uid) {
     const st = this.getQuestionStats(uid);
@@ -172,13 +183,13 @@ export class QueueEngine {
 
   /**
    * Process an incorrect response
-   * Penalizes target (3 -> 4 -> 5 -> 6...)
+   * Penalizes target (3 -> 4 -> 5 ... up to a max cap of 10)
    * Reappears in 5 to 7 cards to reinforce the reflex
    */
   handleFailure(uid) {
     const st = this.getQuestionStats(uid);
     st.mistakes += 1;
-    st.target = 3 + st.mistakes; // Penalty applied!
+    st.target = Math.min(10, 3 + st.mistakes); // Penalty applied, capped at max 10!
     this.totalMistakesCount += 1;
 
     // Remove from current position and re-insert in 5 to 7 cards

@@ -19,3 +19,36 @@
   - En cas d'erreur : réapparition calibrée entre **5 et 7 cartes** (`queueEngine.handleFailure`).
   - En cas de succès : réapparition calibrée entre **30 et 40 cartes** (`queueEngine.handleSuccess`).
 - **Synchronisation et compilation autonome** : Création du script `build-bundle.cjs`, génération du bundle `src/app.bundle.js` sans erreurs de syntaxe, mise à jour de `template.html`, `index.html` et `dist/index.html`.
+
+### 20:55 - Mise en page intelligente et aérée des énoncés et des explications médicales
+- **Moteur de formatage médical intelligent (`formatMedicalContent`)** : Création d'un parseur sémantique avancé dans `src/app.js` qui corrige automatiquement les textes collés et compacts :
+  - **Dégel automatique des puces et listes** : Détection et séparation automatique des puces collées (`➢`, `⁃`, `•`, `►`, `▶`, `✔`, `✓`, `-`, `*`), création de listes HTML stylisées (`.medical-bullet-list`, `.medical-bullet-item`).
+  - **Dégel des items numérotés d'énoncés QCM** : Détection des énumérations médicales (ex: `1- ... 2- ... 3- ...`, `1. ... 2. ...`), génération de listes numérotées élégantes avec badges colorés (`.medical-num-list`, `.medical-num-badge`).
+  - **Dégel des en-têtes médicaux** : Détection et mise en valeur des titres de sections (`Rappel :`, `Définition :`, `Question 01 :`, `Question 02 :`, `Remarque :`, `Source :`, `NB :`, `Attention :`, `Conduite à tenir :`, `CAT :`, `Traitement :`, `Diagnostic :`) avec des badges thématiques et icônes dédiées (`.medical-section-title`).
+  - **Nettoyage des caractères parasites** : Élimination des BOM (`\uFEFF`, zero-width spaces) et conversion des blocs d'espaces insécables (`\u00A0`) en retours à la ligne structurés.
+  - **Paragraphes aérés** : Encapsulation de chaque idée dans un paragraphe dédié (`.medical-paragraph`) avec une hauteur de ligne (`line-height: 1.6`) et un espacement vertical confortable.
+- **Application généralisée sur l'interface** :
+  - Énoncé de la question dans l'Arène (`#arena-question-text`).
+  - Cas clinique dans l'Arène (`#arena-clinical-case-text`).
+  - Explication officielle en direct dans l'Arène (`#arena-explanation-text`).
+  - Énoncé, cas clinique et explication officielle dans la modale d'erreur (`formatQuestionMistakeRecap`).
+
+### 21:05 - Plafonnement strict du nombre maximal de répétitions à 10 en cas d'erreurs répétées
+- **Plafonnement de la pénalité de répétition (`queueEngine.js`)** :
+  - Modification de la formule d'augmentation du seuil cible en cas d'erreur dans `handleFailure` : `st.target = Math.min(10, 3 + st.mistakes)`.
+  - Le nombre de réussites requises pour éliminer définitivement une question ne peut désormais plus dépasser **10** (auparavant la pénalité augmentait indéfiniment `3 + mistakes`).
+  - Ajout d'une vérification de garde dans `getQuestionStats(uid)` et dans la désérialisation du stockage local `loadState()` pour ramener automatiquement tout historique antérieur supérieur à 10 à la valeur plafond de 10.
+- **Synchronisation cloud sécurisée (`firebaseSyncService.js`)** :
+  - Mise à jour de l'algorithme de fusion d'états `mergeStates` pour borner les cibles issues du cloud ou d'autres appareils à 10 maximum : `target: Math.min(10, Math.max(l.target || 3, r.target || 3))`.
+- **Retour visuel dans la modale d'erreur (`app.js`)** :
+  - Adaptation dynamique du titre de pénalité : affichage explicite de `"Pénalité maximale : seuil plafonné à 10 réussites requises"` dès que le palier maximal de 10 est atteint.
+- **Recompilation & Déploiement** :
+  - Exécution du script `build-bundle.cjs` pour mettre à jour `src/app.bundle.js`, `index.html` et `dist/index.html`.
+
+### 21:10 - Simplification visuelle du récapitulatif d'erreur pour les QCM
+- **Suppression du bloc comparatif supérieur redondant pour les QCM (`src/app.js`)** :
+  - Dans `formatQuestionMistakeRecap`, suppression des deux boîtes supérieures « Ma réponse » et « Bonne(s) réponse(s) attendue(s) » pour tous les QCM et QCU.
+  - L'affichage se concentre désormais directement et exclusivement sur la liste complète des propositions (A à E) avec le code couleur immersif et les badges de statut explicites (vert pour les bonnes réponses et choix justes, rouge pour les erreurs commises, neutre pour les distracteurs).
+  - Préservation intégrale du bloc comparatif (« Votre proposition » vs « Réponse type officielle ») pour les questions rédactionnelles CROQ, où la comparaison textuelle reste indispensable.
+- **Recompilation & Déploiement** :
+  - Mise à jour du bundle autonome `src/app.bundle.js`, `index.html` et `dist/index.html`.
