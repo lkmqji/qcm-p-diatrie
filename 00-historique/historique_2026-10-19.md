@@ -209,3 +209,70 @@
   - Détection automatique de `file('google-services.json')` et application du plugin `com.google.gms.google-services` via la dépendance racine `classpath 'com.google.gms:google-services:4.4.4'`.
 - **Recompilation & Validation de l'APK** :
   - Compilation native réussie avec intégration des métadonnées Firebase dans l'APK [PediaDrill.apk](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/PediaDrill.apk).
+
+### 21:45 - Résolution de l'erreur Android « unable to process request due to missing initial state » via l'Authentification Google Native
+- **Diagnostic de la cause racine** :
+  - Sur Android, l'utilisation de `signInWithPopup` ou `signInWithRedirect` du SDK Web Firebase basculait l'utilisateur dans le navigateur externe (Chrome).
+  - Le stockage de session (`sessionStorage` et cookies) étant totalement compartimenté et inaccessible entre Chrome et la WebView Capacitor, le serveur de rappel d'authentification Firebase ne retrouvait pas le jeton d'état initial généré par l'application : `"unable to process request due to missing initial state"`, bloquant l'application sur *"Connexion en cours..."*.
+- **Solution Native Capacitor (@capacitor-firebase/authentication)** :
+  - Installation et synchronisation du plugin natif officiel `@capacitor-firebase/authentication` (version 8.5.2, 100% compatible Capacitor 8).
+  - Modification de `signInWithGoogle` dans [src/services/firebaseSyncService.js](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/src/services/firebaseSyncService.js) :
+    - Détection automatique de la plateforme native (`Capacitor.isNativePlatform()`).
+    - Appel direct à `FirebaseAuthentication.signInWithGoogle()` ouvrant la boîte de dialogue native Android Google Play Services (choix direct du compte sans ouvrir de navigateur).
+    - Pont automatique du jeton d'identité `idToken` vers `signInWithCredential` pour que la base Firestore bénéficie de l'authentification active.
+    - Préservation du flux Web standard avec fallback sur PC / Vercel.
+  - Gestion explicite des erreurs Android dans `getFriendlyAuthError` (Code 10 : rappel d'ajouter l'empreinte SHA-1 dans Firebase).
+- **Recompilation & Validation** :
+  - Synchronisation Capacitor et compilation native Gradle de l'APK [PediaDrill.apk](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/PediaDrill.apk).
+
+### 21:58 - Résolution de l'erreur « Google sign-in provider is not enabled » & Déploiement de l'APK v1.2
+- **Cause du blocage** :
+  - Le plugin natif `@capacitor-firebase/authentication` exige que les providers activés soient explicitement déclarés dans la section `plugins.FirebaseAuthentication.providers` du fichier de configuration Capacitor (`capacitor.config.json`).
+  - En l'absence de cette déclaration, le handler natif `googleAuthProviderHandler` n'était pas instancié au démarrage de l'app, affichant la boîte de dialogue d'alerte : *"Google sign-in provider is not enabled. Make sure to add the provider to the 'providers' list in the Capacitor configuration."*.
+- **Corrections apportées** :
+  1. **Configuration Capacitor (`capacitor.config.json`)** :
+     - Ajout de la section `plugins.FirebaseAuthentication` avec `skipNativeAuth: false` et `providers: ["google.com"]`.
+  2. **Ressource String Native Android (`android/app/src/main/res/values/strings.xml`)** :
+     - Déclaration explicite de `default_web_client_id` avec la valeur `1028938391462-hfo44kaj789r1ruovt4b4v59he6jvarq.apps.googleusercontent.com` afin de garantir la disponibilité immédiate du client OAuth pour Google Play Services.
+  3. **Incrémentation de version (`android/app/build.gradle`)** :
+     - `versionCode` : incrémenté de `2` à `3`.
+     - `versionName` : incrémenté de `"1.1"` à `"1.2"`.
+- **Assemblage et Validation** :
+  - Synchronisation complète des assets et de la configuration native avec `cmd.exe /c "npx cap sync android"`.
+  - Compilation native réussie (`BUILD SUCCESSFUL in 47s`).
+  - Génération et mise à disposition de l'APK v1.2 : [PediaDrill.apk](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/PediaDrill.apk).
+
+### 22:05 - Diagnostic de l'erreur « [16] Account reauth failed » & Extraction des Empreintes Réelles du Keystore Debug
+- **Cause exacte identifiée** :
+  - L'erreur `[16] Account reauth failed` correspond au rejet immédiat par Google Play Services lors de la vérification cryptographique de la signature de l'APK.
+  - L'empreinte SHA-1 qui avait été enregistrée dans la console Firebase (`8F:FC:...`) provenait d'un autre environnement.
+  - L'exécution de la tâche Gradle officielle `signingReport` sur le fichier de signature réel (`C:\Users\Lenovo\.android\debug.keystore`, alias `AndroidDebugKey`) a révélé les véritables empreintes générées lors de la compilation de `PediaDrill.apk` :
+    - **SHA-1 réel** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
+    - **SHA-256 réel** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
+- **Résolution** :
+  - Mise à jour du Master Context avec les empreintes exactes de compilation.
+  - Invitation de l'utilisateur à enregistrer cette empreinte SHA-1 exacte dans la console Firebase pour débloquer immédiatement l'authentification Google Play Services.
+
+### 22:15 - Correction du bouton « Tout replier » et repliage interactif des questions du Carnet de Raisonnement
+- **Diagnostic du dysfonctionnement signalé** :
+  - Dans la barre de statistiques du Carnet (`#notebook-summary-bar`), le clic sur le bouton `.notebook-toggle-all-btn` ("Tout replier") ajoutait bien la classe CSS `.collapsed` sur chaque bloc `.notebook-chapter-group`.
+  - Cependant, la règle CSS ciblait exclusivement `.notebook-chapter-group.collapsed .notebook-chapter-questions { display: none; }`, alors que l'élément conteneur généré dans `src/app.js` portait la classe `.notebook-chapter-body`. En raison de cette divergence de nommage, les questions restaient visibles à l'écran.
+- **Modifications apportées** :
+  1. **Alignement CSS (`src/style.css`)** :
+     - Mise à jour du sélecteur pour masquer simultanément `.notebook-chapter-body` et `.notebook-chapter-questions` avec `display: none !important;` en état `.collapsed`.
+  2. **Harmonisation HTML (`src/app.js`)** :
+     - Ajout explicite des deux classes sur le corps du chapitre : `<div class="notebook-chapter-body notebook-chapter-questions">`.
+  3. **Accordéon individuel pour chaque carte de question (`.grouped-question-card`)** :
+     - Ajout d'une gestion de repli interactif au niveau de chaque question individuelle (`window.toggleQuestionCard(cardId, event)`).
+     - Intégration d'un chevron rotatif `<i data-lucide="chevron-down" class="question-chevron"></i>` dans l'en-tête cliquable.
+     - Affichage d'un aperçu compact de l'énoncé de la question (`.question-collapsed-preview`) dès que la carte est repliée, masquant les panneaux lourds d'options et d'analyse IA.
+  4. **Bouton « Tout replier / Tout déplier » unifié et étendu (`window.toggleAllChapters`)** :
+     - Le bouton bascule désormais à la fois les groupes de chapitres ET toutes les fiches de questions.
+     - Disponibilité du bouton dans les deux modes d'affichage (vue accordéon par chapitre et vue liste plate sans cours).
+- **Synchronisation & Build** :
+  - Validation syntaxique Node (`node -c src/app.js`).
+  - Compilation complète du bundle autonome via `build-bundle.cjs` (`src/app.bundle.js`, `index.html`, `dist/index.html`).
+  - Synchronisation Capacitor Android (`npx cap sync android`).
+
+
+

@@ -1156,7 +1156,8 @@ class FirebaseSyncService {
   }
 
   /**
-   * Launch official Google Sign-In with popup, fallback to redirect if popup is blocked
+   * Launch official Google Sign-In: uses native Google dialog on Android/Capacitor,
+   * with seamless fallback to popup/redirect on Web/Desktop.
    */
   async signInWithGoogle() {
     if (!this.isInitialized) {
@@ -1169,6 +1170,41 @@ class FirebaseSyncService {
       }
     }
 
+    // 1. Détection de l'environnement natif Capacitor (Android / iOS)
+    const isNative = typeof window.Capacitor !== 'undefined' && 
+                     typeof window.Capacitor.isNativePlatform === 'function' && 
+                     window.Capacitor.isNativePlatform();
+    const nativeAuth = window.Capacitor?.Plugins?.FirebaseAuthentication;
+
+    if (isNative && nativeAuth && typeof nativeAuth.signInWithGoogle === 'function') {
+      try {
+        this.updateStatus('syncing', 'Ouverture du compte Google natif...');
+        const nativeResult = await nativeAuth.signInWithGoogle();
+
+        // Si un idToken est disponible, authentifier également le SDK Web pour Firestore
+        if (nativeResult?.credential?.idToken && window.firebase?.auth) {
+          const credential = window.firebase.auth.GoogleAuthProvider.credential(nativeResult.credential.idToken);
+          const webUserCred = await window.firebase.auth().signInWithCredential(credential);
+          this.user = webUserCred.user;
+        } else if (nativeResult?.user) {
+          this.user = nativeResult.user;
+        }
+
+        this.updateStatus('synced', `Connecté avec ${this.user.displayName || this.user.email}`);
+        return { success: true, user: this.user };
+      } catch (nativeErr) {
+        console.error('Native Google Sign-In failed:', nativeErr);
+        if (nativeErr.code === '12501' || nativeErr.message?.includes('cancel') || nativeErr.message?.includes('12501')) {
+          this.updateStatus('idle', 'Connexion annulée.');
+          return { success: false, error: 'Connexion annulée par l\'utilisateur.' };
+        }
+        const friendlyMsg = this.getFriendlyAuthError(nativeErr);
+        this.updateStatus('error', friendlyMsg);
+        return { success: false, error: friendlyMsg };
+      }
+    }
+
+    // 2. Flux Web / PC Desktop (Popup avec secours redirect)
     try {
       this.updateStatus('syncing', 'Ouverture de la fenêtre Google...');
       const provider = new window.firebase.auth.GoogleAuthProvider();
@@ -1196,6 +1232,14 @@ class FirebaseSyncService {
   }
 
   async signOut() {
+    const isNative = typeof window.Capacitor !== 'undefined' && 
+                     typeof window.Capacitor.isNativePlatform === 'function' && 
+                     window.Capacitor.isNativePlatform();
+    const nativeAuth = window.Capacitor?.Plugins?.FirebaseAuthentication;
+    if (isNative && nativeAuth && typeof nativeAuth.signOut === 'function') {
+      try { await nativeAuth.signOut(); } catch(e) { console.warn('Native signOut error:', e); }
+    }
+
     if (!window.firebase || !window.firebase.auth) return;
     try {
       if (this.firestoreUnsubscribe) {
@@ -1420,8 +1464,21 @@ class FirebaseSyncService {
   }
 
   getFriendlyAuthError(err) {
-    if (!err || !err.code) return err.message || 'Erreur inconnue';
-    switch (err.code) {
+    if (!err) return 'Erreur inconnue';
+    const msg = err.message || '';
+    const code = String(err.code || '');
+
+    if (code === '10' || msg.includes('10:') || msg.includes('DEVELOPER_ERROR')) {
+      return '⚠️ Configuration Google Android (Code 10) : L\'empreinte SHA-1 doit être ajoutée dans la Console Firebase (Paramètres du projet > Vos applications > Empreinte SHA).';
+    }
+    if (code === '12501' || msg.includes('12501') || msg.includes('canceled') || msg.includes('cancelled')) {
+      return 'Connexion annulée par l\'utilisateur.';
+    }
+    if (msg.includes('missing initial state') || code.includes('missing-initial-state')) {
+      return 'Erreur de session du navigateur. Utilisez la connexion native Android intégrée.';
+    }
+
+    switch (code) {
       case 'auth/popup-blocked':
         return 'La fenêtre de connexion Google a été bloquée par le navigateur. Veuillez autoriser les popups.';
       case 'auth/popup-closed-by-user':
@@ -1433,7 +1490,7 @@ class FirebaseSyncService {
       case 'auth/operation-not-allowed':
         return 'La connexion Google n\'est pas encore activée dans la console Firebase (Authentication > Sign-in method > Google).';
       default:
-        return err.message;
+        return msg || 'Erreur de connexion Google';
     }
   }
 }
@@ -2982,10 +3039,13 @@ function renderQuestionCard(q, gIdx, qIdx, rankNumber = null) {
     </span>
   ` : '';
 
+  const questionPreview = q.questionText ? escapeHtml(q.questionText) : 'Question médicale';
+
   return `
     <div class="note-card grouped-question-card" id="${qDomId}">
-      <div class="note-card-header">
+      <div class="note-card-header clickable-question-header" onclick="window.toggleQuestionCard('${qDomId}', event)" title="Cliquer pour replier ou déplier cette question">
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <i data-lucide="chevron-down" class="question-chevron"></i>
           ${rankBadgeHtml}
           <span class="note-chapter">${escapeHtml(q.chapterTitle)}</span>
           <span class="tag-pill ${q.isCroq ? 'tag-croq' : 'tag-qcu'}" style="font-size:0.68rem;padding:2px 8px;">
@@ -3003,6 +3063,10 @@ function renderQuestionCard(q, gIdx, qIdx, rankNumber = null) {
           ` : ''}
           <span class="note-date"><i data-lucide="calendar" style="width:11px;height:11px;display:inline;vertical-align:middle;margin-right:2px;"></i>${latestDateStr}</span>
         </div>
+      </div>
+      <div class="question-collapsed-preview" onclick="window.toggleQuestionCard('${qDomId}', event)" title="Cliquer pour déplier l'analyse complète de la question">
+        <i data-lucide="file-text" style="width:14px;height:14px;color:var(--cyan);flex-shrink:0;"></i>
+        <span class="question-collapsed-text">${questionPreview}</span>
       </div>
       ${switcherHtml}
       <div class="attempt-content-container">
@@ -3122,19 +3186,43 @@ window.toggleChapterGroup = function(groupId) {
   }
 };
 
+window.toggleQuestionCard = function(cardId, e) {
+  if (e && (e.target.closest('.attempt-tab-btn') || e.target.closest('button') || e.target.closest('a'))) {
+    return;
+  }
+  const card = document.getElementById(cardId);
+  if (card) {
+    card.classList.toggle('collapsed');
+  }
+};
+
 window.toggleAllChapters = function() {
   const allGroups = document.querySelectorAll('.notebook-chapter-group');
-  const hasExpanded = Array.from(allGroups).some(g => !g.classList.contains('collapsed'));
+  const allCards = document.querySelectorAll('.grouped-question-card');
+
+  const hasExpandedGroups = Array.from(allGroups).some(g => !g.classList.contains('collapsed'));
+  const hasExpandedCards = Array.from(allCards).some(c => !c.classList.contains('collapsed'));
+  const shouldCollapse = hasExpandedGroups || (allGroups.length === 0 && hasExpandedCards);
+
   allGroups.forEach(g => {
-    if (hasExpanded) {
+    if (shouldCollapse) {
       g.classList.add('collapsed');
     } else {
       g.classList.remove('collapsed');
     }
   });
+
+  allCards.forEach(c => {
+    if (shouldCollapse) {
+      c.classList.add('collapsed');
+    } else {
+      c.classList.remove('collapsed');
+    }
+  });
+
   const btnText = document.getElementById('btn-toggle-all-chapters-text');
   if (btnText) {
-    btnText.textContent = hasExpanded ? 'Tout déplier' : 'Tout replier';
+    btnText.textContent = shouldCollapse ? 'Tout déplier' : 'Tout replier';
   }
 };
 
@@ -3207,12 +3295,10 @@ function renderNotebookUI(filterText = '') {
       <span class="notebook-stat-summary">
         <strong>${totalQuestions}</strong> question${totalQuestions > 1 ? 's' : ''} (${totalNotes} analyse${totalNotes > 1 ? 's' : ''}) • Tri : <strong class="text-cyan">${getSortSummaryLabel()}</strong>
       </span>
-      ${notebookViewMode === 'chapter' ? `
-        <button class="notebook-toggle-all-btn" onclick="window.toggleAllChapters()">
-          <i data-lucide="chevrons-up-down" style="width:14px;height:14px;"></i>
-          <span id="btn-toggle-all-chapters-text">Tout replier</span>
-        </button>
-      ` : ''}
+      <button class="notebook-toggle-all-btn" onclick="window.toggleAllChapters()" title="Tout replier ou tout déplier">
+        <i data-lucide="chevrons-up-down" style="width:14px;height:14px;"></i>
+        <span id="btn-toggle-all-chapters-text">Tout replier</span>
+      </button>
     `;
   }
 
@@ -3264,7 +3350,7 @@ function renderNotebookUI(filterText = '') {
           </div>
           <i data-lucide="chevron-down" class="chapter-chevron"></i>
         </div>
-        <div class="notebook-chapter-body">
+        <div class="notebook-chapter-body notebook-chapter-questions">
           ${questionsHtml}
         </div>
       `;

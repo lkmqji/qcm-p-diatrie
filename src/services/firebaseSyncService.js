@@ -236,7 +236,8 @@ export class FirebaseSyncService {
   }
 
   /**
-   * Launch official Google Sign-In with popup, fallback to redirect if popup is blocked
+   * Launch official Google Sign-In: uses native Google dialog on Android/Capacitor,
+   * with seamless fallback to popup/redirect on Web/Desktop.
    */
   async signInWithGoogle() {
     if (!this.isInitialized) {
@@ -249,6 +250,41 @@ export class FirebaseSyncService {
       }
     }
 
+    // 1. Détection de l'environnement natif Capacitor (Android / iOS)
+    const isNative = typeof window.Capacitor !== 'undefined' && 
+                     typeof window.Capacitor.isNativePlatform === 'function' && 
+                     window.Capacitor.isNativePlatform();
+    const nativeAuth = window.Capacitor?.Plugins?.FirebaseAuthentication;
+
+    if (isNative && nativeAuth && typeof nativeAuth.signInWithGoogle === 'function') {
+      try {
+        this.updateStatus('syncing', 'Ouverture du compte Google natif...');
+        const nativeResult = await nativeAuth.signInWithGoogle();
+
+        // Si un idToken est disponible, authentifier également le SDK Web pour Firestore
+        if (nativeResult?.credential?.idToken && window.firebase?.auth) {
+          const credential = window.firebase.auth.GoogleAuthProvider.credential(nativeResult.credential.idToken);
+          const webUserCred = await window.firebase.auth().signInWithCredential(credential);
+          this.user = webUserCred.user;
+        } else if (nativeResult?.user) {
+          this.user = nativeResult.user;
+        }
+
+        this.updateStatus('synced', `Connecté avec ${this.user.displayName || this.user.email}`);
+        return { success: true, user: this.user };
+      } catch (nativeErr) {
+        console.error('Native Google Sign-In failed:', nativeErr);
+        if (nativeErr.code === '12501' || nativeErr.message?.includes('cancel') || nativeErr.message?.includes('12501')) {
+          this.updateStatus('idle', 'Connexion annulée.');
+          return { success: false, error: 'Connexion annulée par l\'utilisateur.' };
+        }
+        const friendlyMsg = this.getFriendlyAuthError(nativeErr);
+        this.updateStatus('error', friendlyMsg);
+        return { success: false, error: friendlyMsg };
+      }
+    }
+
+    // 2. Flux Web / PC Desktop (Popup avec secours redirect)
     try {
       this.updateStatus('syncing', 'Ouverture de la fenêtre Google...');
       const provider = new window.firebase.auth.GoogleAuthProvider();
@@ -276,6 +312,14 @@ export class FirebaseSyncService {
   }
 
   async signOut() {
+    const isNative = typeof window.Capacitor !== 'undefined' && 
+                     typeof window.Capacitor.isNativePlatform === 'function' && 
+                     window.Capacitor.isNativePlatform();
+    const nativeAuth = window.Capacitor?.Plugins?.FirebaseAuthentication;
+    if (isNative && nativeAuth && typeof nativeAuth.signOut === 'function') {
+      try { await nativeAuth.signOut(); } catch(e) { console.warn('Native signOut error:', e); }
+    }
+
     if (!window.firebase || !window.firebase.auth) return;
     try {
       if (this.firestoreUnsubscribe) {
@@ -500,8 +544,21 @@ export class FirebaseSyncService {
   }
 
   getFriendlyAuthError(err) {
-    if (!err || !err.code) return err.message || 'Erreur inconnue';
-    switch (err.code) {
+    if (!err) return 'Erreur inconnue';
+    const msg = err.message || '';
+    const code = String(err.code || '');
+
+    if (code === '10' || msg.includes('10:') || msg.includes('DEVELOPER_ERROR')) {
+      return '⚠️ Configuration Google Android (Code 10) : L\'empreinte SHA-1 doit être ajoutée dans la Console Firebase (Paramètres du projet > Vos applications > Empreinte SHA).';
+    }
+    if (code === '12501' || msg.includes('12501') || msg.includes('canceled') || msg.includes('cancelled')) {
+      return 'Connexion annulée par l\'utilisateur.';
+    }
+    if (msg.includes('missing initial state') || code.includes('missing-initial-state')) {
+      return 'Erreur de session du navigateur. Utilisez la connexion native Android intégrée.';
+    }
+
+    switch (code) {
       case 'auth/popup-blocked':
         return 'La fenêtre de connexion Google a été bloquée par le navigateur. Veuillez autoriser les popups.';
       case 'auth/popup-closed-by-user':
@@ -513,7 +570,7 @@ export class FirebaseSyncService {
       case 'auth/operation-not-allowed':
         return 'La connexion Google n\'est pas encore activée dans la console Firebase (Authentication > Sign-in method > Google).';
       default:
-        return err.message;
+        return msg || 'Erreur de connexion Google';
     }
   }
 }

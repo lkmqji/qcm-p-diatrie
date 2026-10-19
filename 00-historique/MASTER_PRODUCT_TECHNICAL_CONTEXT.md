@@ -147,6 +147,10 @@ Lorsqu'une réponse est incorrecte (dans la modale d'erreur ou dans le carnet) :
   - Badge de date : `📅 JJ/MM HH:MM` (`stat-date`).
   - Badge de score CROQ : `Score : X%` (`stat-score`).
   - Sélecteur d'historique de tentatives multiples avec dates, scores et switch instantané d'onglets.
+- **Accordéons Interactifs & Repliage Multi-Niveaux** :
+  - **Groupes de cours pliables (`.notebook-chapter-group`)** : Clic sur l'en-tête de cours pour masquer/afficher toutes ses questions (`.notebook-chapter-body`, `.notebook-chapter-questions`), avec rotation du chevron.
+  - **Fiches de questions individuelles pliables (`.grouped-question-card`)** : Clic sur l'en-tête de chaque question pour la replier individuellement. En état replié, les panneaux lourds d'options et d'analyse IA sont masqués (`display: none !important`), laissant place à une prévisualisation aérée et compacte de l'énoncé (`.question-collapsed-preview`).
+  - **Bouton Maître « Tout replier / Tout déplier » (`.notebook-toggle-all-btn`)** : Présent dans la barre de synthèse, il replie ou déplie instantanément l'intégralité des chapitres et des questions en un seul clic, aussi bien en vue par cours qu'en vue liste plate.
 - **Barre de recherche & synthèse dynamique** :
   - Recherche instantanée par mot-clé sur les questions, propositions, explications et raisonnements IA.
   - Synthèse `#notebook-summary-bar` reflétant en direct le nombre de questions, d'analyses et le rappel du tri actif (`Tri : [Critère] ([Croissant/Décroissant])`).
@@ -254,7 +258,10 @@ Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes
 ## 5. Synchronisation Multi-Appareils & Firebase
 
 - **Fournisseur** : Firebase Auth (Google Provider) & Cloud Firestore.
-- **Protocole** : Bidirectionnel avec fusion basée sur horodatage (`mergeStates`).
+- **Authentification Hybride (Web / Mobile)** :
+  - **Sur Android (APK natif)** : Utilisation de `@capacitor-firebase/authentication` (version 8.5.2) qui déclenche la boîte de dialogue native Android Google Play Services (`FirebaseAuthentication.signInWithGoogle()`). Cela évite les ouvertures de navigateur externe et résout l'erreur `missing initial state`. Le jeton d'identité `idToken` est ensuite transmis à `signInWithCredential` du SDK Web pour maintenir la session Firestore active.
+  - **Sur Web / Desktop (Vercel)** : Utilisation de `window.firebase.auth().signInWithPopup(provider)` avec fallback `signInWithRedirect`.
+- **Protocole de synchronisation** : Bidirectionnel avec fusion basée sur horodatage (`mergeStates`).
 - **Déclencheurs** : Push automatique après chaque réponse validée ou enregistrement de note, pull automatique à la connexion.
 
 ---
@@ -264,13 +271,17 @@ Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.1` (`versionCode 2`)
-- **Empreinte SHA-1 (Debug Keystore)** : `8F:FC:20:D9:BE:46:AF:D9:FA:20:33:0B:87:58:F8:B1:F6:96:43:F5`
-- **Empreinte SHA-256 (Debug Keystore)** : `43:6A:7A:4C:75:D8:1C:B1:03:C0:94:7D:8C:52:02:38:B1:66:05:05:A0:E2:8F:14:CB:0E:BD:8E:22:74:5A:4D`
+- **Version native** : `versionName 1.2` (`versionCode 3`)
+- **Empreinte SHA-1 (Debug Keystore local Gradle)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
+- **Empreinte SHA-256 (Debug Keystore local Gradle)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
+- **Keystore utilisé** : `C:\Users\Lenovo\.android\debug.keystore` (Alias : `AndroidDebugKey`)
 - **Dossier web racine (`webDir`)** : `dist`
 - **Fichier de configuration Firebase Android** : `android/app/google-services.json` (Projet `qcm-pediatr`, Package `com.pediadrill.app`).
 - **Plugin Gradle Google Services** : `com.google.gms.google-services` (version `4.4.4`) activé automatiquement à la présence de `android/app/google-services.json`.
-- **Dépendances natives** : `@capacitor/core`, `@capacitor/cli`, `@capacitor/android` (version 8.x).
+- **Configuration des plugins Capacitor (`capacitor.config.json`)** :
+  - `plugins.FirebaseAuthentication` : `skipNativeAuth: false`, `providers: ["google.com"]` (requis pour instancier le handler natif Android `GoogleAuthProviderHandler`).
+- **Ressources natives Android (`strings.xml`)** : `default_web_client_id` explicitement déclaré avec l'ID client Web OAuth Google (`1028938391462-hfo44kaj789r1ruovt4b4v59he6jvarq.apps.googleusercontent.com`).
+- **Dépendances natives** : `@capacitor/core`, `@capacitor/cli`, `@capacitor/android`, `@capacitor-firebase/authentication` (version 8.x).
 
 ### 6.2. Environnement Android Studio & Toolchain
 - **Emplacement Android Studio** : `C:\Program Files\Android\Android Studio` (`bin\studio64.exe`).
