@@ -271,7 +271,7 @@ Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.2` (`versionCode 3`)
+- **Version native** : `versionName 1.3` (`versionCode 4`)
 - **Empreinte SHA-1 (Debug Keystore local Gradle)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
 - **Empreinte SHA-256 (Debug Keystore local Gradle)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
 - **Keystore utilisé** : `C:\Users\Lenovo\.android\debug.keystore` (Alias : `AndroidDebugKey`)
@@ -290,9 +290,9 @@ Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes
 - **Moteur Gradle** : Gradle 9.2 (`gradle-9.2.0-bin`), entièrement compatible avec Java 25 et Android Gradle Plugin (AGP 8.13.0).
 
 ### 6.3. Génération & Emplacements de l'APK
-- **Script automatisé** : `build-apk.bat` (exécutable via `npm run build:apk`).
+- **Script automatisé** : `build-apk.bat` (exécutable via `npm run build:apk`). Pipeline complet automatisé : 1) build bundle web (`build-bundle.cjs`), 2) sync native Capacitor (`cap sync android`), 3) compilation native Gradle (`:app:assembleDebug`) et copie sous `PediaDrill.apk`.
 - **Cible Gradle optimisée** : `:app:assembleDebug` (permet de compiler directement l'application et de générer l'APK sans surcharge d'extraction d'annotations ou de construction d'AAR de bibliothèques).
-- **Fichier APK racine (accès direct utilisateur)** : `PediaDrill.apk` (taille : ~4.96 Mo).
+- **Fichier APK racine (accès direct utilisateur)** : `PediaDrill.apk` (taille : ~6.84 Mo).
 - **Fichier APK de build Android** : `android/app/build/outputs/apk/debug/app-debug.apk`.
 - **Ouverture dans l'IDE Android Studio** : `npm run open:android` ou lancement de `studio64.exe android`.
 

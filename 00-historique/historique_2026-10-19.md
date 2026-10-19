@@ -274,5 +274,21 @@
   - Compilation complète du bundle autonome via `build-bundle.cjs` (`src/app.bundle.js`, `index.html`, `dist/index.html`).
   - Synchronisation Capacitor Android (`npx cap sync android`).
 
+### 22:20 - Pipeline Automatisé de Mise à Jour de l'APK & Déploiement de l'APK v1.3 (versionCode 4)
+- **Objectif** :
+  - Garantir que toute modification du code source (CSS, JS, assets) met systématiquement et infailliblement à jour l'APK autonome [PediaDrill.apk](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/PediaDrill.apk) à la racine du projet.
+- **Automatisation du script de build (`build-apk.bat`)** :
+  - Intégration séquentielle automatique des 3 étapes au sein de `build-apk.bat` :
+    1. Assemblage du bundle web de production (`node build-bundle.cjs`).
+    2. Synchronisation des assets natifs Capacitor (`npx.cmd cap sync android`).
+    3. Compilation native Gradle (`:app:assembleDebug`) avec le JDK officiel d'Android Studio et copie directe sous [PediaDrill.apk](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/PediaDrill.apk).
+- **Montée de version native (`android/app/build.gradle`)** :
+  - `versionCode` : incrémenté de `3` à `4`.
+  - `versionName` : incrémenté de `"1.2"` à `"1.3"`.
+- **Validation** :
+  - Compilation complète réussie (`BUILD SUCCESSFUL in 1m 8s`).
+  - Fichier [PediaDrill.apk](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/PediaDrill.apk) généré et prêt pour installation directe sur smartphone.
+
+
 
 
