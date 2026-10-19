@@ -297,7 +297,6 @@ Rédige l'explication clinique complète et approfondie sans aucune coupure. À 
       };
     }
   }
-}
 
 
   /**
@@ -356,5 +355,6 @@ Consignes pédagogiques strictes :
     }
   }
 
+}
 export const geminiService = new GeminiService();
 

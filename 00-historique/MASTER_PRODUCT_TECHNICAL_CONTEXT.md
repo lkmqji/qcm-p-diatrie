@@ -1,5 +1,5 @@
 # PédiaDrill — Master Product & Technical Context
-*Dernière mise à jour : 2026-10-19 19:30:00 CET*
+*Dernière mise à jour : 2026-10-19 20:55:00 CET*
 *Source unique de vérité technique et fonctionnelle du projet PédiaDrill.*
 
 ---
@@ -276,7 +276,14 @@ Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes
 ## 7. Pipeline de Compilation & Déploiement
 
 - **Compilation Web PWA** : `node build.cjs` (prépare `dist/index.html` autonome avec datasets, styles et scripts).
-- **Compilation Bundle autonome** : `node build-bundle.cjs` (reconstruit `src/app.bundle.js` et génère la version racine `index.html`).
+- **Déploiement Web Cloud (Vercel & GitHub)** :
+  - **Fichier servi par Vercel** : Conformément à `vercel.json` (`"routes": [{ "src": "/(.*)", "dest": "/index.html" }]`), Vercel sert directement le fichier racine `index.html`.
+  - **Assemblage obligatoire** : Toute modification apportée aux sources dans `src/` doit être compilée via `node build-bundle.cjs` qui synchronise à la fois `src/app.bundle.js`, `index.html` (racine pour Vercel) et `dist/index.html` (pour le build mobile et PWA).
+  - **Protocole de validation syntaxique pré-déploiement** :
+    1. Validation des sources : `node -c src/services/gemini.js`, `node -c src/services/queueEngine.js`, `node -c src/app.js`.
+    2. Validation du bundle généré : `node -c src/app.bundle.js`.
+    3. Validation des balises `<script>` intégrées dans `index.html` via script Node VM.
+    4. Cela garantit un chargement sans erreur (`SyntaxError`) évitant le blocage de l'initialisation du DOM et des métriques (`--`).
 - **Compilation Mobile Android (APK)** :
   1. `npm run build` : génère les fichiers finaux dans `dist/`.
   2. `npx cap sync android` : synchronise les assets web et plugins dans `android/app/src/main/assets/public/`.

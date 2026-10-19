@@ -147,6 +147,16 @@
   - Sécurité absolue : cascade exclusive de modèles Flash avec secours hors-ligne en cas de coupure réseau ou quota dépassé.
 - **Recompilation, synchronisation & APK** :
   - Synchronisation et recompilation du bundle via `build-bundle.cjs`.
-  - Synchronisation Capacitor Android (`cap sync android`) et régénération de l'APK natif [PediaDrill.apk](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/PediaDrill.apk).
-
-
+### 20:55 - Diagnostic et Résolution du blocage de déploiement GitHub / Vercel (Écran figé sur "--")
+- **Diagnostic de la cause racine** :
+  - Lors de l'ouverture du site déployé sur Vercel (`qcm-p-diatrie-coral.vercel.app`), l'écran restait figé avec des métriques à `--` (« QUESTIONS RESTANTES : -- », « ITÉRATIONS REQUISES : -- », « À FAIRE PAR JOUR : -- ») et aucun bouton interactif ne répondait.
+  - L'analyse approfondie des scripts et du bundle via `node -c src/app.bundle.js` a révélé une erreur de syntaxe fatale : `SyntaxError: Unexpected identifier 'askAboutQuestion'`.
+  - Dans [src/services/gemini.js](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/src/services/gemini.js), la nouvelle fonction `askAboutQuestion` avait été placée par mégarde après l'accolade fermante `}` de la classe `GeminiService`, provoquant une syntaxe non reconnue en Vanilla JS.
+  - Vercel servant directement la page [index.html](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/index.html) contenant le bundle intégré, le navigateur web bloquait immédiatement l'exécution du JavaScript dès le parsing du fichier, avant même que `initApp()` et `updateDashboardUI()` ne puissent se déclencher, laissant affichées les valeurs par défaut brutes `--` du template HTML.
+- **Correctifs apportés** :
+  - **Correction structurelle dans `src/services/gemini.js`** : réintégration propre de la méthode `askAboutQuestion` à l'intérieur du corps de la classe `GeminiService`.
+  - **Validation de la syntaxe de tous les modules** : exécution de `node -c` sur tous les fichiers JS source (`src/services/gemini.js`, `src/services/queueEngine.js`, `src/services/firebaseSyncService.js`, `src/app.js`). Tous valident sans erreur.
+  - **Reconstruction intégrale des bundles** : exécution de `node build-bundle.cjs` mettant à jour `src/app.bundle.js`, le fichier de production racine déployé sur Vercel [index.html](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/index.html) et [dist/index.html](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/dist/index.html).
+  - **Validation de syntaxe in-situ du HTML** : vérification par script Node VM de tous les blocs `<script>` inclus dans `index.html` (Script 0, 1 et 2 validés à 100% avec code 0).
+  - **Synchronisation Capacitor Android** : exécution de `npx cap sync android` pour propager le correctif dans les assets natifs.
+  - **Régénération de l'APK natif** : compilation de [PediaDrill.apk](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/PediaDrill.apk) mis à jour.
