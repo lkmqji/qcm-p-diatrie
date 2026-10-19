@@ -75,3 +75,78 @@
   - Synchronisation et compilation du bundle via `build-bundle.cjs`.
   - Synchronisation Capacitor Android (`npx cap sync android`).
   - Régénération de l'APK natif Android via `build-apk.bat`.
+
+### 19:50 - Masquage du titre du cours (Spoiler Chapitre) et boutons de fermeture / réduction de taille des médias
+- **Masquage du titre du chapitre par flou interactif (`#arena-chapter-title`)** :
+  - **Problématique** : L'affichage direct du chapitre (ex: *Cardiologie*, *Néphrologie*) oriente trop facilement l'étudiant et biaise la réflexion diagnostique du cas clinique.
+  - **Comportement & Style CSS** :
+    - Par défaut, à chaque nouvelle question chargée dans l'arène, le titre du chapitre est flouté (`filter: blur(6px); opacity: 0.38`).
+    - Présence d'un badge interactif discret `Cours masqué` avec icône œil.
+    - Un simple clic ou toucher sur le badge (`window.toggleArenaChapterTitle()`) retire immédiatement le flou (`is-revealed`) et révèle l'intitulé complet du cours. Un second clic permet de le reflouter.
+- **Optimisation des médias médicaux (Photos) suite au retour utilisateur** :
+  - **Réduction des dimensions** :
+    - Vignette rétractée (repliée) : réduite de 96px à **74x74 px** (64x64 px sur smartphone) pour une compacité maximale.
+    - Carte dépliée : hauteur maximale ramenée de 440px à **250 px** (210 px sur smartphone) et largeur maximale à 340 px, évitant d'occuper tout l'écran vertical (parfaitement calibré pour les résolutions type 1536×695).
+  - **Boutons de fermeture dédiés après ouverture** :
+    - **Bouton flottant circulaire `✕`** placé dans le coin supérieur droit de l'image dépliée (`.btn-media-card-close`) avec survol rouge.
+    - **Bouton d'action explicite `✕ Fermer la photo`** (`.btn-media-close`) disposé dans la barre d'action sous l'image aux côtés du bouton `Plein écran HD`.
+    - Le clic sur l'image elle-même reste également actif pour refermer et reflouter instantanément.
+- **Recompilation, synchronisation & APK** :
+  - Exécution de `build-bundle.cjs` pour synchroniser `src/app.bundle.js`, `index.html` et `dist/`.
+  - Synchronisation Capacitor Android (`cap sync android`) et régénération de l'APK natif [PediaDrill.apk](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/PediaDrill.apk).
+
+### 20:00 - Système de tri multi-critères (Date, Nombre d'erreurs, Cours, Score) et modes de vue dans le Carnet de Raisonnement
+- **Objectif utilisateur** : Permettre de trier les erreurs et notes de raisonnement clinique du carnet par date (récent/ancien), par nombre d'erreurs (fréquence de faute), par cours ou par score, avec inversion rapide entre ordre croissant et décroissant.
+- **Barre d'outils enrichie (`template.html` & `src/style.css`)** :
+  - **Ligne supérieure** : Barre de recherche textuelle globale (avec icône loupe) et sélecteur de filtrage par cours.
+  - **Ligne inférieure interactive** :
+    - **Sélecteur de critère (`#notebook-sort-by`)** :
+      - 📅 *Date de la faute* (horodatage précis de l'erreur)
+      - ⚠️ *Nombre d'erreurs* (cumul des tentatives ratées pour cibler les questions critiques)
+      - 📚 *Cours* (ordre alphabétique des spécialités pédiatriques)
+      - 🎯 *Score d'évaluation* (score CROQ / niveau de difficulté)
+    - **Bouton d'inversion d'ordre (`#btn-toggle-sort-order`)** :
+      - Bascule en 1 clic entre *Décroissant ⬇* et *Croissant ⬆* avec mise à jour immédiate de l'icône et de l'intitulé.
+    - **Bascule de mode d'affichage (`#btn-view-mode-chapter` / `#btn-view-mode-flat`)** :
+      - *📁 Par cours* : regroupe les questions dans des accordéons de chapitres, eux-mêmes ordonnés selon le critère et l'ordre sélectionnés.
+      - *📄 Liste continue* : affiche l'ensemble des questions erronées de tout le programme sous forme de classement continu avec badge de rang (`#1`, `#2`, `#3`...), idéal pour réviser directement le Top des questions les plus ratées !
+- **Badges statistiques sur chaque fiche de question** :
+  - Badge d'erreurs : `⚠️ X faute(s)` (`stat-mistakes`).
+  - Badge de date : `📅 JJ/MM HH:MM` (`stat-date`).
+  - Badge de score CROQ : `Score : X%` (`stat-score`).
+  - Badge de rang : `#N` en mode liste continue.
+- **Synthèse dynamique en direct (`#notebook-summary-bar`)** :
+  - Affichage clair du résumé : `X questions (Y analyses) • Tri : [Critère] ([Croissant/Décroissant])`.
+- **Recompilation, synchronisation & APK** :
+  - Synchronisation et recompilation du bundle via `build-bundle.cjs`.
+  - Synchronisation Capacitor Android (`cap sync android`) et génération de l'APK natif [PediaDrill.apk](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/PediaDrill.apk).
+
+### 20:10 - Tuteur IA Interactif en direct dans l'Arène (Bouton flottant & Chatbox contextuelle sur le QCM en cours)
+- **Objectif utilisateur** : Pouvoir interroger directement l'IA à tout moment pendant la résolution d'une question dans le Grand Mix (Arène) via un bouton circulaire flottant en bas à droite de l'écran, pour poser des questions libres ou obtenir des éclaircissements immédiats sur le QCM en cours.
+- **Bouton flottant circulaire néon (`#btn-arena-ai-chat`)** :
+  - Disposé de manière fixe en bas à droite (`bottom: 24px; right: 24px; z-index: 9999`).
+  - Design cyber-médical premium avec dégradé cyan/violet (`linear-gradient(135deg, #00d4ff, #8b5cf6)`), halo lumineux pulsant doux (`animation: pulseAiBtn`) et icône animée `sparkles`.
+  - Visible exclusivement lorsque l'utilisateur est dans l'Arène (`currentView === 'arena'`).
+- **Boîte de dialogue contextuelle intelligente (`#arena-ai-chatbox`)** :
+  - **Fenêtre flottante moderne** : Panneau en verre dépoli (`backdrop-filter: blur(20px)`), bordure cyan luminescente, adaptée aux écrans PC et se transformant en tiroir glissant (bottom sheet) sur mobile.
+  - **En-tête contextuel** : Affiche le titre « Tuteur IA Pédiatrie », le modèle actif (« Gemini 3.8 Flash »), le sous-titre dynamique du chapitre et des boutons pour réinitialiser la conversation ou fermer le chat.
+  - **Bannière de rappel du QCM actif** : Rappel en direct du cas clinique et de l'énoncé de la question en cours.
+  - **Suggestions d'amorces en 1 clic (Prompt Chips)** :
+    - 💡 *Démarche diagnostique*
+    - 🔍 *Justification clé*
+    - ⚠️ *Piège concours*
+    - 💊 *Traitement & CAT*
+  - **Zone de discussion fluide & Multi-tours** :
+    - Bulles de messages différenciées (bleu gradient pour l'étudiant, bleu nuit médical pour l'IA).
+    - Rendu Markdown soigné (gras, puces, formatage médical) via `formatMedicalContent`.
+    - Indicateur de frappe animé pendant l'inférence Gemini Flash.
+    - Mémoire conversationnelle multi-tours pour affiner la compréhension d'une notion sans perdre le fil.
+- **Service Gemini Flash (`src/services/gemini.js`)** :
+  - Nouvelle méthode `askAboutQuestion(question, conversationHistory, userMessage)` transmettant le contexte complet (énoncé, cas clinique, propositions A-E, réponses officielles et explication officielle).
+  - Persona d'un professeur universitaire et chef de clinique en pédiatrie délivrant des explications ciblées, rigoureuses et concises.
+  - Sécurité absolue : cascade exclusive de modèles Flash avec secours hors-ligne en cas de coupure réseau ou quota dépassé.
+- **Recompilation, synchronisation & APK** :
+  - Synchronisation et recompilation du bundle via `build-bundle.cjs`.
+  - Synchronisation Capacitor Android (`cap sync android`) et régénération de l'APK natif [PediaDrill.apk](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/PediaDrill.apk).
+
+

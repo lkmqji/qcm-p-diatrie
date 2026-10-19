@@ -303,6 +303,63 @@ Rédige l'explication clinique complète et approfondie sans aucune coupure. À 
   }
 }
 
+
+  /**
+   * Question-in-context AI chat tutor (Flash models only)
+   * Answers student queries specifically focused on the current QCM / CROQ
+   */
+  async askAboutQuestion(question, conversationHistory = [], userMessage) {
+    if (!question) {
+      return {
+        text: "Aucune question active n'est actuellement chargée dans l'Arène.",
+        modelUsed: "Tuteur Local"
+      };
+    }
+
+    const correctOptions = (question.options || []).filter(o => o.is_correct);
+    const correctLetters = correctOptions.map(o => o.letter).join(", ");
+    const allOptionsText = (question.options || []).map(o => `${o.letter}) ${o.text}`).join("\n");
+
+    const systemInstruction = `Tu es le Tuteur IA Pédiatrique de PédiaDrill, professeur universitaire et chef de clinique en pédiatrie.
+L'étudiant s'entraîne sur un QCM/CROQ précis et te pose une question directe pour mieux comprendre.
+Tu as le contexte médical complet sous les yeux :
+- Module : Pédiatrie (${question.chapterTitle || 'Pédiatrie Générale'})
+- Énoncé : "${question.question || question.statement || ''}"
+${question.clinical_case ? `- Cas clinique : "${question.clinical_case}"\n` : ''}
+${allOptionsText ? `- Propositions :\n${allOptionsText}\n` : '- Type : Question ouverte (CROQ)\n'}
+- Bonne(s) réponse(s) officielle(s) : ${correctLetters || question.croq_answer || 'Non précisé'}
+${question.explanation ? `- Explication officielle du cours : "${question.explanation}"\n` : ''}
+
+Consignes pédagogiques strictes :
+1. Réponds en français médical rigoureux, clair, bienveillant et concis (va droit au but).
+2. Mets en valeur les mots-clés en gras et structure avec des tirets/puces pour une lecture rapide pendant le drill.
+3. Justifie sur le plan physiopathologique, sémiologique ou thérapeutique pourquoi telle proposition est vraie ou fausse.
+4. Signale les pièges fréquents au concours de résidanat si pertinent.`;
+
+    let promptWithContext = '';
+    if (!conversationHistory || conversationHistory.length === 0) {
+      promptWithContext = `Voici ma question sur ce QCM : "${userMessage}"`;
+    } else {
+      const historyStr = conversationHistory.map(m => `${m.role === 'user' ? 'Étudiant' : 'Tuteur IA'} : ${m.text}`).join('\n\n');
+      promptWithContext = `Historique de la discussion :\n${historyStr}\n\nNouvelle question de l'étudiant : "${userMessage}"`;
+    }
+
+    try {
+      const result = await this.callWithFallback(promptWithContext, systemInstruction, 2048);
+      return {
+        text: result.text,
+        modelUsed: result.modelUsed
+      };
+    } catch (err) {
+      console.warn("askAboutQuestion failed:", err);
+      const corrStr = correctLetters || question.croq_answer || "Réponse officielle";
+      return {
+        text: `⚠️ **Mode Hors-Ligne (Quota ou Réseau)** : Le Tuteur Flash est momentanément indisponible.\n\n*Rappel de la base pour ce QCM :*\n- **Bonne réponse :** **${corrStr}**\n- **Explication :** ${question.explanation || 'Consultez le cours de référence.'}`,
+        modelUsed: "Secours Local Hors-Ligne"
+      };
+    }
+  }
+
 const geminiService = new GeminiService();
 
 
@@ -1426,6 +1483,17 @@ function switchView(viewName) {
     renderNotebookUI();
   }
 
+  // Floating AI Tutor button in Arena
+  const floatingAiBtn = document.getElementById('btn-arena-ai-chat');
+  const arenaChatbox = document.getElementById('arena-ai-chatbox');
+  if (floatingAiBtn) {
+    floatingAiBtn.style.display = (viewName === 'arena') ? 'flex' : 'none';
+  }
+  if (viewName !== 'arena' && arenaChatbox) {
+    arenaChatbox.style.display = 'none';
+    if (floatingAiBtn) floatingAiBtn.classList.remove('is-active');
+  }
+
   window.scrollTo({ top: 0, behavior: 'smooth' });
   refreshLucide();
 }
@@ -1928,10 +1996,13 @@ function renderQuestionMedia(mediaUrls) {
     return `
       <div class="medical-media-card is-collapsed" data-media-url="${escapedUrl}">
         <div class="medical-media-inner" onclick="window.toggleMedicalMedia(this.parentElement, event)" title="Toucher pour afficher clairement">
+          <button type="button" class="btn-media-card-close" onclick="window.toggleMedicalMedia(this.closest('.medical-media-card'), event)" title="Fermer / Masquer la photo">
+            <i data-lucide="x" style="width:13px;height:13px;"></i>
+          </button>
           <img src="${escapedUrl}" class="medical-media-img" alt="Iconographie médicale${numLabel}" loading="lazy">
           <div class="medical-media-spoiler-overlay">
             <span class="medical-media-badge">
-              <i data-lucide="eye" style="width:12px;height:12px;"></i>
+              <i data-lucide="eye" style="width:11px;height:11px;"></i>
               <span>Toucher pour afficher</span>
             </span>
             <span class="medical-media-subtext">Photo floutée</span>
@@ -1942,9 +2013,10 @@ function renderQuestionMedia(mediaUrls) {
             <i data-lucide="maximize-2" style="width:12px;height:12px;"></i>
             <span>Plein écran HD</span>
           </button>
-          <span class="media-toggle-hint" onclick="window.toggleMedicalMedia(this.closest('.medical-media-card'), event)">
-            <i data-lucide="eye-off" style="width:12px;height:12px;vertical-align:middle;"></i> Réduire &amp; flouter
-          </span>
+          <button type="button" class="btn-media-close" onclick="window.toggleMedicalMedia(this.closest('.medical-media-card'), event)" title="Masquer et reflouter la photo">
+            <i data-lucide="x" style="width:12px;height:12px;"></i>
+            <span>Fermer la photo</span>
+          </button>
         </div>
       </div>
     `;
@@ -1954,7 +2026,7 @@ function renderQuestionMedia(mediaUrls) {
     <div class="medical-media-section">
       <div class="medical-media-header">
         <div class="medical-media-title">
-          <i data-lucide="image" style="width:14px;height:14px;color:var(--cyan);"></i>
+          <i data-lucide="image" style="width:13px;height:13px;color:var(--cyan);"></i>
           <span>Iconographie médicale (${count} photo${count > 1 ? 's' : ''})</span>
         </div>
         <span style="font-size:0.68rem;color:var(--text-dim);font-weight:500;">
@@ -1978,6 +2050,22 @@ window.toggleMedicalMedia = function(cardEl, event) {
   } else {
     cardEl.classList.remove('is-expanded');
     cardEl.classList.add('is-collapsed');
+  }
+  refreshLucide();
+};
+
+window.toggleArenaChapterTitle = function() {
+  const badge = document.getElementById('arena-chapter-title');
+  if (!badge) return;
+  const isBlurred = badge.classList.contains('is-blurred');
+  if (isBlurred) {
+    badge.classList.remove('is-blurred');
+    badge.classList.add('is-revealed');
+    badge.title = 'Cliquer pour masquer le chapitre';
+  } else {
+    badge.classList.add('is-blurred');
+    badge.classList.remove('is-revealed');
+    badge.title = 'Chapitre masqué (Cliquer pour afficher)';
   }
   refreshLucide();
 };
@@ -2193,6 +2281,14 @@ function loadNextArenaQuestion() {
   selectedOptionIds.clear();
   isEvaluating = false;
 
+  // Reset & update AI chat context for the new question
+  arenaChatHistory = [];
+  updateArenaChatContext();
+  const chatboxEl = document.getElementById('arena-ai-chatbox');
+  if (chatboxEl && chatboxEl.style.display !== 'none') {
+    renderChatWelcome();
+  }
+
   // Hide success banner & explanation box, remove highlights, show default actions
   document.getElementById('arena-success-banner').style.display = 'none';
   const arenaExpBox = document.getElementById('arena-explanation-box');
@@ -2208,8 +2304,18 @@ function loadNextArenaQuestion() {
 
   const stats = queueEngine.getQuestionStats(currentQuestion.uid);
 
-  // Chapter & type badges
-  document.getElementById('arena-chapter-title').textContent = `Pédiatrie — ${currentQuestion.chapterTitle || 'Général'}`;
+  // Chapter badge (blurred by default until clicked)
+  const chapterBadge = document.getElementById('arena-chapter-title');
+  if (chapterBadge) {
+    chapterBadge.classList.add('is-blurred');
+    chapterBadge.classList.remove('is-revealed');
+    chapterBadge.title = 'Chapitre masqué (Cliquer pour afficher)';
+    chapterBadge.innerHTML = `
+      <span class="chapter-title-text">Pédiatrie — ${escapeHtml(currentQuestion.chapterTitle || 'Général')}</span>
+      <span class="chapter-title-hint"><i data-lucide="eye" style="width:11px;height:11px;"></i> Cours masqué</span>
+    `;
+    chapterBadge.onclick = () => window.toggleArenaChapterTitle();
+  }
   
   const typePill = document.getElementById('arena-type-pill');
   typePill.textContent = currentQuestion.type;
@@ -2609,9 +2715,182 @@ function showVictoryScreen() {
 }
 
 // ============================================================================
-// CARNET DE RAISONNEMENT IA (Groupé par Cours & Question Unique)
+// CARNET DE RAISONNEMENT IA (Groupé par Cours & Question Unique, Tris Multi-Critères)
 // ============================================================================
 let notebookSelectedChapter = '';
+let notebookSortBy = 'date'; // 'date' | 'mistakes' | 'chapter' | 'score'
+let notebookSortOrder = 'desc'; // 'desc' | 'asc'
+let notebookViewMode = 'chapter'; // 'chapter' | 'flat'
+
+function compareQuestions(qA, qB, sortBy, sortOrder) {
+  let valA, valB;
+
+  if (sortBy === 'date') {
+    valA = qA.latestTimestamp || 0;
+    valB = qB.latestTimestamp || 0;
+  } else if (sortBy === 'mistakes') {
+    valA = qA.totalMistakes || 0;
+    valB = qB.totalMistakes || 0;
+    // Tie-breaker: most recent date
+    if (valA === valB) {
+      valA = qA.latestTimestamp || 0;
+      valB = qB.latestTimestamp || 0;
+    }
+  } else if (sortBy === 'chapter') {
+    const cmp = (qA.chapterTitle || '').localeCompare(qB.chapterTitle || '', 'fr');
+    return sortOrder === 'asc' ? cmp : -cmp;
+  } else if (sortBy === 'score') {
+    valA = (qA.latestScore !== null && qA.latestScore !== undefined) ? qA.latestScore : (qA.isCroq ? 0 : 100);
+    valB = (qB.latestScore !== null && qB.latestScore !== undefined) ? qB.latestScore : (qB.isCroq ? 0 : 100);
+  } else {
+    valA = qA.latestTimestamp || 0;
+    valB = qB.latestTimestamp || 0;
+  }
+
+  if (sortOrder === 'asc') {
+    return valA > valB ? 1 : (valA < valB ? -1 : 0);
+  } else {
+    return valA < valB ? 1 : (valA > valB ? -1 : 0);
+  }
+}
+
+function getSortSummaryLabel() {
+  const dirText = notebookSortOrder === 'desc' ? 'Décroissant ⬇' : 'Croissant ⬆';
+  let critText = 'Date de faute';
+  if (notebookSortBy === 'mistakes') critText = "Nombre d'erreurs";
+  else if (notebookSortBy === 'chapter') critText = 'Ordre alphabétique des cours';
+  else if (notebookSortBy === 'score') critText = 'Score CROQ';
+  return `${critText} (${dirText})`;
+}
+
+function updateSortOrderButtonUI() {
+  const btn = document.getElementById('btn-toggle-sort-order');
+  const label = document.getElementById('sort-order-label');
+  const icon = document.getElementById('sort-order-icon');
+  if (!btn || !label) return;
+
+  if (notebookSortOrder === 'desc') {
+    label.textContent = 'Décroissant ⬇';
+    btn.setAttribute('data-order', 'desc');
+    btn.title = 'Ordre actuel : Décroissant (Max ➔ Min). Cliquer pour passer en Croissant.';
+    if (icon) icon.setAttribute('data-lucide', 'arrow-down-wide-narrow');
+  } else {
+    label.textContent = 'Croissant ⬆';
+    btn.setAttribute('data-order', 'asc');
+    btn.title = 'Ordre actuel : Croissant (Min ➔ Max). Cliquer pour passer en Décroissant.';
+    if (icon) icon.setAttribute('data-lucide', 'arrow-up-narrow-wide');
+  }
+  refreshLucide();
+}
+
+function renderQuestionCard(q, gIdx, qIdx, rankNumber = null) {
+  const qDomId = `qcard_${gIdx}_${qIdx}`;
+  const latestAttempt = q.attempts[0];
+  const latestDateStr = latestAttempt.timestamp 
+    ? new Date(latestAttempt.timestamp).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+    : '';
+
+  // Attempts tab switcher (if multiple attempts on the same question)
+  let switcherHtml = '';
+  if (q.attempts.length > 1) {
+    switcherHtml = `
+      <div class="attempts-switcher-bar">
+        ${q.attempts.map((att, attIdx) => {
+          const timeStr = att.timestamp 
+            ? new Date(att.timestamp).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
+            : `Tentative ${q.attempts.length - attIdx}`;
+          const scoreBadge = (att.score !== null && att.score !== undefined) ? `<span class="badge-pill-micro">${att.score}%</span>` : '';
+          const label = (attIdx === 0) ? `✨ Dernière analyse (#${q.attempts.length})` : `Tentative #${q.attempts.length - attIdx}`;
+          return `
+            <button class="attempt-tab-btn ${attIdx === 0 ? 'active' : ''}" onclick="window.switchAttemptTab('${qDomId}', ${attIdx}, this)">
+              <span>${label}</span>
+              <span class="badge-pill-micro">${timeStr}</span>
+              ${scoreBadge}
+            </button>
+          `;
+        }).join('')}
+      </div>
+    `;
+  }
+
+  // Pre-rendered panels for each attempt with complete fiches
+  const panelsHtml = q.attempts.map((att, attIdx) => {
+    const fullQ = allQuestions.find(item => item.uid === att.questionUid) || {
+      uid: att.questionUid,
+      question: att.questionText,
+      clinical_case: att.clinicalCase || null,
+      chapterTitle: att.chapterTitle || q.chapterTitle,
+      options: att.options || [],
+      explanation: att.officialExplanation || '',
+      croq_answer: att.correctAnswer || ''
+    };
+    if (!fullQ.media_urls && att.media_urls) { fullQ.media_urls = att.media_urls; }
+    const letters = att.userAnswerLetters || (att.userAnswer ? att.userAnswer.split(',').map(s => s.trim().toUpperCase()) : []);
+    const recapHtml = formatQuestionMistakeRecap(fullQ, letters, q.isCroq, att.userAnswer, att.score);
+    const reasHtml = formatReasoningNote(att.reasoningNote);
+
+    return `
+      <div class="attempt-panel" id="${qDomId}_att_${attIdx}" style="${attIdx === 0 ? '' : 'display:none;'}">
+        ${recapHtml}
+        <div class="notebook-reasoning-section">
+          <div class="notebook-reasoning-title">
+            <i data-lucide="sparkles" style="width:16px;height:16px;color:var(--cyan);"></i>
+            <span>Méthode &amp; Analyse Clinique Approfondie (Gemini 3.8 Flash)</span>
+          </div>
+          ${reasHtml}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const rankBadgeHtml = rankNumber !== null ? `
+    <span class="note-stat-badge stat-rank" title="Classement selon le critère de tri">
+      #${rankNumber}
+    </span>
+  ` : '';
+
+  const mistakesBadgeHtml = `
+    <span class="note-stat-badge stat-mistakes" title="${q.totalMistakes} erreur(s) enregistrée(s)">
+      <i data-lucide="alert-triangle" style="width:12px;height:12px;"></i>
+      ${q.totalMistakes} faute${q.totalMistakes > 1 ? 's' : ''}
+    </span>
+  `;
+
+  const scoreBadgeHtml = (q.isCroq && q.latestScore !== null && q.latestScore !== undefined) ? `
+    <span class="note-stat-badge ${q.latestScore >= 75 ? 'stat-score' : 'stat-mistakes'}" title="Score obtenu au CROQ">
+      Score : ${q.latestScore}%
+    </span>
+  ` : '';
+
+  return `
+    <div class="note-card grouped-question-card" id="${qDomId}">
+      <div class="note-card-header">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          ${rankBadgeHtml}
+          <span class="note-chapter">${escapeHtml(q.chapterTitle)}</span>
+          <span class="tag-pill ${q.isCroq ? 'tag-croq' : 'tag-qcu'}" style="font-size:0.68rem;padding:2px 8px;">
+            ${q.isCroq ? 'CROQ' : 'QCM'}
+          </span>
+          ${mistakesBadgeHtml}
+          ${scoreBadgeHtml}
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          ${q.attemptsCount > 1 ? `
+            <span class="attempts-history-badge">
+              <i data-lucide="history" style="width:13px;height:13px;"></i>
+              ${q.attemptsCount} tentatives
+            </span>
+          ` : ''}
+          <span class="note-date"><i data-lucide="calendar" style="width:11px;height:11px;display:inline;vertical-align:middle;margin-right:2px;"></i>${latestDateStr}</span>
+        </div>
+      </div>
+      ${switcherHtml}
+      <div class="attempt-content-container">
+        ${panelsHtml}
+      </div>
+    </div>
+  `;
+}
 
 function groupNotesByChapterAndQuestion(notes) {
   const chapterMap = new Map();
@@ -2631,18 +2910,22 @@ function groupNotesByChapterAndQuestion(notes) {
   });
 
   const result = [];
-  const sortedChapters = Array.from(chapterMap.keys()).sort((a, b) => a.localeCompare(b, 'fr'));
+  const chapterKeys = Array.from(chapterMap.keys());
 
-  for (const chapTitle of sortedChapters) {
+  for (const chapTitle of chapterKeys) {
     const qMap = chapterMap.get(chapTitle);
     const questions = [];
 
     for (const [qKey, attempts] of qMap.entries()) {
-      // Sort attempts: newest first
+      // Sort attempts: newest first inside the question
       attempts.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
       const primary = attempts[0];
       const isCroq = primary.isCroq || (primary.correctAnswer && primary.correctAnswer.length > 50) || (primary.userAnswer && primary.userAnswer.length > 30);
+      const stats = queueEngine.getQuestionStats(primary.questionUid);
+      const totalMistakes = Math.max(attempts.length, (stats ? stats.mistakes : 0));
+      const latestTimestamp = attempts[0]?.timestamp || 0;
+      const latestScore = (attempts[0]?.score !== null && attempts[0]?.score !== undefined) ? attempts[0].score : (isCroq ? 0 : null);
 
       questions.push({
         questionKey: qKey,
@@ -2651,17 +2934,49 @@ function groupNotesByChapterAndQuestion(notes) {
         chapterTitle: chapTitle,
         isCroq: !!isCroq,
         attemptsCount: attempts.length,
+        totalMistakes: totalMistakes,
+        latestTimestamp: latestTimestamp,
+        latestScore: latestScore,
         attempts: attempts
       });
     }
+
+    // Sort questions within this chapter according to active criteria
+    questions.sort((a, b) => compareQuestions(a, b, notebookSortBy, notebookSortOrder));
+
+    const chapterLatestTimestamp = Math.max(...questions.map(q => q.latestTimestamp || 0), 0);
+    const chapterTotalMistakes = questions.reduce((sum, q) => sum + q.totalMistakes, 0);
 
     result.push({
       chapterTitle: chapTitle,
       totalQuestions: questions.length,
       totalNotes: questions.reduce((sum, q) => sum + q.attemptsCount, 0),
-      questions
+      chapterLatestTimestamp: chapterLatestTimestamp,
+      chapterTotalMistakes: chapterTotalMistakes,
+      questions: questions
     });
   }
+
+  // Sort chapters themselves according to the active criteria
+  result.sort((cA, cB) => {
+    if (notebookSortBy === 'date') {
+      return notebookSortOrder === 'asc'
+        ? cA.chapterLatestTimestamp - cB.chapterLatestTimestamp
+        : cB.chapterLatestTimestamp - cA.chapterLatestTimestamp;
+    } else if (notebookSortBy === 'mistakes') {
+      return notebookSortOrder === 'asc'
+        ? cA.chapterTotalMistakes - cB.chapterTotalMistakes
+        : cB.chapterTotalMistakes - cA.chapterTotalMistakes;
+    } else if (notebookSortBy === 'chapter') {
+      const cmp = cA.chapterTitle.localeCompare(cB.chapterTitle, 'fr');
+      return notebookSortOrder === 'asc' ? cmp : -cmp;
+    } else if (notebookSortBy === 'score') {
+      const avgA = cA.questions.reduce((s, q) => s + (q.latestScore ?? 50), 0) / (cA.questions.length || 1);
+      const avgB = cB.questions.reduce((s, q) => s + (q.latestScore ?? 50), 0) / (cB.questions.length || 1);
+      return notebookSortOrder === 'asc' ? avgA - avgB : avgB - avgA;
+    }
+    return cB.chapterLatestTimestamp - cA.chapterLatestTimestamp;
+  });
 
   return result;
 }
@@ -2720,7 +3035,14 @@ function renderNotebookUI(filterText = '') {
     chapFilterSelect.innerHTML = optionsHtml;
   }
 
-  // Filter notes by text & chapter (including question, options, explanation and reasoning)
+  // Sync sort controls
+  const sortSelect = document.getElementById('notebook-sort-by');
+  if (sortSelect && sortSelect.value !== notebookSortBy) {
+    sortSelect.value = notebookSortBy;
+  }
+  updateSortOrderButtonUI();
+
+  // Filter notes by text & chapter
   const filtered = allNotes.filter(n => {
     if (notebookSelectedChapter && (n.chapterTitle || 'Pédiatrie Générale') !== notebookSelectedChapter) {
       return false;
@@ -2763,133 +3085,73 @@ function renderNotebookUI(filterText = '') {
     summaryBar.style.display = 'flex';
     summaryBar.innerHTML = `
       <span class="notebook-stat-summary">
-        <strong>${totalQuestions}</strong> question${totalQuestions > 1 ? 's' : ''} regroupée${totalQuestions > 1 ? 's' : ''} (${totalNotes} analyse${totalNotes > 1 ? 's' : ''}) dans <strong>${groupedChapters.length}</strong> cours
+        <strong>${totalQuestions}</strong> question${totalQuestions > 1 ? 's' : ''} (${totalNotes} analyse${totalNotes > 1 ? 's' : ''}) • Tri : <strong class="text-cyan">${getSortSummaryLabel()}</strong>
       </span>
-      <button class="notebook-toggle-all-btn" onclick="window.toggleAllChapters()">
-        <i data-lucide="chevrons-up-down" style="width:14px;height:14px;"></i>
-        <span id="btn-toggle-all-chapters-text">Tout replier</span>
-      </button>
+      ${notebookViewMode === 'chapter' ? `
+        <button class="notebook-toggle-all-btn" onclick="window.toggleAllChapters()">
+          <i data-lucide="chevrons-up-down" style="width:14px;height:14px;"></i>
+          <span id="btn-toggle-all-chapters-text">Tout replier</span>
+        </button>
+      ` : ''}
     `;
   }
 
   container.innerHTML = '';
 
-  groupedChapters.forEach((g, gIdx) => {
-    const chapterGroupId = `chap_group_${gIdx}`;
-    const chapterGroupEl = document.createElement('div');
-    chapterGroupEl.className = 'notebook-chapter-group';
-    chapterGroupEl.id = chapterGroupId;
-
-    let questionsHtml = '';
-    g.questions.forEach((q, qIdx) => {
-      const qDomId = `qcard_${gIdx}_${qIdx}`;
-      const latestAttempt = q.attempts[0];
-      const latestDateStr = latestAttempt.timestamp 
-        ? new Date(latestAttempt.timestamp).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
-        : '';
-
-      // Attempts tab switcher (if multiple attempts on the same question)
-      let switcherHtml = '';
-      if (q.attempts.length > 1) {
-        switcherHtml = `
-          <div class="attempts-switcher-bar">
-            ${q.attempts.map((att, attIdx) => {
-              const timeStr = att.timestamp 
-                ? new Date(att.timestamp).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
-                : `Tentative ${q.attempts.length - attIdx}`;
-              const scoreBadge = (att.score !== null && att.score !== undefined) ? `<span class="badge-pill-micro">${att.score}%</span>` : '';
-              const label = (attIdx === 0) ? `✨ Dernière analyse (#${q.attempts.length})` : `Tentative #${q.attempts.length - attIdx}`;
-              return `
-                <button class="attempt-tab-btn ${attIdx === 0 ? 'active' : ''}" onclick="window.switchAttemptTab('${qDomId}', ${attIdx}, this)">
-                  <span>${label}</span>
-                  <span class="badge-pill-micro">${timeStr}</span>
-                  ${scoreBadge}
-                </button>
-              `;
-            }).join('')}
-          </div>
-        `;
-      }
-
-      // Pre-rendered panels for each attempt with complete fiches
-      const panelsHtml = q.attempts.map((att, attIdx) => {
-        // Resolve full question object from allQuestions or stored options
-        const fullQ = allQuestions.find(item => item.uid === att.questionUid) || {
-          uid: att.questionUid,
-          question: att.questionText,
-          clinical_case: att.clinicalCase || null,
-          chapterTitle: att.chapterTitle || q.chapterTitle,
-          options: att.options || [],
-          explanation: att.officialExplanation || '',
-          croq_answer: att.correctAnswer || ''
-        };
-
-        if (!fullQ.media_urls && att.media_urls) { fullQ.media_urls = att.media_urls; }
-        const letters = att.userAnswerLetters || (att.userAnswer ? att.userAnswer.split(',').map(s => s.trim().toUpperCase()) : []);
-        const recapHtml = formatQuestionMistakeRecap(fullQ, letters, q.isCroq, att.userAnswer, att.score);
-        const reasHtml = formatReasoningNote(att.reasoningNote);
-
-        return `
-          <div class="attempt-panel" id="${qDomId}_att_${attIdx}" style="${attIdx === 0 ? '' : 'display:none;'}">
-            ${recapHtml}
-            <div class="notebook-reasoning-section">
-              <div class="notebook-reasoning-title">
-                <i data-lucide="sparkles" style="width:16px;height:16px;color:var(--cyan);"></i>
-                <span>Méthode &amp; Analyse Clinique Approfondie (Gemini 3.8 Flash)</span>
-              </div>
-              ${reasHtml}
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      questionsHtml += `
-        <div class="note-card grouped-question-card" id="${qDomId}">
-          <div class="note-card-header">
-            <div style="display:flex;align-items:center;gap:8px;">
-              <span class="note-chapter">${escapeHtml(q.chapterTitle)}</span>
-              <span class="tag-pill ${q.isCroq ? 'tag-croq' : 'tag-qcu'}" style="font-size:0.68rem;padding:2px 8px;">
-                ${q.isCroq ? 'CROQ' : 'QCM'}
-              </span>
-            </div>
-            <div style="display:flex;align-items:center;gap:10px;">
-              ${q.attemptsCount > 1 ? `
-                <span class="attempts-history-badge">
-                  <i data-lucide="history" style="width:13px;height:13px;"></i>
-                  ${q.attemptsCount} tentatives regroupées
-                </span>
-              ` : ''}
-              <span style="font-size:0.7rem;color:var(--cyan);font-weight:600;">Gemini 3.8 Flash</span>
-              <span class="note-date">${latestDateStr}</span>
-            </div>
-          </div>
-          ${switcherHtml}
-          <div class="attempt-content-container">
-            ${panelsHtml}
-          </div>
-        </div>
-      `;
+  if (notebookViewMode === 'flat') {
+    // FLAT LIST VIEW: All questions sorted across the whole syllabus
+    const allFlatQuestions = [];
+    groupedChapters.forEach(g => {
+      allFlatQuestions.push(...g.questions);
     });
+    allFlatQuestions.sort((a, b) => compareQuestions(a, b, notebookSortBy, notebookSortOrder));
 
-    chapterGroupEl.innerHTML = `
-      <div class="notebook-chapter-header" onclick="window.toggleChapterGroup('${chapterGroupId}')">
-        <div class="notebook-chapter-title-wrap">
-          <i data-lucide="book-open" class="notebook-chapter-icon"></i>
-          <span class="notebook-chapter-title">${escapeHtml(g.chapterTitle)}</span>
-        </div>
-        <div class="notebook-chapter-badges">
-          <span class="chapter-count-pill">${g.totalQuestions} question${g.totalQuestions > 1 ? 's' : ''}</span>
-          ${g.totalNotes > g.totalQuestions ? `<span class="chapter-notes-pill">${g.totalNotes} analyses</span>` : ''}
+    allFlatQuestions.forEach((q, qIdx) => {
+      const cardHtml = renderQuestionCard(q, 'flat', qIdx, qIdx + 1);
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = cardHtml;
+      container.appendChild(tempDiv.firstElementChild);
+    });
+  } else {
+    // CHAPTER ACCORDION VIEW
+    groupedChapters.forEach((g, gIdx) => {
+      const chapterGroupId = `chap_group_${gIdx}`;
+      const chapterGroupEl = document.createElement('div');
+      chapterGroupEl.className = 'notebook-chapter-group';
+      chapterGroupEl.id = chapterGroupId;
+
+      let questionsHtml = '';
+      g.questions.forEach((q, qIdx) => {
+        questionsHtml += renderQuestionCard(q, gIdx, qIdx, null);
+      });
+
+      const mistakesCountBadge = g.chapterTotalMistakes > 0 ? `
+        <span class="chapter-count-badge" style="background:rgba(239, 68, 68, 0.2);color:#fca5a5;border-color:rgba(239,68,68,0.4);" title="Total des fautes dans ce cours">
+          ⚠️ ${g.chapterTotalMistakes} faute${g.chapterTotalMistakes > 1 ? 's' : ''}
+        </span>
+      ` : '';
+
+      chapterGroupEl.innerHTML = `
+        <div class="notebook-chapter-header" onclick="window.toggleChapterGroup('${chapterGroupId}')">
+          <div class="notebook-chapter-title-wrap">
+            <i data-lucide="folder-open" class="chapter-folder-icon"></i>
+            <span class="notebook-chapter-title">${escapeHtml(g.chapterTitle)}</span>
+            <span class="chapter-count-badge">${g.totalQuestions} question${g.totalQuestions > 1 ? 's' : ''}</span>
+            <span class="chapter-count-badge" style="background:rgba(0, 212, 255, 0.15);color:var(--cyan);border-color:rgba(0,212,255,0.35);">
+              ${g.totalNotes} analyse${g.totalNotes > 1 ? 's' : ''} IA
+            </span>
+            ${mistakesCountBadge}
+          </div>
           <i data-lucide="chevron-down" class="chapter-chevron"></i>
         </div>
-      </div>
-      <div class="notebook-chapter-questions">
-        ${questionsHtml}
-      </div>
-    `;
+        <div class="notebook-chapter-body">
+          ${questionsHtml}
+        </div>
+      `;
 
-    container.appendChild(chapterGroupEl);
-  });
+      container.appendChild(chapterGroupEl);
+    });
+  }
 
   refreshLucide();
 }
@@ -2995,10 +3257,45 @@ function setupEventListeners() {
   document.getElementById('btn-continue-after-error').onclick = closeErrorModalAndContinue;
   document.getElementById('btn-close-error-modal').onclick = closeErrorModalAndContinue;
 
-  // Notebook search & chapter filter
+  // Notebook search, chapter filter & sorting controls
   document.getElementById('notebook-search-input').oninput = (e) => {
     renderNotebookUI(e.target.value);
   };
+  const notebookSortSelect = document.getElementById('notebook-sort-by');
+  if (notebookSortSelect) {
+    notebookSortSelect.onchange = (e) => {
+      notebookSortBy = e.target.value;
+      const searchVal = document.getElementById('notebook-search-input')?.value || '';
+      renderNotebookUI(searchVal);
+    };
+  }
+  const btnSortOrder = document.getElementById('btn-toggle-sort-order');
+  if (btnSortOrder) {
+    btnSortOrder.onclick = () => {
+      notebookSortOrder = (notebookSortOrder === 'desc') ? 'asc' : 'desc';
+      updateSortOrderButtonUI();
+      const searchVal = document.getElementById('notebook-search-input')?.value || '';
+      renderNotebookUI(searchVal);
+    };
+  }
+  const btnViewChapter = document.getElementById('btn-view-mode-chapter');
+  const btnViewFlat = document.getElementById('btn-view-mode-flat');
+  if (btnViewChapter && btnViewFlat) {
+    btnViewChapter.onclick = () => {
+      notebookViewMode = 'chapter';
+      btnViewChapter.classList.add('active');
+      btnViewFlat.classList.remove('active');
+      const searchVal = document.getElementById('notebook-search-input')?.value || '';
+      renderNotebookUI(searchVal);
+    };
+    btnViewFlat.onclick = () => {
+      notebookViewMode = 'flat';
+      btnViewFlat.classList.add('active');
+      btnViewChapter.classList.remove('active');
+      const searchVal = document.getElementById('notebook-search-input')?.value || '';
+      renderNotebookUI(searchVal);
+    };
+  }
   const notebookChapFilter = document.getElementById('notebook-chapter-filter');
   if (notebookChapFilter) {
     notebookChapFilter.onchange = (e) => {
@@ -3270,5 +3567,157 @@ if (document.readyState === 'loading') {
   initApp();
 }
 
+
+
+// ============================================================================
+// ARENA AI TUTOR CHAT CONTROLLER
+// ============================================================================
+let arenaChatHistory = [];
+
+window.toggleArenaChat = function(forceOpen = null) {
+  const chatbox = document.getElementById('arena-ai-chatbox');
+  const btn = document.getElementById('btn-arena-ai-chat');
+  if (!chatbox) return;
+
+  const isOpen = (forceOpen !== null) ? !forceOpen : (chatbox.style.display !== 'none');
+  if (isOpen) {
+    chatbox.style.display = 'none';
+    if (btn) btn.classList.remove('is-active');
+  } else {
+    chatbox.style.display = 'flex';
+    if (btn) btn.classList.add('is-active');
+    updateArenaChatContext();
+    if (arenaChatHistory.length === 0) {
+      renderChatWelcome();
+    }
+    const inputEl = document.getElementById('chatbox-text-input');
+    if (inputEl) setTimeout(() => inputEl.focus(), 150);
+  }
+  refreshLucide();
+};
+
+window.clearArenaChat = function() {
+  arenaChatHistory = [];
+  renderChatWelcome();
+  const inputEl = document.getElementById('chatbox-text-input');
+  if (inputEl) inputEl.value = '';
+};
+
+window.sendChatPrompt = function(promptText) {
+  if (!promptText || !promptText.trim()) return;
+  const inputEl = document.getElementById('chatbox-text-input');
+  if (inputEl) inputEl.value = promptText;
+  executeSendMessage(promptText.trim());
+};
+
+window.handleChatSubmit = function(event) {
+  if (event) event.preventDefault();
+  const inputEl = document.getElementById('chatbox-text-input');
+  if (!inputEl) return;
+  const text = inputEl.value.trim();
+  if (!text) return;
+  inputEl.value = '';
+  executeSendMessage(text);
+};
+
+function updateArenaChatContext() {
+  const qTextEl = document.getElementById('chatbox-q-statement');
+  const ctxEl = document.getElementById('chatbox-current-context');
+  if (currentQuestion) {
+    if (qTextEl) {
+      const qText = currentQuestion.question || currentQuestion.statement || 'Question pédiatrique';
+      qTextEl.textContent = qText.length > 80 ? qText.slice(0, 80) + '...' : qText;
+    }
+    if (ctxEl) {
+      ctxEl.textContent = `Pédiatrie — ${currentQuestion.chapterTitle || 'Général'}`;
+    }
+  }
+}
+
+function renderChatWelcome() {
+  const listEl = document.getElementById('chatbox-messages-list');
+  if (!listEl) return;
+  const chapTitle = currentQuestion ? (currentQuestion.chapterTitle || 'Pédiatrie') : 'Pédiatrie';
+  listEl.innerHTML = `
+    <div class="chat-bubble bubble-ai">
+      <p>👋 Bonjour ! Je suis votre <strong>Tuteur IA Pédiatrique</strong>.</p>
+      <p>Je connais par cœur l'énoncé, le cas clinique, les propositions et la justification officielle de ce QCM en <strong>${escapeHtml(chapTitle)}</strong>.</p>
+      <p style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">
+        Posez-moi votre question directement ou cliquez sur une suggestion rapide :
+      </p>
+    </div>
+  `;
+}
+
+async function executeSendMessage(userText) {
+  if (!currentQuestion) return;
+  const listEl = document.getElementById('chatbox-messages-list');
+  if (!listEl) return;
+
+  // 1. Add user bubble
+  arenaChatHistory.push({ role: 'user', text: userText, timestamp: Date.now() });
+
+  const userBubble = document.createElement('div');
+  userBubble.className = 'chat-bubble bubble-user';
+  userBubble.textContent = userText;
+  listEl.appendChild(userBubble);
+  listEl.scrollTop = listEl.scrollHeight;
+
+  // 2. Add loading bubble
+  const loadingBubble = document.createElement('div');
+  loadingBubble.className = 'chat-bubble bubble-ai is-loading';
+  loadingBubble.id = 'chatbox-loading-indicator';
+  loadingBubble.innerHTML = `
+    <div class="typing-indicator"><span></span><span></span><span></span></div>
+    <span>Gemini Flash analyse ce QCM...</span>
+  `;
+  listEl.appendChild(loadingBubble);
+  listEl.scrollTop = listEl.scrollHeight;
+
+  // Disable controls while thinking
+  const sendBtn = document.getElementById('btn-chat-send');
+  const inputEl = document.getElementById('chatbox-text-input');
+  if (sendBtn) sendBtn.disabled = true;
+  if (inputEl) inputEl.disabled = true;
+
+  try {
+    const historyForAi = arenaChatHistory.slice(0, -1);
+    const response = await geminiService.askAboutQuestion(currentQuestion, historyForAi, userText);
+
+    // Remove loading bubble
+    const existingLoader = document.getElementById('chatbox-loading-indicator');
+    if (existingLoader) existingLoader.remove();
+
+    // 3. Add AI bubble
+    arenaChatHistory.push({ role: 'ai', text: response.text, modelUsed: response.modelUsed, timestamp: Date.now() });
+
+    const aiBubble = document.createElement('div');
+    aiBubble.className = 'chat-bubble bubble-ai';
+    aiBubble.innerHTML = formatMedicalContent(response.text);
+    listEl.appendChild(aiBubble);
+
+    const modelTag = document.getElementById('chatbox-model-tag');
+    if (modelTag && response.modelUsed) {
+      modelTag.textContent = response.modelUsed;
+    }
+  } catch (err) {
+    console.error('Chat error:', err);
+    const existingLoader = document.getElementById('chatbox-loading-indicator');
+    if (existingLoader) existingLoader.remove();
+
+    const errBubble = document.createElement('div');
+    errBubble.className = 'chat-bubble bubble-ai';
+    errBubble.innerHTML = `⚠️ Erreur de réponse IA : <em>${escapeHtml(err.message)}</em>`;
+    listEl.appendChild(errBubble);
+  } finally {
+    if (sendBtn) sendBtn.disabled = false;
+    if (inputEl) {
+      inputEl.disabled = false;
+      inputEl.focus();
+    }
+    listEl.scrollTop = listEl.scrollHeight;
+    refreshLucide();
+  }
+}
 
 })();

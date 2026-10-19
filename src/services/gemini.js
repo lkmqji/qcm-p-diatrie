@@ -299,5 +299,62 @@ Rédige l'explication clinique complète et approfondie sans aucune coupure. À 
   }
 }
 
+
+  /**
+   * Question-in-context AI chat tutor (Flash models only)
+   * Answers student queries specifically focused on the current QCM / CROQ
+   */
+  async askAboutQuestion(question, conversationHistory = [], userMessage) {
+    if (!question) {
+      return {
+        text: "Aucune question active n'est actuellement chargée dans l'Arène.",
+        modelUsed: "Tuteur Local"
+      };
+    }
+
+    const correctOptions = (question.options || []).filter(o => o.is_correct);
+    const correctLetters = correctOptions.map(o => o.letter).join(", ");
+    const allOptionsText = (question.options || []).map(o => `${o.letter}) ${o.text}`).join("\n");
+
+    const systemInstruction = `Tu es le Tuteur IA Pédiatrique de PédiaDrill, professeur universitaire et chef de clinique en pédiatrie.
+L'étudiant s'entraîne sur un QCM/CROQ précis et te pose une question directe pour mieux comprendre.
+Tu as le contexte médical complet sous les yeux :
+- Module : Pédiatrie (${question.chapterTitle || 'Pédiatrie Générale'})
+- Énoncé : "${question.question || question.statement || ''}"
+${question.clinical_case ? `- Cas clinique : "${question.clinical_case}"\n` : ''}
+${allOptionsText ? `- Propositions :\n${allOptionsText}\n` : '- Type : Question ouverte (CROQ)\n'}
+- Bonne(s) réponse(s) officielle(s) : ${correctLetters || question.croq_answer || 'Non précisé'}
+${question.explanation ? `- Explication officielle du cours : "${question.explanation}"\n` : ''}
+
+Consignes pédagogiques strictes :
+1. Réponds en français médical rigoureux, clair, bienveillant et concis (va droit au but).
+2. Mets en valeur les mots-clés en gras et structure avec des tirets/puces pour une lecture rapide pendant le drill.
+3. Justifie sur le plan physiopathologique, sémiologique ou thérapeutique pourquoi telle proposition est vraie ou fausse.
+4. Signale les pièges fréquents au concours de résidanat si pertinent.`;
+
+    let promptWithContext = '';
+    if (!conversationHistory || conversationHistory.length === 0) {
+      promptWithContext = `Voici ma question sur ce QCM : "${userMessage}"`;
+    } else {
+      const historyStr = conversationHistory.map(m => `${m.role === 'user' ? 'Étudiant' : 'Tuteur IA'} : ${m.text}`).join('\n\n');
+      promptWithContext = `Historique de la discussion :\n${historyStr}\n\nNouvelle question de l'étudiant : "${userMessage}"`;
+    }
+
+    try {
+      const result = await this.callWithFallback(promptWithContext, systemInstruction, 2048);
+      return {
+        text: result.text,
+        modelUsed: result.modelUsed
+      };
+    } catch (err) {
+      console.warn("askAboutQuestion failed:", err);
+      const corrStr = correctLetters || question.croq_answer || "Réponse officielle";
+      return {
+        text: `⚠️ **Mode Hors-Ligne (Quota ou Réseau)** : Le Tuteur Flash est momentanément indisponible.\n\n*Rappel de la base pour ce QCM :*\n- **Bonne réponse :** **${corrStr}**\n- **Explication :** ${question.explanation || 'Consultez le cours de référence.'}`,
+        modelUsed: "Secours Local Hors-Ligne"
+      };
+    }
+  }
+
 export const geminiService = new GeminiService();
 

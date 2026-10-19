@@ -129,10 +129,27 @@ Lorsqu'une réponse est incorrecte (dans la modale d'erreur ou dans le carnet) :
 ### 3.5. Explication Directe en Arène (`#arena-explanation-box`)
 - Dès qu'une réponse est validée avec succès, l'explication officielle issue de la base de données s'affiche directement dans l'arène sous la bannière de succès, permettant un rappel immédiat avant de passer à la question suivante.
 
-### 3.6. Carnet de Raisonnement Réorganisé (`view-notebook`)
-- Regroupement des notes par chapitre médical (accordéons dépliables avec compteurs).
-- Fiches de tentatives détaillées affichant la synthèse complète (`formatQuestionMistakeRecap`) et les 4 cartes IA stylisées.
-- Recherche multi-critères : filtrage en direct par mot-clé sur les questions, les énoncés, les choix d'options, les explications et les notes IA.
+### 3.6. Carnet de Raisonnement IA : Système de Tri Multi-Critères & Modes de Vue (`view-notebook`)
+- **Tri Multi-Critères Complet (Croissant & Décroissant)** :
+  - **Critères disponibles (`notebookSortBy`)** :
+    - 📅 **Date de la faute (`date`)** : Tri par horodatage de la dernière tentative (`latestTimestamp`).
+    - ⚠️ **Nombre d'erreurs (`mistakes`)** : Tri par nombre cumulé de fautes (`totalMistakes = Math.max(attemptsCount, stats.mistakes)`).
+    - 📚 **Cours (`chapter`)** : Tri alphabétique des chapitres de pédiatrie.
+    - 🎯 **Score d'évaluation CROQ (`score`)** : Tri par score obtenu pour cibler les questions les plus difficiles.
+  - **Inversion de l'ordre en 1 clic (`notebookSortOrder`)** :
+    - Bouton interactif `#btn-toggle-sort-order` basculant instantanément entre **Décroissant ⬇** (Max ➔ Min / Plus récent / Plus d'erreurs) et **Croissant ⬆** (Min ➔ Max / Plus ancien / Moins d'erreurs).
+- **Deux Modes d'Affichage Complémentaires (`notebookViewMode`)** :
+  - **Mode Par cours (`chapter`)** : Regroupement par spécialités médicales sous forme d'accordéons pliables/dépliables, avec compteurs de questions, d'analyses IA et de total des fautes par cours (`⚠️ X fautes`). Les chapitres eux-mêmes sont classés selon le critère et l'ordre sélectionnés.
+  - **Mode Liste continue (`flat`)** : Liste directe et continue de toutes les questions du carnet classées de façon globale avec badge de rang (`#1`, `#2`, `#3`...). Ce mode permet d'accéder instantanément au Top national personnel des questions les plus échouées.
+- **Badges contextuels sur chaque fiche de question** :
+  - Badge de rang : `#N` (en mode continu).
+  - Badge de fautes : `⚠️ X faute(s)` (`stat-mistakes`).
+  - Badge de date : `📅 JJ/MM HH:MM` (`stat-date`).
+  - Badge de score CROQ : `Score : X%` (`stat-score`).
+  - Sélecteur d'historique de tentatives multiples avec dates, scores et switch instantané d'onglets.
+- **Barre de recherche & synthèse dynamique** :
+  - Recherche instantanée par mot-clé sur les questions, propositions, explications et raisonnements IA.
+  - Synthèse `#notebook-summary-bar` reflétant en direct le nombre de questions, d'analyses et le rappel du tri actif (`Tri : [Critère] ([Croissant/Décroissant])`).
 
 ### 3.7. Moteur de Formatage Médical Intelligent (`formatMedicalContent`)
 Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes issus de l'extraction de cours :
@@ -165,14 +182,17 @@ Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes
 - **Objectif mnésique & ergonomique** : Pour éviter que les clichés d'imagerie, radiographies ou photos cliniques ne divulguent prématurément la réponse ou ne perturbent la lecture de l'énoncé, tous les médias associés aux questions (`media_urls`) sont **rétractés et floutés par défaut**.
 - **Composant UI (`renderQuestionMedia`)** :
   - **État Rétracté & Flouté (`.medical-media-card.is-collapsed`)** :
-    - Vignette miniature carrée de 96x96px (84x84px sur smartphone).
-    - Flou prononcé `filter: blur(9px) brightness(0.72)` avec compensation d'échelle `transform: scale(1.12)` pour supprimer les franges de flou aux bords.
+    - Vignette miniature carrée ultra-compacte de **74x74 px** (64x64 px sur smartphone).
+    - Flou prononcé `filter: blur(8px) brightness(0.72)` avec compensation d'échelle `transform: scale(1.15)` pour supprimer les franges de flou aux bords.
     - Overlay interactif `.medical-media-spoiler-overlay` arborant le badge cyan `Toucher pour afficher` et le rappel `Photo floutée`.
   - **État Déplié & Net (`.medical-media-card.is-expanded`)** :
     - Déploiement fluide animé en CSS.
-    - Image en pleine netteté (`filter: none`), hauteur adaptative jusqu'à 420px avec préservation du ratio d'aspect (`object-fit: contain`).
-    - Barre d'action avec bouton d'agrandissement `Plein écran HD` et bascule `Réduire & flouter`.
-    - Un simple clic sur l'image dépliée ou sur le texte d'action la replie et la refloute immédiatement.
+    - Dimensions adaptées aux résolutions d'écran d'ordinateur et mobile : largeur maximale **340 px** et hauteur maximale **250 px** (210 px sur smartphone), garantissant que l'image ne pousse pas les options hors du champ visuel.
+    - Image en pleine netteté (`filter: none`) avec préservation stricte du ratio d'aspect (`object-fit: contain`).
+    - **Deux boutons de fermeture dédiés** :
+      1. Bouton flottant circulaire `✕` (`.btn-media-card-close`) au coin supérieur droit de l'image.
+      2. Bouton d'action explicite `✕ Fermer la photo` (`.btn-media-close`) sous l'image aux côtés de `Plein écran HD`.
+    - Un clic direct sur l'image dépliée la referme et la refloute également.
   - **Visionneuse Plein Écran HD (Lightbox)** :
     - Modal plein écran `#media-lightbox-modal` avec flou d'arrière-plan (`backdrop-filter: blur(10px)`).
     - Image centrée en résolution maximale sans altération.
@@ -181,6 +201,30 @@ Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes
   - **Arène de Quiz** : Rendu dynamique sous l'énoncé dans `#arena-media-wrap`.
   - **Modale d'Erreur & Explication** : Intégration systématique dans la fiche d'erreur `formatQuestionMistakeRecap`.
   - **Carnet de Révision** : Préservation et restitution intégrale dans les fiches de révision sauvegardées localement et synchronisées sur Google Firestore.
+
+### 3.10. Masquage du Titre de Chapitre par Flou Interactif (`#arena-chapter-title`)
+- **Objectif pédagogique** : Éviter que l'étudiant ne déduise le diagnostic d'un cas clinique complexe par simple lecture de la spécialité pédiatrique (ex: *Cardiologie*, *Gastroentérologie*, *Infectiologie*).
+- **Fonctionnement & Ergonomie** :
+  - Par défaut, à chaque chargement de question (`loadNextArenaQuestion`), le badge de chapitre passe en état masqué (`is-blurred`).
+  - Le texte du cours est flouté (`filter: blur(6px); opacity: 0.38; user-select: none`) et accompagné d'un badge interactif `Cours masqué`.
+  - Un simple clic sur le badge (`window.toggleArenaChapterTitle()`) retire le flou (`is-revealed`) et révèle l'intitulé du chapitre.
+  - Un second clic permet de le reflouter à tout moment.
+
+### 3.11. Tuteur IA Interactif en Direct dans l'Arène (Chatbox Flottante Dédiée au QCM)
+- **Objectif mnésique & clinique** : Permettre à l'étudiant de questionner l'IA en temps réel sur n'importe quel aspect de la question en cours de résolution dans l'Arène (demande d'explication d'un signe sémiologique, physiopathologie d'un distracteur, posologie pédiatrique ou piège d'internat).
+- **Architecture & Composants UI** :
+  - **Bouton Circulaire Flottant Néon (`#btn-arena-ai-chat`)** : Ancré en bas à droite (`bottom: 24px; right: 24px; z-index: 9999`) avec dégradé cyan/violet, halo pulsant doux et icône étincelle `sparkles`. Visible exclusivement lors de la session de quiz dans l'Arène.
+  - **Fenêtre de Chat Moderne (`#arena-ai-chatbox`)** : Panneau en verre dépoli (`backdrop-filter: blur(20px)`), avec barre d'en-tête (titre, modèle actif `Gemini Flash`, sous-titre de cours, boutons réinitialiser et fermer), bannière de rappel de l'énoncé du QCM, conteneur de messages défilant, puces de suggestions rapides en 1 clic et barre de saisie avec touche <kbd>Entrée</kbd>.
+  - **Amorces Cliniques Rapides (Chips)** :
+    - 💡 *Démarche diagnostique*
+    - 🔍 *Justification clé*
+    - ⚠️ *Piège concours*
+    - 💊 *Traitement & CAT*
+  - **Moteur IA Contextuel (`geminiService.askAboutQuestion`)** :
+    - Transmet à chaque requête l'énoncé complet, le cas clinique, la totalité des propositions (A-E), la réponse officielle et l'explication officielle de la base de données.
+    - Persona de professeur universitaire de pédiatrie délivrant des explications courtes, structurées et ciblées, avec mise en gras des notions concours.
+    - Maintien d'un historique multi-tours pour affiner la question sans répéter le contexte.
+    - Cascade de résilience 100% modèles Flash avec secours hors-ligne immédiat.
 
 ---
 
