@@ -76,3 +76,19 @@
     - **Prise en charge étendue des titres médicaux** : Ajout de styles et badges Lucide pour la biologie (`.title-bio`), la sémiologie (`.title-clinical`), les définitions, examens, classifications et physiopathologie.
 - **Recompilation & Déploiement** :
   - Recompilation complète via `build-bundle.cjs` (`src/app.bundle.js`, `index.html`, `dist/index.html`).
+
+### 21:55 - Intégration Android Studio & Génération du fichier APK autonome (`PediaDrill.apk`)
+- **Configuration de l'environnement natif Android / Capacitor** :
+  - Installation et configuration de `@capacitor/core`, `@capacitor/cli` et `@capacitor/android` (version 8.x).
+  - Définition de `capacitor.config.json` avec l'identifiant d'application `com.pediadrill.app`, le nom `PédiaDrill` et le dossier racine web `dist`.
+  - Initialisation du projet natif Android dans le dossier `android/` avec `npx cap add android`.
+  - Configuration du fichier `android/local.properties` pointant sur le SDK Android de la machine (`C:\Users\Lenovo\AppData\Local\Android\Sdk`).
+- **Pipeline de compilation Gradle & OpenJDK Android Studio** :
+  - Utilisation du JDK OpenJDK JBR 25 embarqué dans Android Studio (`C:\Program Files\Android\Android Studio\jbr`).
+  - Utilisation de Gradle 9.2 (`gradle-9.2.0-bin`), compatible avec Java 25 et le plugin Android Gradle (AGP 8.13.0).
+  - Ciblage de la tâche `:app:assembleDebug` pour générer directement le binaire APK sans surcoût de génération d'artefacts AAR de dépendances.
+  - Création du script d'automatisation `build-apk.bat` et ajout des commandes `npm run build:apk` et `npm run open:android` dans `package.json`.
+- **Génération réussie du fichier APK** :
+  - Le package APK complet a été généré avec succès en 33 secondes : `android/app/build/outputs/apk/debug/app-debug.apk` (~4.96 Mo).
+  - Copie automatique à la racine du projet sous le nom direct [PediaDrill.apk](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/PediaDrill.apk) pour une installation ou un transfert immédiat vers un smartphone ou une tablette Android.
+  - L'application embarque l'intégralité du contenu médical (énoncés, QCM, CROQ, explications), le moteur de répétition espacée plafonné à 10, le cascadeur d'IA Gemini 3.8 Flash et les styles responsive portrait.

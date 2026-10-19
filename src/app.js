@@ -1060,6 +1060,9 @@ function handleAnswerSuccess(score = null, feedback = null) {
 
   if (result.permanentlyRemoved) {
     bannerText.innerHTML = `<strong>Éliminée pour de bon ! 🎉</strong> Cette question a été validée avec succès (${result.target}/${result.target}) et n'apparaîtra plus.`;
+  } else if (result.isPenultimate) {
+    const scoreText = score ? ` (Score : ${score}%)` : '';
+    bannerText.innerHTML = `<strong>Dernier palier avant élimination ! 🎯</strong> Validée ${result.newCurrent}/${result.target} fois. Placée parmi les 50% dernières questions restantes (+${result.pushDistance} cartes).`;
   } else {
     const scoreText = score ? ` (Score : ${score}%)` : '';
     bannerText.innerHTML = `<strong>Bonne réponse${scoreText} !</strong> Validée ${result.newCurrent}/${result.target} fois. Repoussée de ${result.pushDistance} cartes.`;
@@ -1109,16 +1112,28 @@ function triggerMasteryConfetti() {
 // ============================================================================
 async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq = false, score = 0, feedback = '') {
   const result = queueEngine.handleFailure(currentQuestion.uid);
-  queueEngine.incrementTodayCount();
+  // Seules les réponses justes incrémentent le compteur journalier de QCM
   updateArenaDailyBadge();
 
   // Populate penalty header
-  const penaltyTitle = result.newTarget >= 10
-    ? `Pénalité maximale : seuil plafonné à 10 réussites requises`
-    : `Pénalité appliquée : seuil augmenté à ${result.newTarget} réussites requises`;
+  let penaltyTitle = '';
+  let penaltyDesc = '';
+
+  if (result.newTarget >= 10) {
+    if (result.decremented) {
+      penaltyTitle = `Plafond de 10 atteint : progression diminuée (${result.previousCurrent}/10 ➔ ${result.current}/10)`;
+      penaltyDesc = `Cette question a été ratée (${result.mistakes} faute${result.mistakes > 1 ? 's' : ''}). Le seuil étant plafonné à 10, votre progression diminue de ${result.previousCurrent}/10 à ${result.current}/10. Elle réapparaîtra dans ${result.pushDistance} cartes.`;
+    } else {
+      penaltyTitle = `Pénalité maximale : seuil plafonné à 10 réussites requises`;
+      penaltyDesc = `Cette question a été ratée (${result.mistakes} faute${result.mistakes > 1 ? 's' : ''}). Progression actuelle : ${result.current}/10. Elle réapparaîtra dans ${result.pushDistance} cartes pour ancrer le bon réflexe.`;
+    }
+  } else {
+    penaltyTitle = `Pénalité appliquée : seuil augmenté à ${result.newTarget} réussites requises`;
+    penaltyDesc = `Cette question a été ratée (${result.mistakes} faute${result.mistakes > 1 ? 's' : ''}). Progression actuelle : ${result.current}/${result.newTarget}. Elle réapparaîtra dans ${result.pushDistance} cartes pour ancrer le bon réflexe.`;
+  }
+
   document.getElementById('error-modal-penalty-title').textContent = penaltyTitle;
-  document.getElementById('error-modal-penalty-desc').textContent = 
-    `Cette question a été ratée (${result.mistakes} faute${result.mistakes > 1 ? 's' : ''}). Elle réapparaîtra dans ${result.pushDistance} cartes pour ancrer le bon réflexe.`;
+  document.getElementById('error-modal-penalty-desc').textContent = penaltyDesc;
 
   // Render structured comparison in error modal with full question statement, all choices A-E, my choice, and correct choice!
   const userText = isCroq ? (userAnswerLetters[0] || '') : (userAnswerLetters.join(', ') || 'Aucune réponse cochée');

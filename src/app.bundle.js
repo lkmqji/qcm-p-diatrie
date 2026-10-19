@@ -2,22 +2,30 @@
 // PédiaDrill Unified Client Bundle
 // ==========================================
 (function() {
-// Gemini API Service with Resilience Cascade & Local Fallback
+// Gemini API Service with Resilience Cascade & Local Fallback (100% Modèles Flash)
 const DEFAULT_GEMINI_KEY = "AQ.Ab8RN6InNmt_sD2jtOWtfP5veazlJgMEJ85vNfXf2B6St-_gVw";
 
+/**
+ * Cascade de résilience ordonnée : EXCLUSIVEMENT des modèles Flash
+ * Garantit une latence ultra-faible, une résistance aux limites de quota et une grande fluidité
+ */
 const MODEL_CASCADE = [
-  "gemini-3.8-flash",         // Priorité #1 : modèle privilégié principal
-  "gemini-3.7-flash",         // Secours #2
-  "gemini-3.5-flash-lite",    // Secours #3 : ultra-réactif et disponible sans blocage de quota
-  "gemini-3.1-flash-lite",    // Secours #4
-  "gemini-flash-lite-latest", // Secours #5
-  "gemini-3-flash-preview"    // Secours #6
+  "gemini-3.8-flash",         // Priorité #1 : modèle Flash principal haute fidélité
+  "gemini-3.7-flash",         // Secours #2 : Flash standard
+  "gemini-3.6-flash",         // Secours #3 : Flash haute disponibilité
+  "gemini-3.5-flash",         // Secours #4 : Flash rapide
+  "gemini-3.5-flash-lite",    // Secours #5 : Flash Lite ultra-réactif
+  "gemini-flash-lite-latest", // Secours #6 : Flash Lite dernière version
+  "gemini-3-flash-preview",   // Secours #7 : Flash Preview
+  "gemini-3.1-flash-lite"     // Secours #8 : Flash Lite de réserve
 ];
 
 class GeminiService {
   constructor() {
     this.apiKey = localStorage.getItem('pedia_gemini_key') || DEFAULT_GEMINI_KEY;
-    this.activeModel = MODEL_CASCADE[0];
+    // Filtrage strict : seuls les modèles comportant 'flash' sont admis
+    this.allowedModels = MODEL_CASCADE.filter(m => m.toLowerCase().includes('flash'));
+    this.activeModel = this.allowedModels[0] || "gemini-3.8-flash";
     this.lastSuccessfulModel = null;
     this.callLogs = [];
   }
@@ -34,13 +42,17 @@ class GeminiService {
   }
 
   /**
-   * Execute API call in cascade: always starts with Gemini 3.8 Flash,
-   * seamlessly falls back to resilient models if quota 429 or rate limits are reached.
+   * Execute API call in cascade : utilise EXCLUSIVEMENT les modèles Flash
+   * Commence par gemini-3.8-flash et bascule de façon fluide sur les autres modèles Flash
+   * en cas d'erreur de quota (429) ou de pic de charge.
    */
   async callWithFallback(prompt, systemInstruction = '', maxTokens = 4096) {
     const errors = [];
 
-    for (const model of MODEL_CASCADE) {
+    for (const model of this.allowedModels) {
+      if (!model.toLowerCase().includes('flash')) {
+        continue; // Sécurité absolue : ignorer tout modèle non-flash
+      }
       try {
         this.activeModel = model;
         const result = await this._callModel(model, prompt, systemInstruction, maxTokens);
@@ -51,14 +63,18 @@ class GeminiService {
         }
       } catch (err) {
         errors.push({ model, error: err.message });
-        console.warn(`[Gemini Cascade] ${model} failed (${err.message}) -> Trying next fallback...`);
+        console.warn(`[Gemini Flash Cascade] ${model} failed (${err.message}) -> Trying next Flash model...`);
       }
     }
 
-    throw new Error(`All Gemini cascade models failed: ${JSON.stringify(errors)}`);
+    throw new Error(`All Gemini Flash models failed: ${JSON.stringify(errors)}`);
   }
 
   async _callModel(model, prompt, systemInstruction, maxTokens) {
+    if (!model.toLowerCase().includes('flash')) {
+      throw new Error(`Modèle non autorisé (${model}) : seuls les modèles Flash sont autorisés.`);
+    }
+
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${this.apiKey}`;
     
     const contents = [
@@ -432,14 +448,17 @@ class QueueEngine {
 
   /**
    * Process a correct response
-   * Pushed far back (30 to 40 cards)
-   * If threshold met (3, or up to max 10 if penalized), disappears permanently!
+   * - Normally reappears after 50 to 100 questions
+   * - When exactly 1 answer remains to permanently clear the question:
+   *   reappears randomly within the last 50% of total remaining questions in the queue!
+   * - If threshold met (st.current >= st.target), permanently removed from the queue!
    */
   handleSuccess(uid) {
     const st = this.getQuestionStats(uid);
     st.current += 1;
 
     let permanentlyRemoved = false;
+    let isPenultimate = false;
     let pushDistance = 0;
 
     if (st.current >= st.target) {
@@ -450,11 +469,31 @@ class QueueEngine {
       this.queue.splice(this.cursor, 1);
       // Cursor stays on next item (which slid into current index)
     } else {
-      // Re-insert further back (+30 to 40 cards)
-      pushDistance = Math.floor(Math.random() * 11) + 30; // 30 to 40
-      this.queue.splice(this.cursor, 1); // remove from current
-      
-      const insertIndex = Math.min(this.queue.length, this.cursor + pushDistance);
+      // Remove from current position first
+      this.queue.splice(this.cursor, 1);
+
+      const remainingNeeded = st.target - st.current;
+      let insertIndex;
+
+      if (remainingNeeded === 1) {
+        // Quand il reste une seule réponse pour clear la question :
+        // La question est placée parmi les 50% dernières questions totales restantes
+        isPenultimate = true;
+        const remainingCount = this.queue.length - this.cursor;
+        if (remainingCount <= 2) {
+          insertIndex = this.queue.length;
+        } else {
+          const halfOffset = Math.floor(remainingCount * 0.5);
+          const randomOffset = halfOffset + Math.floor(Math.random() * (remainingCount - halfOffset + 1));
+          insertIndex = Math.min(this.queue.length, this.cursor + randomOffset);
+        }
+        pushDistance = insertIndex - this.cursor;
+      } else {
+        // En cas de bonne réponse normale : réapparition après 50 à 100 questions
+        pushDistance = Math.floor(Math.random() * 51) + 50; // 50 à 100 questions
+        insertIndex = Math.min(this.queue.length, this.cursor + pushDistance);
+      }
+
       this.queue.splice(insertIndex, 0, uid);
       // Cursor stays on current position (points to next item)
     }
@@ -467,6 +506,7 @@ class QueueEngine {
 
     return {
       permanentlyRemoved,
+      isPenultimate,
       newCurrent: st.current,
       target: st.target,
       pushDistance,
@@ -476,14 +516,30 @@ class QueueEngine {
 
   /**
    * Process an incorrect response
-   * Penalizes target (3 -> 4 -> 5 ... up to a max cap of 10)
-   * Reappears in 5 to 7 cards to reinforce the reflex
+   * - Increases repetitions required to clear question up to a maximum cap of 10
+   * - When target 10 is reached (st.target >= 10): a wrong answer decrements current successes
+   *   (e.g., 7/10 becomes 6/10, bounded at minimum 0)
+   * - Reappears in 5 to 7 cards to reinforce the reflex
    */
   handleFailure(uid) {
     const st = this.getQuestionStats(uid);
+    const targetWasAtMax = st.target >= 10;
+    const previousCurrent = st.current;
+    let decremented = false;
+
     st.mistakes += 1;
-    st.target = Math.min(10, 3 + st.mistakes); // Penalty applied, capped at max 10!
     this.totalMistakesCount += 1;
+
+    if (targetWasAtMax) {
+      // Quand le plafond de 10 est atteint, une réponse fausse diminue le nombre de réussites (ex: 7/10 devient 6/10)
+      if (st.current > 0) {
+        st.current -= 1;
+        decremented = true;
+      }
+    } else {
+      // Sinon, la faute augmente le nombre de répétitions jusqu'à max 10
+      st.target = Math.min(10, 3 + st.mistakes);
+    }
 
     // Remove from current position and re-insert in 5 to 7 cards
     const pushDistance = Math.floor(Math.random() * 3) + 5; // 5 to 7
@@ -501,6 +557,8 @@ class QueueEngine {
     return {
       newTarget: st.target,
       current: st.current,
+      previousCurrent,
+      decremented,
       mistakes: st.mistakes,
       pushDistance,
       remainingInQueue: this.queue.length
@@ -2268,6 +2326,9 @@ function handleAnswerSuccess(score = null, feedback = null) {
 
   if (result.permanentlyRemoved) {
     bannerText.innerHTML = `<strong>Éliminée pour de bon ! 🎉</strong> Cette question a été validée avec succès (${result.target}/${result.target}) et n'apparaîtra plus.`;
+  } else if (result.isPenultimate) {
+    const scoreText = score ? ` (Score : ${score}%)` : '';
+    bannerText.innerHTML = `<strong>Dernier palier avant élimination ! 🎯</strong> Validée ${result.newCurrent}/${result.target} fois. Placée parmi les 50% dernières questions restantes (+${result.pushDistance} cartes).`;
   } else {
     const scoreText = score ? ` (Score : ${score}%)` : '';
     bannerText.innerHTML = `<strong>Bonne réponse${scoreText} !</strong> Validée ${result.newCurrent}/${result.target} fois. Repoussée de ${result.pushDistance} cartes.`;
@@ -2317,16 +2378,28 @@ function triggerMasteryConfetti() {
 // ============================================================================
 async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq = false, score = 0, feedback = '') {
   const result = queueEngine.handleFailure(currentQuestion.uid);
-  queueEngine.incrementTodayCount();
+  // Seules les réponses justes incrémentent le compteur journalier de QCM
   updateArenaDailyBadge();
 
   // Populate penalty header
-  const penaltyTitle = result.newTarget >= 10
-    ? `Pénalité maximale : seuil plafonné à 10 réussites requises`
-    : `Pénalité appliquée : seuil augmenté à ${result.newTarget} réussites requises`;
+  let penaltyTitle = '';
+  let penaltyDesc = '';
+
+  if (result.newTarget >= 10) {
+    if (result.decremented) {
+      penaltyTitle = `Plafond de 10 atteint : progression diminuée (${result.previousCurrent}/10 ➔ ${result.current}/10)`;
+      penaltyDesc = `Cette question a été ratée (${result.mistakes} faute${result.mistakes > 1 ? 's' : ''}). Le seuil étant plafonné à 10, votre progression diminue de ${result.previousCurrent}/10 à ${result.current}/10. Elle réapparaîtra dans ${result.pushDistance} cartes.`;
+    } else {
+      penaltyTitle = `Pénalité maximale : seuil plafonné à 10 réussites requises`;
+      penaltyDesc = `Cette question a été ratée (${result.mistakes} faute${result.mistakes > 1 ? 's' : ''}). Progression actuelle : ${result.current}/10. Elle réapparaîtra dans ${result.pushDistance} cartes pour ancrer le bon réflexe.`;
+    }
+  } else {
+    penaltyTitle = `Pénalité appliquée : seuil augmenté à ${result.newTarget} réussites requises`;
+    penaltyDesc = `Cette question a été ratée (${result.mistakes} faute${result.mistakes > 1 ? 's' : ''}). Progression actuelle : ${result.current}/${result.newTarget}. Elle réapparaîtra dans ${result.pushDistance} cartes pour ancrer le bon réflexe.`;
+  }
+
   document.getElementById('error-modal-penalty-title').textContent = penaltyTitle;
-  document.getElementById('error-modal-penalty-desc').textContent = 
-    `Cette question a été ratée (${result.mistakes} faute${result.mistakes > 1 ? 's' : ''}). Elle réapparaîtra dans ${result.pushDistance} cartes pour ancrer le bon réflexe.`;
+  document.getElementById('error-modal-penalty-desc').textContent = penaltyDesc;
 
   // Render structured comparison in error modal with full question statement, all choices A-E, my choice, and correct choice!
   const userText = isCroq ? (userAnswerLetters[0] || '') : (userAnswerLetters.join(', ') || 'Aucune réponse cochée');

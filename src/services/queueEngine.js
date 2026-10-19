@@ -139,14 +139,17 @@ export class QueueEngine {
 
   /**
    * Process a correct response
-   * Pushed far back (30 to 40 cards)
-   * If threshold met (3, or up to max 10 if penalized), disappears permanently!
+   * - Normally reappears after 50 to 100 questions
+   * - When exactly 1 answer remains to permanently clear the question:
+   *   reappears randomly within the last 50% of total remaining questions in the queue!
+   * - If threshold met (st.current >= st.target), permanently removed from the queue!
    */
   handleSuccess(uid) {
     const st = this.getQuestionStats(uid);
     st.current += 1;
 
     let permanentlyRemoved = false;
+    let isPenultimate = false;
     let pushDistance = 0;
 
     if (st.current >= st.target) {
@@ -157,11 +160,31 @@ export class QueueEngine {
       this.queue.splice(this.cursor, 1);
       // Cursor stays on next item (which slid into current index)
     } else {
-      // Re-insert further back (+30 to 40 cards)
-      pushDistance = Math.floor(Math.random() * 11) + 30; // 30 to 40
-      this.queue.splice(this.cursor, 1); // remove from current
-      
-      const insertIndex = Math.min(this.queue.length, this.cursor + pushDistance);
+      // Remove from current position first
+      this.queue.splice(this.cursor, 1);
+
+      const remainingNeeded = st.target - st.current;
+      let insertIndex;
+
+      if (remainingNeeded === 1) {
+        // Quand il reste une seule réponse pour clear la question :
+        // La question est placée parmi les 50% dernières questions totales restantes
+        isPenultimate = true;
+        const remainingCount = this.queue.length - this.cursor;
+        if (remainingCount <= 2) {
+          insertIndex = this.queue.length;
+        } else {
+          const halfOffset = Math.floor(remainingCount * 0.5);
+          const randomOffset = halfOffset + Math.floor(Math.random() * (remainingCount - halfOffset + 1));
+          insertIndex = Math.min(this.queue.length, this.cursor + randomOffset);
+        }
+        pushDistance = insertIndex - this.cursor;
+      } else {
+        // En cas de bonne réponse normale : réapparition après 50 à 100 questions
+        pushDistance = Math.floor(Math.random() * 51) + 50; // 50 à 100 questions
+        insertIndex = Math.min(this.queue.length, this.cursor + pushDistance);
+      }
+
       this.queue.splice(insertIndex, 0, uid);
       // Cursor stays on current position (points to next item)
     }
@@ -174,6 +197,7 @@ export class QueueEngine {
 
     return {
       permanentlyRemoved,
+      isPenultimate,
       newCurrent: st.current,
       target: st.target,
       pushDistance,
@@ -183,14 +207,30 @@ export class QueueEngine {
 
   /**
    * Process an incorrect response
-   * Penalizes target (3 -> 4 -> 5 ... up to a max cap of 10)
-   * Reappears in 5 to 7 cards to reinforce the reflex
+   * - Increases repetitions required to clear question up to a maximum cap of 10
+   * - When target 10 is reached (st.target >= 10): a wrong answer decrements current successes
+   *   (e.g., 7/10 becomes 6/10, bounded at minimum 0)
+   * - Reappears in 5 to 7 cards to reinforce the reflex
    */
   handleFailure(uid) {
     const st = this.getQuestionStats(uid);
+    const targetWasAtMax = st.target >= 10;
+    const previousCurrent = st.current;
+    let decremented = false;
+
     st.mistakes += 1;
-    st.target = Math.min(10, 3 + st.mistakes); // Penalty applied, capped at max 10!
     this.totalMistakesCount += 1;
+
+    if (targetWasAtMax) {
+      // Quand le plafond de 10 est atteint, une réponse fausse diminue le nombre de réussites (ex: 7/10 devient 6/10)
+      if (st.current > 0) {
+        st.current -= 1;
+        decremented = true;
+      }
+    } else {
+      // Sinon, la faute augmente le nombre de répétitions jusqu'à max 10
+      st.target = Math.min(10, 3 + st.mistakes);
+    }
 
     // Remove from current position and re-insert in 5 to 7 cards
     const pushDistance = Math.floor(Math.random() * 3) + 5; // 5 to 7
@@ -208,6 +248,8 @@ export class QueueEngine {
     return {
       newTarget: st.target,
       current: st.current,
+      previousCurrent,
+      decremented,
       mistakes: st.mistakes,
       pushDistance,
       remainingInQueue: this.queue.length
