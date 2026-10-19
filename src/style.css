@@ -2601,3 +2601,275 @@ body {
   }
 }
 
+/* ─────────────────────────────────────────────────────────────
+   MEDICAL MEDIA / PHOTOS COMPONENT (Retracted & Blurred by Default)
+   ───────────────────────────────────────────────────────────── */
+.medical-media-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 12px 0 16px 0;
+  padding: 12px 14px;
+  background: rgba(10, 18, 34, 0.75);
+  border: 1px solid rgba(0, 212, 255, 0.22);
+  border-radius: var(--radius-md);
+  backdrop-filter: blur(8px);
+}
+
+.medical-media-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--cyan);
+}
+
+.medical-media-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.medical-media-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+/* Base Card */
+.medical-media-card {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.medical-media-inner {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1.5px solid rgba(255, 255, 255, 0.16);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.medical-media-img {
+  display: block;
+  transition: filter 0.35s ease, transform 0.35s ease;
+}
+
+/* 1. COLLAPSED STATE (Retracted & Blurred) */
+.medical-media-card.is-collapsed .medical-media-inner {
+  width: 96px;
+  height: 96px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+
+.medical-media-card.is-collapsed .medical-media-inner:hover {
+  border-color: var(--cyan);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 212, 255, 0.3);
+}
+
+.medical-media-card.is-collapsed .medical-media-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(9px) brightness(0.72);
+  transform: scale(1.12); /* Prevents blur edge artifacts */
+}
+
+.medical-media-card.is-collapsed .medical-media-spoiler-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  background: rgba(7, 11, 20, 0.5);
+  text-align: center;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.medical-media-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(0, 212, 255, 0.3);
+  border: 1px solid rgba(0, 212, 255, 0.6);
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 3px 6px;
+  border-radius: 6px;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.medical-media-subtext {
+  font-size: 0.58rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 4px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.medical-media-card.is-collapsed .medical-media-actions {
+  display: none;
+}
+
+/* 2. EXPANDED STATE (Unblurred & Revealed) */
+.medical-media-card.is-expanded {
+  width: 100%;
+}
+
+.medical-media-card.is-expanded .medical-media-inner {
+  width: 100%;
+  max-width: min(540px, 100%);
+  height: auto;
+  max-height: 440px;
+  border-radius: 14px;
+  border-color: rgba(0, 212, 255, 0.55);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+  background: #000;
+}
+
+.medical-media-card.is-expanded .medical-media-img {
+  width: 100%;
+  max-height: 420px;
+  object-fit: contain;
+  filter: none;
+  transform: none;
+}
+
+.medical-media-card.is-expanded .medical-media-spoiler-overlay {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.medical-media-card.is-expanded .medical-media-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: min(540px, 100%);
+  margin-top: 8px;
+  gap: 10px;
+}
+
+.btn-media-zoom {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 212, 255, 0.14);
+  border: 1px solid rgba(0, 212, 255, 0.4);
+  color: var(--cyan);
+  font-family: var(--font-heading);
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-media-zoom:hover {
+  background: rgba(0, 212, 255, 0.28);
+  border-color: var(--cyan);
+  transform: translateY(-1px);
+}
+
+.media-toggle-hint {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.media-toggle-hint:hover {
+  color: var(--text-main);
+  text-decoration: underline;
+}
+
+/* Lightbox Modal */
+.media-lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+
+.media-lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+}
+
+.media-lightbox-content {
+  position: relative;
+  z-index: 2;
+  max-width: 96vw;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: scaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#media-lightbox-img {
+  max-width: 95vw;
+  max-height: 86vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.media-lightbox-close {
+  position: absolute;
+  top: -42px;
+  right: 0;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.media-lightbox-close:hover {
+  background: rgba(239, 68, 68, 0.45);
+  border-color: #ef4444;
+  transform: rotate(90deg);
+}
+
+@media (max-width: 768px) {
+  .medical-media-card.is-collapsed .medical-media-inner {
+    width: 84px;
+    height: 84px;
+  }
+  .medical-media-card.is-expanded .medical-media-inner {
+    max-height: 340px;
+  }
+}
+
+

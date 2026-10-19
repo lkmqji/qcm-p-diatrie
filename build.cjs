@@ -8,6 +8,7 @@ if (!fs.existsSync(distDir)) {
 
 const filesToCopy = [
   'index.html',
+  'agentation.bundle.js',
   'manifest.json',
   'sw.js',
   'icon-192.svg',

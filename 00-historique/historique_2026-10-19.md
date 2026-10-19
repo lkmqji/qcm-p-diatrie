@@ -36,3 +36,42 @@
 - **Recompilation & Synchronisation** :
   - Mise à jour du bundle autonome via `build-bundle.cjs` (`src/app.bundle.js`, `index.html`, `dist/index.html`).
   - Synchronisation Capacitor et régénération de l'APK natif Android [PediaDrill.apk](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/PediaDrill.apk).
+
+### 19:20 - Installation et intégration de la barre d'outils visuelle Agentation
+- **Installation du paquet officiel (`package.json`)** :
+  - Ajout de la dépendance de développement `"agentation": "^3.1.2"`.
+- **Intégration du bundle autonome officiel (`agentation.bundle.js`)** :
+  - Conformément aux règles strictes du skill Agentation pour les applications Vanilla JS / HTML / PWA sans React ni bundler externe :
+    - Copie du bundle officiel complet (`C:\Users\Lenovo\.gemini\config\skills\agentation\agentation.bundle.js`) vers la racine du projet `agentation.bundle.js`.
+    - Mise à jour de `build.cjs` pour copier automatiquement `agentation.bundle.js` dans le dossier de production `dist/`.
+    - Injection de la balise `<script src="agentation.bundle.js"></script>` dans le pipeline de génération `build-bundle.cjs` (avant la balise fermante `</body>`).
+  - La barre d'outils visuelle s'auto-monte automatiquement sur `#agentation-root` avec la pilule officielle, le mode inspection d'éléments, l'annotation en direct, le mode wireframe/layout et les pastilles de feedback.
+- **Serveur MCP Agentation (`mcp_config.json`)** :
+  - Serveur MCP d'ores et déjà configuré avec `npx -y agentation-mcp server` pour la synchronisation bidirectionnelle en direct avec l'environnement IDE.
+- **Synchronisation Capacitor & Déploiement** :
+  - Synchronisation des assets web avec `npx cap sync android` et recompilation de l'APK autonome [PediaDrill.apk](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/PediaDrill.apk).
+
+### 19:30 - Médias et iconographies médicales masqués, rétractés et floutés par défaut (Spoiler Protection & Visionneuse HD)
+- **Objectif utilisateur** : Garantir que les photos et clichés médicaux ne divulguent pas immédiatement des éléments de réponse ou ne perturbent pas la concentration lors du drill. Les médias doivent être rétractés (petites vignettes compactes) et floutés par défaut, et ne se révéler clairement qu'à l'action explicite de l'utilisateur (clic/toucher).
+- **Design & Styles CSS (`src/style.css`)** :
+  - **État rétracté & flouté (`.medical-media-card.is-collapsed`)** :
+    - Vignette miniature carrée de 96x96px (84x84px sur smartphone).
+    - Image protégée par un filtre `filter: blur(9px) brightness(0.72)` avec `transform: scale(1.12)` pour éliminer tout artefact de bordure floue.
+    - Overlay interactif `.medical-media-spoiler-overlay` avec badge stylisé néon `Toucher pour afficher` et sous-titre `Photo floutée`.
+  - **État déplié & net (`.medical-media-card.is-expanded`)** :
+    - Déploiement fluide avec transition cubique (`cubic-bezier(0.16, 1, 0.3, 1)`).
+    - Image défloutée (`filter: none`), taille dynamique jusqu'à 420px de hauteur avec préservation stricte du ratio d'aspect (`object-fit: contain`).
+    - Barre d'action avec bouton d'agrandissement en plein écran `Plein écran HD` et bouton d'action `Réduire & flouter`.
+  - **Visionneuse plein écran Lightbox (`.media-lightbox-overlay`)** :
+    - Modal plein écran haute définition avec flou d'arrière-plan (`backdrop-filter: blur(10px)`), centrage automatique, bouton de fermeture circulaire et gestion de la fermeture au clic sur l'arrière-plan ou via la touche `Échap`.
+- **Logique applicative (`src/app.js` & `template.html`)** :
+  - Implémentation du composant dynamique `renderQuestionMedia(mediaUrls)`.
+  - Contrôleurs globaux `window.toggleMedicalMedia(cardEl, event)`, `window.openMediaLightbox(url, event)` et `window.closeMediaLightbox()`.
+  - Intégration dans l'Arène de QCM (`loadNextArenaQuestion` sur `#arena-media-wrap`).
+  - Intégration dans la modale d'analyse d'erreur et le carnet de révision (`formatQuestionMistakeRecap` et `renderNotebookUI`).
+  - Sauvegarde automatique du champ `media_urls` dans les fiches de révision enregistrées en local et synchronisées sur Google Firestore.
+  - Fermeture automatique au raccourci clavier `Escape`.
+- **Recompilation & Déploiement** :
+  - Synchronisation et compilation du bundle via `build-bundle.cjs`.
+  - Synchronisation Capacitor Android (`npx cap sync android`).
+  - Régénération de l'APK natif Android via `build-apk.bat`.

@@ -68,6 +68,9 @@ const updatedIndex = `${templateHtml.replace('</body>', '')}
   <script>
 ${bundle}
   </script>
+
+  <!-- Agentation Visual Feedback & UI Annotation Toolbar -->
+  <script src="agentation.bundle.js"></script>
 </body>
 </html>
 `;

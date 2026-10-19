@@ -1913,6 +1913,110 @@ function formatCroqAnswer(answerText) {
   return `<div class="croq-simple-answer">${parseMarkdownInline(trimmed)}</div>`;
 }
 
+// ============================================================================
+// MEDICAL MEDIA (PHOTOS) - SPOILER / RETRACTED & BLURRED BY DEFAULT
+// ============================================================================
+function renderQuestionMedia(mediaUrls) {
+  if (!mediaUrls || !Array.isArray(mediaUrls) || mediaUrls.length === 0) {
+    return '';
+  }
+
+  const count = mediaUrls.length;
+  const cardsHtml = mediaUrls.map((url, idx) => {
+    const escapedUrl = escapeHtml(url);
+    const numLabel = count > 1 ? ` #${idx + 1}` : '';
+    return `
+      <div class="medical-media-card is-collapsed" data-media-url="${escapedUrl}">
+        <div class="medical-media-inner" onclick="window.toggleMedicalMedia(this.parentElement, event)" title="Toucher pour afficher clairement">
+          <img src="${escapedUrl}" class="medical-media-img" alt="Iconographie médicale${numLabel}" loading="lazy">
+          <div class="medical-media-spoiler-overlay">
+            <span class="medical-media-badge">
+              <i data-lucide="eye" style="width:12px;height:12px;"></i>
+              <span>Toucher pour afficher</span>
+            </span>
+            <span class="medical-media-subtext">Photo floutée</span>
+          </div>
+        </div>
+        <div class="medical-media-actions">
+          <button type="button" class="btn-media-zoom" onclick="window.openMediaLightbox('${escapedUrl}', event)">
+            <i data-lucide="maximize-2" style="width:12px;height:12px;"></i>
+            <span>Plein écran HD</span>
+          </button>
+          <span class="media-toggle-hint" onclick="window.toggleMedicalMedia(this.closest('.medical-media-card'), event)">
+            <i data-lucide="eye-off" style="width:12px;height:12px;vertical-align:middle;"></i> Réduire &amp; flouter
+          </span>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <div class="medical-media-section">
+      <div class="medical-media-header">
+        <div class="medical-media-title">
+          <i data-lucide="image" style="width:14px;height:14px;color:var(--cyan);"></i>
+          <span>Iconographie médicale (${count} photo${count > 1 ? 's' : ''})</span>
+        </div>
+        <span style="font-size:0.68rem;color:var(--text-dim);font-weight:500;">
+          Floutée par défaut • Toucher pour afficher
+        </span>
+      </div>
+      <div class="medical-media-grid">
+        ${cardsHtml}
+      </div>
+    </div>
+  `;
+}
+
+window.toggleMedicalMedia = function(cardEl, event) {
+  if (event) event.stopPropagation();
+  if (!cardEl) return;
+  const isCollapsed = cardEl.classList.contains('is-collapsed');
+  if (isCollapsed) {
+    cardEl.classList.remove('is-collapsed');
+    cardEl.classList.add('is-expanded');
+  } else {
+    cardEl.classList.remove('is-expanded');
+    cardEl.classList.add('is-collapsed');
+  }
+  refreshLucide();
+};
+
+window.openMediaLightbox = function(url, event) {
+  if (event) event.stopPropagation();
+  let modal = document.getElementById('media-lightbox-modal');
+  let img = document.getElementById('media-lightbox-img');
+
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.className = 'media-lightbox-overlay';
+    modal.id = 'media-lightbox-modal';
+    modal.style.display = 'none';
+    modal.innerHTML = `
+      <div class="media-lightbox-backdrop" onclick="window.closeMediaLightbox()"></div>
+      <div class="media-lightbox-content">
+        <button class="media-lightbox-close" onclick="window.closeMediaLightbox()" title="Fermer (Échap)">
+          <i data-lucide="x"></i>
+        </button>
+        <img id="media-lightbox-img" src="" alt="Iconographie Pédiatrique HD">
+      </div>
+    `;
+    document.body.appendChild(modal);
+    img = document.getElementById('media-lightbox-img');
+  }
+
+  if (img) img.src = url;
+  modal.style.display = 'flex';
+  refreshLucide();
+};
+
+window.closeMediaLightbox = function() {
+  const modal = document.getElementById('media-lightbox-modal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+};
+
 /**
  * Format complete structured recap: Full Question Statement, All Options (A-E),
  * Student's Choice, Correct Choice and Official Database Explanation
@@ -2049,6 +2153,7 @@ function formatQuestionMistakeRecap(question, userSelectedLetters, isCroq = fals
         <div class="mistake-question-statement">
           ${formatMedicalContent(question.question || question.statement || '')}
         </div>
+        ${renderQuestionMedia(question.media_urls || [])}
       </div>
       ${optionsOrCroqHtml}
       ${explanationHtml}
@@ -2135,20 +2240,14 @@ function loadNextArenaQuestion() {
   // Question Statement
   document.getElementById('arena-question-text').innerHTML = formatMedicalContent(currentQuestion.question || currentQuestion.statement);
 
-  // Media preview
+  // Media preview (retracted & blurred by default)
   const mediaWrap = document.getElementById('arena-media-wrap');
-  mediaWrap.innerHTML = '';
   if (currentQuestion.media_urls && currentQuestion.media_urls.length > 0) {
-    currentQuestion.media_urls.forEach(url => {
-      const img = document.createElement('img');
-      img.src = url;
-      img.className = 'media-thumbnail';
-      img.title = 'Cliquer pour agrandir';
-      img.onclick = () => window.open(url, '_blank');
-      mediaWrap.appendChild(img);
-    });
-    mediaWrap.style.display = 'flex';
+    mediaWrap.innerHTML = renderQuestionMedia(currentQuestion.media_urls);
+    mediaWrap.style.display = 'block';
+    refreshLucide();
   } else {
+    mediaWrap.innerHTML = '';
     mediaWrap.style.display = 'none';
   }
 
@@ -2456,6 +2555,7 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
     clinicalCase: currentQuestion.clinical_case || null,
     chapterTitle: currentQuestion.chapterTitle,
     options: currentQuestion.options ? JSON.parse(JSON.stringify(currentQuestion.options)) : [],
+    media_urls: currentQuestion.media_urls || [],
     userAnswer: userText,
     userAnswerLetters: Array.isArray(userAnswerLetters) ? userAnswerLetters : [userAnswerLetters],
     correctAnswer: correctAnswerText,
@@ -2724,6 +2824,7 @@ function renderNotebookUI(filterText = '') {
           croq_answer: att.correctAnswer || ''
         };
 
+        if (!fullQ.media_urls && att.media_urls) { fullQ.media_urls = att.media_urls; }
         const letters = att.userAnswerLetters || (att.userAnswer ? att.userAnswer.split(',').map(s => s.trim().toUpperCase()) : []);
         const recapHtml = formatQuestionMistakeRecap(fullQ, letters, q.isCroq, att.userAnswer, att.score);
         const reasHtml = formatReasoningNote(att.reasoningNote);
@@ -3115,6 +3216,16 @@ function setupEventListeners() {
 // Keyboard shortcuts: 1-5, A-E, Enter, Space
 function setupKeyboardShortcuts() {
   window.addEventListener('keydown', (e) => {
+    // If media lightbox is open, Escape closes it
+    const lightboxModal = document.getElementById('media-lightbox-modal');
+    if (lightboxModal && lightboxModal.style.display === 'flex') {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        window.closeMediaLightbox();
+        return;
+      }
+    }
+
     // If error modal is open, Space or Enter closes it and continues
     if (modals.error.style.display === 'flex') {
       if (e.key === ' ' || e.key === 'Enter') {

@@ -1,5 +1,5 @@
 # PédiaDrill — Master Product & Technical Context
-*Dernière mise à jour : 2026-10-18 18:35:00 CET*
+*Dernière mise à jour : 2026-10-19 19:30:00 CET*
 *Source unique de vérité technique et fonctionnelle du projet PédiaDrill.*
 
 ---
@@ -147,6 +147,40 @@ Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes
   - Arène : Énoncé (`#arena-question-text`), Cas clinique (`#arena-clinical-case-text`), Explication officielle en direct (`#arena-explanation-text`).
   - Modale d'erreur : Énoncé complet, cas clinique et explication officielle dans `formatQuestionMistakeRecap`.
   - Carnet : Rendu fidèle et aéré dans toutes les fiches d'historique.
+
+### 3.8. Barre d'Outils Visuelle & Annotations UI (Agentation)
+- **Intégration Standalone (`agentation.bundle.js`)** :
+  - Copie du bundle officiel autonome à la racine et dans `dist/` via le pipeline `build.cjs`.
+  - Chargement automatique via `<script src="agentation.bundle.js"></script>` injecté par `build-bundle.cjs`.
+  - Auto-montage sur `#agentation-root` avec la pilule d'interaction, les marqueurs d'annotations, les pastilles bleues et la palette d'outils.
+- **Fonctionnalités activées** :
+  - **Annotation visuelle en direct** : clic sur n'importe quel élément UI de l'arène, du dashboard ou du carnet pour déposer une note avec capture automatique du sélecteur CSS, de la hiérarchie DOM et des styles calculés.
+  - **Mode wireframe / Layout (`L`)** : manipulation et disposition de blocs pour prévisualiser des réorganisations d'interface.
+  - **Mode pause animations (`P`)** : fige les micro-animations pour une inspection sereine.
+  - **Copie structurée (`C`) & Nettoyage (`X`)** : export direct des annotations au format markdown pour transmission immédiate à l'agent.
+- **Serveur MCP en temps réel** :
+  - Connecté via `agentation-mcp` (`mcp_config.json`) sur le port local pour transmission bidirectionnelle transparente.
+
+### 3.9. Iconographie & Clichés Médicaux Protégés (Rétractés & Floutés par Défaut)
+- **Objectif mnésique & ergonomique** : Pour éviter que les clichés d'imagerie, radiographies ou photos cliniques ne divulguent prématurément la réponse ou ne perturbent la lecture de l'énoncé, tous les médias associés aux questions (`media_urls`) sont **rétractés et floutés par défaut**.
+- **Composant UI (`renderQuestionMedia`)** :
+  - **État Rétracté & Flouté (`.medical-media-card.is-collapsed`)** :
+    - Vignette miniature carrée de 96x96px (84x84px sur smartphone).
+    - Flou prononcé `filter: blur(9px) brightness(0.72)` avec compensation d'échelle `transform: scale(1.12)` pour supprimer les franges de flou aux bords.
+    - Overlay interactif `.medical-media-spoiler-overlay` arborant le badge cyan `Toucher pour afficher` et le rappel `Photo floutée`.
+  - **État Déplié & Net (`.medical-media-card.is-expanded`)** :
+    - Déploiement fluide animé en CSS.
+    - Image en pleine netteté (`filter: none`), hauteur adaptative jusqu'à 420px avec préservation du ratio d'aspect (`object-fit: contain`).
+    - Barre d'action avec bouton d'agrandissement `Plein écran HD` et bascule `Réduire & flouter`.
+    - Un simple clic sur l'image dépliée ou sur le texte d'action la replie et la refloute immédiatement.
+  - **Visionneuse Plein Écran HD (Lightbox)** :
+    - Modal plein écran `#media-lightbox-modal` avec flou d'arrière-plan (`backdrop-filter: blur(10px)`).
+    - Image centrée en résolution maximale sans altération.
+    - Fermeture au clic sur le fond noir, via le bouton de fermeture ou par la touche clavier `Échap`.
+- **Intégration transverse** :
+  - **Arène de Quiz** : Rendu dynamique sous l'énoncé dans `#arena-media-wrap`.
+  - **Modale d'Erreur & Explication** : Intégration systématique dans la fiche d'erreur `formatQuestionMistakeRecap`.
+  - **Carnet de Révision** : Préservation et restitution intégrale dans les fiches de révision sauvegardées localement et synchronisées sur Google Firestore.
 
 ---
 
