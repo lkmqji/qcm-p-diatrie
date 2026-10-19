@@ -160,3 +160,52 @@
   - **Validation de syntaxe in-situ du HTML** : vérification par script Node VM de tous les blocs `<script>` inclus dans `index.html` (Script 0, 1 et 2 validés à 100% avec code 0).
   - **Synchronisation Capacitor Android** : exécution de `npx cap sync android` pour propager le correctif dans les assets natifs.
   - **Régénération de l'APK natif** : compilation de [PediaDrill.apk](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/PediaDrill.apk) mis à jour.
+
+### 21:15 - Élimination des syntaxes LaTeX illisibles (`\text{}`, `\mathbf{}`, `\times`) dans les réponses IA et formatage clinique naturel
+- **Constat & Problème utilisateur** :
+  - Dans les réponses générées par l'IA (notamment le Tuteur IA en direct dans l'Arène et les fiches de raisonnement clinique), certaines réponses comportaient des fragments de code LaTeX bruts et incompréhensibles tels que `14\text{ g/dl}`, `\mathbf{4}\text{ g/dl}`, `\mathbf{3}\text{ kg}` ou `\text{Volume} = \text{Déficit en Hb (en g/dl)} \times \mathbf{3}\text{ ml/kg}`.
+  - Ces syntaxes LaTeX, couramment émises par les LLMs lorsqu'ils manipulent des grandeurs ou formules mathématiques, n'étaient pas interprétées et s'affichaient sous forme de balises cryptiques perturbant la concentration de l'étudiant.
+- **Actions et Correctifs appliqués (Approche à double niveau)** :
+  1. **Niveau 1 : Moteur universel de conversion et nettoyage LaTeX (`cleanLatexMath`)** :
+     - Implémentation de la fonction `cleanLatexMath(str)` dans [src/services/gemini.js](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/src/services/gemini.js) et exposée globalement sur `window.cleanLatexMath`.
+     - Déballage automatique et récursif de toutes les balises de texte : `\text{...}`, `\mathrm{...}`, `\operatorname{...}`, `\textrm{...}` ➔ texte clair.
+     - Conversion des styles gras/italique LaTeX : `\mathbf{...}` et `\textbf{...}` ➔ `**...**` (rendu Markdown gras immédiat).
+     - Remplacement des opérateurs et symboles : `\times` ➔ `×`, `\cdot` ➔ `·`, `\leq` ➔ `≤`, `\geq` ➔ `≥`, `\pm` ➔ `±`, `\mu` ➔ `µ`, `\to` ➔ `→`, etc.
+     - Conversion des fractions : `\frac{A}{B}` ➔ `(A / B)` et racines `\sqrt{A}` ➔ `√(A)`.
+     - Conversion des exposants et indices : `^{2}` ➔ `²`, `_{2}` ➔ `₂`.
+     - Suppression de tous les délimiteurs `$`, `$$`, `\[`, `\]`, `\(`, `\)`.
+     - Filtrage à la source : appliqué directement à chaque appel modèle dans `_executeModelCall`, `askAboutQuestion`, `generateReasoningNote` et `evaluateCroq`.
+     - Intégration dans le moteur de rendu : appliqué systématiquement dans `parseMarkdownInline`, `formatMedicalContent` et `formatReasoningNote`.
+  2. **Niveau 2 : Durcissement strict des consignes système Gemini** :
+     - Ajout d'une règle d'interdiction formelle du LaTeX dans le prompt système du Tuteur IA (`askAboutQuestion`), de la génération de raisonnement (`generateReasoningNote`) et de l'évaluation des CROQ (`evaluateCroq`).
+     - Consigne explicite d'écrire impérativement les doses, calculs, formules pédiatriques et unités en français clair et direct (ex : "14 g/dl", "Poids = 3 kg", "Déficit = 4 g/dl", "×" au lieu de "\times", "/" au lieu de "\frac").
+  3. **Amélioration du parseur de listes médicales (`formatMedicalContent`)** :
+     - Normalisation préalable des tirets suivis de puces numérotées (`- 1. ...` ➔ `1. ...`) pour éliminer l'apparition de pastilles de liste vides.
+- **Recompilation, tests et synchronisation** :
+  - Validation par script de test automatisé sur le cas réel d'ictère néonatal et calcul de culot globulaire : 100% des balises LaTeX éliminées et transformées en typographie médicale parfaite.
+  - Recompilation complète du bundle (`build-bundle.cjs`) et des fichiers `index.html` et `dist/index.html`.
+  - Synchronisation Capacitor Android (`npx cap sync android`).
+  - Régénération de l'APK natif [PediaDrill.apk](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/PediaDrill.apk).
+
+### 21:25 - Montée de version native Android & Génération de l'APK v1.1 (versionCode 2)
+- **Objectif & Nécessité d'Upgrade** :
+  - Pour permettre une mise à jour transparente de l'APK directement sur le smartphone de l'utilisateur sans conflit de package ou refus du gestionnaire d'installation Android (« L'application n'a pas été installée car le package semble non valide »), la version de l'application a été formellement incrémentée.
+- **Modifications apportées (`android/app/build.gradle`)** :
+  - `versionCode` : incrémenté de `1` à `2`.
+  - `versionName` : incrémenté de `"1.0"` à `"1.1"`.
+- **Pipeline d'assemblage & Compilation** :
+  - Synchronisation intégrale du bundle web dans `dist/` via `build-bundle.cjs`.
+  - Synchronisation native Capacitor via `npx cap sync android`.
+  - Compilation native Gradle (`:app:assembleDebug`) et copie sous [PediaDrill.apk](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/PediaDrill.apk).
+
+### 21:30 - Intégration de `google-services.json` et Activation du Plugin Google Services dans l'APK
+- **Emplacement du fichier de configuration Firebase Android** :
+  - Déplacement et copie de [google-services.json](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/google-services.json) vers l'emplacement officiel du module Android : [android/app/google-services.json](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/android/app/google-services.json).
+- **Projet Firebase ciblé** :
+  - `project_id` : `qcm-pediatr`
+  - `package_name` : `com.pediadrill.app`
+  - `project_number` : `1028938391462`
+- **Activation automatique dans Gradle (`android/app/build.gradle`)** :
+  - Détection automatique de `file('google-services.json')` et application du plugin `com.google.gms.google-services` via la dépendance racine `classpath 'com.google.gms:google-services:4.4.4'`.
+- **Recompilation & Validation de l'APK** :
+  - Compilation native réussie avec intégration des métadonnées Firebase dans l'APK [PediaDrill.apk](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/PediaDrill.apk).

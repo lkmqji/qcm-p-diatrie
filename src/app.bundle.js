@@ -20,6 +20,113 @@ const MODEL_CASCADE = [
   "gemini-3.1-flash-lite"     // Secours #8 : Flash Lite de réserve
 ];
 
+/**
+ * Nettoyeur et convertisseur de formules / balises LaTeX en texte clair médical lisible.
+ * Supprime les syntaxes cryptiques (\\text{}, \\mathbf{}, \\times, \\frac, etc.) générées parfois par les LLMs.
+ */
+function cleanLatexMath(str) {
+  if (!str || typeof str !== 'string') return '';
+  let res = str;
+
+  // 1. Délimiteurs de blocs mathématiques : $$...$$, $...$, \[...\], \(...\)
+  res = res.replace(/\$\$([\s\S]*?)\$\$/g, '$1');
+  res = res.replace(/\\\[([\s\S]*?)\\\]/g, '$1');
+  res = res.replace(/\\\(([\s\S]*?)\\\)/g, '$1');
+  res = res.replace(/\$([^\$\n]+)\$/g, '$1');
+
+  // 2. Symboles et opérateurs mathématiques courants
+  const symbols = [
+    [/\\times\b/g, '×'],
+    [/\\cdot\b/g, '·'],
+    [/\\div\b/g, '÷'],
+    [/\\pm\b/g, '±'],
+    [/\\mp\b/g, '∓'],
+    [/\\leq?\b/g, '≤'],
+    [/\\geq?\b/g, '≥'],
+    [/\\neq?\b/g, '≠'],
+    [/\\approx\b/g, '≈'],
+    [/\\sim\b/g, '∼'],
+    [/\\equiv\b/g, '≡'],
+    [/\\infty\b/g, '∞'],
+    [/\\[rR]ightarrow\b|\\to\b/g, '→'],
+    [/\\[lL]eftarrow\b/g, '←'],
+    [/\\implies\b|\\Rightarrow\b/g, '⇒'],
+    [/\\iff\b|\\Leftrightarrow\b/g, '⇔'],
+    [/\\mu(?:m|g|l|mol)?\b/g, (m) => m.replace(/\\mu/, 'µ')],
+    [/\\alpha\b/g, 'α'],
+    [/\\beta\b/g, 'β'],
+    [/\\gamma\b/g, 'γ'],
+    [/\\delta\b/g, 'δ'],
+    [/\\Delta\b/g, 'Δ'],
+    [/\\lambda\b/g, 'λ'],
+    [/\\theta\b/g, 'θ'],
+    [/\\pi\b/g, 'π'],
+    [/\\sigma\b/g, 'σ'],
+    [/\\Sigma\b/g, 'Σ'],
+    [/\\Omega\b/g, 'Ω'],
+    [/\\(?:left|right)\s*([()[\]{}|])/g, '$1'],
+    [/\\\{/g, '{'],
+    [/\\\}/g, '}'],
+    [/\\%/g, '%'],
+    [/\\_/g, '_'],
+    [/\\&/g, '&'],
+    [/\\(?:quad|qquad|;|,|:)/g, ' '],
+    [/\\\s+/g, ' '],
+    [/\^\{\\circ\}\s*C\b|\^\\circ\s*C\b/g, '°C'],
+    [/\^\{\\circ\}|\^\\circ/g, '°']
+  ];
+  for (const [re, repl] of symbols) {
+    res = res.replace(re, repl);
+  }
+
+  // 3. Déballage styles Gras / Italique LaTeX : \mathbf{...}, \textbf{...}, \mathit{...}, \textit{...}
+  let prev;
+  do {
+    prev = res;
+    res = res.replace(/\\(?:mathbf|textbf)\{([^{}]+)\}/g, '**$1**');
+    res = res.replace(/\\(?:mathit|textit)\{([^{}]+)\}/g, '*$1*');
+  } while (res !== prev);
+
+  // 4. Déballage texte brut : \text{...}, \mathrm{...}, \operatorname{...}, etc.
+  do {
+    prev = res;
+    res = res.replace(/\\(?:text|mathrm|textrm|textnormal|operatorname)\{([^{}]*)\}/g, '$1');
+  } while (res !== prev);
+
+  // 5. Fractions : \(?:d)?frac{A}{B} -> (A / B)
+  do {
+    prev = res;
+    res = res.replace(/\\d?frac\{([^{}]+)\}\{([^{}]+)\}/g, '($1 / $2)');
+  } while (res !== prev);
+
+  // 6. Racines carrées : \sqrt{A} -> √(A)
+  do {
+    prev = res;
+    res = res.replace(/\\sqrt(?:\[[^\]]*\])?\{([^{}]+)\}/g, '√($1)');
+  } while (res !== prev);
+
+  // 7. Commandes résiduelles : \nom{contenu} -> contenu
+  do {
+    prev = res;
+    res = res.replace(/\\[a-zA-Z]+\{([^{}]*)\}/g, '$1');
+  } while (res !== prev);
+
+  // 8. Exposants et indices : ^{2} -> ², _{2} -> ₂
+  const superMap = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹','+':'⁺','-':'⁻'};
+  const subMap = {'0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉'};
+  res = res.replace(/\^\{?([0-9+-])\}?/g, (m, d) => superMap[d] || m);
+  res = res.replace(/_\{?([0-9])\}?/g, (m, d) => subMap[d] || m);
+
+  // 9. Nettoyage des antislashs orphelins résiduels devant des mots
+  res = res.replace(/\\([a-zA-Z]+)/g, '$1');
+
+  // 10. Espacements propres
+  res = res.replace(/[ \t]{2,}/g, ' ');
+  res = res.replace(/\s+([,.:;?!])/g, '$1');
+
+  return res.trim();
+}
+
 class GeminiService {
   constructor() {
     this.apiKey = localStorage.getItem('pedia_gemini_key') || DEFAULT_GEMINI_KEY;
@@ -122,7 +229,7 @@ class GeminiService {
       throw new Error("No candidate text returned");
     }
 
-    return { text: textPart.text.trim() };
+    return { text: cleanLatexMath(textPart.text.trim()) };
   }
 
   /**
@@ -137,6 +244,7 @@ Critères d'évaluation :
 - Attribue une note de 0 à 100%.
 - Si le score est >= 75%, la réponse est considérée comme juste.
 - Fournis une analyse détaillée et complète sans abréger.
+- N'utilise JAMAIS de syntaxe ou balises LaTeX (interdit : \\text{}, \\mathbf{}, \\times, etc.) dans tes explications, feedback ou reasoningNote.
 - Réponds STRICTEMENT au format JSON valide suivant, sans aucun markdown ni texte avant ou après :
 {
   "score": 85,
@@ -160,8 +268,8 @@ RÉPONSE DONNÉE PAR L'ÉTUDIANT : ${userAnswer}
       return {
         score,
         isValid: score >= 75,
-        feedback: parsed.feedback || (score >= 75 ? "Réponse conforme aux critères attendus." : "Réponse incomplète ou imprécise."),
-        reasoningNote: parsed.reasoningNote || "Raisonnement clinique analysé.",
+        feedback: cleanLatexMath(parsed.feedback || (score >= 75 ? "Réponse conforme aux critères attendus." : "Réponse incomplète ou imprécise.")),
+        reasoningNote: cleanLatexMath(parsed.reasoningNote || "Raisonnement clinique analysé."),
         modelUsed: result.modelUsed
       };
     } catch (err) {
@@ -243,6 +351,10 @@ Détaille la démarche diagnostique et thérapeutique pas-à-pas : quel est le m
 4. 💡 RÈGLE D'OR & MÉMO CONCOURS :
 Formule une règle mémo claire, percutante et mémorisable pour ne plus jamais hésiter sur ce dossier au concours.
 
+5. 🚫 RÈGLE STRICTE SUR LES CALCULS, FORMULES ET UNITÉS :
+- INTERDICTION TOTALE d'utiliser la syntaxe ou des balises LaTeX (strictement interdit : \\text{}, \\mathbf{}, \\times, \\frac{}, etc.).
+- Écris TOUJOURS les calculs, posologies, poids et unités en texte français clair et direct (exemples : "14 g/dl", "3 kg", "×", "/").
+
 Rédige en français médical soigné, rigoureux et complet. Ne coupe aucune phrase, ne saute aucune étape.`;
 
     const userPrompt = `MODULE : Pédiatrie - ${question.chapterTitle || "Pédiatrie Générale"}
@@ -260,7 +372,7 @@ Rédige l'explication clinique complète et approfondie sans aucune coupure. À 
     try {
       const result = await this.callWithFallback(userPrompt, systemPrompt, 4096);
       return {
-        note: result.text,
+        note: cleanLatexMath(result.text),
         modelUsed: result.modelUsed
       };
     } catch (err) {
@@ -296,7 +408,7 @@ Rédige l'explication clinique complète et approfondie sans aucune coupure. À 
       localNote += `> **Règle d'or :** En pédiatrie (*${question.chapterTitle || 'Pédiatrie'}*), toujours retenir la notion clé : **${corrStr}** (conforme aux recommandations HAS et consensus officiels).`;
 
       return {
-        note: localNote,
+        note: cleanLatexMath(localNote),
         modelUsed: "Synthèse Clinique Locale (Hors-Ligne)"
       };
     }
@@ -333,7 +445,10 @@ Consignes pédagogiques strictes :
 1. Réponds en français médical rigoureux, clair, bienveillant et concis (va droit au but).
 2. Mets en valeur les mots-clés en gras et structure avec des tirets/puces pour une lecture rapide pendant le drill.
 3. Justifie sur le plan physiopathologique, sémiologique ou thérapeutique pourquoi telle proposition est vraie ou fausse.
-4. Signale les pièges fréquents au concours de résidanat si pertinent.`;
+4. Signale les pièges fréquents au concours de résidanat si pertinent.
+5. 🚫 RÈGLE STRICTE SUR LES CALCULS, DOSES ET FORMULES :
+- INTERDICTION TOTALE d'utiliser la syntaxe ou des balises LaTeX (strictement interdit : \\text{}, \\mathbf{}, \\times, \\frac{}, \\cdot, etc.).
+- Écris TOUJOURS les calculs, posologies, poids et unités en texte français clair et direct (exemples : "14 g/dl" et JAMAIS "14\\text{ g/dl}", "Poids = 3 kg" et JAMAIS "\\mathbf{3}\\text{ kg}", "Déficit = 4 g/dl", "×" ou "x" au lieu de "\\times", "/" au lieu de "\\frac").`;
 
     let promptWithContext = '';
     if (!conversationHistory || conversationHistory.length === 0) {
@@ -346,14 +461,14 @@ Consignes pédagogiques strictes :
     try {
       const result = await this.callWithFallback(promptWithContext, systemInstruction, 2048);
       return {
-        text: result.text,
+        text: cleanLatexMath(result.text),
         modelUsed: result.modelUsed
       };
     } catch (err) {
       console.warn("askAboutQuestion failed:", err);
       const corrStr = correctLetters || question.croq_answer || "Réponse officielle";
       return {
-        text: `⚠️ **Mode Hors-Ligne (Quota ou Réseau)** : Le Tuteur Flash est momentanément indisponible.\n\n*Rappel de la base pour ce QCM :*\n- **Bonne réponse :** **${corrStr}**\n- **Explication :** ${question.explanation || 'Consultez le cours de référence.'}`,
+        text: cleanLatexMath(`⚠️ **Mode Hors-Ligne (Quota ou Réseau)** : Le Tuteur Flash est momentanément indisponible.\n\n*Rappel de la base pour ce QCM :*\n- **Bonne réponse :** **${corrStr}**\n- **Explication :** ${question.explanation || 'Consultez le cours de référence.'}`),
         modelUsed: "Secours Local Hors-Ligne"
       };
     }
@@ -1606,7 +1721,7 @@ function escapeHtml(str) {
 
 function parseMarkdownInline(text) {
   if (!text) return '';
-  let clean = String(text)
+  let clean = (typeof cleanLatexMath === 'function' ? cleanLatexMath(String(text)) : String(text))
     .replace(/\$SpO_2\$/gi, 'SpO₂')
     .replace(/\$SpO2\$/gi, 'SpO₂')
     .replace(/SpO_2/gi, 'SpO₂')
@@ -1635,7 +1750,7 @@ function parseMarkdownInline(text) {
 function formatMedicalContent(raw) {
   if (!raw || typeof raw !== 'string') return '';
 
-  let text = raw.trim();
+  let text = typeof cleanLatexMath === 'function' ? cleanLatexMath(raw) : raw.trim();
 
   // 1. Remove zero-width characters and normalize BOM
   text = text.replace(/[\u200B-\u200D\uFEFF]/g, '');
@@ -1707,11 +1822,14 @@ function formatMedicalContent(raw) {
   // 8. Un-glue 'Source' at end of sentence
   text = text.replace(/([^\n\r])\s*(Source\s+diapositive|Source\s*[:;])/gi, '$1\n\n$2');
 
-  // 9. Un-glue QCM sub-items: "1- ...", "2- ...", "1. ...", "1) ..."
-  text = text.replace(/([^\n\r])\s+(\d+[\.\)-]\s+[A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ])/g, '$1\n$2');
-  text = text.replace(/([^\n\r])\s+([a-eA-E][\.\)]\s+[A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ])/g, '$1\n$2');
+  // 9. Normalize combined bullet-number items: "- 1. ..." -> "1. ..."
+  text = text.replace(/^[-•*➢⁃►▶✔✓]\s*(\d+[\.\)-]\s+)/gm, '$1');
 
-  // 10. Clean up multiple empty lines
+  // 10. Un-glue QCM sub-items: "1- ...", "2- ...", "1. ...", "1) ..."
+  text = text.replace(/([^\n\r\-•*➢⁃►▶✔✓])\s+(\d+[\.\)-]\s+[A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ])/g, '$1\n$2');
+  text = text.replace(/([^\n\r\-•*➢⁃►▶✔✓])\s+([a-eA-E][\.\)]\s+[A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ])/g, '$1\n$2');
+
+  // 11. Clean up multiple empty lines
   text = text.replace(/\n{3,}/g, '\n\n');
 
   // 11. Split into lines
@@ -1792,13 +1910,15 @@ function formatMedicalContent(raw) {
   html += '</div>';
   return html;
 }
+window.cleanLatexMath = cleanLatexMath;
+window.formatMedicalContent = formatMedicalContent;
 
 function formatReasoningNote(noteText) {
   if (!noteText || typeof noteText !== 'string' || !noteText.trim()) {
     return '<div class="reasoning-cards-container"><div class="reasoning-card card-method"><div class="reasoning-card-body">Aucune note de raisonnement clinique disponible.</div></div></div>';
   }
 
-  const raw = noteText.trim();
+  const raw = typeof cleanLatexMath === 'function' ? cleanLatexMath(noteText) : noteText.trim();
 
   // Regex patterns to capture the 4 structured sections from Gemini 3.8 Flash
   const sec1Regex = /(?:###\s*|\*\*|#\s*)?(?:1[\.\)]\s*)?🎯\s*PI[ÈÉEeèéê]GE[^\n:]*[:\n]([\s\S]*?)(?=(?:###\s*|\*\*|#\s*)?(?:2[\.\)]\s*)?📋\s*JUSTIFICATION|(?:###\s*|\*\*|#\s*)?(?:3[\.\)]\s*)?🩺\s*D[ÉEèéê]MARCHE|(?:###\s*|\*\*|#\s*)?(?:2[\.\)]\s*)?🩺\s*M[ÉEèéê]THODE|$)/i;

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1028938391462",
+    "project_id": "qcm-pediatr",
+    "storage_bucket": "qcm-pediatr.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1028938391462:android:90e625ab8392355e633967",
+        "android_client_info": {
+          "package_name": "com.pediadrill.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1028938391462-hfo44kaj789r1ruovt4b4v59he6jvarq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtd08JgU7_I0z8UfqrsdM0FDQC6amGzos"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1028938391462-hfo44kaj789r1ruovt4b4v59he6jvarq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

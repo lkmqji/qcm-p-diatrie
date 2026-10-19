@@ -1,5 +1,5 @@
 // PédiaDrill - Application Controller & Orchestration
-import { geminiService } from './services/gemini.js';
+import { geminiService, cleanLatexMath } from './services/gemini.js';
 import { QueueEngine } from './services/queueEngine.js';
 import { FirebaseSyncService } from './services/firebaseSyncService.js';
 
@@ -283,7 +283,7 @@ function escapeHtml(str) {
 
 function parseMarkdownInline(text) {
   if (!text) return '';
-  let clean = String(text)
+  let clean = (typeof cleanLatexMath === 'function' ? cleanLatexMath(String(text)) : String(text))
     .replace(/\$SpO_2\$/gi, 'SpO₂')
     .replace(/\$SpO2\$/gi, 'SpO₂')
     .replace(/SpO_2/gi, 'SpO₂')
@@ -312,7 +312,7 @@ function parseMarkdownInline(text) {
 function formatMedicalContent(raw) {
   if (!raw || typeof raw !== 'string') return '';
 
-  let text = raw.trim();
+  let text = typeof cleanLatexMath === 'function' ? cleanLatexMath(raw) : raw.trim();
 
   // 1. Remove zero-width characters and normalize BOM
   text = text.replace(/[\u200B-\u200D\uFEFF]/g, '');
@@ -384,11 +384,14 @@ function formatMedicalContent(raw) {
   // 8. Un-glue 'Source' at end of sentence
   text = text.replace(/([^\n\r])\s*(Source\s+diapositive|Source\s*[:;])/gi, '$1\n\n$2');
 
-  // 9. Un-glue QCM sub-items: "1- ...", "2- ...", "1. ...", "1) ..."
-  text = text.replace(/([^\n\r])\s+(\d+[\.\)-]\s+[A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ])/g, '$1\n$2');
-  text = text.replace(/([^\n\r])\s+([a-eA-E][\.\)]\s+[A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ])/g, '$1\n$2');
+  // 9. Normalize combined bullet-number items: "- 1. ..." -> "1. ..."
+  text = text.replace(/^[-•*➢⁃►▶✔✓]\s*(\d+[\.\)-]\s+)/gm, '$1');
 
-  // 10. Clean up multiple empty lines
+  // 10. Un-glue QCM sub-items: "1- ...", "2- ...", "1. ...", "1) ..."
+  text = text.replace(/([^\n\r\-•*➢⁃►▶✔✓])\s+(\d+[\.\)-]\s+[A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ])/g, '$1\n$2');
+  text = text.replace(/([^\n\r\-•*➢⁃►▶✔✓])\s+([a-eA-E][\.\)]\s+[A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ])/g, '$1\n$2');
+
+  // 11. Clean up multiple empty lines
   text = text.replace(/\n{3,}/g, '\n\n');
 
   // 11. Split into lines
@@ -469,13 +472,15 @@ function formatMedicalContent(raw) {
   html += '</div>';
   return html;
 }
+window.cleanLatexMath = cleanLatexMath;
+window.formatMedicalContent = formatMedicalContent;
 
 function formatReasoningNote(noteText) {
   if (!noteText || typeof noteText !== 'string' || !noteText.trim()) {
     return '<div class="reasoning-cards-container"><div class="reasoning-card card-method"><div class="reasoning-card-body">Aucune note de raisonnement clinique disponible.</div></div></div>';
   }
 
-  const raw = noteText.trim();
+  const raw = typeof cleanLatexMath === 'function' ? cleanLatexMath(noteText) : noteText.trim();
 
   // Regex patterns to capture the 4 structured sections from Gemini 3.8 Flash
   const sec1Regex = /(?:###\s*|\*\*|#\s*)?(?:1[\.\)]\s*)?🎯\s*PI[ÈÉEeèéê]GE[^\n:]*[:\n]([\s\S]*?)(?=(?:###\s*|\*\*|#\s*)?(?:2[\.\)]\s*)?📋\s*JUSTIFICATION|(?:###\s*|\*\*|#\s*)?(?:3[\.\)]\s*)?🩺\s*D[ÉEèéê]MARCHE|(?:###\s*|\*\*|#\s*)?(?:2[\.\)]\s*)?🩺\s*M[ÉEèéê]THODE|$)/i;

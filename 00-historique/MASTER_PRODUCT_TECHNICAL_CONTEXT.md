@@ -1,5 +1,5 @@
 # PédiaDrill — Master Product & Technical Context
-*Dernière mise à jour : 2026-10-19 20:55:00 CET*
+*Dernière mise à jour : 2026-10-19 21:15:00 CET*
 *Source unique de vérité technique et fonctionnelle du projet PédiaDrill.*
 
 ---
@@ -220,11 +220,20 @@ Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes
     - 🔍 *Justification clé*
     - ⚠️ *Piège concours*
     - 💊 *Traitement & CAT*
-  - **Moteur IA Contextuel (`geminiService.askAboutQuestion`)** :
-    - Transmet à chaque requête l'énoncé complet, le cas clinique, la totalité des propositions (A-E), la réponse officielle et l'explication officielle de la base de données.
-    - Persona de professeur universitaire de pédiatrie délivrant des explications courtes, structurées et ciblées, avec mise en gras des notions concours.
-    - Maintien d'un historique multi-tours pour affiner la question sans répéter le contexte.
-    - Cascade de résilience 100% modèles Flash avec secours hors-ligne immédiat.
+### 3.12. Nettoyeur Universel de Formules & Élimination du LaTeX (`cleanLatexMath`)
+- **Problématique clinique & UX** : Les modèles de langage (LLMs) génèrent fréquemment par réflexe des balises LaTeX (`\text{ g/dl}`, `\mathbf{3}\text{ kg}`, `\times`, `\frac{A}{B}`) lors des calculs de posologies, déficits en hémoglobine, bilans liquidiens ou réhydratation. Sans moteur d'affichage mathématique lourd, ces syntaxes s'affichaient sous forme de code cryptique (`%texte`, `\mathbf`).
+- **Moteur de nettoyage & conversion bidirectionnel (`cleanLatexMath`)** :
+  - **Déballage récursif du texte brut** : `\text{...}`, `\mathrm{...}`, `\operatorname{...}`, `\textrm{...}` ➔ texte clair direct.
+  - **Conversion des styles typographiques** : `\mathbf{...}` et `\textbf{...}` ➔ `**...**` (gras Markdown natif immédiat).
+  - **Conversion des opérateurs mathématiques** : `\times` ➔ `×`, `\cdot` ➔ `·`, `\div` ➔ `÷`, `\pm` ➔ `±`, `\leq` ➔ `≤`, `\geq` ➔ `≥`, `\neq` ➔ `≠`, `\approx` ➔ `≈`, `\to` ➔ `→`, `\implies` ➔ `⇒`.
+  - **Unités pédiatriques & lettres grecques** : `\mu` / `\mum` ➔ `µ` / `µm`, `\alpha`, `\beta`, `\Delta`, `\Omega`.
+  - **Formules de calculs fractionnaires & racines** : `\frac{A}{B}` ➔ `(A / B)`, `\sqrt{A}` ➔ `√(A)`.
+  - **Exposants & indices** : `^{2}` ➔ `²`, `_{2}` ➔ `₂`, `\^\\circ C` ➔ `°C`.
+  - **Suppression des délimiteurs** : Élimination de `$$...$$`, `$..$`, `\[...\]`, `\(...\)`.
+- **Application et double protection** :
+  - **Au niveau de l'API (`src/services/gemini.js`)** : Toutes les réponses brutes issues de Gemini Flash sont systématiquement épurées dès la réception (`_executeModelCall`, `askAboutQuestion`, `generateReasoningNote`, `evaluateCroq`).
+  - **Au niveau du Prompt Engineering** : Consigne stricte interdisant formellement l'usage du LaTeX dans tous les prompts système, imposant un formatage textuel médical direct (ex: `14 g/dl`, `3 kg`, `× 3 ml/kg`).
+  - **Au niveau du Moteur de Rendu (`src/app.js`)** : Déclenché automatiquement dans `formatMedicalContent`, `formatReasoningNote` et `parseMarkdownInline`.
 
 ---
 
@@ -252,10 +261,15 @@ Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes
 
 ## 6. Architecture Mobile Native Android & Capacitor
 
-### 6.1. Configuration Capacitor (`capacitor.config.json`)
+### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
+- **Version native** : `versionName 1.1` (`versionCode 2`)
+- **Empreinte SHA-1 (Debug Keystore)** : `8F:FC:20:D9:BE:46:AF:D9:FA:20:33:0B:87:58:F8:B1:F6:96:43:F5`
+- **Empreinte SHA-256 (Debug Keystore)** : `43:6A:7A:4C:75:D8:1C:B1:03:C0:94:7D:8C:52:02:38:B1:66:05:05:A0:E2:8F:14:CB:0E:BD:8E:22:74:5A:4D`
 - **Dossier web racine (`webDir`)** : `dist`
+- **Fichier de configuration Firebase Android** : `android/app/google-services.json` (Projet `qcm-pediatr`, Package `com.pediadrill.app`).
+- **Plugin Gradle Google Services** : `com.google.gms.google-services` (version `4.4.4`) activé automatiquement à la présence de `android/app/google-services.json`.
 - **Dépendances natives** : `@capacitor/core`, `@capacitor/cli`, `@capacitor/android` (version 8.x).
 
 ### 6.2. Environnement Android Studio & Toolchain
