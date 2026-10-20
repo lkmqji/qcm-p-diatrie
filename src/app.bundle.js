@@ -1569,6 +1569,15 @@ let isEvaluating = false;
 let currentView = 'dashboard'; // 'dashboard' | 'arena' | 'notebook'
 let answeredHistory = []; // Buffer glissant des 5 derniers QCM répondus
 let historyCursor = -1; // -1 = QCM actif, 0 = dernier répondu (QCM -1), 1 = (QCM -2), etc.
+let isCurrentQuestionAnswered = false; // true dès que l'étudiant valide ou échoue le QCM
+
+function isArenaChapterRevealed() {
+  if (historyCursor >= 0) return true; // En mode consultation d'historique, QCM déjà répondu
+  if (isCurrentQuestionAnswered) return true; // Question active déjà répondue
+  const badge = document.getElementById('arena-chapter-title');
+  if (badge && badge.classList.contains('is-revealed')) return true;
+  return false;
+}
 
 function getEffectiveArenaQuestion() {
   if (historyCursor >= 0 && answeredHistory[historyCursor]) {
@@ -2283,19 +2292,52 @@ window.toggleMedicalMedia = function(cardEl, event) {
   refreshLucide();
 };
 
-window.toggleArenaChapterTitle = function() {
+window.toggleArenaChapterTitle = function(forceRevealed = null) {
   const badge = document.getElementById('arena-chapter-title');
-  if (!badge) return;
-  const isBlurred = badge.classList.contains('is-blurred');
-  if (isBlurred) {
-    badge.classList.remove('is-blurred');
-    badge.classList.add('is-revealed');
-    badge.title = 'Cliquer pour masquer le chapitre';
+  const chatBlurredEls = document.querySelectorAll('.chatbox-chapter-blurred');
+
+  let willReveal;
+  if (forceRevealed !== null) {
+    willReveal = forceRevealed;
+  } else if (badge) {
+    willReveal = badge.classList.contains('is-blurred');
   } else {
-    badge.classList.add('is-blurred');
-    badge.classList.remove('is-revealed');
-    badge.title = 'Chapitre masqué (Cliquer pour afficher)';
+    const firstChatEl = document.querySelector('.chatbox-chapter-blurred');
+    willReveal = firstChatEl ? firstChatEl.classList.contains('is-blurred') : true;
   }
+
+  if (badge) {
+    if (willReveal) {
+      badge.classList.remove('is-blurred');
+      badge.classList.add('is-revealed');
+      badge.title = 'Cliquer pour masquer le chapitre';
+      const hint = badge.querySelector('.chapter-title-hint');
+      if (hint && !hint.textContent.includes('QCM Répondu')) {
+        hint.innerHTML = `<i data-lucide="eye-off" style="width:11px;height:11px;"></i> Cours visible`;
+      }
+    } else {
+      badge.classList.add('is-blurred');
+      badge.classList.remove('is-revealed');
+      badge.title = 'Chapitre masqué (Cliquer pour afficher)';
+      const hint = badge.querySelector('.chapter-title-hint');
+      if (hint && !hint.textContent.includes('QCM Répondu')) {
+        hint.innerHTML = `<i data-lucide="eye" style="width:11px;height:11px;"></i> Cours masqué`;
+      }
+    }
+  }
+
+  chatBlurredEls.forEach(el => {
+    if (willReveal) {
+      el.classList.remove('is-blurred');
+      el.classList.add('is-revealed');
+      el.title = 'Cours visible (Cliquer pour masquer)';
+    } else {
+      el.classList.add('is-blurred');
+      el.classList.remove('is-revealed');
+      el.title = 'Cours masqué jusqu\'à ce que vous répondiez (Cliquer pour afficher)';
+    }
+  });
+
   refreshLucide();
 };
 
@@ -2733,6 +2775,7 @@ window.resumeActiveDrill = function() {
 // QUIZ ARENA (QUESTION DISPLAY & SUBMISSION)
 // ============================================================================
 function loadNextArenaQuestion() {
+  isCurrentQuestionAnswered = false;
   historyCursor = -1;
   updateHistoryNavUI();
   const croqInput = document.getElementById('arena-croq-input');
@@ -3041,6 +3084,8 @@ function handleAnswerSuccess(score = null, feedback = null, customLetters = null
     }
   }
 
+  isCurrentQuestionAnswered = true;
+  window.toggleArenaChapterTitle(true);
   refreshLucide();
 }
 
@@ -3064,6 +3109,8 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
   const result = queueEngine.handleFailure(currentQuestion.uid);
   // Seules les réponses justes incrémentent le compteur journalier de QCM
   updateArenaDailyBadge();
+  isCurrentQuestionAnswered = true;
+  window.toggleArenaChapterTitle(true);
 
   // Populate penalty header
   let penaltyTitle = '';
@@ -4170,8 +4217,15 @@ function updateArenaChatContext() {
       qTextEl.textContent = qText.length > 80 ? qText.slice(0, 80) + '...' : qText;
     }
     if (ctxEl) {
-      const histSuffix = historyCursor >= 0 ? ` (QCM -${historyCursor + 1})` : '';
-      ctxEl.textContent = `Pédiatrie — ${effQ.chapterTitle || 'Général'}${histSuffix}`;
+      const isHistory = historyCursor >= 0;
+      const isRevealed = isArenaChapterRevealed();
+      const blurClass = isRevealed ? 'is-revealed' : 'is-blurred';
+      const blurTitle = isRevealed 
+        ? 'Cours visible (Cliquer pour masquer)' 
+        : 'Cours masqué jusqu\'à ce que vous répondiez (Cliquer pour afficher)';
+      const histSuffix = isHistory ? ` (QCM -${historyCursor + 1})` : '';
+
+      ctxEl.innerHTML = `Pédiatrie — <span class="chatbox-chapter-blurred ${blurClass}" onclick="window.toggleArenaChapterTitle()" title="${blurTitle}">${escapeHtml(effQ.chapterTitle || 'Général')}</span>${histSuffix}`;
     }
   }
 }
@@ -4182,10 +4236,16 @@ function renderChatWelcome() {
   const effQ = getEffectiveArenaQuestion();
   const chapTitle = effQ ? (effQ.chapterTitle || 'Pédiatrie') : 'Pédiatrie';
   const isHistory = historyCursor >= 0;
+  const isRevealed = isArenaChapterRevealed();
+  const blurClass = isRevealed ? 'is-revealed' : 'is-blurred';
+  const blurTitle = isRevealed 
+    ? 'Cours visible (Cliquer pour masquer)' 
+    : 'Cours masqué jusqu\'à ce que vous répondiez (Cliquer pour afficher)';
+
   listEl.innerHTML = `
     <div class="chat-bubble bubble-ai">
       <p>👋 Bonjour ! Je suis votre <strong>Tuteur IA Pédiatrique</strong>.</p>
-      <p>Je connais par cœur l'énoncé, le cas clinique, les propositions et la justification officielle de ce QCM ${isHistory ? '<strong>en cours de consultation</strong>' : ''} en <strong>${escapeHtml(chapTitle)}</strong>.</p>
+      <p>Je connais par cœur l'énoncé, le cas clinique, les propositions et la justification officielle de ce QCM ${isHistory ? '<strong>en cours de consultation</strong>' : ''} en <strong class="chatbox-chapter-blurred ${blurClass}" onclick="window.toggleArenaChapterTitle()" title="${blurTitle}">${escapeHtml(chapTitle)}</strong>.</p>
       <p style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">
         Posez-moi votre question directement ou cliquez sur une suggestion rapide :
       </p>

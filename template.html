@@ -961,6 +961,40 @@ body {
   display: none;
 }
 
+/* Chapter name blurred in Chatbox until student answers */
+.chatbox-chapter-blurred {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  vertical-align: middle;
+}
+
+.chatbox-chapter-blurred.is-blurred {
+  filter: blur(5.5px);
+  opacity: 0.38;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px dashed rgba(0, 212, 255, 0.35);
+  color: var(--cyan) !important;
+}
+
+.chatbox-chapter-blurred.is-blurred:hover {
+  filter: blur(3.5px);
+  opacity: 0.72;
+  background: rgba(0, 212, 255, 0.16);
+  border-color: var(--cyan);
+}
+
+.chatbox-chapter-blurred.is-revealed {
+  filter: none;
+  opacity: 1;
+  background: rgba(0, 212, 255, 0.08);
+  border: 1px solid rgba(0, 212, 255, 0.28);
+  color: var(--cyan) !important;
+}
+
 .clinical-case-box {
   background: rgba(10, 16, 32, 0.9);
   border: 1px solid var(--border-subtle);

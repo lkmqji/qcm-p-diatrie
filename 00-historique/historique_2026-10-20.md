@@ -1,5 +1,26 @@
 # Historique des modifications - 2026-10-20
 
+### 21:07 - Floutage du nom de cours dans le Tuteur IA avant validation de la réponse (Anti-Spoiler)
+- **Retour utilisateur (Agentation)** :
+  - Sur `#chatbox-messages-list > .chat-bubble > p > strong` : l'étudiant a demandé de « flouter car c'est le nom du cours aussi jusqu'à ce que je réponde ».
+  - En effet, afficher l'intitulé du chapitre dans le message de bienvenue ou dans l'en-tête du Tuteur IA donnait prématurément le diagnostic avant même que l'étudiant n'ait répondu à la question.
+- **Règles d'affichage & Cycle de vie (`src/app.js`)** :
+  - **État `isCurrentQuestionAnswered`** :
+    - Initialisé à `false` à chaque nouvelle question (`loadNextArenaQuestion`).
+    - Bascule à `true` dès que l'étudiant soumet sa réponse (`handleAnswerSuccess` ou `handleAnswerFailure`), ou lorsqu'il consulte une question passée dans l'historique (`historyCursor >= 0`).
+  - **Helper `isArenaChapterRevealed()`** :
+    - Détermine en temps réel si le nom du cours doit être visible ou flouté, en harmonie avec l'état du badge de la carte (`#arena-chapter-title`).
+  - **Rendu du Tuteur IA (`renderChatWelcome` & `updateArenaChatContext`)** :
+    - Tant que la question n'a pas été répondue, le nom du cours dans le message d'accueil et dans le sous-titre de l'en-tête est affiché avec la classe `.chatbox-chapter-blurred.is-blurred`.
+    - Dès que la réponse est validée ou échouée, le flou est automatiquement levé (`.is-revealed`).
+    - L'étudiant peut également cliquer manuellement sur le texte flouté à tout moment pour l'afficher ou le masquer (`window.toggleArenaChapterTitle()`).
+  - **Synchronisation bidirectionnelle (`window.toggleArenaChapterTitle`)** :
+    - Un clic sur le badge de chapitre de la carte de question ou sur la mention floutée dans le chatbox bascule simultanément les deux éléments pour une cohérence visuelle parfaite.
+- **Design System & Styles CSS (`src/style.css`)** :
+  - Ajout des classes `.chatbox-chapter-blurred`, `.is-blurred` (`filter: blur(5.5px); opacity: 0.38;`) et `.is-revealed` (`filter: none; opacity: 1; color: var(--cyan);`).
+- **Compilation & Déploiement** :
+  - Exécution réussie de `build-bundle.cjs` et synchronisation Android via `npx cap sync android`.
+
 ### 20:25 - Navigation dans les 5 derniers QCM répondus en Arène et synchronisation dynamique du Tuteur IA
 - **Besoins & Contexte** :
   - L'utilisateur souhaitait pouvoir revenir en arrière sur les questions déjà répondues dans le mode principal (« Arène »), jusqu'aux 5 derniers QCM, via de petites flèches en haut de l'interface (`[◀]` / `[▶]`), notamment pour relire les énoncés, revoir le corrigé et interroger le Tuteur IA sur les questions précédentes sans altérer la file de révision active.

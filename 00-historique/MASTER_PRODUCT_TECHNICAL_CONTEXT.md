@@ -1,5 +1,5 @@
 # PédiaDrill — Master Product & Technical Context
-*Dernière mise à jour : 2026-10-20 20:25:00 CET*
+*Dernière mise à jour : 2026-10-20 21:07:00 CET*
 *Source unique de vérité technique et fonctionnelle du projet PédiaDrill.*
 
 ---
@@ -217,9 +217,17 @@ Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes
   - Le texte du cours est flouté (`filter: blur(6px); opacity: 0.38; user-select: none`) et accompagné d'un badge interactif `Cours masqué`.
   - Un simple clic sur le badge (`window.toggleArenaChapterTitle()`) retire le flou (`is-revealed`) et révèle l'intitulé du chapitre.
   - Un second clic permet de le reflouter à tout moment.
+  - **Défloutage automatique à la réponse** : Dès que l'étudiant valide ou échoue la question (`handleAnswerSuccess` ou `handleAnswerFailure`), ou consulte un QCM d'historique (`historyCursor >= 0`), le titre est automatiquement déflouté.
 
-### 3.11. Tuteur IA Interactif en Direct dans l'Arène (Chatbox Flottante Dédiée au QCM)
+### 3.11. Tuteur IA Interactif en Direct dans l'Arène & Protection Anti-Spoiler du Cours
 - **Objectif mnésique & clinique** : Permettre à l'étudiant de questionner l'IA en temps réel sur n'importe quel aspect de la question en cours de résolution dans l'Arène (demande d'explication d'un signe sémiologique, physiopathologie d'un distracteur, posologie pédiatrique ou piège d'internat).
+- **Protection Anti-Spoiler du Nom de Cours jusqu'à la Réponse (`.chatbox-chapter-blurred`)** :
+  - **Problématique** : L'affichage direct du nom du chapitre dans le message de bienvenue du Tuteur IA (`<strong>${chapTitle}</strong>`) ou dans le sous-titre de l'en-tête dévoilait le diagnostic de la question avant même que l'étudiant n'ait répondu.
+  - **Floutage dynamique conditionnel** :
+    - Tant que la question n'a pas été répondue (`!isCurrentQuestionAnswered` et `historyCursor === -1`), l'intitulé du cours dans le message d'accueil et le sous-titre est automatiquement flouté (`filter: blur(5.5px); opacity: 0.38`).
+    - Dès que l'étudiant répond (succès ou erreur), le cours est immédiatement révélé en clair.
+    - L'étudiant peut également cliquer manuellement sur le texte flouté à tout moment pour le révéler ou le reflouter.
+    - Synchronisation bidirectionnelle : tout basculement (dans la carte ou dans le chatbox) synchronise instantanément les deux zones via `window.toggleArenaChapterTitle()`.
 - **Architecture & Composants UI** :
   - **Bouton Circulaire Flottant Néon (`#btn-arena-ai-chat`)** : Ancré en bas à droite (`bottom: 24px; right: 24px; z-index: 9999`) avec dégradé cyan/violet, halo pulsant doux et icône étincelle `sparkles`. Visible exclusivement lors de la session de quiz dans l'Arène.
   - **Fenêtre de Chat Moderne (`#arena-ai-chatbox`)** : Panneau en verre dépoli (`backdrop-filter: blur(20px)`), avec barre d'en-tête (titre, modèle actif `Gemini Flash`, sous-titre de cours, boutons réinitialiser et fermer), bannière de rappel de l'énoncé du QCM, conteneur de messages défilant, puces de suggestions rapides en 1 clic et barre de saisie avec touche <kbd>Entrée</kbd>.
