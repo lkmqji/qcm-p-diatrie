@@ -1319,7 +1319,7 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
   aiNoteContainer.innerHTML = `
     <div class="reasoning-loader-wrap">
       <i data-lucide="sparkles" class="spin"></i>
-      <span>Consultation de Gemini 3.8 Flash et formulation de la démarche clinique complète...</span>
+      <span>Consultation de l'IA Flash et formulation de la démarche clinique complète...</span>
     </div>
   `;
   refreshLucide();
@@ -1517,7 +1517,7 @@ function renderQuestionCard(q, gIdx, qIdx, rankNumber = null) {
         <div class="notebook-reasoning-section">
           <div class="notebook-reasoning-title">
             <i data-lucide="sparkles" style="width:16px;height:16px;color:var(--cyan);"></i>
-            <span>Méthode &amp; Analyse Clinique Approfondie (Gemini 3.8 Flash)</span>
+            <span>Méthode &amp; Analyse Clinique Approfondie (IA Flash)</span>
           </div>
           ${reasHtml}
         </div>

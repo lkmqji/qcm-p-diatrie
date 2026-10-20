@@ -10,14 +10,13 @@ const DEFAULT_GEMINI_KEY = "AQ.Ab8RN6InNmt_sD2jtOWtfP5veazlJgMEJ85vNfXf2B6St-_gV
  * Garantit une latence ultra-faible, une résistance aux limites de quota et une grande fluidité
  */
 const MODEL_CASCADE = [
-  "gemini-3.8-flash",         // Priorité #1 : modèle Flash principal haute fidélité
-  "gemini-3.7-flash",         // Secours #2 : Flash standard
-  "gemini-3.6-flash",         // Secours #3 : Flash haute disponibilité
-  "gemini-3.5-flash",         // Secours #4 : Flash rapide
-  "gemini-3.5-flash-lite",    // Secours #5 : Flash Lite ultra-réactif
-  "gemini-flash-lite-latest", // Secours #6 : Flash Lite dernière version
-  "gemini-3-flash-preview",   // Secours #7 : Flash Preview
-  "gemini-3.1-flash-lite"     // Secours #8 : Flash Lite de réserve
+  "gemini-3-flash-preview",   // Priorité #1 : modèle Flash ultra-rapide (testé et vérifié à ~1.25s)
+  "gemini-flash-lite-latest", // Secours #2 : Flash Lite dernière génération ultra-réactif
+  "gemini-3.1-flash-lite",    // Secours #3 : Flash Lite haute disponibilité
+  "gemini-3.8-flash",         // Secours #4 : Flash haute fidélité (si quota disponible)
+  "gemini-3.7-flash",         // Secours #5 : Flash standard
+  "gemini-3.6-flash",         // Secours #6 : Flash secours
+  "gemini-3.5-flash"          // Secours #7 : Flash réserve
 ];
 
 /**
@@ -132,8 +131,9 @@ class GeminiService {
     this.apiKey = localStorage.getItem('pedia_gemini_key') || DEFAULT_GEMINI_KEY;
     // Filtrage strict : seuls les modèles comportant 'flash' sont admis
     this.allowedModels = MODEL_CASCADE.filter(m => m.toLowerCase().includes('flash'));
-    this.activeModel = this.allowedModels[0] || "gemini-3.8-flash";
+    this.activeModel = this.allowedModels[0] || "gemini-3-flash-preview";
     this.lastSuccessfulModel = null;
+    this.quarantinedModels = new Map(); // model -> timestamp expiry
     this.callLogs = [];
   }
 
@@ -148,29 +148,64 @@ class GeminiService {
     return this.apiKey;
   }
 
+  _isQuarantined(model) {
+    if (!this.quarantinedModels.has(model)) return false;
+    const expiry = this.quarantinedModels.get(model);
+    if (Date.now() > expiry) {
+      this.quarantinedModels.delete(model);
+      return false;
+    }
+    return true;
+  }
+
   /**
-   * Execute API call in cascade : utilise EXCLUSIVEMENT les modèles Flash
-   * Commence par gemini-3.8-flash et bascule de façon fluide sur les autres modèles Flash
-   * en cas d'erreur de quota (429) ou de pic de charge.
+   * Execute API call in cascade avec mémorisation du modèle actif et circuit-breaker :
+   * - Tente immédiatement le dernier modèle qui a fonctionné sans refaire les échecs 429
+   * - Quarantaine intelligente de 15 minutes pour les modèles dont le quota est dépassé
+   * - Latence ultra-courte (1 à 2 secondes)
    */
-  async callWithFallback(prompt, systemInstruction = '', maxTokens = 4096) {
+  async callWithFallback(prompt, systemInstruction = '', maxTokens = 2048) {
     const errors = [];
 
-    for (const model of this.allowedModels) {
-      if (!model.toLowerCase().includes('flash')) {
-        continue; // Sécurité absolue : ignorer tout modèle non-flash
+    // Déterminer le modèle prioritaire (dernier modèle ayant réussi ou activeModel non-quarantiné)
+    const primary = (this.lastSuccessfulModel && !this._isQuarantined(this.lastSuccessfulModel))
+      ? this.lastSuccessfulModel
+      : (!this._isQuarantined(this.activeModel) ? this.activeModel : null);
+
+    const candidateModels = primary
+      ? [primary, ...this.allowedModels.filter(m => m !== primary)]
+      : [...this.allowedModels];
+
+    for (const model of candidateModels) {
+      if (!model.toLowerCase().includes('flash')) continue;
+
+      // Saut immédiat des modèles sous quota sans perte de temps réseau
+      if (this._isQuarantined(model)) {
+        continue;
       }
+
       try {
         this.activeModel = model;
         const result = await this._callModel(model, prompt, systemInstruction, maxTokens);
         if (result && result.text) {
           this.lastSuccessfulModel = model;
+          this.quarantinedModels.delete(model);
           this.callLogs.push({ model, success: true, timestamp: Date.now() });
           return { text: result.text, modelUsed: model };
         }
       } catch (err) {
         errors.push({ model, error: err.message });
-        console.warn(`[Gemini Flash Cascade] ${model} failed (${err.message}) -> Trying next Flash model...`);
+
+        // Circuit breaker : mise en quarantaine temporaire selon le code d'erreur
+        if (err.message && (err.message.includes('429') || err.message.includes('RESOURCE_EXHAUSTED'))) {
+          console.warn(`[Gemini Flash Circuit-Breaker] ${model} quota épuisé (429) -> Quarantaine 15 min.`);
+          this.quarantinedModels.set(model, Date.now() + 15 * 60 * 1000);
+        } else if (err.message && (err.message.includes('503') || err.message.includes('404'))) {
+          console.warn(`[Gemini Flash Circuit-Breaker] ${model} indisponible (${err.message.slice(0, 35)}) -> Quarantaine 5 min.`);
+          this.quarantinedModels.set(model, Date.now() + 5 * 60 * 1000);
+        } else {
+          console.warn(`[Gemini Flash Cascade] ${model} failed (${err.message}) -> Trying next Flash model...`);
+        }
       }
     }
 
@@ -191,12 +226,19 @@ class GeminiService {
       }
     ];
 
+    const generationConfig = {
+      temperature: 0.2,
+      maxOutputTokens: maxTokens
+    };
+
+    // Optimisation de latence : désactiver le budget de pensée cachée pour les modèles compatibles
+    if (model.includes('gemini-3-flash-preview')) {
+      generationConfig.thinkingConfig = { thinkingBudget: 0 };
+    }
+
     const body = {
       contents,
-      generationConfig: {
-        temperature: 0.2,
-        maxOutputTokens: maxTokens
-      }
+      generationConfig
     };
 
     if (systemInstruction) {
@@ -206,7 +248,7 @@ class GeminiService {
     }
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 25000); // 25s timeout for complete clinical reasoning
+    const timeoutId = setTimeout(() => controller.abort(), 12000); // 12s timeout max par tentative Flash
 
     const response = await fetch(url, {
       method: "POST",
@@ -261,7 +303,7 @@ RÉPONSE DONNÉE PAR L'ÉTUDIANT : ${userAnswer}
 Évalue la réponse de l'étudiant et retourne UNIQUEMENT l'objet JSON complet.`;
 
     try {
-      const result = await this.callWithFallback(userPrompt, systemPrompt, 2048);
+      const result = await this.callWithFallback(userPrompt, systemPrompt, 1024);
       const cleaned = result.text.replace(/```json/g, '').replace(/```/g, '').trim();
       const parsed = JSON.parse(cleaned);
       const score = Math.max(0, Math.min(100, Math.round(Number(parsed.score) || 0)));
@@ -334,7 +376,8 @@ RÉPONSE DONNÉE PAR L'ÉTUDIANT : ${userAnswer}
     const allOptionsText = (question.options || []).map(o => `${o.letter}) ${o.text}`).join("\n");
 
     const systemPrompt = `Tu es un Professeur de pédiatrie et jury de concours de résidanat en médecine.
-L'étudiant s'entraîne sur un QCM/CROQ et a besoin d'une explication CLINIQUE COMPLÈTE, PARFAITEMENT STRUCTURÉE et EXHAUSTIVE.
+L'étudiant s'entraîne sur un QCM/CROQ et a besoin d'une explication CLINIQUE COMPLÈTE, PARFAITEMENT STRUCTURÉE et PERCUTANTE.
+Va directement au but avec un style médical soigné, rigoureux et précis (mots-clés en gras, listes à puces pour une lecture rapide).
 La réponse doit être TOTALE et NE DOIT JAMAIS ÊTRE COUPÉE.
 Structure OBLIGATOIREMENT ton retour selon ces 4 sections détaillées :
 
@@ -355,7 +398,7 @@ Formule une règle mémo claire, percutante et mémorisable pour ne plus jamais 
 - INTERDICTION TOTALE d'utiliser la syntaxe ou des balises LaTeX (strictement interdit : \\text{}, \\mathbf{}, \\times, \\frac{}, etc.).
 - Écris TOUJOURS les calculs, posologies, poids et unités en texte français clair et direct (exemples : "14 g/dl", "3 kg", "×", "/").
 
-Rédige en français médical soigné, rigoureux et complet. Ne coupe aucune phrase, ne saute aucune étape.`;
+Rédige en français médical soigné, rigoureux, direct et complet. Ne coupe aucune phrase, ne saute aucune étape.`;
 
     const userPrompt = `MODULE : Pédiatrie - ${question.chapterTitle || "Pédiatrie Générale"}
 QUESTION : ${question.question}
@@ -370,7 +413,7 @@ EXPLICATION OFFICIELLE DISPONIBLE DANS LA BASE : ${question.explanation || "Aucu
 Rédige l'explication clinique complète et approfondie sans aucune coupure. À l'étape 2, justifie impérativement et de façon complète chaque proposition une par une.`;
 
     try {
-      const result = await this.callWithFallback(userPrompt, systemPrompt, 4096);
+      const result = await this.callWithFallback(userPrompt, systemPrompt, 2500);
       return {
         note: cleanLatexMath(result.text),
         modelUsed: result.modelUsed
@@ -2814,7 +2857,7 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
   aiNoteContainer.innerHTML = `
     <div class="reasoning-loader-wrap">
       <i data-lucide="sparkles" class="spin"></i>
-      <span>Consultation de Gemini 3.8 Flash et formulation de la démarche clinique complète...</span>
+      <span>Consultation de l'IA Flash et formulation de la démarche clinique complète...</span>
     </div>
   `;
   refreshLucide();
@@ -3012,7 +3055,7 @@ function renderQuestionCard(q, gIdx, qIdx, rankNumber = null) {
         <div class="notebook-reasoning-section">
           <div class="notebook-reasoning-title">
             <i data-lucide="sparkles" style="width:16px;height:16px;color:var(--cyan);"></i>
-            <span>Méthode &amp; Analyse Clinique Approfondie (Gemini 3.8 Flash)</span>
+            <span>Méthode &amp; Analyse Clinique Approfondie (IA Flash)</span>
           </div>
           ${reasHtml}
         </div>

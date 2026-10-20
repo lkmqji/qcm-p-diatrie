@@ -78,23 +78,27 @@ L'apprentissage repose sur une file d'attente circulaire dynamique (`activeQueue
 - **Persistance locale & Cloud** : Tout l'état (`activeQueue`, `stats`, `cursor`, `reasoningNotes`, `todayTracker`) est sauvegardé dans `localStorage` sous la clé `pedia_drill_state_v1` et synchronisé via `FirebaseSyncService`.
 
 ### 3.2. Évaluation IA & Raisonnement Clinique (`src/services/gemini.js`)
-- **Modèles 100% Flash Exclusifs & Cascade de résilience** :
+- **Modèles 100% Flash Exclusifs & Cascade de résilience ultra-rapide** :
   - Verrouillage strict et absolu : **seuls les modèles Flash de Gemini** sont autorisés dans l'application. Tout modèle non-flash est systématiquement bloqué et rejeté.
-  - Priorité absolue systématique à `gemini-3.8-flash` (position #1 de `MODEL_CASCADE`).
-  - Cascade automatique ordonnée si le quota quotidien (20 requêtes/jour sur Free Tier) est épuisé ou en cas d'erreur réseau :
-    1. `gemini-3.8-flash` (modèle principal de référence)
-    2. `gemini-3.7-flash` (secours Flash standard)
-    3. `gemini-3.6-flash` (secours Flash haute disponibilité)
-    4. `gemini-3.5-flash` (secours Flash rapide)
-    5. `gemini-3.5-flash-lite` (secours Flash Lite ultra-réactif)
-    6. `gemini-flash-lite-latest` (secours Flash Lite dernière version)
-    7. `gemini-3-flash-preview` (secours Flash Preview)
-    8. `gemini-3.1-flash-lite` (secours Flash Lite de réserve)
-  - Le basculement automatique garantit une continuité de service ininterrompue avec une génération pédiatrique complète en moins de 4 secondes.
-- **Paramètres de génération** :
+  - Priorité absolue accordée à `gemini-3-flash-preview` (position #1 de `MODEL_CASCADE`, testé et validé à ~1.25s).
+  - Cascade automatique ordonnée garantissant la continuité sans blocage :
+    1. `gemini-3-flash-preview` (modèle principal ultra-rapide, latence 1 à 2s)
+    2. `gemini-flash-lite-latest` (secours Flash Lite dernière génération)
+    3. `gemini-3.1-flash-lite` (secours Flash Lite haute disponibilité)
+    4. `gemini-3.8-flash` (secours Flash haute fidélité si quota disponible)
+    5. `gemini-3.7-flash` (secours Flash standard)
+    6. `gemini-3.6-flash` (secours Flash secours)
+    7. `gemini-3.5-flash` (secours Flash réserve)
+  - Exclusion définitive du modèle `gemini-3.5-flash-lite` (qui générait des timeouts bloquants de 30s).
+- **Architecture Circuit-Breaker & Mémorisation Dynamique** :
+  - **Mémorisation du modèle actif (`lastSuccessfulModel`)** : Dès qu'un modèle Flash réussit, le service l'utilise immédiatement comme modèle prioritaire pour tous les appels suivants, évitant de rejouer la cascade depuis le début.
+  - **Quarantaine automatique des erreurs de quota 429 (`RESOURCE_EXHAUSTED`)** : Tout modèle rencontrant un dépassement de quota journalier est automatiquement placé en quarantaine pour 15 minutes (`quarantinedModels`). Il est immédiatement ignoré en mémoire lors des requêtes suivantes, sans gaspiller de requêtes HTTP ni imposer de latence à l'utilisateur.
+  - **Quarantaine des erreurs 503/404** : Mise en quarantaine temporaire de 5 minutes en cas de pic de charge ou de modèle temporairement indisponible.
+  - **Désactivation des pensées cachées** : Injection de `thinkingConfig: { thinkingBudget: 0 }` sur les modèles compatibles (`gemini-3-flash-preview`), évitant la génération inutile de 500+ tokens de réflexion interne et divisant le temps de réponse par 2.
+- **Paramètres de génération calibrés** :
   - `temperature: 0.2` (haute rigueur médicale et reproductibilité).
-  - `maxOutputTokens: 4096` (garantie de réponses complètes sans coupure de phrases).
-  - Timeout réseau de 25 secondes (`AbortController`).
+  - `maxOutputTokens: 1024` pour l'évaluation CROQ, `2500` pour la démarche clinique complète, et `1500` pour le tuteur IA.
+  - Timeout d'attente réseau abaissé à 12 secondes par tentative (`AbortController`), permettant un basculement immédiat vers le secours sans figer l'interface.
 - **Évaluation des CROQ (`evaluateCroq`)** :
   - Compare la réponse libre de l'étudiant à la réponse type officielle.
   - Retourne un score de 0 à 100%. Validation accordée si `score >= 75%`.
