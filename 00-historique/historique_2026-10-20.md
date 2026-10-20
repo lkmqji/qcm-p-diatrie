@@ -1,5 +1,40 @@
 # Historique des modifications - 2026-10-20
 
+### 20:25 - Navigation dans les 5 derniers QCM répondus en Arène et synchronisation dynamique du Tuteur IA
+- **Besoins & Contexte** :
+  - L'utilisateur souhaitait pouvoir revenir en arrière sur les questions déjà répondues dans le mode principal (« Arène »), jusqu'aux 5 derniers QCM, via de petites flèches en haut de l'interface (`[◀]` / `[▶]`), notamment pour relire les énoncés, revoir le corrigé et interroger le Tuteur IA sur les questions précédentes sans altérer la file de révision active.
+- **Architecture de l'Historique en Arène (`src/app.js`)** :
+  - **Buffer circulaire en mémoire (`answeredHistory`)** : Conservation automatique d'un snapshot complet des 5 derniers QCM répondus (justes ou faux), incluant l'objet question découpé, les réponses de l'utilisateur, l'état de réussite, le score éventuel, l'explication officielle et l'horodatage.
+  - **Curseur de navigation (`historyCursor`)** :
+    - `-1` : Mode Drill Actif (question en cours d'évaluation, options interactives, raccourcis claviers 1-5 / A-E actifs).
+    - `0` : Dernier QCM répondu (`QCM -1`).
+    - `1` à `4` : QCM antérieurs jusqu'au 5ème précédent (`QCM -2` à `QCM -5`).
+  - **Isolation stricte de la répétition espacée** : La consultation des questions antérieures s'effectue en lecture seule absolue (`read-only`), sans jamais modifier l'état d'apprentissage (`handleSuccess` / `handleFailure`), ni toucher aux compteurs du jour ou à la position dans la file.
+- **Interface & Expérience Utilisateur (`template.html`, `src/style.css`)** :
+  - **Contrôles de navigation compacts dans la barre supérieure (`.arena-top-bar`)** :
+    - Bouton flèche gauche `[◀]` (`#btn-history-prev`) avec infobulle contextuelle et désactivation automatique lorsque l'historique est vide ou au plus ancien (5 max).
+    - Badge central indicateur (`#arena-history-badge`) affichant l'état en temps réel (`Actuel (N)` en mode drill, `Précédent X/N` en mode consultation avec surbrillance dorée/ambrée).
+    - Bouton flèche droite `[▶]` (`#btn-history-next`) pour revenir pas-à-pas vers les questions plus récentes ou réintégrer le drill actif.
+  - **Bannière d'alerte dorée en mode révision (`#arena-history-consult-banner`)** :
+    - Notification bienveillante rappelant que le QCM est en mode consultation.
+    - Bouton d'action directe « Reprendre le drill ➔ » (`.btn-resume-drill`) pour revenir immédiatement à la question active en 1 clic.
+  - **Rendu en lecture seule et corrigé direct (`renderHistoryQuestion`)** :
+    - Propositions en surbrillance : verte (`correct-highlight`) pour les bonnes réponses officielles et rouge (`wrong-highlight`) pour les choix erronés de l'utilisateur.
+    - Badge du cours affiché immédiatement en clair sans floutage avec mention « QCM Répondu ».
+    - Boîte d'explication officielle ouverte automatiquement sous les propositions.
+    - Bouton « Reprendre le drill en cours ➔ » (`#btn-history-resume-action`) visible dans la barre d'action inférieure.
+- **Synchronisation dynamique du Tuteur IA (`updateArenaChatContext`, `renderChatWelcome`, `executeSendMessage`)** :
+  - Helper `getEffectiveArenaQuestion()` : Renvoie dynamiquement la question d'historique sélectionnée lorsque `historyCursor >= 0`, ou la question active lorsque `historyCursor === -1`.
+  - Le chat contextuel du Tuteur IA, son message de bienvenue et les prompts soumis à Gemini Flash ciblent avec précision le QCM actuellement sous les yeux de l'étudiant.
+- **Raccourcis Clavier Intelligents (`setupKeyboardShortcuts`)** :
+  - Touche `Flèche Gauche` (<kbd>◀</kbd>) : Remonter vers les QCM répondus précédents.
+  - Touche `Flèche Droite` (<kbd>▶</kbd>) : Avancer vers les QCM plus récents / drill actif.
+  - Touche <kbd>Entrée</kbd> en mode consultation : Reprendre instantanément le drill actif.
+  - Neutralisation des raccourcis de sélection d'options (1-5, A-E) en mode historique et exclusion systématique lorsque le focus est dans un champ de texte (chat ou CROQ).
+- **Compilation, synchronisation et déploiement** :
+  - Script `node build-bundle.cjs` exécuté avec succès : synchronisation de `template.html`, compilation de `src/app.bundle.js` et reconstruction de `index.html` et `dist/index.html`.
+  - Synchronisation Android via Capacitor (`npx cap sync android`).
+
 ### 19:45 - Optimisation majeure de la latence IA : Circuit-Breaker, mise en quarantaine des quotas (429), mémorisation du modèle actif et passage de 38s à 1.5s
 - **Diagnostic approfondi de la latence IA (`src/services/gemini.js`)** :
   - Identification de la cause racine des temps d'attente excessifs (30 à 38 secondes) ressentis par l'utilisateur :

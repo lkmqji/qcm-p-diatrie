@@ -29,6 +29,15 @@ let currentQuestion = null;
 let selectedOptionIds = new Set();
 let isEvaluating = false;
 let currentView = 'dashboard'; // 'dashboard' | 'arena' | 'notebook'
+let answeredHistory = []; // Buffer glissant des 5 derniers QCM répondus
+let historyCursor = -1; // -1 = QCM actif, 0 = dernier répondu (QCM -1), 1 = (QCM -2), etc.
+
+function getEffectiveArenaQuestion() {
+  if (historyCursor >= 0 && answeredHistory[historyCursor]) {
+    return answeredHistory[historyCursor].question;
+  }
+  return currentQuestion;
+}
 
 // DOM Elements
 const views = {
@@ -956,9 +965,243 @@ function formatAnswerComparison(userAnswer, correctAnswer, isCroq = false, score
 }
 
 // ============================================================================
+// ARENA HISTORY NAVIGATION (RETROUVER LES 5 DERNIERS QCM RÉPONDUS)
+// ============================================================================
+function pushToAnsweredHistory(question, userAnswerLetters, isCorrect, score = null) {
+  if (!question) return;
+  const snapshot = {
+    question: JSON.parse(JSON.stringify(question)),
+    userAnswerLetters: Array.isArray(userAnswerLetters) ? [...userAnswerLetters] : (userAnswerLetters ? [userAnswerLetters] : []),
+    isCorrect: !!isCorrect,
+    score: score,
+    explanation: question.explanation || '',
+    timestamp: Date.now()
+  };
+
+  // Éviter les doublons consécutifs sur la même question
+  if (answeredHistory.length > 0 && answeredHistory[0].question.uid === question.uid) {
+    answeredHistory[0] = snapshot;
+  } else {
+    answeredHistory.unshift(snapshot);
+    if (answeredHistory.length > 5) {
+      answeredHistory = answeredHistory.slice(0, 5);
+    }
+  }
+  updateHistoryNavUI();
+}
+
+function updateHistoryNavUI() {
+  const prevBtn = document.getElementById('btn-history-prev');
+  const nextBtn = document.getElementById('btn-history-next');
+  const labelEl = document.getElementById('arena-history-label');
+  const navBox = document.getElementById('arena-history-nav');
+  const badgeEl = document.getElementById('arena-history-badge');
+  const bannerEl = document.getElementById('arena-history-consult-banner');
+  const resumeActionBtn = document.getElementById('btn-history-resume-action');
+  const shortcutHint = document.getElementById('keyboard-shortcuts-hint');
+  const btnSubmitAnswer = document.getElementById('btn-submit-answer');
+  const btnSubmitCroq = document.getElementById('btn-submit-croq');
+
+  if (!prevBtn || !nextBtn || !labelEl) return;
+
+  if (historyCursor === -1) {
+    // Mode Actuel (Drill en cours)
+    prevBtn.disabled = (answeredHistory.length === 0);
+    nextBtn.disabled = true;
+    labelEl.textContent = answeredHistory.length > 0 ? `Actuel (${answeredHistory.length})` : 'Actuel';
+    if (badgeEl) badgeEl.classList.remove('is-past');
+    if (navBox) navBox.classList.remove('is-browsing');
+    if (bannerEl) bannerEl.style.display = 'none';
+    if (resumeActionBtn) resumeActionBtn.style.display = 'none';
+    if (currentQuestion) {
+      if (currentQuestion.is_croq) {
+        if (btnSubmitCroq) btnSubmitCroq.style.display = 'flex';
+      } else {
+        if (btnSubmitAnswer) btnSubmitAnswer.style.display = 'flex';
+      }
+    }
+  } else {
+    // Mode Consultation Historique (Lecture seule + Tuteur IA)
+    prevBtn.disabled = (historyCursor >= answeredHistory.length - 1);
+    nextBtn.disabled = false;
+    labelEl.textContent = `Précédent ${historyCursor + 1}/${answeredHistory.length}`;
+    if (badgeEl) badgeEl.classList.add('is-past');
+    if (navBox) navBox.classList.add('is-browsing');
+    if (bannerEl) bannerEl.style.display = 'flex';
+    if (resumeActionBtn) resumeActionBtn.style.display = 'inline-flex';
+    if (btnSubmitAnswer) btnSubmitAnswer.style.display = 'none';
+    if (btnSubmitCroq) btnSubmitCroq.style.display = 'none';
+    if (shortcutHint) shortcutHint.textContent = 'Mode Révision : QCM en lecture seule & Tuteur IA actif';
+  }
+}
+
+function renderHistoryQuestion(historyEntry) {
+  if (!historyEntry || !historyEntry.question) return;
+  const q = historyEntry.question;
+
+  // Mise à jour immédiate du contexte Tuteur IA
+  arenaChatHistory = [];
+  updateArenaChatContext();
+  const chatboxEl = document.getElementById('arena-ai-chatbox');
+  if (chatboxEl && chatboxEl.style.display !== 'none') {
+    renderChatWelcome();
+  }
+
+  // Masquer la bannière de succès
+  document.getElementById('arena-success-banner').style.display = 'none';
+
+  // Mise à jour visuelle des boutons et indicateurs de navigation
+  updateHistoryNavUI();
+
+  // Badge du cours (affiché en clair sans floutage en mode révision)
+  const chapterBadge = document.getElementById('arena-chapter-title');
+  if (chapterBadge) {
+    chapterBadge.classList.remove('is-blurred');
+    chapterBadge.classList.add('is-revealed');
+    chapterBadge.title = 'Chapitre du QCM révisé';
+    chapterBadge.innerHTML = `
+      <span class="chapter-title-text">Pédiatrie — ${escapeHtml(q.chapterTitle || 'Général')}</span>
+      <span class="chapter-title-hint" style="color:var(--amber);"><i data-lucide="history" style="width:11px;height:11px;"></i> QCM Répondu</span>
+    `;
+  }
+
+  // Badges Type & Progression
+  const typePill = document.getElementById('arena-type-pill');
+  if (typePill) {
+    typePill.textContent = q.type || 'QCM';
+    typePill.className = `tag-pill tag-${(q.type || 'QCM').toLowerCase()}`;
+  }
+
+  const progressPill = document.getElementById('arena-progress-pill');
+  if (progressPill) {
+    const stats = queueEngine.getQuestionStats(q.uid);
+    progressPill.textContent = historyEntry.isCorrect ? `✅ Répondu Juste` : `⚠️ Répondu Faux (${stats.mistakes} faute${stats.mistakes > 1 ? 's' : ''})`;
+    progressPill.className = historyEntry.isCorrect ? 'tag-pill progress-pill' : 'tag-pill progress-penalized';
+  }
+
+  // Cas Clinique
+  const clinicalBox = document.getElementById('arena-clinical-case');
+  const clinicalText = document.getElementById('arena-clinical-case-text');
+  if (q.clinical_case && q.clinical_case.trim()) {
+    clinicalText.innerHTML = formatMedicalContent(q.clinical_case.trim());
+    clinicalBox.style.display = 'block';
+  } else {
+    clinicalBox.style.display = 'none';
+  }
+
+  // Énoncé de la question
+  document.getElementById('arena-question-text').innerHTML = formatMedicalContent(q.question || q.statement);
+
+  // Iconographie / Médias
+  const mediaWrap = document.getElementById('arena-media-wrap');
+  if (q.media_urls && q.media_urls.length > 0) {
+    mediaWrap.innerHTML = renderQuestionMedia(q.media_urls);
+    mediaWrap.style.display = 'block';
+    refreshLucide();
+  } else {
+    mediaWrap.innerHTML = '';
+    mediaWrap.style.display = 'none';
+  }
+
+  // Affichage en lecture seule (Options QCM vs CROQ)
+  const optionsContainer = document.getElementById('arena-options-container');
+  const croqContainer = document.getElementById('arena-croq-container');
+  const btnSubmitAnswer = document.getElementById('btn-submit-answer');
+  const btnSubmitCroq = document.getElementById('btn-submit-croq');
+  const resumeBtn = document.getElementById('btn-history-resume-action');
+
+  btnSubmitAnswer.style.display = 'none';
+  btnSubmitCroq.style.display = 'none';
+  if (resumeBtn) resumeBtn.style.display = 'inline-flex';
+
+  if (q.is_croq) {
+    optionsContainer.style.display = 'none';
+    croqContainer.style.display = 'flex';
+    const croqInput = document.getElementById('arena-croq-input');
+    croqInput.value = historyEntry.userAnswerLetters?.[0] || '';
+    croqInput.disabled = true;
+  } else {
+    croqContainer.style.display = 'none';
+    optionsContainer.style.display = 'flex';
+    optionsContainer.innerHTML = '';
+
+    (q.options || []).forEach((opt, idx) => {
+      const item = document.createElement('div');
+      item.className = 'option-item read-only';
+      item.dataset.optId = opt.id || idx;
+      const letter = opt.letter || String.fromCharCode(65 + idx);
+      item.dataset.letter = letter;
+
+      const isCorrectOpt = !!opt.is_correct;
+      const userPicked = (historyEntry.userAnswerLetters || []).includes(letter);
+
+      if (isCorrectOpt) {
+        item.classList.add('correct-highlight');
+      } else if (userPicked) {
+        item.classList.add('wrong-highlight');
+      }
+
+      const statusBadge = isCorrectOpt 
+        ? '<span style="color:var(--emerald);font-weight:700;font-size:0.75rem;margin-left:auto;">✓ VRAIE</span>'
+        : (userPicked ? '<span style="color:var(--rose);font-weight:700;font-size:0.75rem;margin-left:auto;">✗ Votre choix</span>' : '');
+
+      item.innerHTML = `
+        <div class="option-letter">${letter}</div>
+        <div class="option-text">${opt.text}</div>
+        ${statusBadge}
+      `;
+      optionsContainer.appendChild(item);
+    });
+  }
+
+  // Boîte d'explication officielle ouverte automatiquement
+  const expBox = document.getElementById('arena-explanation-box');
+  const expText = document.getElementById('arena-explanation-text');
+  if (expBox && expText) {
+    if (q.explanation && q.explanation.trim()) {
+      expText.innerHTML = formatMedicalContent(q.explanation.trim());
+    } else {
+      expText.innerHTML = `<em>Réponse officielle de référence pour le cours <strong>${escapeHtml(q.chapterTitle || 'Pédiatrie')}</strong>.</em>`;
+    }
+    expBox.style.display = 'flex';
+  }
+
+  refreshLucide();
+}
+
+window.navigateHistoryPrev = function() {
+  if (answeredHistory.length === 0) return;
+  if (historyCursor < answeredHistory.length - 1) {
+    historyCursor++;
+    renderHistoryQuestion(answeredHistory[historyCursor]);
+  }
+};
+
+window.navigateHistoryNext = function() {
+  if (historyCursor > 0) {
+    historyCursor--;
+    renderHistoryQuestion(answeredHistory[historyCursor]);
+  } else if (historyCursor === 0) {
+    window.resumeActiveDrill();
+  }
+};
+
+window.resumeActiveDrill = function() {
+  historyCursor = -1;
+  loadNextArenaQuestion(true);
+};
+
+// ============================================================================
 // QUIZ ARENA (QUESTION DISPLAY & SUBMISSION)
 // ============================================================================
 function loadNextArenaQuestion() {
+  historyCursor = -1;
+  updateHistoryNavUI();
+  const croqInput = document.getElementById('arena-croq-input');
+  if (croqInput) {
+    croqInput.disabled = false;
+  }
+
   currentQuestion = queueEngine.getCurrentQuestion();
   selectedOptionIds.clear();
   isEvaluating = false;
@@ -1195,7 +1438,20 @@ async function handleSubmitCroq() {
 // ============================================================================
 // SUCCESS HANDLER WITH LIVE EXPLANATION
 // ============================================================================
-function handleAnswerSuccess(score = null, feedback = null) {
+function handleAnswerSuccess(score = null, feedback = null, customLetters = null) {
+  let letters = customLetters;
+  if (!letters) {
+    if (currentQuestion && currentQuestion.is_croq) {
+      const croqVal = document.getElementById('arena-croq-input')?.value?.trim();
+      letters = croqVal ? [croqVal] : [];
+    } else {
+      letters = Array.from(document.querySelectorAll('.option-item.selected')).map(el => el.dataset.letter).sort();
+    }
+  }
+
+  // Enregistrer dans l'historique de consultation (max 5)
+  pushToAnsweredHistory(currentQuestion, letters, true, score);
+
   const result = queueEngine.handleSuccess(currentQuestion.uid);
   queueEngine.incrementTodayCount();
   updateArenaDailyBadge();
@@ -1264,6 +1520,9 @@ function triggerMasteryConfetti() {
 // FAILURE HANDLER & ERROR MODAL WITH AI REASONING
 // ============================================================================
 async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq = false, score = 0, feedback = '') {
+  // Enregistrer dans l'historique de consultation (max 5)
+  pushToAnsweredHistory(currentQuestion, userAnswerLetters, false, score);
+
   const result = queueEngine.handleFailure(currentQuestion.uid);
   // Seules les réponses justes incrémentent le compteur journalier de QCM
   updateArenaDailyBadge();
@@ -1956,6 +2215,14 @@ function setupEventListeners() {
   document.getElementById('btn-submit-croq').onclick = handleSubmitCroq;
   document.getElementById('btn-next-question').onclick = () => loadNextArenaQuestion();
 
+  // History Navigation in Arena
+  const btnHistPrev = document.getElementById('btn-history-prev');
+  if (btnHistPrev) btnHistPrev.onclick = () => window.navigateHistoryPrev();
+  const btnHistNext = document.getElementById('btn-history-next');
+  if (btnHistNext) btnHistNext.onclick = () => window.navigateHistoryNext();
+  const btnHistResume = document.getElementById('btn-history-resume-action');
+  if (btnHistResume) btnHistResume.onclick = () => window.resumeActiveDrill();
+
   // Reset Session
   document.getElementById('btn-reset-session').onclick = () => {
     if (confirm('Voulez-vous réinitialiser votre progression sur cette sélection ?')) {
@@ -2250,7 +2517,31 @@ function setupKeyboardShortcuts() {
     }
 
     if (currentView === 'arena') {
-      // Options 1-5 or A-E
+      // Navigation dans l'historique via les flèches du clavier
+      if (e.key === 'ArrowLeft') {
+        if (answeredHistory.length > 0 && historyCursor < answeredHistory.length - 1) {
+          e.preventDefault();
+          window.navigateHistoryPrev();
+          return;
+        }
+      } else if (e.key === 'ArrowRight') {
+        if (historyCursor >= 0) {
+          e.preventDefault();
+          window.navigateHistoryNext();
+          return;
+        }
+      }
+
+      // En mode consultation d'historique, désactiver la sélection et permettre à Entrée de reprendre le drill
+      if (historyCursor >= 0) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          window.resumeActiveDrill();
+        }
+        return;
+      }
+
+      // Options 1-5 or A-E (mode drill actif uniquement)
       if (['1', '2', '3', '4', '5'].includes(e.key)) {
         e.preventDefault();
         selectOptionByIndex(parseInt(e.key, 10) - 1);
@@ -2334,13 +2625,15 @@ window.handleChatSubmit = function(event) {
 function updateArenaChatContext() {
   const qTextEl = document.getElementById('chatbox-q-statement');
   const ctxEl = document.getElementById('chatbox-current-context');
-  if (currentQuestion) {
+  const effQ = getEffectiveArenaQuestion();
+  if (effQ) {
     if (qTextEl) {
-      const qText = currentQuestion.question || currentQuestion.statement || 'Question pédiatrique';
+      const qText = effQ.question || effQ.statement || 'Question pédiatrique';
       qTextEl.textContent = qText.length > 80 ? qText.slice(0, 80) + '...' : qText;
     }
     if (ctxEl) {
-      ctxEl.textContent = `Pédiatrie — ${currentQuestion.chapterTitle || 'Général'}`;
+      const histSuffix = historyCursor >= 0 ? ` (QCM -${historyCursor + 1})` : '';
+      ctxEl.textContent = `Pédiatrie — ${effQ.chapterTitle || 'Général'}${histSuffix}`;
     }
   }
 }
@@ -2348,11 +2641,13 @@ function updateArenaChatContext() {
 function renderChatWelcome() {
   const listEl = document.getElementById('chatbox-messages-list');
   if (!listEl) return;
-  const chapTitle = currentQuestion ? (currentQuestion.chapterTitle || 'Pédiatrie') : 'Pédiatrie';
+  const effQ = getEffectiveArenaQuestion();
+  const chapTitle = effQ ? (effQ.chapterTitle || 'Pédiatrie') : 'Pédiatrie';
+  const isHistory = historyCursor >= 0;
   listEl.innerHTML = `
     <div class="chat-bubble bubble-ai">
       <p>👋 Bonjour ! Je suis votre <strong>Tuteur IA Pédiatrique</strong>.</p>
-      <p>Je connais par cœur l'énoncé, le cas clinique, les propositions et la justification officielle de ce QCM en <strong>${escapeHtml(chapTitle)}</strong>.</p>
+      <p>Je connais par cœur l'énoncé, le cas clinique, les propositions et la justification officielle de ce QCM ${isHistory ? '<strong>en cours de consultation</strong>' : ''} en <strong>${escapeHtml(chapTitle)}</strong>.</p>
       <p style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">
         Posez-moi votre question directement ou cliquez sur une suggestion rapide :
       </p>
@@ -2361,7 +2656,8 @@ function renderChatWelcome() {
 }
 
 async function executeSendMessage(userText) {
-  if (!currentQuestion) return;
+  const effQ = getEffectiveArenaQuestion();
+  if (!effQ) return;
   const listEl = document.getElementById('chatbox-messages-list');
   if (!listEl) return;
 
@@ -2393,7 +2689,7 @@ async function executeSendMessage(userText) {
 
   try {
     const historyForAi = arenaChatHistory.slice(0, -1);
-    const response = await geminiService.askAboutQuestion(currentQuestion, historyForAi, userText);
+    const response = await geminiService.askAboutQuestion(effQ, historyForAi, userText);
 
     // Remove loading bubble
     const existingLoader = document.getElementById('chatbox-loading-indicator');

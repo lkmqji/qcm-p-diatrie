@@ -704,6 +704,129 @@ body {
   border-color: var(--text-muted);
 }
 
+.arena-top-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Mini navigation dans l'historique des 5 derniers QCM répondus */
+.arena-history-nav {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 2px 4px;
+  gap: 3px;
+  transition: var(--transition);
+}
+
+.arena-history-nav.is-browsing {
+  border-color: var(--amber);
+  box-shadow: 0 0 12px var(--amber-glow);
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.btn-history-arrow {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  padding: 0;
+}
+
+.btn-history-arrow:hover:not(:disabled) {
+  background: var(--bg-surface);
+  color: var(--cyan);
+}
+
+.btn-history-arrow:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.history-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  user-select: none;
+}
+
+.history-badge.is-past {
+  color: var(--amber);
+}
+
+.history-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--emerald);
+}
+
+.history-badge.is-past .history-dot {
+  background: var(--amber);
+  box-shadow: 0 0 6px var(--amber);
+}
+
+/* Bannière d'alerte en mode consultation d'un ancien QCM */
+.history-consult-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: var(--radius-md);
+  margin-bottom: 6px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.consult-badge-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: #fde68a;
+  line-height: 1.4;
+}
+
+.btn-resume-drill {
+  background: linear-gradient(135deg, var(--cyan-dim), var(--cyan));
+  color: #070b14;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 6px 14px;
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.btn-resume-drill:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 14px var(--cyan-glow);
+}
+
 .arena-pills-wrap {
   display: flex;
   align-items: center;
@@ -3784,16 +3907,43 @@ body {
         
         <!-- Arena Top Bar -->
         <div class="arena-top-bar">
-          <button class="btn-back" id="btn-leave-arena">
-            <i data-lucide="arrow-left"></i>
-            <span>Dashboard</span>
-          </button>
+          <div class="arena-top-bar-left">
+            <button class="btn-back" id="btn-leave-arena">
+              <i data-lucide="arrow-left"></i>
+              <span>Dashboard</span>
+            </button>
+
+            <!-- Navigation Historique des 5 derniers QCM -->
+            <div class="arena-history-nav" id="arena-history-nav">
+              <button type="button" class="btn-history-arrow" id="btn-history-prev" onclick="window.navigateHistoryPrev()" title="Voir le QCM précédent (jusqu'à 5)" disabled>
+                <i data-lucide="chevron-left"></i>
+              </button>
+              <div class="history-badge" id="arena-history-badge" title="Position dans l'historique">
+                <span class="history-dot"></span>
+                <span id="arena-history-label">Actuel</span>
+              </div>
+              <button type="button" class="btn-history-arrow" id="btn-history-next" onclick="window.navigateHistoryNext()" title="Revenir vers le QCM en cours" disabled>
+                <i data-lucide="chevron-right"></i>
+              </button>
+            </div>
+          </div>
 
           <div class="arena-pills-wrap">
             <span class="tag-pill" id="arena-type-pill">QCU</span>
             <span class="tag-pill progress-pill" id="arena-progress-pill">0/3</span>
             <span class="tag-pill daily-pill" id="arena-daily-pill" title="Progression quotidienne (Examen 10/11 • J-28)">🎯 0/-- auj.</span>
           </div>
+        </div>
+
+        <!-- Bannière contextuelle en mode consultation historique -->
+        <div class="history-consult-banner" id="arena-history-consult-banner" style="display:none;">
+          <div class="consult-badge-info">
+            <i data-lucide="history" style="width:16px;height:16px;color:var(--amber);flex-shrink:0;"></i>
+            <span><strong>Mode Consultation :</strong> QCM répondu précédemment. Vous pouvez relire le corrigé ou <strong>interroger le Tuteur IA</strong>.</span>
+          </div>
+          <button type="button" class="btn-resume-drill" onclick="window.resumeActiveDrill()" title="Revenir au QCM en cours d'évaluation">
+            <span>Reprendre le drill ➔</span>
+          </button>
         </div>
 
         <!-- Question Card -->
@@ -3870,6 +4020,11 @@ body {
             <button class="btn-croq-eval" id="btn-submit-croq" style="display:none;">
               <i data-lucide="sparkles"></i>
               <span>Évaluer par IA (Gemini)</span>
+            </button>
+
+            <button class="btn-resume-drill" id="btn-history-resume-action" onclick="window.resumeActiveDrill()" style="display:none;padding:10px 20px;font-size:0.9rem;">
+              <span>Reprendre le drill en cours</span>
+              <i data-lucide="arrow-right"></i>
             </button>
           </div>
 

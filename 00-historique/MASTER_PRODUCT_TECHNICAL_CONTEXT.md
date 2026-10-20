@@ -1,5 +1,5 @@
 # PédiaDrill — Master Product & Technical Context
-*Dernière mise à jour : 2026-10-19 21:15:00 CET*
+*Dernière mise à jour : 2026-10-20 20:25:00 CET*
 *Source unique de vérité technique et fonctionnelle du projet PédiaDrill.*
 
 ---
@@ -242,6 +242,43 @@ Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes
   - **Au niveau de l'API (`src/services/gemini.js`)** : Toutes les réponses brutes issues de Gemini Flash sont systématiquement épurées dès la réception (`_executeModelCall`, `askAboutQuestion`, `generateReasoningNote`, `evaluateCroq`).
   - **Au niveau du Prompt Engineering** : Consigne stricte interdisant formellement l'usage du LaTeX dans tous les prompts système, imposant un formatage textuel médical direct (ex: `14 g/dl`, `3 kg`, `× 3 ml/kg`).
   - **Au niveau du Moteur de Rendu (`src/app.js`)** : Déclenché automatiquement dans `formatMedicalContent`, `formatReasoningNote` et `parseMarkdownInline`.
+
+### 3.13. Navigation dans l'Historique des 5 Derniers QCM & Synchronisation Dynamique du Tuteur IA (`view-arena`)
+- **Problématique & Intention Pédagogique** : En cours de session intensive dans l'Arène, l'étudiant ressent le besoin fréquent de revenir sur les questions immédiatement précédentes pour relire une subtilité d'énoncé, vérifier pourquoi une proposition était fausse, ou **interroger le Tuteur IA spécifiquement sur le QCM précédent**.
+- **Architecture de Données & Mécanique Interne (`src/app.js`)** :
+  - **Buffer Glissant des 5 Derniers QCM (`answeredHistory`)** :
+    - À chaque réponse validée (`handleAnswerSuccess`) ou échouée (`handleAnswerFailure`), un instantané complet (`snapshot`) est injecté en tête de tableau (`answeredHistory.unshift(snapshot)`), plafonné strictement à **5 éléments maximum** (`slice(0, 5)`).
+    - Métadonnées capturées : `question` clonée de manière immuable, `userAnswerLetters`, indicateur booléen `isCorrect`, `score` (pour les CROQ), `explanation` officielle et `timestamp`.
+  - **Curseur de Consultation (`historyCursor`)** :
+    - `historyCursor = -1` : Mode Drill Actif (question en cours d'évaluation tirée de la file dynamique).
+    - `historyCursor = 0` : Dernier QCM répondu (`QCM -1`).
+    - `historyCursor = 1..4` : QCM répondus antérieurs jusqu'à 5 questions en arrière.
+  - **Herméticité & Préservation Stricte du SRS** :
+    - La navigation dans l'historique est **rigoureusement isolée de la répétition espacée**.
+    - Aucune modification de `queueEngine.queue`, aucun appel à `handleSuccess` ou `handleFailure`, et aucun impact sur le compteur du jour (`todayTracker`).
+- **Interface Utilisateur & Rendu Visuel Dédié (`template.html`, `src/style.css`)** :
+  - **Barre Supérieure avec Flèches de Navigation (`.arena-history-nav`)** :
+    - Flèche gauche `[◀]` (`#btn-history-prev`) : remonte vers les questions antérieures.
+    - Badge central (`#arena-history-badge`) : affiche `Actuel (N)` en mode drill normal, ou `Précédent X/N` avec thème ambré (`is-past`) et contour distinctif en mode consultation.
+    - Flèche droite `[▶]` (`#btn-history-next`) : redescend vers les questions plus récentes et réenclenche le drill actif quand `historyCursor === 0`.
+  - **Bannière d'Avertissement Dorée (`#arena-history-consult-banner`)** :
+    - S'affiche en haut de la carte pour rappeler clairement que le QCM est en consultation.
+    - Comprend un bouton saillant « Reprendre le drill ➔ » (`.btn-resume-drill`).
+  - **Rendu en Lecture Seule (`renderHistoryQuestion`)** :
+    - Options désactivées (`.option-item.read-only`), boutons de validation masqués.
+    - Surbrillance explicite des choix : propositions justes en vert (`correct-highlight`), choix erronés de l'utilisateur en rouge (`wrong-highlight`).
+    - Chapitre déflouté d'emblée (`is-revealed`) avec badge ambré `QCM Répondu`.
+    - Boîte d'explication officielle ouverte automatiquement en bas de carte.
+    - Bouton bas de page « Reprendre le drill en cours ➔ » (`#btn-history-resume-action`).
+- **Synchronisation Temps Réel du Tuteur IA (`getEffectiveArenaQuestion`)** :
+  - Le tuteur IA cible toujours la question effectivement visualisée :
+    - En mode consultation, le prompt, la contextualisation et les suggestions ciblent le QCM d'historique affiché.
+    - Le chat contextuel est réinitialisé lors du basculement pour garantir des échanges sans interférence d'un QCM à l'autre.
+- **Raccourcis Claviers Dédiés (`setupKeyboardShortcuts`)** :
+  - <kbd>◀ Flèche Gauche</kbd> : remonter d'un QCM dans l'historique.
+  - <kbd>▶ Flèche Droite</kbd> : avancer d'un QCM vers le drill actif.
+  - <kbd>Entrée</kbd> en mode consultation : reprendre immédiatement le drill actif.
+  - Désactivation automatique lorsque le focus est dans un champ texte (recherche, chat ou CROQ).
 
 ---
 

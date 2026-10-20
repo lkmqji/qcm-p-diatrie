@@ -679,6 +679,129 @@ body {
   border-color: var(--text-muted);
 }
 
+.arena-top-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Mini navigation dans l'historique des 5 derniers QCM répondus */
+.arena-history-nav {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 2px 4px;
+  gap: 3px;
+  transition: var(--transition);
+}
+
+.arena-history-nav.is-browsing {
+  border-color: var(--amber);
+  box-shadow: 0 0 12px var(--amber-glow);
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.btn-history-arrow {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  padding: 0;
+}
+
+.btn-history-arrow:hover:not(:disabled) {
+  background: var(--bg-surface);
+  color: var(--cyan);
+}
+
+.btn-history-arrow:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.history-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  user-select: none;
+}
+
+.history-badge.is-past {
+  color: var(--amber);
+}
+
+.history-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--emerald);
+}
+
+.history-badge.is-past .history-dot {
+  background: var(--amber);
+  box-shadow: 0 0 6px var(--amber);
+}
+
+/* Bannière d'alerte en mode consultation d'un ancien QCM */
+.history-consult-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: var(--radius-md);
+  margin-bottom: 6px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.consult-badge-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: #fde68a;
+  line-height: 1.4;
+}
+
+.btn-resume-drill {
+  background: linear-gradient(135deg, var(--cyan-dim), var(--cyan));
+  color: #070b14;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 6px 14px;
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+
+.btn-resume-drill:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 14px var(--cyan-glow);
+}
+
 .arena-pills-wrap {
   display: flex;
   align-items: center;
