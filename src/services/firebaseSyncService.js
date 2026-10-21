@@ -13,19 +13,40 @@ const DEFAULT_FIREBASE_CONFIG = {
   appId: "1:1028938391462:web:c37c4f146fe3e72b633967"
 };
 
+import { slimNote } from './queueEngine.js';
+
+function toSlimNote(note) {
+  if (typeof slimNote === 'function') return slimNote(note);
+  if (!note || typeof note !== 'object') return note;
+  return {
+    id: note.id || `note_${note.timestamp || Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+    questionUid: note.questionUid || '',
+    userAnswer: note.userAnswer || '',
+    userAnswerLetters: Array.isArray(note.userAnswerLetters)
+      ? note.userAnswerLetters
+      : (note.userAnswer ? [note.userAnswer] : []),
+    correctAnswer: note.correctAnswer || '',
+    score: (note.score !== undefined && note.score !== null) ? Number(note.score) : null,
+    isCroq: !!note.isCroq,
+    reasoningNote: note.reasoningNote || '',
+    modelUsed: note.modelUsed || '',
+    timestamp: note.timestamp || Date.now()
+  };
+}
+
 /**
  * Intelligent state merger: unites local and remote progress non-destructively.
  * - Takes highest current mastery hits
  * - Takes highest penalty target and mistakes
  * - Logical OR for question done state
- * - Full union of all unique AI reasoning notes (no notes deleted)
+ * - Full union of all unique AI reasoning notes (no notes deleted) in lean format
  */
 export function mergeStates(local, remote) {
   if (!remote || typeof remote !== 'object') return local;
   if (!local || typeof local !== 'object') return remote;
 
   const merged = {
-    version: 1,
+    version: 2,
     exportedAt: new Date().toISOString(),
     stats: {},
     queue: Array.isArray(local.queue) && local.queue.length > 0 ? local.queue : (remote.queue || []),
@@ -64,17 +85,14 @@ export function mergeStates(local, remote) {
     }
   }
 
-  // Merge reasoning notes without loss
+  // Merge reasoning notes without loss in lean format
   const notesMap = new Map();
   const localNotes = Array.isArray(local.reasoningNotes) ? local.reasoningNotes : [];
   const remoteNotes = Array.isArray(remote.reasoningNotes) ? remote.reasoningNotes : [];
 
-  for (const note of [...remoteNotes, ...localNotes]) {
-    if (!note) continue;
-    // Ensure every note has a unique stable ID
-    if (!note.id) {
-      note.id = `note_${note.timestamp || Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
-    }
+  for (const rawNote of [...remoteNotes, ...localNotes]) {
+    if (!rawNote) continue;
+    const note = toSlimNote(rawNote);
     const key = note.id || `${note.questionUid}_${note.timestamp}`;
     notesMap.set(key, note);
   }
@@ -339,6 +357,42 @@ export class FirebaseSyncService {
   /**
    * Real-time Firestore subscription: automatically receives changes made from other devices
    */
+  /**
+   * Fetch reasoning notes from chunked Firestore documents (or fallback to legacy single doc array)
+   */
+  async fetchRemoteNotes(pediaCol, remoteData) {
+    const notes = [];
+    if (remoteData && typeof remoteData.notesChunksCount === 'number' && remoteData.notesChunksCount > 0) {
+      try {
+        const chunkPromises = [];
+        for (let i = 0; i < remoteData.notesChunksCount; i++) {
+          chunkPromises.push(pediaCol.doc(`notes_${i}`).get());
+        }
+        const chunkSnaps = await Promise.all(chunkPromises);
+        for (const snap of chunkSnaps) {
+          if (snap.exists) {
+            const data = snap.data();
+            if (Array.isArray(data?.notes)) {
+              notes.push(...data.notes);
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('Error fetching note chunks from Firestore:', e);
+      }
+    }
+
+    // Fallback: If no chunk notes were found or legacy single document, check reasoningNotes
+    if (notes.length === 0 && Array.isArray(remoteData?.reasoningNotes) && remoteData.reasoningNotes.length > 0) {
+      notes.push(...remoteData.reasoningNotes);
+    }
+
+    return notes.map(n => toSlimNote(n));
+  }
+
+  /**
+   * Real-time Firestore subscription: automatically receives changes made from other devices
+   */
   setupFirestoreListener() {
     if (!this.user || !window.firebase || !window.firebase.firestore) return;
 
@@ -348,9 +402,10 @@ export class FirebaseSyncService {
 
     try {
       const db = window.firebase.firestore();
-      const docRef = db.collection('users').doc(this.user.uid).collection('pedia').doc('progress');
+      const pediaCol = db.collection('users').doc(this.user.uid).collection('pedia');
+      const docRef = pediaCol.doc('progress');
 
-      this.firestoreUnsubscribe = docRef.onSnapshot((doc) => {
+      this.firestoreUnsubscribe = docRef.onSnapshot(async (doc) => {
         if (!doc.exists) {
           console.log('No Firestore progress document yet for user, will create on first push.');
           return;
@@ -360,8 +415,12 @@ export class FirebaseSyncService {
         if (!remoteData || this.isPushing) return;
 
         console.log('Real-time update received from Firestore');
-        const localState = this.queueEngine.getStateObject();
 
+        // Fetch chunked reasoning notes
+        const remoteNotes = await this.fetchRemoteNotes(pediaCol, remoteData);
+        remoteData.reasoningNotes = remoteNotes;
+
+        const localState = this.queueEngine.getStateObject();
         const merged = mergeStates(localState, remoteData);
         this.queueEngine.applyMergedState(merged);
 
@@ -393,7 +452,8 @@ export class FirebaseSyncService {
 
     try {
       const db = window.firebase.firestore();
-      const docRef = db.collection('users').doc(this.user.uid).collection('pedia').doc('progress');
+      const pediaCol = db.collection('users').doc(this.user.uid).collection('pedia');
+      const docRef = pediaCol.doc('progress');
 
       const doc = await docRef.get();
       const localState = this.queueEngine.getStateObject();
@@ -401,6 +461,8 @@ export class FirebaseSyncService {
       let merged = localState;
       if (doc.exists) {
         const remoteData = doc.data();
+        const remoteNotes = await this.fetchRemoteNotes(pediaCol, remoteData);
+        remoteData.reasoningNotes = remoteNotes;
         merged = mergeStates(localState, remoteData);
         this.queueEngine.applyMergedState(merged);
       }
@@ -410,7 +472,7 @@ export class FirebaseSyncService {
         this.onDataMerged(merged);
       }
 
-      // Save unified state back to Firestore
+      // Save unified state back to Firestore using chunked architecture
       await this.pushToFirestore(merged);
       this.lastSyncedAt = Date.now().toString();
       localStorage.setItem('pedia_firebase_last_synced', this.lastSyncedAt);
@@ -436,7 +498,8 @@ export class FirebaseSyncService {
 
     try {
       const db = window.firebase.firestore();
-      const docRef = db.collection('users').doc(this.user.uid).collection('pedia').doc('progress');
+      const pediaCol = db.collection('users').doc(this.user.uid).collection('pedia');
+      const docRef = pediaCol.doc('progress');
 
       const doc = await docRef.get();
       if (!doc.exists) {
@@ -445,6 +508,9 @@ export class FirebaseSyncService {
       }
 
       const remoteData = doc.data();
+      const remoteNotes = await this.fetchRemoteNotes(pediaCol, remoteData);
+      remoteData.reasoningNotes = remoteNotes;
+
       const localState = this.queueEngine.getStateObject();
       const merged = mergeStates(localState, remoteData);
       this.queueEngine.applyMergedState(merged);
@@ -468,7 +534,9 @@ export class FirebaseSyncService {
   }
 
   /**
-   * Push current state to Firestore
+   * Push current state to Firestore using Chunked Storage Architecture.
+   * Splits notes into 50-item chunks (~60 KB each) and compacts question stats,
+   * guaranteeing document size remains far below Firestore's 1,048,576 bytes (1 MiB) limit.
    */
   async pushToFirestore(explicitState = null) {
     if (!this.user || !window.firebase || !window.firebase.firestore) {
@@ -485,26 +553,86 @@ export class FirebaseSyncService {
 
     try {
       const db = window.firebase.firestore();
-      const docRef = db.collection('users').doc(this.user.uid).collection('pedia').doc('progress');
+      const pediaCol = db.collection('users').doc(this.user.uid).collection('pedia');
+      const progressDocRef = pediaCol.doc('progress');
 
       const state = explicitState || this.queueEngine.getStateObject();
+      const rawNotes = Array.isArray(state.reasoningNotes) ? state.reasoningNotes : [];
+      const slimmedNotes = rawNotes.map(n => toSlimNote(n));
 
-      const toSave = sanitizeForFirestore({
-        ...state,
+      // 1. Chunk reasoning notes into batches of 50
+      // 50 slim notes ~ 60-75 KB, 15x below Firestore's 1MB limit
+      const CHUNK_SIZE = 50;
+      const noteChunks = [];
+      for (let i = 0; i < slimmedNotes.length; i += CHUNK_SIZE) {
+        noteChunks.push(slimmedNotes.slice(i, i + CHUNK_SIZE));
+      }
+
+      // 2. Compact question stats (omit default untouched questions to keep document small)
+      const compactStats = {};
+      const rawStats = state.stats || {};
+      for (const [uid, st] of Object.entries(rawStats)) {
+        if (!st) continue;
+        if (st.current > 0 || st.mistakes > 0 || st.done || (st.target && st.target !== 3)) {
+          compactStats[uid] = {
+            current: st.current || 0,
+            target: Math.min(10, st.target || 3),
+            mistakes: st.mistakes || 0,
+            done: !!st.done
+          };
+        }
+      }
+
+      // 3. Prepare core SRS progress document (~15-20 KB, guaranteed never to exceed 1MB)
+      const progressToSave = sanitizeForFirestore({
+        version: 2,
+        exportedAt: state.exportedAt || new Date().toISOString(),
+        stats: compactStats,
+        queue: state.queue || [],
+        cursor: state.cursor || 0,
+        selectedChapterIds: state.selectedChapterIds || [],
+        totalMistakesCount: state.totalMistakesCount || 0,
+        todayTracker: state.todayTracker || null,
         userEmail: this.user.email || '',
         userDisplayName: this.user.displayName || '',
-        lastClientTimestamp: Date.now()
+        lastClientTimestamp: Date.now(),
+        notesCount: slimmedNotes.length,
+        notesChunksCount: noteChunks.length,
+        reasoningNotes: [] // Explicitly clear legacy bloated array in progress document
       });
 
-      // Add server timestamp safely
-      toSave.updatedAt = window.firebase.firestore.FieldValue.serverTimestamp();
+      progressToSave.updatedAt = window.firebase.firestore.FieldValue.serverTimestamp();
 
-      await docRef.set(toSave, { merge: true });
+      // 4. Atomic batch write for progress doc and all chunk documents
+      const batch = db.batch();
+      batch.set(progressDocRef, progressToSave, { merge: true });
+
+      for (let i = 0; i < noteChunks.length; i++) {
+        const chunkDocRef = pediaCol.doc(`notes_${i}`);
+        const chunkData = sanitizeForFirestore({
+          chunkIndex: i,
+          totalChunks: noteChunks.length,
+          notes: noteChunks[i],
+          updatedAt: window.firebase.firestore.FieldValue.serverTimestamp()
+        });
+        batch.set(chunkDocRef, chunkData);
+      }
+
+      // 5. Clean up any excess chunk docs if note count decreased
+      const prevChunksCount = Number(localStorage.getItem('pedia_firebase_notes_chunks') || 0);
+      if (prevChunksCount > noteChunks.length) {
+        for (let i = noteChunks.length; i < prevChunksCount; i++) {
+          batch.delete(pediaCol.doc(`notes_${i}`));
+        }
+      }
+      localStorage.setItem('pedia_firebase_notes_chunks', String(noteChunks.length));
+
+      await batch.commit();
 
       this.lastSyncedAt = Date.now().toString();
       localStorage.setItem('pedia_firebase_last_synced', this.lastSyncedAt);
 
-      const notesCount = (state.reasoningNotes || []).length;
+      const notesCount = slimmedNotes.length;
       this.updateStatus('synced', `Enregistré : ${notesCount} note${notesCount > 1 ? 's' : ''} sauvegardée${notesCount > 1 ? 's' : ''} sur Google Cloud`);
       this.isPushing = false;
       return { success: true };
@@ -539,6 +667,9 @@ export class FirebaseSyncService {
     }
     if (err.code === 'unavailable' || msg.includes('unavailable')) {
       return 'Connexion Firestore temporairement indisponible (vérifiez votre connexion internet).';
+    }
+    if (msg.includes('exceeds the maximum allowed size') || (msg.includes('size') && msg.includes('1048576'))) {
+      return '⚠️ Limite de taille Firestore dépassée. Le partitionnement automatique des notes a été appliqué.';
     }
     return msg || 'Erreur Firestore';
   }

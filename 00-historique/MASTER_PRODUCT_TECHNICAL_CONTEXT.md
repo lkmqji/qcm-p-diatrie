@@ -1,5 +1,5 @@
 # PédiaDrill — Master Product & Technical Context
-*Dernière mise à jour : 2026-10-20 21:07:00 CET*
+*Dernière mise à jour : 2026-10-21 07:40:00 CET*
 *Source unique de vérité technique et fonctionnelle du projet PédiaDrill.*
 
 ---
@@ -304,14 +304,34 @@ Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes
 
 ---
 
-## 5. Synchronisation Multi-Appareils & Firebase
+## 5. Synchronisation Multi-Appareils, Firebase & Architecture Anti-Dépassement de Quota
 
-- **Fournisseur** : Firebase Auth (Google Provider) & Cloud Firestore.
+- **Fournisseur & Services Cloud** : Firebase Auth (Google Provider) & Cloud Firestore (Base de données NoSQL distribuée).
 - **Authentification Hybride (Web / Mobile)** :
   - **Sur Android (APK natif)** : Utilisation de `@capacitor-firebase/authentication` (version 8.5.2) qui déclenche la boîte de dialogue native Android Google Play Services (`FirebaseAuthentication.signInWithGoogle()`). Cela évite les ouvertures de navigateur externe et résout l'erreur `missing initial state`. Le jeton d'identité `idToken` est ensuite transmis à `signInWithCredential` du SDK Web pour maintenir la session Firestore active.
   - **Sur Web / Desktop (Vercel)** : Utilisation de `window.firebase.auth().signInWithPopup(provider)` avec fallback `signInWithRedirect`.
-- **Protocole de synchronisation** : Bidirectionnel avec fusion basée sur horodatage (`mergeStates`).
-- **Déclencheurs** : Push automatique après chaque réponse validée ou enregistrement de note, pull automatique à la connexion.
+- **Architecture Anti-Dépassement de Quota Firestore (Limite stricte de 1 Mo / 1 048 576 octets)** :
+  - **Problématique résolue** : Cloud Firestore rejette formellement toute écriture dépassant 1 Mo par document. Lorsque l'étudiant accumule plus de ~120 notes d'analyse d'erreur IA, le document monolithique unique `pedia/progress` dépassait 1,12 Mo.
+  - **1. Allègement sémantique des notes (`slimNote` / `hydrateNote`)** :
+    - `slimNote(note)` : Purgée de tous les champs statiques déjà présents dans `PEDIA_QUESTIONS` (`questionText`, `clinicalCase`, `options`, `officialExplanation`, `media_urls`), une note ne conserve que les données générées par la tentative de l'étudiant (`id`, `questionUid`, `userAnswer`, `userAnswerLetters`, `correctAnswer`, `score`, `isCroq`, `reasoningNote`, `modelUsed`, `timestamp`).
+    - L'empreinte passe de ~7 Ko à ~1.2 Ko (**réduction de 85% à 90%**).
+    - `hydrateNote(note, questionsList)` : Dès la lecture ou le rendu dans l'interface, chaque note est enrichie à la volée avec l'objet question complet de `allQuestions` (aucun impact visuel, intégrité totale).
+    - `sanitizeReasoningNotesStorage()` : Migration automatique en mémoire locale (`localStorage`) dès le démarrage de l'app, libérant plus de 800 Ko sur l'appareil.
+  - **2. Partitionnement par paquets de 50 notes (`Chunked Firestore Storage`)** :
+    - **Document `pedia/progress` épuré** : Stocke uniquement l'état SRS (`queue`, `cursor`, `selectedChapterIds`, `totalMistakesCount`, `todayTracker`, `userEmail`, `notesCount`, `notesChunksCount`) et compacte `stats` (omission des QCM non touchés). Le champ `reasoningNotes` y est vidé (`[]`) pour écraser le vieux payload lourd de Firestore. Poids : **~15 à 20 Ko (50 fois sous la limite)**.
+    - **Documents de partitionnement `pedia/notes_0`, `notes_1`, `notes_2`...** : Chaque document contient 50 notes allégées maximum, pesant ~50 à 75 Ko (**15 fois sous la limite de 1 Mo**).
+    - **Écriture atomique (`db.batch()`)** : Sauvegarde conjointe du document de progression et des paquets de notes en une seule transaction réseau.
+    - **Nettoyage automatique** : Suppression automatique des anciens paquets orphelins si le nombre total de notes diminue.
+    - **Récupération parallèle (`fetchRemoteNotes`)** : Téléchargement simultané de tous les paquets via `Promise.all` avec fallback sur l'ancien format si présent.
+- **Protocole de fusion bidirectionnelle (`mergeStates`)** :
+  - Compare l'horodatage client et serveur.
+  - Fusionne les compteurs de maîtrise au maximum (`Math.max(local, remote)`).
+  - Déduplique l'ensemble des notes par identifiant unique stable sans suppression intempestive.
+- **Déclencheurs de synchronisation** :
+  - **Auto-push temporisé** (`triggerAutoPush`, délai 1 500 ms) après chaque réponse validée ou erreur enregistrée.
+  - **Pull automatique à la connexion** (`syncOnLogin`).
+  - **Écoute en temps réel** (`setupFirestoreListener`) via `onSnapshot` sur le document `progress` pour répercuter instantanément les modifications effectuées depuis un autre appareil (PC ↔ Smartphone).
+  - **Boutons manuels de sauvegarde et récupération** dans la modale `#modal-sync`.
 
 ---
 
@@ -341,7 +361,7 @@ Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes
 ### 6.3. Génération & Emplacements de l'APK
 - **Script automatisé** : `build-apk.bat` (exécutable via `npm run build:apk`). Pipeline complet automatisé : 1) build bundle web (`build-bundle.cjs`), 2) sync native Capacitor (`cap sync android`), 3) compilation native Gradle (`:app:assembleDebug`) et copie sous `PediaDrill.apk`.
 - **Cible Gradle optimisée** : `:app:assembleDebug` (permet de compiler directement l'application et de générer l'APK sans surcharge d'extraction d'annotations ou de construction d'AAR de bibliothèques).
-- **Fichier APK racine (accès direct utilisateur)** : `PediaDrill.apk` (taille : ~6.84 Mo).
+- **Fichier APK racine (accès direct utilisateur)** : `PediaDrill.apk` (taille : ~7.70 Mo).
 - **Fichier APK de build Android** : `android/app/build/outputs/apk/debug/app-debug.apk`.
 - **Ouverture dans l'IDE Android Studio** : `npm run open:android` ou lancement de `studio64.exe android`.
 

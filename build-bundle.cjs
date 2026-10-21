@@ -13,8 +13,9 @@ fs.writeFileSync(path.join(__dirname, 'template.html'), templateHtml, 'utf8');
 console.log('[bundle] template.html synchronized with src/style.css');
 
 // 2. Assemble src/app.bundle.js from modular src files
-function stripExports(code) {
+function cleanModuleCode(code) {
   return code
+    .replace(/import\s+[\s\S]*?from\s+['"][^'"]+['"];?\r?\n/g, '')
     .replace(/export\s+default\s+/g, '')
     .replace(/export\s+const\s+/g, 'const ')
     .replace(/export\s+let\s+/g, 'let ')
@@ -23,11 +24,10 @@ function stripExports(code) {
     .replace(/export\s*\{[^}]*\};?/g, '');
 }
 
-let gemini = stripExports(fs.readFileSync(path.join(__dirname, 'src', 'services', 'gemini.js'), 'utf8'));
-let queue = stripExports(fs.readFileSync(path.join(__dirname, 'src', 'services', 'queueEngine.js'), 'utf8'));
-let sync = stripExports(fs.readFileSync(path.join(__dirname, 'src', 'services', 'firebaseSyncService.js'), 'utf8'));
-let app = fs.readFileSync(path.join(__dirname, 'src', 'app.js'), 'utf8');
-app = app.replace(/import\s+[\s\S]*?from\s+['"][^'"]+['"];?\r?\n/g, '');
+let gemini = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'services', 'gemini.js'), 'utf8'));
+let queue = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'services', 'queueEngine.js'), 'utf8'));
+let sync = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'services', 'firebaseSyncService.js'), 'utf8'));
+let app = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'app.js'), 'utf8'));
 
 const bundle = `// ==========================================
 // PédiaDrill Unified Client Bundle

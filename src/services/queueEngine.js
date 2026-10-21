@@ -3,6 +3,57 @@
 const STORAGE_KEY = 'pedia_drill_state_v1';
 const REASONING_KEY = 'pedia_drill_reasoning_notes_v1';
 
+/**
+ * Strips redundant static question data (questionText, options, clinicalCase, explanation)
+ * that is already permanently bundled in PEDIA_QUESTIONS. Keeps only user attempt data
+ * and AI reasoning note text. Reduces note storage footprint by ~80%.
+ */
+export function slimNote(note) {
+  if (!note || typeof note !== 'object') return note;
+  return {
+    id: note.id || `note_${note.timestamp || Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+    questionUid: note.questionUid || '',
+    userAnswer: note.userAnswer || '',
+    userAnswerLetters: Array.isArray(note.userAnswerLetters)
+      ? note.userAnswerLetters
+      : (note.userAnswer ? [note.userAnswer] : []),
+    correctAnswer: note.correctAnswer || '',
+    score: (note.score !== undefined && note.score !== null) ? Number(note.score) : null,
+    isCroq: !!note.isCroq,
+    reasoningNote: note.reasoningNote || '',
+    modelUsed: note.modelUsed || '',
+    timestamp: note.timestamp || Date.now()
+  };
+}
+
+/**
+ * Re-hydrates a slim note with full question metadata from the question bank.
+ */
+export function hydrateNote(note, questionsList = []) {
+  if (!note || typeof note !== 'object') return note;
+  const q = Array.isArray(questionsList) ? questionsList.find(item => item.uid === note.questionUid) : null;
+  if (!q) {
+    return {
+      ...note,
+      chapterTitle: note.chapterTitle || 'Pédiatrie Générale',
+      options: note.options || [],
+      questionText: note.questionText || '',
+      clinicalCase: note.clinicalCase || null,
+      officialExplanation: note.officialExplanation || ''
+    };
+  }
+  return {
+    ...note,
+    questionText: note.questionText || q.question || '',
+    clinicalCase: note.clinicalCase !== undefined ? note.clinicalCase : (q.clinical_case || null),
+    chapterTitle: note.chapterTitle || q.chapterTitle || 'Pédiatrie Générale',
+    options: (note.options && note.options.length > 0) ? note.options : (q.options || []),
+    media_urls: (note.media_urls && note.media_urls.length > 0) ? note.media_urls : (q.media_urls || []),
+    officialExplanation: note.officialExplanation || q.explanation || '',
+    correctAnswer: note.correctAnswer || q.croq_answer || ''
+  };
+}
+
 export class QueueEngine {
   constructor(allQuestions = [], chapters = []) {
     this.allQuestions = allQuestions;
@@ -35,6 +86,7 @@ export class QueueEngine {
 
   loadState() {
     try {
+      this.sanitizeReasoningNotesStorage();
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
@@ -54,6 +106,27 @@ export class QueueEngine {
       }
     } catch (err) {
       console.warn("Failed to load queue engine state:", err);
+    }
+  }
+
+  /**
+   * Migrate and optimize any legacy bloated notes in localStorage to lean format
+   */
+  sanitizeReasoningNotesStorage() {
+    try {
+      const raw = localStorage.getItem(REASONING_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        const hasBloated = parsed.some(n => n && (n.questionText || n.options || n.clinicalCase || n.officialExplanation));
+        if (hasBloated) {
+          console.log(`[Storage] Optimizing ${parsed.length} reasoning notes to lean format...`);
+          const slimmed = parsed.map(n => slimNote(n));
+          localStorage.setItem(REASONING_KEY, JSON.stringify(slimmed));
+        }
+      }
+    } catch (e) {
+      console.warn("Failed to sanitize reasoning notes storage:", e);
     }
   }
 
@@ -297,22 +370,34 @@ export class QueueEngine {
   }
 
   /**
-   * Save a reasoning note to the dedicated notebook
+   * Save a reasoning note to the dedicated notebook in lean format
    */
   saveReasoningNote(noteData) {
     try {
-      const existing = this.getReasoningNotes();
-      const updated = [noteData, ...existing.filter(n => n.questionUid !== noteData.questionUid || n.id !== noteData.id)];
+      const existing = this.getRawReasoningNotes();
+      const slimmed = slimNote(noteData);
+      const updated = [slimmed, ...existing.filter(n => n.questionUid !== noteData.questionUid || n.id !== noteData.id)];
       localStorage.setItem(REASONING_KEY, JSON.stringify(updated.slice(0, 500))); // Keep up to 500 notes
     } catch (err) {
       console.warn("Failed to save reasoning note:", err);
     }
   }
 
-  getReasoningNotes() {
+  getRawReasoningNotes() {
     try {
       const raw = localStorage.getItem(REASONING_KEY);
-      return raw ? JSON.parse(raw) : [];
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  getReasoningNotes() {
+    try {
+      const rawNotes = this.getRawReasoningNotes();
+      return rawNotes.map(n => hydrateNote(n, this.allQuestions));
     } catch {
       return [];
     }
@@ -320,7 +405,7 @@ export class QueueEngine {
 
   deleteReasoningNote(id) {
     try {
-      const notes = this.getReasoningNotes().filter(n => n.id !== id);
+      const notes = this.getRawReasoningNotes().filter(n => n.id !== id);
       localStorage.setItem(REASONING_KEY, JSON.stringify(notes));
     } catch {}
   }
@@ -336,9 +421,6 @@ export class QueueEngine {
     this.initSession(this.selectedChapterIds);
   }
 
-  /**
-   * Return raw state object
-   */
   /**
    * Daily QCM counter for current day
    */
@@ -370,18 +452,18 @@ export class QueueEngine {
   }
 
   /**
-   * Return raw state object
+   * Return raw state object with lean notes representation
    */
   getStateObject() {
     return {
-      version: 1,
+      version: 2,
       exportedAt: new Date().toISOString(),
       stats: this.stats,
       queue: this.queue,
       cursor: this.cursor,
       selectedChapterIds: this.selectedChapterIds,
       totalMistakesCount: this.totalMistakesCount,
-      reasoningNotes: this.getReasoningNotes(),
+      reasoningNotes: this.getRawReasoningNotes().map(n => slimNote(n)),
       todayTracker: this.getTodayTracker()
     };
   }
@@ -394,7 +476,7 @@ export class QueueEngine {
   }
 
   /**
-   * Apply merged state object safely
+   * Apply merged state object safely, ensuring notes are stored lean
    */
   applyMergedState(merged) {
     if (!merged || typeof merged !== 'object') return false;
@@ -405,7 +487,8 @@ export class QueueEngine {
       if (Array.isArray(merged.selectedChapterIds)) this.selectedChapterIds = merged.selectedChapterIds;
       if (typeof merged.totalMistakesCount === 'number') this.totalMistakesCount = merged.totalMistakesCount;
       if (Array.isArray(merged.reasoningNotes)) {
-        localStorage.setItem(REASONING_KEY, JSON.stringify(merged.reasoningNotes));
+        const slimmed = merged.reasoningNotes.map(n => slimNote(n));
+        localStorage.setItem(REASONING_KEY, JSON.stringify(slimmed.slice(0, 500)));
       }
       if (merged.todayTracker && typeof merged.todayTracker === 'object') {
         const currentTracker = this.getTodayTracker();

@@ -1891,8 +1891,9 @@ function groupNotesByChapterAndQuestion(notes) {
   const chapterMap = new Map();
 
   notes.forEach(note => {
-    const chap = (note.chapterTitle && note.chapterTitle.trim()) || "Pédiatrie Générale";
-    const qKey = note.questionUid || note.questionText || note.id;
+    const fullQ = allQuestions.find(item => item.uid === note.questionUid);
+    const chap = (fullQ && fullQ.chapterTitle) || (note.chapterTitle && note.chapterTitle.trim()) || "Pédiatrie Générale";
+    const qKey = note.questionUid || (fullQ && fullQ.question) || note.questionText || note.id;
 
     if (!chapterMap.has(chap)) {
       chapterMap.set(chap, new Map());
@@ -2072,8 +2073,11 @@ function renderNotebookUI(filterText = '') {
     const optionsText = fullQ && fullQ.options ? fullQ.options.map(o => o.text).join(' ').toLowerCase() : '';
     const explanationText = (fullQ && fullQ.explanation ? fullQ.explanation.toLowerCase() : '') || (n.officialExplanation ? n.officialExplanation.toLowerCase() : '');
 
-    return (n.questionText && n.questionText.toLowerCase().includes(q)) ||
-           (n.chapterTitle && n.chapterTitle.toLowerCase().includes(q)) ||
+    const qText = (fullQ && fullQ.question ? fullQ.question.toLowerCase() : '') || (n.questionText ? n.questionText.toLowerCase() : '');
+    const chapText = (fullQ && fullQ.chapterTitle ? fullQ.chapterTitle.toLowerCase() : '') || (n.chapterTitle ? n.chapterTitle.toLowerCase() : '');
+
+    return qText.includes(q) ||
+           chapText.includes(q) ||
            (n.reasoningNote && n.reasoningNote.toLowerCase().includes(q)) ||
            (n.userAnswer && n.userAnswer.toLowerCase().includes(q)) ||
            optionsText.includes(q) ||
@@ -2270,13 +2274,6 @@ function setupEventListeners() {
   const btnHistResume = document.getElementById('btn-history-resume-action');
   if (btnHistResume) btnHistResume.onclick = () => window.resumeActiveDrill();
 
-  // Reset Session
-  document.getElementById('btn-reset-session').onclick = () => {
-    if (confirm('Voulez-vous réinitialiser votre progression sur cette sélection ?')) {
-      queueEngine.resetSessionProgress();
-      updateDashboardUI();
-    }
-  };
 
   // Error modal
   document.getElementById('btn-continue-after-error').onclick = closeErrorModalAndContinue;

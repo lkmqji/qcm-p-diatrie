@@ -1,5 +1,29 @@
 # Historique des modifications - 2026-10-20
 
+### 23:19 - Recompilation native et mise à jour de l'APK Android (`PediaDrill.apk`)
+- **Action effectuée** :
+  - Exécution du script automatisé `build-apk.bat` intégrant l'ensemble des récentes modifications :
+    1. Assemblage du bundle web de production (`build-bundle.cjs`).
+    2. Synchronisation des assets natifs Capacitor (`npx cap sync android`).
+    3. Compilation native Gradle (`:app:assembleDebug`) avec le JDK officiel d'Android Studio.
+  - Copie automatique du binaire résultant à la racine sous [PediaDrill.apk](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/PediaDrill.apk) (taille : 7.70 Mo, généré le 20/10/2026 à 23:18:54).
+- **Fonctionnalités intégrées dans ce build** :
+  - Navigation retour sur les 5 derniers QCM répondus en Arène (`[◀]` / `[▶]`) avec mode consultation en lecture seule.
+  - Synchronisation dynamique du Tuteur IA sur les QCM passés.
+  - Floutage anti-spoiler du nom du cours dans le Tuteur IA avant validation de la réponse.
+  - Suppression de l'option « Réinitialiser la session » du Dashboard et centrage du raccourci vers le Carnet IA.
+
+### 22:52 - Suppression de l'option « Réinitialiser la session » du Dashboard
+- **Retour utilisateur (Agentation)** :
+  - Sur `#app-main > #view-dashboard > .quick-links-row > #btn-reset-session` : demande de suppression directe de cette option.
+- **Modifications appliquées** :
+  - **Structure HTML (`template.html`)** : Suppression du bouton `#btn-reset-session` au sein du conteneur `.quick-links-row`.
+  - **Styles CSS (`src/style.css`)** : Mise à jour de la classe `.quick-links-row` avec `justify-content: center` pour centrer harmonieusement le bouton restant (« Ouvrir le Carnet de Raisonnement IA »).
+  - **Logique applicative (`src/app.js`)** : Retrait du gestionnaire d'événement click associé à `#btn-reset-session` dans `setupEventListeners()`.
+- **Compilation & Déploiement** :
+  - Recompilation réussie du bundle web autonome (`node build-bundle.cjs`).
+  - Synchronisation réussie des assets natifs Android (`npx cap sync android`).
+
 ### 21:07 - Floutage du nom de cours dans le Tuteur IA avant validation de la réponse (Anti-Spoiler)
 - **Retour utilisateur (Agentation)** :
   - Sur `#chatbox-messages-list > .chat-bubble > p > strong` : l'étudiant a demandé de « flouter car c'est le nom du cours aussi jusqu'à ce que je réponde ».
