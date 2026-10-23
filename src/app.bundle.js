@@ -1629,6 +1629,294 @@ class StudyTracker {
 const studyTracker = new StudyTracker();
 
 
+// Lesson Timer & Study Time Tracking Service for PédiaDrill
+// Tracks focused study time per lesson/chapter with persistent stopwatch, background tracking, and summary analytics.
+
+const LESSON_TRACKER_STATE_KEY = 'pedia_lesson_tracker_state_v1';
+const LESSON_SESSIONS_KEY = 'pedia_lesson_sessions_v1';
+
+class LessonTracker {
+  constructor() {
+    this.activeTimer = this.loadActiveTimer();
+    this.sessions = this.loadSessions();
+  }
+
+  loadActiveTimer() {
+    try {
+      if (typeof localStorage === 'undefined') return null;
+      const raw = localStorage.getItem(LESSON_TRACKER_STATE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object' && parsed.lessonName) {
+        return parsed;
+      }
+      return null;
+    } catch (e) {
+      console.warn('Failed to load active lesson timer:', e);
+      return null;
+    }
+  }
+
+  saveActiveTimer() {
+    try {
+      if (typeof localStorage === 'undefined') return;
+      if (this.activeTimer) {
+        localStorage.setItem(LESSON_TRACKER_STATE_KEY, JSON.stringify(this.activeTimer));
+      } else {
+        localStorage.removeItem(LESSON_TRACKER_STATE_KEY);
+      }
+    } catch (e) {
+      console.warn('Failed to save active lesson timer:', e);
+    }
+  }
+
+  loadSessions() {
+    try {
+      if (typeof localStorage === 'undefined') return [];
+      const raw = localStorage.getItem(LESSON_SESSIONS_KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      console.warn('Failed to load lesson sessions:', e);
+      return [];
+    }
+  }
+
+  saveSessions() {
+    try {
+      if (typeof localStorage === 'undefined') return;
+      localStorage.setItem(LESSON_SESSIONS_KEY, JSON.stringify(this.sessions));
+    } catch (e) {
+      console.warn('Failed to save lesson sessions:', e);
+    }
+  }
+
+  getTodayDateStr() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  /**
+   * Start a new lesson stopwatch timer
+   */
+  startTimer(lessonName, chapterId = null) {
+    const cleanName = (lessonName || '').trim() || 'Leçon sans titre';
+    const now = Date.now();
+
+    this.activeTimer = {
+      lessonName: cleanName,
+      chapterId: chapterId || null,
+      isRunning: true,
+      isPaused: false,
+      startTimestamp: now,
+      accumulatedMs: 0,
+      initialStartTimestamp: now
+    };
+
+    this.saveActiveTimer();
+    return this.activeTimer;
+  }
+
+  /**
+   * Pause the active timer
+   */
+  pauseTimer() {
+    if (!this.activeTimer || !this.activeTimer.isRunning || this.activeTimer.isPaused) {
+      return this.activeTimer;
+    }
+
+    const now = Date.now();
+    if (this.activeTimer.startTimestamp) {
+      this.activeTimer.accumulatedMs += (now - this.activeTimer.startTimestamp);
+    }
+    this.activeTimer.startTimestamp = null;
+    this.activeTimer.isPaused = true;
+    this.saveActiveTimer();
+    return this.activeTimer;
+  }
+
+  /**
+   * Resume the active timer
+   */
+  resumeTimer() {
+    if (!this.activeTimer || !this.activeTimer.isRunning || !this.activeTimer.isPaused) {
+      return this.activeTimer;
+    }
+
+    this.activeTimer.startTimestamp = Date.now();
+    this.activeTimer.isPaused = false;
+    this.saveActiveTimer();
+    return this.activeTimer;
+  }
+
+  /**
+   * Get total elapsed time in milliseconds
+   */
+  getElapsedTimeMs() {
+    if (!this.activeTimer || !this.activeTimer.isRunning) return 0;
+    let totalMs = this.activeTimer.accumulatedMs || 0;
+    if (!this.activeTimer.isPaused && this.activeTimer.startTimestamp) {
+      totalMs += (Date.now() - this.activeTimer.startTimestamp);
+    }
+    return totalMs;
+  }
+
+  /**
+   * Get total elapsed time in whole seconds
+   */
+  getElapsedTimeSeconds() {
+    return Math.floor(this.getElapsedTimeMs() / 1000);
+  }
+
+  /**
+   * Stop active timer and record session in persistent history
+   */
+  stopAndSaveSession() {
+    if (!this.activeTimer) return null;
+
+    const durationSeconds = this.getElapsedTimeSeconds();
+    if (durationSeconds < 1) {
+      // Too short to record as a meaningful session
+      this.cancelTimer();
+      return null;
+    }
+
+    const now = Date.now();
+    const session = {
+      id: `sess_${now}_${Math.random().toString(36).substring(2, 7)}`,
+      lessonName: this.activeTimer.lessonName,
+      chapterId: this.activeTimer.chapterId || null,
+      startTime: this.activeTimer.initialStartTimestamp || (now - durationSeconds * 1000),
+      endTime: now,
+      durationSeconds,
+      dateStr: this.getTodayDateStr()
+    };
+
+    this.sessions.unshift(session);
+    this.saveSessions();
+
+    this.activeTimer = null;
+    this.saveActiveTimer();
+
+    return session;
+  }
+
+  /**
+   * Cancel active timer without saving
+   */
+  cancelTimer() {
+    this.activeTimer = null;
+    this.saveActiveTimer();
+  }
+
+  /**
+   * Delete an existing session from history
+   */
+  deleteSession(sessionId) {
+    if (!sessionId) return false;
+    const initialLen = this.sessions.length;
+    this.sessions = this.sessions.filter(s => s && s.id !== sessionId);
+    if (this.sessions.length !== initialLen) {
+      this.saveSessions();
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Get all recorded sessions
+   */
+  getSessions() {
+    return Array.isArray(this.sessions) ? [...this.sessions] : [];
+  }
+
+  /**
+   * Aggregates study metrics per lesson
+   * Returns array sorted by total duration descending
+   */
+  getLessonSummaries() {
+    const map = new Map();
+
+    (this.sessions || []).forEach(sess => {
+      if (!sess || !sess.lessonName) return;
+      const key = sess.lessonName.trim().toLowerCase();
+
+      if (!map.has(key)) {
+        map.set(key, {
+          lessonName: sess.lessonName.trim(),
+          chapterId: sess.chapterId || null,
+          totalDurationSeconds: 0,
+          sessionsCount: 0,
+          lastSessionTimestamp: 0,
+          lastSessionDateStr: ''
+        });
+      }
+
+      const item = map.get(key);
+      item.totalDurationSeconds += (sess.durationSeconds || 0);
+      item.sessionsCount += 1;
+      const sessEnd = sess.endTime || 0;
+      if (sessEnd > item.lastSessionTimestamp) {
+        item.lastSessionTimestamp = sessEnd;
+        item.lastSessionDateStr = sess.dateStr || '';
+      }
+    });
+
+    const summaries = Array.from(map.values());
+    summaries.sort((a, b) => b.totalDurationSeconds - a.totalDurationSeconds || b.lastSessionTimestamp - a.lastSessionTimestamp);
+    return summaries;
+  }
+
+  /**
+   * Merge remote sessions from Firestore multi-device synchronization
+   */
+  mergeSessions(remoteSessions) {
+    if (!Array.isArray(remoteSessions) || remoteSessions.length === 0) return;
+
+    const existingIds = new Set(this.sessions.map(s => s && s.id).filter(Boolean));
+    const merged = [...this.sessions];
+    let modified = false;
+
+    remoteSessions.forEach(remoteSess => {
+      if (!remoteSess || !remoteSess.lessonName || !remoteSess.durationSeconds) return;
+
+      if (remoteSess.id && existingIds.has(remoteSess.id)) {
+        return; // Already present
+      }
+
+      // Check for fuzzy duplicate (same lesson, same start time within 5s window)
+      const isDuplicate = merged.some(s => 
+        s && s.lessonName === remoteSess.lessonName &&
+        Math.abs((s.startTime || 0) - (remoteSess.startTime || 0)) < 5000
+      );
+
+      if (!isDuplicate) {
+        merged.push(remoteSess);
+        if (remoteSess.id) existingIds.add(remoteSess.id);
+        modified = true;
+      }
+    });
+
+    if (modified) {
+      // Sort newest first
+      merged.sort((a, b) => (b.endTime || 0) - (a.endTime || 0));
+      this.sessions = merged;
+      this.saveSessions();
+    }
+  }
+
+  getRawSessions() {
+    return this.sessions;
+  }
+}
+
+const lessonTracker = new LessonTracker();
+
+
 // Firebase Authentication (Google Sign-In) & Firestore Real-time Sync Service for PédiaDrill
 // Provides seamless multi-device progress sync across PC, Smartphone, and Tablet.
 
@@ -1742,6 +2030,13 @@ function mergeStates(local, remote) {
   if (remote.studyHistory && typeof remote.studyHistory === 'object') {
     if (typeof studyTracker !== 'undefined' && studyTracker && typeof studyTracker.mergeHistory === 'function') {
       studyTracker.mergeHistory(remote.studyHistory);
+    }
+  }
+
+  // Merge lesson sessions across devices non-destructively
+  if (remote.lessonSessions && Array.isArray(remote.lessonSessions)) {
+    if (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.mergeSessions === 'function') {
+      lessonTracker.mergeSessions(remote.lessonSessions);
     }
   }
 
@@ -2233,6 +2528,9 @@ class FirebaseSyncService {
         studyHistory: (typeof studyTracker !== 'undefined' && studyTracker && typeof studyTracker.getRawHistory === 'function')
           ? studyTracker.getRawHistory()
           : (state.studyHistory || {}),
+        lessonSessions: (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.getRawSessions === 'function')
+          ? lessonTracker.getRawSessions()
+          : (state.lessonSessions || []),
         userEmail: this.user.email || '',
         userDisplayName: this.user.displayName || '',
         lastClientTimestamp: Date.now(),
@@ -2420,6 +2718,7 @@ function initApp() {
   setupEventListeners();
   setupKeyboardShortcuts();
   setupFirebaseService();
+  initLessonTracker();
   refreshLucide();
 
   // Register Service Worker for offline PWA
@@ -4695,6 +4994,9 @@ function renderStatsUI() {
   // 6. Daily Timeline
   renderStatsTimeline(globalAnalytics.days);
 
+  // 7. Lesson Stopwatch & Study Time per Lesson
+  renderLessonTrackerUI();
+
   refreshLucide();
 }
 
@@ -5083,6 +5385,428 @@ function renderStatsTimeline(days = []) {
   });
 
   container.innerHTML = html;
+}
+
+// ============================================================================
+// MODULE: CHRONOMÈTRE & SUIVI DU TEMPS PAR LEÇON
+// ============================================================================
+let currentLessonSelected = {
+  name: '',
+  chapterId: null
+};
+let lessonTimerInterval = null;
+
+function formatDigitalClockTime(totalSeconds) {
+  const sec = Math.max(0, Math.floor(totalSeconds));
+  const hrs = Math.floor(sec / 3600);
+  const mins = Math.floor((sec % 3600) / 60);
+  const s = sec % 60;
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${pad(hrs)}:${pad(mins)}:${pad(s)}`;
+}
+
+function updateLessonTimerTick() {
+  const active = (typeof lessonTracker !== 'undefined' && lessonTracker) ? lessonTracker.activeTimer : null;
+  const headerBadge = document.getElementById('active-lesson-header-badge');
+  const headerName = document.getElementById('header-lesson-name');
+  const headerTime = document.getElementById('header-lesson-time');
+
+  const digitalClock = document.getElementById('lesson-digital-clock');
+  const clockDot = document.getElementById('lesson-clock-dot');
+  const statusText = document.getElementById('lesson-status-text');
+
+  if (active && active.isRunning) {
+    const elapsedSec = lessonTracker.getElapsedTimeSeconds();
+    const formatted = formatDigitalClockTime(elapsedSec);
+
+    // Update floating header badge
+    if (headerBadge) {
+      headerBadge.style.display = 'inline-flex';
+      if (headerName) headerName.textContent = active.lessonName;
+      if (headerTime) headerTime.textContent = formatted;
+    }
+
+    // Update stats view digital clock
+    if (digitalClock) {
+      digitalClock.textContent = formatted;
+    }
+    if (clockDot) {
+      clockDot.className = active.isPaused ? 'clock-status-dot status-paused' : 'clock-status-dot status-running';
+    }
+    if (statusText) {
+      statusText.textContent = active.isPaused ? 'En pause' : 'Chronomètre en cours...';
+    }
+  } else {
+    // No active timer running
+    if (headerBadge) {
+      headerBadge.style.display = 'none';
+    }
+    if (digitalClock) {
+      digitalClock.textContent = '00:00:00';
+    }
+    if (clockDot) {
+      clockDot.className = 'clock-status-dot status-idle';
+    }
+    if (statusText) {
+      statusText.textContent = 'Prêt à démarrer';
+    }
+  }
+}
+
+function initLessonTracker() {
+  if (typeof lessonTracker === 'undefined' || !lessonTracker) return;
+
+  const active = lessonTracker.activeTimer;
+  if (active && active.lessonName) {
+    currentLessonSelected.name = active.lessonName;
+    currentLessonSelected.chapterId = active.chapterId;
+  }
+
+  setupLessonTrackerEventListeners();
+
+  if (!lessonTimerInterval) {
+    lessonTimerInterval = setInterval(updateLessonTimerTick, 1000);
+  }
+  updateLessonTimerTick();
+}
+
+function renderLessonTrackerUI() {
+  if (typeof lessonTracker === 'undefined' || !lessonTracker) return;
+
+  const active = lessonTracker.activeTimer;
+  const btnStart = document.getElementById('btn-timer-start');
+  const btnPause = document.getElementById('btn-timer-pause');
+  const btnResume = document.getElementById('btn-timer-resume');
+  const btnStop = document.getElementById('btn-timer-stop');
+  const btnCancel = document.getElementById('btn-timer-cancel');
+  const activeBadgeName = document.getElementById('active-lesson-name');
+  const searchInput = document.getElementById('lesson-search-input');
+  const countBadge = document.getElementById('lesson-stats-count-badge');
+
+  if (active && active.isRunning) {
+    if (activeBadgeName) activeBadgeName.textContent = active.lessonName;
+    if (searchInput && !searchInput.value) searchInput.value = active.lessonName;
+    currentLessonSelected.name = active.lessonName;
+    currentLessonSelected.chapterId = active.chapterId;
+
+    if (btnStart) btnStart.style.display = 'none';
+    if (active.isPaused) {
+      if (btnPause) btnPause.style.display = 'none';
+      if (btnResume) btnResume.style.display = 'inline-flex';
+    } else {
+      if (btnPause) btnPause.style.display = 'inline-flex';
+      if (btnResume) btnResume.style.display = 'none';
+    }
+    if (btnStop) btnStop.style.display = 'inline-flex';
+    if (btnCancel) btnCancel.style.display = 'inline-flex';
+  } else {
+    if (btnStart) btnStart.style.display = 'inline-flex';
+    if (btnPause) btnPause.style.display = 'none';
+    if (btnResume) btnResume.style.display = 'none';
+    if (btnStop) btnStop.style.display = 'none';
+    if (btnCancel) btnCancel.style.display = 'none';
+
+    if (activeBadgeName) {
+      activeBadgeName.textContent = currentLessonSelected.name || 'Aucune leçon choisie';
+    }
+  }
+
+  // 1. Summary Table per Lesson
+  const summaryContainer = document.getElementById('lesson-summary-table-container');
+  const summaries = lessonTracker.getLessonSummaries();
+  if (countBadge) {
+    countBadge.textContent = `${summaries.length} leçon${summaries.length > 1 ? 's' : ''} enregistrée${summaries.length > 1 ? 's' : ''}`;
+  }
+
+  if (summaryContainer) {
+    if (summaries.length === 0) {
+      summaryContainer.innerHTML = `
+        <div class="stats-empty-state" style="padding: 24px 16px;">
+          <i data-lucide="clock"></i>
+          <div>
+            <div style="font-weight:700;color:#ffffff;margin-bottom:4px;">Aucune leçon chronométrée pour le moment</div>
+            <div style="font-size:0.8rem;color:var(--text-muted);">Choisissez un cours ci-dessus et cliquez sur <strong>Démarrer</strong> pour lancer votre premier chronomètre !</div>
+          </div>
+        </div>
+      `;
+    } else {
+      const maxDuration = Math.max(...summaries.map(s => s.totalDurationSeconds || 0), 1);
+      let tableHtml = `
+        <table class="lesson-summary-table">
+          <thead>
+            <tr>
+              <th>Leçon / Cours</th>
+              <th>Temps Cumulé</th>
+              <th>Sessions</th>
+              <th>Dernière Étude</th>
+              <th>Part relative</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      summaries.forEach(s => {
+        const pct = Math.round((s.totalDurationSeconds / maxDuration) * 100);
+        const lastDateFormatted = s.lastSessionDateStr ? formatDateFr(s.lastSessionDateStr) : '--';
+        tableHtml += `
+          <tr>
+            <td>
+              <span class="table-lesson-name">
+                <i data-lucide="book-open" style="width:14px;height:14px;color:var(--cyan);flex-shrink:0;"></i>
+                <span>${escapeHtml(s.lessonName)}</span>
+              </span>
+            </td>
+            <td>
+              <span class="table-time-pill">${formatDuration(s.totalDurationSeconds)}</span>
+            </td>
+            <td>
+              <span class="table-sessions-badge">${s.sessionsCount} session${s.sessionsCount > 1 ? 's' : ''}</span>
+            </td>
+            <td style="color:var(--text-muted);font-size:0.78rem;">
+              ${escapeHtml(lastDateFormatted)}
+            </td>
+            <td>
+              <div class="table-progress-wrap">
+                <div class="table-progress-track">
+                  <div class="table-progress-bar" style="width: ${pct}%;"></div>
+                </div>
+                <span style="font-size:0.75rem;color:var(--text-dim);width:32px;text-align:right;">${pct}%</span>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+
+      tableHtml += `</tbody></table>`;
+      summaryContainer.innerHTML = tableHtml;
+    }
+  }
+
+  // 2. Recent Sessions List
+  const sessionsContainer = document.getElementById('lesson-sessions-list');
+  const recentSessions = lessonTracker.getSessions().slice(0, 15);
+
+  if (sessionsContainer) {
+    if (recentSessions.length === 0) {
+      sessionsContainer.innerHTML = `
+        <div style="text-align:center;padding:16px;color:var(--text-dim);font-size:0.8rem;">
+          L'historique des sessions apparaîtra ici après votre premier chronométrage.
+        </div>
+      `;
+    } else {
+      let sessionsHtml = '';
+      recentSessions.forEach(sess => {
+        const dateFormatted = sess.dateStr ? formatDateFr(sess.dateStr) : '';
+        const timeObj = sess.endTime ? new Date(sess.endTime) : null;
+        const timeStr = timeObj ? timeObj.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '';
+        sessionsHtml += `
+          <div class="lesson-session-row">
+            <div class="session-left-meta">
+              <span class="session-lesson-title">${escapeHtml(sess.lessonName)}</span>
+              <span class="session-date-time">${escapeHtml(dateFormatted)}${timeStr ? ' à ' + timeStr : ''}</span>
+            </div>
+            <div class="session-right-actions">
+              <span class="session-duration-tag">${formatDuration(sess.durationSeconds)}</span>
+              <button type="button" class="btn-delete-session" data-session-id="${escapeHtml(sess.id)}" title="Supprimer cette session">
+                <i data-lucide="trash-2" style="width:14px;height:14px;"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      });
+      sessionsContainer.innerHTML = sessionsHtml;
+
+      // Attach delete click handlers
+      sessionsContainer.querySelectorAll('.btn-delete-session').forEach(btn => {
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          const sessId = btn.dataset.sessionId;
+          if (confirm('Voulez-vous supprimer cette session de travail ?')) {
+            lessonTracker.deleteSession(sessId);
+            renderLessonTrackerUI();
+            firebaseSyncService.pushState();
+          }
+        };
+      });
+    }
+  }
+
+  updateLessonTimerTick();
+  refreshLucide();
+}
+
+function setupLessonTrackerEventListeners() {
+  const searchInput = document.getElementById('lesson-search-input');
+  const clearBtn = document.getElementById('btn-clear-lesson-input');
+  const dropdown = document.getElementById('lesson-dropdown');
+  const dropdownItems = document.getElementById('lesson-dropdown-items');
+
+  function renderDropdown(filterText = '') {
+    if (!dropdown || !dropdownItems) return;
+    const cleanFilter = (filterText || '').trim().toLowerCase();
+    const matches = allChapters.filter(ch => {
+      if (!cleanFilter) return true;
+      return (ch.title || '').toLowerCase().includes(cleanFilter);
+    });
+
+    let itemsHtml = '';
+    matches.forEach(ch => {
+      itemsHtml += `
+        <div class="lesson-dropdown-item" data-chapter-id="${escapeHtml(ch.id)}" data-chapter-title="${escapeHtml(ch.title)}">
+          <span>${escapeHtml(ch.title)}</span>
+          <span class="item-badge">${ch.count || 0} QCM</span>
+        </div>
+      `;
+    });
+
+    // Custom choice option if input has text
+    if (cleanFilter.length > 0) {
+      itemsHtml = `
+        <div class="lesson-dropdown-item custom-choice" data-chapter-id="" data-chapter-title="${escapeHtml(filterText.trim())}">
+          <span>✏️ Utiliser « <strong>${escapeHtml(filterText.trim())}</strong> »</span>
+          <span class="item-badge">Nom libre</span>
+        </div>
+      ` + itemsHtml;
+    }
+
+    if (!itemsHtml) {
+      itemsHtml = `
+        <div class="lesson-dropdown-item custom-choice" data-chapter-id="" data-chapter-title="${escapeHtml(filterText.trim())}">
+          <span>✏️ Utiliser « <strong>${escapeHtml(filterText.trim())}</strong> »</span>
+          <span class="item-badge">Nom libre</span>
+        </div>
+      `;
+    }
+
+    dropdownItems.innerHTML = itemsHtml;
+    dropdown.style.display = 'flex';
+
+    // Item click
+    dropdownItems.querySelectorAll('.lesson-dropdown-item').forEach(item => {
+      item.onclick = (e) => {
+        e.stopPropagation();
+        const title = item.dataset.chapterTitle;
+        const chId = item.dataset.chapterId || null;
+        currentLessonSelected.name = title;
+        currentLessonSelected.chapterId = chId;
+        if (searchInput) searchInput.value = title;
+        if (clearBtn) clearBtn.style.display = 'block';
+        const activeNameEl = document.getElementById('active-lesson-name');
+        if (activeNameEl) activeNameEl.textContent = title;
+        dropdown.style.display = 'none';
+      };
+    });
+  }
+
+  if (searchInput) {
+    searchInput.oninput = () => {
+      const val = searchInput.value;
+      if (clearBtn) clearBtn.style.display = val ? 'block' : 'none';
+      currentLessonSelected.name = val.trim();
+      currentLessonSelected.chapterId = null;
+      const activeNameEl = document.getElementById('active-lesson-name');
+      if (activeNameEl) activeNameEl.textContent = val.trim() || 'Aucune leçon choisie';
+      renderDropdown(val);
+    };
+
+    searchInput.onfocus = () => {
+      renderDropdown(searchInput.value);
+    };
+  }
+
+  if (clearBtn) {
+    clearBtn.onclick = () => {
+      if (searchInput) searchInput.value = '';
+      clearBtn.style.display = 'none';
+      currentLessonSelected.name = '';
+      currentLessonSelected.chapterId = null;
+      const activeNameEl = document.getElementById('active-lesson-name');
+      if (activeNameEl) activeNameEl.textContent = 'Aucune leçon choisie';
+      if (dropdown) dropdown.style.display = 'none';
+    };
+  }
+
+  // Close dropdown on outside click
+  document.addEventListener('click', (e) => {
+    if (dropdown && !dropdown.contains(e.target) && searchInput && e.target !== searchInput) {
+      dropdown.style.display = 'none';
+    }
+  });
+
+  // Action Buttons
+  const btnStart = document.getElementById('btn-timer-start');
+  if (btnStart) {
+    btnStart.onclick = () => {
+      const name = currentLessonSelected.name || searchInput?.value?.trim();
+      if (!name) {
+        alert('Veuillez sélectionner ou taper le nom d\'une leçon avant de démarrer le chronomètre.');
+        if (searchInput) searchInput.focus();
+        return;
+      }
+      currentLessonSelected.name = name;
+      lessonTracker.startTimer(currentLessonSelected.name, currentLessonSelected.chapterId);
+      renderLessonTrackerUI();
+      updateLessonTimerTick();
+      firebaseSyncService.pushState();
+    };
+  }
+
+  const btnPause = document.getElementById('btn-timer-pause');
+  if (btnPause) {
+    btnPause.onclick = () => {
+      lessonTracker.pauseTimer();
+      renderLessonTrackerUI();
+      updateLessonTimerTick();
+    };
+  }
+
+  const btnResume = document.getElementById('btn-timer-resume');
+  if (btnResume) {
+    btnResume.onclick = () => {
+      lessonTracker.resumeTimer();
+      renderLessonTrackerUI();
+      updateLessonTimerTick();
+    };
+  }
+
+  const btnStop = document.getElementById('btn-timer-stop');
+  if (btnStop) {
+    btnStop.onclick = () => {
+      const session = lessonTracker.stopAndSaveSession();
+      if (session) {
+        renderLessonTrackerUI();
+        updateLessonTimerTick();
+        firebaseSyncService.pushState();
+      } else {
+        alert('Session trop courte (moins de 1 seconde) : non enregistrée.');
+        renderLessonTrackerUI();
+        updateLessonTimerTick();
+      }
+    };
+  }
+
+  const btnCancel = document.getElementById('btn-timer-cancel');
+  if (btnCancel) {
+    btnCancel.onclick = () => {
+      if (confirm('Voulez-vous vraiment annuler ce chronomètre sans enregistrer le temps ?')) {
+        lessonTracker.cancelTimer();
+        renderLessonTrackerUI();
+        updateLessonTimerTick();
+      }
+    };
+  }
+
+  // Header quick badge click
+  const headerBadge = document.getElementById('active-lesson-header-badge');
+  if (headerBadge) {
+    headerBadge.onclick = () => {
+      switchView('stats');
+      setTimeout(() => {
+        const sec = document.getElementById('lesson-tracker-section');
+        if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 150);
+    };
+  }
 }
 
 // ============================================================================

@@ -15,6 +15,7 @@ const DEFAULT_FIREBASE_CONFIG = {
 
 import { slimNote } from './queueEngine.js';
 import { studyTracker } from './studyTracker.js';
+import { lessonTracker } from './lessonTracker.js';
 
 function toSlimNote(note) {
   if (typeof slimNote === 'function') return slimNote(note);
@@ -113,6 +114,13 @@ export function mergeStates(local, remote) {
   if (remote.studyHistory && typeof remote.studyHistory === 'object') {
     if (typeof studyTracker !== 'undefined' && studyTracker && typeof studyTracker.mergeHistory === 'function') {
       studyTracker.mergeHistory(remote.studyHistory);
+    }
+  }
+
+  // Merge lesson sessions across devices non-destructively
+  if (remote.lessonSessions && Array.isArray(remote.lessonSessions)) {
+    if (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.mergeSessions === 'function') {
+      lessonTracker.mergeSessions(remote.lessonSessions);
     }
   }
 
@@ -604,6 +612,9 @@ export class FirebaseSyncService {
         studyHistory: (typeof studyTracker !== 'undefined' && studyTracker && typeof studyTracker.getRawHistory === 'function')
           ? studyTracker.getRawHistory()
           : (state.studyHistory || {}),
+        lessonSessions: (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.getRawSessions === 'function')
+          ? lessonTracker.getRawSessions()
+          : (state.lessonSessions || []),
         userEmail: this.user.email || '',
         userDisplayName: this.user.displayName || '',
         lastClientTimestamp: Date.now(),

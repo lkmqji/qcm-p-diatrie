@@ -4430,6 +4430,590 @@ body {
   }
 }
 
+/* ==========================================================================
+   MODULE: CHRONOMÈTRE & SUIVI DU TEMPS PAR LEÇON
+   ========================================================================== */
+
+/* Active Lesson Header Badge */
+.active-lesson-header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(16, 185, 129, 0.15));
+  border: 1px solid rgba(0, 212, 255, 0.35);
+  border-radius: var(--radius-full);
+  padding: 6px 12px;
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.15);
+  transition: var(--transition);
+  max-width: 220px;
+}
+
+.active-lesson-header-badge:hover {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.25), rgba(16, 185, 129, 0.25));
+  border-color: var(--cyan);
+  box-shadow: 0 0 16px rgba(0, 212, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.active-lesson-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--emerald);
+  box-shadow: 0 0 8px var(--emerald);
+  flex-shrink: 0;
+  animation: lessonPulse 1.6s infinite ease-in-out;
+}
+
+@keyframes lessonPulse {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 12px var(--emerald); }
+  100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+.header-lesson-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90px;
+  color: var(--cyan);
+}
+
+.header-lesson-time {
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 700;
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+/* Lesson Tracker Main Panel */
+.lesson-tracker-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: relative;
+}
+
+/* Interactive Timer Card */
+.lesson-timer-card {
+  background: var(--bg-surface);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: var(--radius-md);
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.lesson-timer-top {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lesson-select-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  width: 100%;
+}
+
+.lesson-field-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.lesson-input-combobox {
+  position: relative;
+  width: 100%;
+}
+
+.lesson-input-wrap {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.lesson-text-input {
+  width: 100%;
+  background: var(--bg-deep);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  padding: 10px 36px 10px 14px;
+  outline: none;
+  transition: var(--transition);
+}
+
+.lesson-text-input:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 12px var(--cyan-glow);
+}
+
+.btn-input-clear {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: var(--transition);
+}
+
+.btn-input-clear:hover {
+  color: var(--rose);
+}
+
+/* Autocomplete Dropdown */
+.lesson-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-active);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  z-index: 100;
+  max-height: 260px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: fadeIn 0.15s ease-out;
+}
+
+.lesson-dropdown-header {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.25);
+  border-bottom: 1px solid var(--border-subtle);
+  letter-spacing: 0.5px;
+}
+
+.lesson-dropdown-list {
+  overflow-y: auto;
+  max-height: 220px;
+}
+
+.lesson-dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 14px;
+  font-size: 0.84rem;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: background 0.15s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.lesson-dropdown-item:hover,
+.lesson-dropdown-item.highlighted {
+  background: rgba(0, 212, 255, 0.12);
+  color: var(--cyan);
+}
+
+.lesson-dropdown-item .item-badge {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  background: var(--bg-deep);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.lesson-dropdown-item.custom-choice {
+  color: var(--emerald);
+  font-weight: 600;
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.lesson-dropdown-item.custom-choice:hover {
+  background: rgba(16, 185, 129, 0.18);
+}
+
+/* Active Lesson Display Badge */
+.active-lesson-display-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-deep);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.active-badge-label {
+  color: var(--text-muted);
+}
+
+.active-badge-name {
+  font-weight: 700;
+  color: var(--cyan);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Big Digital Clock Display */
+.lesson-digital-clock-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+}
+
+.lesson-digital-clock {
+  font-family: 'Outfit', 'Courier New', monospace;
+  font-size: 3.4rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #ffffff;
+  text-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+  line-height: 1;
+}
+
+.lesson-clock-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.clock-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.clock-status-dot.status-idle { background: var(--text-dim); }
+.clock-status-dot.status-running {
+  background: var(--emerald);
+  box-shadow: 0 0 8px var(--emerald);
+  animation: lessonPulse 1.4s infinite ease-in-out;
+}
+.clock-status-dot.status-paused { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+
+/* Control Action Buttons */
+.lesson-timer-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn-timer-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-heading);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-timer-action svg {
+  width: 17px;
+  height: 17px;
+}
+
+.btn-timer-start {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+}
+.btn-timer-start:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  box-shadow: 0 0 16px var(--emerald-glow);
+  transform: translateY(-1px);
+}
+
+.btn-timer-pause {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #ffffff;
+}
+.btn-timer-pause:hover {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  box-shadow: 0 0 16px var(--amber-glow);
+  transform: translateY(-1px);
+}
+
+.btn-timer-resume {
+  background: linear-gradient(135deg, #00d4ff, #0284c7);
+  color: #070b14;
+}
+.btn-timer-resume:hover {
+  background: linear-gradient(135deg, #38bdf8, #0369a1);
+  box-shadow: 0 0 16px var(--cyan-glow);
+  transform: translateY(-1px);
+}
+
+.btn-timer-stop {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: #ffffff;
+}
+.btn-timer-stop:hover {
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  box-shadow: 0 0 16px var(--purple-glow);
+  transform: translateY(-1px);
+}
+
+.btn-timer-cancel {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: var(--rose);
+}
+.btn-timer-cancel:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: var(--rose);
+}
+
+/* Sub-table Headers */
+.lesson-subtable-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #ffffff;
+  margin-bottom: 12px;
+}
+
+/* Summary Table Wrap */
+.lesson-summary-table-wrap {
+  width: 100%;
+}
+
+.lesson-table-container {
+  overflow-x: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+}
+
+.lesson-summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  text-align: left;
+}
+
+.lesson-summary-table th {
+  background: var(--bg-deep);
+  color: var(--text-muted);
+  font-weight: 700;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  white-space: nowrap;
+}
+
+.lesson-summary-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: var(--text-main);
+  vertical-align: middle;
+}
+
+.lesson-summary-table tr:hover td {
+  background: rgba(0, 212, 255, 0.04);
+}
+
+.table-lesson-name {
+  font-weight: 600;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.table-time-pill {
+  font-family: 'Outfit', 'Courier New', monospace;
+  font-weight: 700;
+  color: var(--cyan);
+  background: rgba(0, 212, 255, 0.12);
+  border: 1px solid rgba(0, 212, 255, 0.25);
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.table-sessions-badge {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  background: var(--bg-deep);
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+}
+
+.table-progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 140px;
+}
+
+.table-progress-track {
+  flex: 1;
+  height: 6px;
+  background: var(--bg-deep);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.table-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cyan), var(--emerald));
+  border-radius: 3px;
+}
+
+/* Recent Sessions List */
+.lesson-recent-sessions-wrap {
+  width: 100%;
+}
+
+.lesson-sessions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.lesson-session-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  transition: var(--transition);
+}
+
+.lesson-session-row:hover {
+  border-color: rgba(0, 212, 255, 0.3);
+  background: var(--bg-card);
+}
+
+.session-left-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.session-lesson-title {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.session-date-time {
+  font-size: 0.74rem;
+  color: var(--text-dim);
+}
+
+.session-right-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.session-duration-tag {
+  font-family: 'Outfit', monospace;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--emerald);
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.btn-delete-session {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+}
+
+.btn-delete-session:hover {
+  color: var(--rose);
+  background: rgba(239, 68, 68, 0.12);
+}
+
+@media (max-width: 600px) {
+  .lesson-digital-clock {
+    font-size: 2.5rem;
+  }
+  .active-lesson-header-badge {
+    max-width: 150px;
+    padding: 4px 8px;
+    font-size: 0.72rem;
+  }
+  .header-lesson-name {
+    max-width: 55px;
+  }
+  .btn-timer-action {
+    flex: 1 1 45%;
+    justify-content: center;
+  }
+  .table-progress-wrap {
+    min-width: 80px;
+  }
+}
+
+
 </style>
 </head>
 <body>
@@ -4465,6 +5049,13 @@ body {
           <span class="pulse-dot"></span>
         </button>
 
+        <!-- Active Lesson Floating Quick Badge in Header -->
+        <button class="active-lesson-header-badge" id="active-lesson-header-badge" style="display:none;" title="Chronomètre de leçon en cours • Cliquer pour voir les détails">
+          <span class="active-lesson-pulse-dot"></span>
+          <i data-lucide="timer" style="width:14px;height:14px;"></i>
+          <span class="header-lesson-name" id="header-lesson-name">--</span>
+          <span class="header-lesson-time" id="header-lesson-time">00:00:00</span>
+        </button>
 
         <!-- Stats & Progress Tracking Quick Link -->
         <button class="icon-btn" id="btn-open-stats-icon" title="Statistiques & Progression d'étude">
@@ -4986,6 +5577,104 @@ body {
           <div class="daily-timeline-list" id="stats-daily-timeline">
             <!-- Liste des jours injectée dynamiquement -->
           </div>
+        </div>
+
+        <!-- Section: Chronomètre & Suivi du Temps par Leçon -->
+        <div class="stats-panel-box lesson-tracker-panel" id="lesson-tracker-section">
+          <div class="panel-box-header">
+            <div class="panel-box-title">
+              <i data-lucide="timer" style="color:var(--cyan);"></i>
+              <span>Chronomètre d'Étude &amp; Temps Passé par Leçon</span>
+            </div>
+            <div class="panel-box-count" id="lesson-stats-count-badge">0 leçon enregistrée</div>
+          </div>
+
+          <!-- Zone Interactive du Minuteur / Chronomètre -->
+          <div class="lesson-timer-card">
+            <div class="lesson-timer-top">
+              <div class="lesson-select-wrapper">
+                <label class="lesson-field-label" for="lesson-search-input">
+                  <i data-lucide="book-open" style="width:14px;height:14px;color:var(--emerald);"></i>
+                  <span>Choisir ou nommer une leçon :</span>
+                </label>
+                <div class="lesson-input-combobox">
+                  <div class="lesson-input-wrap">
+                    <input type="text" id="lesson-search-input" class="lesson-text-input" placeholder="Rechercher un cours (ex: Bronchiolites, Asthme...) ou saisir un nom libre" autocomplete="off" />
+                    <button type="button" id="btn-clear-lesson-input" class="btn-input-clear" style="display:none;" title="Effacer">&times;</button>
+                  </div>
+                  <!-- Dropdown with chapters and custom option -->
+                  <div class="lesson-dropdown" id="lesson-dropdown" style="display:none;">
+                    <div class="lesson-dropdown-header">Chapitres de pédiatrie (35) :</div>
+                    <div class="lesson-dropdown-list" id="lesson-dropdown-items">
+                      <!-- Injected dynamically -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Selected Lesson Tag Badge -->
+              <div class="active-lesson-display-badge" id="active-lesson-display-badge">
+                <span class="active-badge-label">Leçon sélectionnée :</span>
+                <span class="active-badge-name" id="active-lesson-name">Aucune leçon choisie</span>
+              </div>
+            </div>
+
+            <!-- Big Digital Stopwatch Display -->
+            <div class="lesson-digital-clock-wrap">
+              <div class="lesson-digital-clock" id="lesson-digital-clock">00:00:00</div>
+              <div class="lesson-clock-status" id="lesson-clock-status">
+                <span class="clock-status-dot status-idle" id="lesson-clock-dot"></span>
+                <span id="lesson-status-text">Prêt à démarrer</span>
+              </div>
+            </div>
+
+            <!-- Action Controls -->
+            <div class="lesson-timer-actions">
+              <button type="button" class="btn-timer-action btn-timer-start" id="btn-timer-start">
+                <i data-lucide="play"></i>
+                <span>Démarrer</span>
+              </button>
+              <button type="button" class="btn-timer-action btn-timer-pause" id="btn-timer-pause" style="display:none;">
+                <i data-lucide="pause"></i>
+                <span>Pause</span>
+              </button>
+              <button type="button" class="btn-timer-action btn-timer-resume" id="btn-timer-resume" style="display:none;">
+                <i data-lucide="play-circle"></i>
+                <span>Reprendre</span>
+              </button>
+              <button type="button" class="btn-timer-action btn-timer-stop" id="btn-timer-stop" style="display:none;">
+                <i data-lucide="check"></i>
+                <span>Terminer &amp; Enregistrer</span>
+              </button>
+              <button type="button" class="btn-timer-action btn-timer-cancel" id="btn-timer-cancel" style="display:none;" title="Annuler sans sauvegarder">
+                <i data-lucide="trash-2"></i>
+                <span>Annuler</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Tableau Récapitulatif par Leçon -->
+          <div class="lesson-summary-table-wrap">
+            <div class="lesson-subtable-title">
+              <i data-lucide="table" style="width:16px;height:16px;color:var(--emerald);"></i>
+              <span>Cumul du Temps Passé par Leçon</span>
+            </div>
+            <div class="lesson-table-container" id="lesson-summary-table-container">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Historique des Sessions Récentes de Leçons -->
+          <div class="lesson-recent-sessions-wrap">
+            <div class="lesson-subtable-title">
+              <i data-lucide="history" style="width:16px;height:16px;color:var(--purple);"></i>
+              <span>Sessions Récentes Enregistrées</span>
+            </div>
+            <div class="lesson-sessions-list" id="lesson-sessions-list">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
         </div>
 
       </section>

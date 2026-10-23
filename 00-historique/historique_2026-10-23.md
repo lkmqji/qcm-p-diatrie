@@ -97,3 +97,40 @@
     - Recompilation avec `node build-bundle.cjs` : régénération de `src/app.bundle.js` (224 KB), `index.html` (4.52 MB) et réplication dans `dist/`.
     - Validation de la syntaxe JS avec `node -c`.
 
+---
+
+## 2026-10-23 14:30 - Implémentation du Chronomètre d'Étude & Suivi du Temps par Leçon (Méthode Wail)
+
+- **Fonctionnalité ajoutée** :
+  - Ajout d'une section dédiée complète en bas de la page de statistiques (`view-stats`) permettant de chronométrer le temps passé sur chaque leçon (cours magistral, polycopiés, fiches).
+  - Sélection intelligente de cours :
+    - Sélecteur avec barre de recherche instantanée filtrant parmi les 35 chapitres officiels de pédiatrie.
+    - Prise en charge de la saisie 100% libre pour nommer n'importe quelle leçon ou sous-chapitre personnalisé.
+  - Chronomètre progressif (Stopwatch) :
+    - Grand affichage digital moderne format LCD `00:00:00` avec états dynamiques (Prêt, En cours, En pause).
+    - Contrôles complets : Démarrer, Pause, Reprendre, Terminer & Enregistrer, Annuler.
+  - Persistance en tâche de fond & Navigation sans interruption :
+    - Le chronomètre continue de tourner en arrière-plan même en changeant d'onglet ou en naviguant dans l'arène de QCM.
+    - Mini-badge flottant interactif dans le header (`#active-lesson-header-badge`) affichant le nom du cours et le temps écoulé en direct avec animation de pulsation.
+    - Un simple clic sur le badge ramène instantanément l'étudiant vers le panneau du minuteur.
+  - Analytics & Restitution détaillée par leçon :
+    - Tableau récapitulatif synthétique : liste des leçons étudiées, temps total cumulé, nombre de sessions, date de dernière session, barre relative de progression.
+    - Historique chronologique des sessions récentes avec date, durée et bouton de suppression individuelle pour corriger d'éventuelles erreurs.
+  - Synchronisation Cloud Firebase Firestore :
+    - Sauvegarde automatique des sessions de leçon dans Firestore (`lessonSessions`).
+    - Fusion multi-appareils non destructive pour synchroniser les sessions entre smartphone, tablette et PC.
+
+- **Composants et Fichiers Développés / Modifiés** :
+  1. `src/services/lessonTracker.js` (NOUVEAU) : Moteur de chronomètre persistant, gestion de l'état actif, agrégation des statistiques par leçon et fusion Cloud.
+  2. `template.html` : Mini-badge header `#active-lesson-header-badge` et section HTML `#lesson-tracker-section` (sélecteur avec recherche, affichage digital, boutons tactiles, tableau récapitulatif, liste des sessions).
+  3. `src/style.css` : Design System médical complet dark mode (badge pulsant dans le header, grand affichage digital avec lueur cyan, sélecteur autocomplete, boutons d'action ergonomiques, tableau responsive).
+  4. `src/app.js` : Contrôleur UI, boucle de rafraîchissement 1 seconde (`setInterval`), recherche autocomplete filtrable, gestion des actions du chronomètre et intégration dans `renderStatsUI()`.
+  5. `src/services/firebaseSyncService.js` : Inclusion de `lessonSessions` dans `progressToSave` et fusion `mergeSessions` lors de la synchronisation multi-appareils.
+  6. `build-bundle.cjs` : Intégration de `lessonTracker.js` dans le pipeline de bundling automatique.
+
+- **Validation & Contrôle Qualité** :
+  - Compilation réussie du bundle unifié `src/app.bundle.js` (249 Ko) et `dist/index.html` (4.7 Mo).
+  - Validation de la syntaxe JS sur tous les fichiers via `node -c` (0 erreur).
+  - Test unitaire automatisé du cycle de vie du chronomètre sous Node.js (démarrage, pause, reprise, annulation) validé à 100%.
+
+

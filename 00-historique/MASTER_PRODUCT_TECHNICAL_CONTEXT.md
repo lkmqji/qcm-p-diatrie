@@ -34,7 +34,8 @@ qcm-p-diatrie/
 │   ├── services/
 │   │   ├── gemini.js                     # Service IA Gemini 3.8 Flash (évaluation & raisonnement)
 │   │   ├── queueEngine.js                # Algorithme de file active et répétition espacée
-│   │   ├── studyTracker.js               # Suivi du progrès journalier, chronométrage & sessions
+│   │   ├── studyTracker.js               # Suivi du progrès journalier, chronométrage & sessions QCM
+│   │   ├── lessonTracker.js              # Chronomètre persistant et suivi du temps d'étude par leçon
 │   │   ├── firebaseSyncService.js        # Auth Google & synchronisation bidirectionnelle Firestore
 │   │   └── syncService.js                # Service de synchronisation générique
 │   ├── app.js                            # Contrôleur d'interface, gestion des vues et événements
@@ -199,6 +200,27 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet pour me
 - **Barre de recherche & synthèse dynamique** :
   - Recherche instantanée par mot-clé sur les questions, propositions, explications et raisonnements IA.
   - Synthèse `#notebook-summary-bar` reflétant en direct le nombre de questions, d'analyses et le rappel du tri actif (`Tri : [Critère] ([Croissant/Décroissant])`).
+
+### 3.8. Chronomètre & Suivi du Temps par Leçon (`src/services/lessonTracker.js` & `view-stats`)
+Module dédié au chronométrage autonome de l'apprentissage par cours (polycopiés, fiches, cours magistraux) intégré en bas de la page de statistiques :
+- **Moteur de Chronométrage Persistant (`LessonTracker`)** :
+  - **Chronomètre progressif (Stopwatch)** : Compteur dynamique `00:00:00` avec fonctions Démarrer, Pause, Reprendre, Terminer & Enregistrer, et Annuler.
+  - **Calcul persistant par delta d'horodatage (`startTimestamp` & `accumulatedMs`)** : Même si l'étudiant quitte la page de stats, navigue dans l'arène ou ferme temporairement l'application, le temps continue de tourner en tâche de fond sans décalage ni perte de secondes.
+  - **Enregistrement des sessions** : Clé locale `pedia_lesson_sessions_v1` avec `{ id, lessonName, chapterId, startTime, endTime, durationSeconds, dateStr }`.
+  - **Agrégation analytique par leçon (`getLessonSummaries`)** : Cumul total du temps passé par cours, nombre de sessions effectuées, date de dernière révision et calcul de part relative.
+- **Sélecteur Intelligent avec Barre de Recherche** :
+  - Recherche instantanée filtrable parmi les 35 chapitres officiels de pédiatrie avec compteurs de QCM associés.
+  - Prise en charge de la saisie 100% libre permettant de nommer n'importe quel cours ou sous-thème spécifique (ex: « Polycopié Asthme », « Fiche Prise en charge Déshydratation »).
+- **Mini-Badge Flottant dans le Header (`#active-lesson-header-badge`)** :
+  - Visible automatiquement dès qu'un chronomètre est actif sur n'importe quel écran de l'application.
+  - Affiche un voyant vert pulsant, le nom abrégé de la leçon et le chronomètre digital qui s'incrémente en direct.
+  - Clic interactif redirigeant automatiquement l'étudiant vers la section du chronomètre dans `view-stats` avec défilement fluide.
+- **Restitution & Tableaux de Bord** :
+  - **Tableau récapitulatif par leçon** : Nom du cours, temps total cumulé sous forme de badge digital, nombre de sessions, date de dernière session, et barre de progression visuelle émeraude/cyan.
+  - **Historique des sessions récentes** : Liste chronologique des dernières sessions avec horodatage détaillé, durée et bouton de suppression individuelle pour éliminer les sessions parasites.
+- **Synchronisation Cloud Firestore (`lessonSessions`)** :
+  - Synchronisation atomique dans `users/{uid}/pedia/progress`.
+  - Fusion bidirectionnelle non destructive (`mergeSessions`) pour consolider l'historique d'étude entre PC, smartphone et tablette.
 
 ### 3.7. Moteur de Formatage Médical Intelligent (`formatMedicalContent`)
 Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes issus de l'extraction de cours :
