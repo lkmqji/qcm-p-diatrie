@@ -1,7 +1,8 @@
 // Study Progress & Analytics Tracking Service for PédiaDrill
-// Manages daily study history, intelligent sessions, precise question timers, streaks, and analytics.
+// Manages daily study history, intelligent sessions, precise question timers, streaks, first-pass discovery tracking, and analytics.
 
 export const STUDY_HISTORY_KEY = 'pedia_study_history_v1';
+export const FIRST_PASS_KEY = 'pedia_first_pass_records_v1';
 export const INACTIVITY_THRESHOLD_MS = 2 * 60 * 1000; // 2 minutes: pause timer
 export const SESSION_GAP_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes: new session
 export const MAX_QUESTION_TIME_CAP_SEC = 180; // 3 minutes cap per question to prevent outlier skew
@@ -9,6 +10,7 @@ export const MAX_QUESTION_TIME_CAP_SEC = 180; // 3 minutes cap per question to p
 export class StudyTracker {
   constructor() {
     this.history = this.loadHistory();
+    this.firstPassRecords = this.loadFirstPassRecords(); // questionUid -> boolean (true = correct on 1st pass, false = wrong)
     this.currentQuestionStartTime = null;
     this.accumulatedQuestionTimeMs = 0;
     this.isTimerPaused = false;
@@ -39,6 +41,50 @@ export class StudyTracker {
     }
   }
 
+  loadFirstPassRecords() {
+    try {
+      if (typeof localStorage === 'undefined') return {};
+      const raw = localStorage.getItem(FIRST_PASS_KEY);
+      if (!raw) return {};
+      const parsed = JSON.parse(raw);
+      return (parsed && typeof parsed === 'object') ? parsed : {};
+    } catch (e) {
+      console.warn("Failed to load first-pass records:", e);
+      return {};
+    }
+  }
+
+  saveFirstPassRecords() {
+    try {
+      if (typeof localStorage === 'undefined') return;
+      localStorage.setItem(FIRST_PASS_KEY, JSON.stringify(this.firstPassRecords));
+    } catch (e) {
+      console.warn("Failed to save first-pass records:", e);
+    }
+  }
+
+  /**
+   * Seed first-pass records from pre-existing queueEngine.stats if available
+   */
+  seedFirstPassFromExistingStats(queueStats) {
+    if (!queueStats || typeof queueStats !== 'object') return;
+    let modified = false;
+    for (const [uid, st] of Object.entries(queueStats)) {
+      if (!st || typeof this.firstPassRecords[uid] !== 'undefined') continue;
+      // If questions were answered before tracking:
+      if (st.current > 0 && st.mistakes === 0) {
+        this.firstPassRecords[uid] = true;
+        modified = true;
+      } else if (st.mistakes > 0 && st.current === 0) {
+        this.firstPassRecords[uid] = false;
+        modified = true;
+      }
+    }
+    if (modified) {
+      this.saveFirstPassRecords();
+    }
+  }
+
   getTodayDateStr() {
     const now = new Date();
     const year = now.getFullYear();
@@ -64,6 +110,9 @@ export class StudyTracker {
         totalTimeWrong: 0,
         avgTimeCorrect: 0,
         avgTimeWrong: 0,
+        firstPassQuestions: 0,
+        firstPassCorrect: 0,
+        firstPassWrong: 0,
         chaptersStats: {}, // chapterId -> { correct: 0, wrong: 0, timeSeconds: 0 }
         lastActivityTimestamp: Date.now()
       };
@@ -122,7 +171,7 @@ export class StudyTracker {
    * Called when a question is answered (right or wrong)
    * Returns elapsed time in seconds for this question
    */
-  recordAnswer(isCorrect, chapterId = 'general') {
+  recordAnswer(isCorrect, chapterId = 'general', questionUid = null) {
     const now = Date.now();
     let durationMs = this.accumulatedQuestionTimeMs;
 
@@ -149,6 +198,19 @@ export class StudyTracker {
     } else {
       day.wrongAnswers += 1;
       day.totalTimeWrong = (day.totalTimeWrong || 0) + durationSeconds;
+    }
+
+    // First-pass discovery tracking (unique question encounter)
+    if (questionUid && typeof this.firstPassRecords[questionUid] === 'undefined') {
+      this.firstPassRecords[questionUid] = !!isCorrect;
+      this.saveFirstPassRecords();
+
+      day.firstPassQuestions = (day.firstPassQuestions || 0) + 1;
+      if (isCorrect) {
+        day.firstPassCorrect = (day.firstPassCorrect || 0) + 1;
+      } else {
+        day.firstPassWrong = (day.firstPassWrong || 0) + 1;
+      }
     }
 
     // Averages
@@ -186,6 +248,39 @@ export class StudyTracker {
 
     this.saveHistory();
     return durationSeconds;
+  }
+
+  /**
+   * First pass accuracy analytics across all recorded unique questions
+   */
+  getFirstPassAnalytics() {
+    const records = Object.values(this.firstPassRecords);
+    const total = records.length;
+    const correct = records.filter(r => r === true).length;
+    const wrong = total - correct;
+    const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
+    return {
+      total,
+      correct,
+      wrong,
+      pct
+    };
+  }
+
+  /**
+   * First pass analytics for a specific subset of days
+   */
+  getFirstPassInDays(days = []) {
+    let total = 0;
+    let correct = 0;
+    let wrong = 0;
+    for (const d of days) {
+      total += (d.firstPassQuestions || 0);
+      correct += (d.firstPassCorrect || 0);
+      wrong += (d.firstPassWrong || 0);
+    }
+    const pct = total > 0 ? Math.round((correct / total) * 100) : 0;
+    return { total, correct, wrong, pct };
   }
 
   /**
@@ -294,6 +389,7 @@ export class StudyTracker {
     const avgTimeWrong = totalWrong > 0 ? Math.round((totalTimeWrong / totalWrong) * 10) / 10 : 0;
 
     const streak = this.getStreakMetrics();
+    const firstPass = this.getFirstPassAnalytics();
 
     return {
       totalDaysActive: days.filter(d => d.totalQuestions > 0).length,
@@ -309,17 +405,25 @@ export class StudyTracker {
       currentStreak: streak.currentStreak,
       maxStreak: streak.maxStreak,
       isStudiedToday: streak.isStudiedToday,
+      firstPass,
       chapterTotals,
       days
     };
   }
 
   /**
-   * Get days filtered by range: '7' | '30' | 'all'
+   * Get days filtered by range: 'today' | '7' | '30' | 'all'
    */
   getDaysByRange(range = '30') {
+    if (range === 'today') {
+      const todayStr = this.getTodayDateStr();
+      return [this.getOrCreateDayRecord(todayStr)];
+    }
+
     const allDays = Object.values(this.history).sort((a, b) => a.dateStr.localeCompare(b.dateStr));
-    if (range === 'all') return allDays;
+    if (range === 'all') {
+      return allDays.length > 0 ? allDays : [this.getOrCreateDayRecord(this.getTodayDateStr())];
+    }
 
     const numDays = parseInt(range, 10) || 30;
     const now = new Date();
@@ -339,6 +443,53 @@ export class StudyTracker {
         totalTimeSeconds: 0,
         sessionsCount: 0,
         avgTimePerQuestion: 0,
+        firstPassQuestions: 0,
+        firstPassCorrect: 0,
+        firstPassWrong: 0,
+        chaptersStats: {}
+      });
+    }
+
+    return result;
+  }
+
+  /**
+   * Get days filtered by custom date range: [startDateStr, endDateStr]
+   */
+  getDaysByCustomRange(startDateStr, endDateStr) {
+    if (!startDateStr || !endDateStr) return this.getDaysByRange('7');
+    let start = startDateStr;
+    let end = endDateStr;
+    if (start > end) {
+      [start, end] = [end, start];
+    }
+
+    const partsStart = start.split('-').map(Number);
+    const partsEnd = end.split('-').map(Number);
+    const dStart = new Date(partsStart[0], partsStart[1] - 1, partsStart[2]);
+    const dEnd = new Date(partsEnd[0], partsEnd[1] - 1, partsEnd[2]);
+
+    const result = [];
+    const oneDayMs = 24 * 60 * 60 * 1000;
+    const diffDays = Math.min(365, Math.round((dEnd.getTime() - dStart.getTime()) / oneDayMs));
+
+    for (let i = 0; i <= diffDays; i++) {
+      const cur = new Date(dStart.getTime() + i * oneDayMs);
+      const y = cur.getFullYear();
+      const m = String(cur.getMonth() + 1).padStart(2, '0');
+      const d = String(cur.getDate()).padStart(2, '0');
+      const dateStr = `${y}-${m}-${d}`;
+      result.push(this.history[dateStr] || {
+        dateStr,
+        totalQuestions: 0,
+        correctAnswers: 0,
+        wrongAnswers: 0,
+        totalTimeSeconds: 0,
+        sessionsCount: 0,
+        avgTimePerQuestion: 0,
+        firstPassQuestions: 0,
+        firstPassCorrect: 0,
+        firstPassWrong: 0,
         chaptersStats: {}
       });
     }
@@ -373,6 +524,10 @@ export class StudyTracker {
         lDay.sessionsCount = maxSessions;
         lDay.avgTimePerQuestion = maxQuestions > 0 ? Math.round((maxTime / maxQuestions) * 10) / 10 : 0;
         lDay.lastActivityTimestamp = Math.max(lDay.lastActivityTimestamp || 0, rDay.lastActivityTimestamp || 0);
+
+        lDay.firstPassQuestions = Math.max(lDay.firstPassQuestions || 0, rDay.firstPassQuestions || 0);
+        lDay.firstPassCorrect = Math.max(lDay.firstPassCorrect || 0, rDay.firstPassCorrect || 0);
+        lDay.firstPassWrong = Math.max(lDay.firstPassWrong || 0, rDay.firstPassWrong || 0);
 
         // Merge chapter stats
         if (rDay.chaptersStats) {

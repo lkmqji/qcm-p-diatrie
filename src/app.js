@@ -70,6 +70,7 @@ const modals = {
 // ============================================================================
 function initApp() {
   queueEngine.setQuestions(allQuestions, allChapters);
+  studyTracker.seedFirstPassFromExistingStats(queueEngine.stats);
   updateDashboardUI();
   setupEventListeners();
   setupKeyboardShortcuts();
@@ -1507,7 +1508,7 @@ function handleAnswerSuccess(score = null, feedback = null, customLetters = null
 
   const result = queueEngine.handleSuccess(currentQuestion.uid);
   queueEngine.incrementTodayCount();
-  studyTracker.recordAnswer(true, currentQuestion ? currentQuestion.chapterId : null);
+  studyTracker.recordAnswer(true, currentQuestion ? currentQuestion.chapterId : null, currentQuestion ? currentQuestion.uid : null);
   updateArenaDailyBadge();
   firebaseSyncService.triggerAutoPush();
 
@@ -1580,7 +1581,7 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
   pushToAnsweredHistory(currentQuestion, userAnswerLetters, false, score);
 
   const result = queueEngine.handleFailure(currentQuestion.uid);
-  studyTracker.recordAnswer(false, currentQuestion ? currentQuestion.chapterId : null);
+  studyTracker.recordAnswer(false, currentQuestion ? currentQuestion.chapterId : null, currentQuestion ? currentQuestion.uid : null);
   // Seules les réponses justes incrémentent le compteur journalier de QCM
   updateArenaDailyBadge();
   firebaseSyncService.triggerAutoPush();
@@ -2243,7 +2244,9 @@ function applyChapterSelection() {
 // ============================================================================
 // STUDY PROGRESS & ANALYTICS INFOGRAPHIC ENGINE
 // ============================================================================
-let currentStatsRange = '7'; // '7' | '30' | 'all'
+let currentStatsRange = '7'; // 'today' | '7' | '30' | 'all' | 'custom'
+let customStatsStart = '';
+let customStatsEnd = '';
 
 function formatDuration(totalSeconds) {
   if (!totalSeconds || totalSeconds <= 0) return '0m';
@@ -2272,7 +2275,17 @@ function renderStatsUI() {
   const globalAnalytics = studyTracker.getGlobalAnalytics();
   const todayStr = studyTracker.getTodayDateStr();
   const todayRecord = studyTracker.getOrCreateDayRecord(todayStr);
-  const rangeDays = studyTracker.getDaysByRange(currentStatsRange);
+
+  let rangeDays;
+  if (currentStatsRange === 'today') {
+    rangeDays = studyTracker.getDaysByRange('today');
+  } else if (currentStatsRange === 'custom') {
+    const start = customStatsStart || document.getElementById('custom-date-start')?.value || todayStr;
+    const end = customStatsEnd || document.getElementById('custom-date-end')?.value || todayStr;
+    rangeDays = studyTracker.getDaysByCustomRange(start, end);
+  } else {
+    rangeDays = studyTracker.getDaysByRange(currentStatsRange);
+  }
 
   // 1. Hero KPIs
   const streakDaysEl = document.getElementById('kpi-streak-days');
@@ -2289,6 +2302,26 @@ function renderStatsUI() {
   const accSubEl = document.getElementById('kpi-accuracy-sub');
   if (accEl) accEl.textContent = `${globalAnalytics.accuracyPct}%`;
   if (accSubEl) accSubEl.textContent = `${formatNumber(globalAnalytics.totalCorrect)} justes • ${formatNumber(globalAnalytics.totalWrong)} fautes`;
+
+  // First Pass (Découverte) KPI Card
+  const fpCardPct = document.getElementById('kpi-first-pass-pct');
+  const fpCardSub = document.getElementById('kpi-first-pass-sub');
+  const fpData = (currentStatsRange === 'all')
+    ? studyTracker.getFirstPassAnalytics()
+    : studyTracker.getFirstPassInDays(rangeDays);
+
+  if (fpCardPct) {
+    fpCardPct.textContent = fpData.total > 0 ? `${fpData.pct}%` : (globalAnalytics.firstPass?.total > 0 ? `${globalAnalytics.firstPass.pct}%` : '--%');
+  }
+  if (fpCardSub) {
+    if (fpData.total > 0) {
+      fpCardSub.textContent = `${fpData.correct}/${fpData.total} découverts`;
+    } else if (globalAnalytics.firstPass?.total > 0) {
+      fpCardSub.textContent = `${globalAnalytics.firstPass.correct}/${globalAnalytics.firstPass.total} global`;
+    } else {
+      fpCardSub.textContent = '0 découverte';
+    }
+  }
 
   const timeEl = document.getElementById('kpi-total-time');
   const sessSubEl = document.getElementById('kpi-sessions-sub');
@@ -2410,9 +2443,19 @@ function renderStatsActivityChart(rangeDays) {
   const totalRange = rangeDays.length;
   const chartTitleEl = document.getElementById('activity-chart-title');
   if (chartTitleEl) {
-    chartTitleEl.textContent = totalRange <= 7
-      ? 'Activité des 7 derniers jours (Volume, Justes vs Fautes & Vélocité)'
-      : (totalRange <= 30 ? 'Activité des 30 derniers jours' : 'Historique complet d\'activité');
+    if (currentStatsRange === 'today') {
+      chartTitleEl.textContent = "Activité d'Aujourd'hui (Bilan de la journée)";
+    } else if (currentStatsRange === 'custom') {
+      const firstStr = rangeDays[0]?.dateStr ? formatDateFr(rangeDays[0].dateStr) : '';
+      const lastStr = rangeDays[rangeDays.length - 1]?.dateStr ? formatDateFr(rangeDays[rangeDays.length - 1].dateStr) : '';
+      chartTitleEl.textContent = `Activité Personnalisée (${firstStr} ➔ ${lastStr})`;
+    } else if (totalRange <= 7) {
+      chartTitleEl.textContent = 'Activité des 7 derniers jours (Volume, Justes vs Fautes & Vélocité)';
+    } else if (totalRange <= 30) {
+      chartTitleEl.textContent = 'Activité des 30 derniers jours';
+    } else {
+      chartTitleEl.textContent = "Historique complet d'activité";
+    }
   }
 
   if (rangeDays.length === 0) {
@@ -2717,15 +2760,51 @@ function setupEventListeners() {
 
   // Stats range toggle buttons
   const rangeToggle = document.getElementById('stats-range-toggle');
+  const customPicker = document.getElementById('custom-range-picker');
+  const customStartInput = document.getElementById('custom-date-start');
+  const customEndInput = document.getElementById('custom-date-end');
+  const btnApplyCustom = document.getElementById('btn-apply-custom-range');
+
   if (rangeToggle) {
     rangeToggle.querySelectorAll('.range-btn').forEach(btn => {
       btn.onclick = () => {
         rangeToggle.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        currentStatsRange = btn.dataset.range || '7';
-        renderStatsUI();
+        const r = btn.dataset.range || '7';
+        currentStatsRange = r;
+
+        if (r === 'custom') {
+          if (customPicker) {
+            customPicker.style.display = 'flex';
+            const today = studyTracker.getTodayDateStr();
+            if (customEndInput && !customEndInput.value) customEndInput.value = today;
+            if (customStartInput && !customStartInput.value) {
+              const d = new Date();
+              d.setDate(d.getDate() - 7);
+              const y = d.getFullYear();
+              const m = String(d.getMonth() + 1).padStart(2, '0');
+              const day = String(d.getDate()).padStart(2, '0');
+              customStartInput.value = `${y}-${m}-${day}`;
+            }
+          }
+        } else {
+          if (customPicker) customPicker.style.display = 'none';
+          renderStatsUI();
+        }
       };
     });
+  }
+
+  if (btnApplyCustom) {
+    btnApplyCustom.onclick = () => {
+      customStatsStart = customStartInput?.value || '';
+      customStatsEnd = customEndInput?.value || '';
+      if (!customStatsStart || !customStatsEnd) {
+        alert('Veuillez sélectionner une date de début et une date de fin.');
+        return;
+      }
+      renderStatsUI();
+    };
   }
 
   // Auto-pause timer when tab is hidden or phone goes to lock screen

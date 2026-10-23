@@ -55,3 +55,24 @@
   - Vérification de la syntaxe de tous les fichiers JavaScript via `node -c` : 0 erreur.
   - Tests automatisés des calculs de streak, moyennes et fusion : 100% validé.
   - Compilation réussie du bundle de production (215 Ko) et d'`index.html` (4.5 Mo).
+
+### 10:50 - Ajout des filtres temporels « Aujourd'hui » & « Personnalisé » et du KPI « Réussite 1er Passage (Découverte) »
+
+- **Retours utilisateur traités** :
+  1. *Filtres de période temporelle* :
+     - Ajout de l'option « **Aujourd'hui** » (`data-range="today"`) dans le sélecteur de période pour isoler instantanément le bilan de la journée en cours.
+     - Ajout de l'option « **Personnalisé 📅** » (`data-range="custom"`) avec panneau de sélection par dates (`custom-range-picker`), deux sélecteurs `[Du] [Au]` (`<input type="date">`) et un bouton de validation `[Filtrer]`.
+     - Adaptation dynamique du titre du graphique combiné et des axes selon la période choisie (journée seule, personnalisée, 7j, 30j ou historique complet).
+  2. *Tracker de Réussite au 1er Passage (Découverte de question)* :
+     - Ajout d'une 6ème Hero KPI Card : **Réussite 1er Passage (Découverte)** (`accent-teal`), affichant le pourcentage de questions réussies du premier coup lors de leur toute première apparition.
+     - **Règle métier stricte** : Seule la première réponse jamais formulée sur un `questionUid` donné est enregistrée dans `pedia_first_pass_records_v1`. Les répétitions ultérieures (2ème passage, 3ème validation SRS) n'affectent pas ce taux, permettant à l'étudiant d'évaluer son niveau réel à la découverte face à des questions inédites.
+     - Rétro-amorçage automatique (`seedFirstPassFromExistingStats`) depuis les états préexistants de `queueEngine.stats` pour les questions déjà résolues.
+     - Prise en charge des deux modes d'affichage : taux de découverte sur la période temporelle sélectionnée vs taux global tous cours confondus.
+
+- **Fichiers modifiés** :
+  - `src/services/studyTracker.js` : constantes `FIRST_PASS_KEY`, persistance `firstPassRecords`, méthodes `seedFirstPassFromExistingStats`, `getFirstPassAnalytics`, `getFirstPassInDays`, `getDaysByRange('today')` et `getDaysByCustomRange(start, end)`.
+  - `template.html` : boutons `Aujourd'hui` et `Personnalisé 📅`, panneau `.custom-range-picker` avec inputs date, 6ème KPI card `#kpi-first-pass-pct`.
+  - `src/style.css` : styles pour `.stats-range-wrap`, `.custom-range-picker`, `.date-input`, `.btn-apply-range`, `.stat-kpi-card.accent-teal`, et réajustement de `.stats-kpi-grid` (minmax 160px).
+  - `src/app.js` : passage de `questionUid` dans `recordAnswer`, amorçage au lancement, gestion des clics de range, mise à jour du KPI de premier passage et du titre de graphique.
+  - `build-bundle.cjs` : recompilation du bundle client unifié et synchronisation `dist/index.html`.
+

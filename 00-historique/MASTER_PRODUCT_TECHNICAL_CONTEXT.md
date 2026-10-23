@@ -157,19 +157,25 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet pour me
   - **Pause automatique** : Si l'utilisateur change d'onglet ou verrouille son téléphone (`visibilitychange` / `document.hidden`), ou après 2 minutes d'inactivité, le chronomètre se met en pause.
   - **Détection des sessions** : Une nouvelle session d'étude est automatiquement comptabilisée dès qu'une pause dépasse 5 minutes (`SESSION_GAP_THRESHOLD_MS = 5 * 60 * 1000`).
   - **Plafonnement de sécurité** : Chaque question est plafonnée à 180 secondes maximum pour éviter toute dérive statistique si le terminal reste allumé sans interaction.
-- **Métriques Héroïques (5 KPI Cards)** :
+- **Métriques Héroïques (6 KPI Cards)** :
   1. 🔥 **Study Streak** : Série de jours consécutifs d'entraînement et record historique.
   2. 📝 **Questions Faites** : Volume total répondu et volume accompli aujourd'hui.
   3. 🎯 **Taux de Précision** : Pourcentage global de bonnes réponses (`correct / total * 100`).
-  4. ⏱️ **Temps Total d'Étude** : Temps cumulé au format lisible (`Xh Ym`) et nombre de sessions actives.
-  5. ⚡ **Vélocité Moyenne** : Vitesse en secondes par QCM, segmentée sur les réussites vs sur les erreurs.
+  4. ✨ **Réussite 1er Passage (Découverte)** : Pourcentage de réussite lors de la toute première confrontation à une question (`pedia_first_pass_records_v1`), ignorant strictement les 2èmes et 3èmes passages de révision espacée.
+  5. ⏱️ **Temps Total d'Étude** : Temps cumulé au format lisible (`Xh Ym`) et nombre de sessions actives.
+  6. ⚡ **Vélocité Moyenne** : Vitesse en secondes par QCM, segmentée sur les réussites vs sur les erreurs.
+- **Sélecteur Temporel Multi-Périodes (`stats-range-toggle` & `custom-range-picker`)** :
+  - **Aujourd'hui** : Isole les métriques et l'activité de la journée en cours.
+  - **7 jours** / **30 jours** : Fenêtre glissante hebdomadaire ou mensuelle.
+  - **Tout** : Historique global depuis le premier jour d'entraînement.
+  - **Personnalisé 📅** : Panneau rétractable avec sélecteurs de dates `[Du] [Au]` permettant d'analyser n'importe quel intervalle calendaire.
 - **Heatmap d'Activité Style GitHub (60 à 90 jours)** :
   - Grille SVG responsive de 7 lignes (jours de la semaine) x 9 colonnes (semaines) avec 5 paliers d'intensité de couleur (`#121d33` neutre, `#064e3b`, `#047857`, `#10b981`, `#00d4ff` intensif).
   - Infobulles contextuelles `<title>` affichant la date, le nombre de questions, les réussites et le temps passé.
 - **Graphique Combiné SVG Interactif (Bilan Journalier)** :
   - Barres empilées par date : Émeraude pour les réponses justes, Rose pour les fautes.
   - Courbe ambre superposée pour l'évolution de la vitesse de réponse (secondes/QCM).
-  - Sélecteur de période temporelle : 7 jours, 30 jours, ou Historique complet (`Tout`).
+  - Titre dynamique et mise à l'échelle automatique selon la période choisie (journée seule, personnalisée, 7j, 30j ou historique complet).
 - **Projection Dynamique Concours J-28 (10/11)** :
   - Calcule automatiquement la cadence observée (QCM/jour actif) et estime la date d'achèvement de l'ensemble du programme des 1 905 questions.
   - Alerte de motivation : félicite si la cadence est supérieure à l'objectif ou indique le nombre de QCM/jour à maintenir pour être prêt le 10/11.
@@ -177,8 +183,8 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet pour me
   - Classement des cours par taux de maîtrise : Top 4 des points forts vs Top 4 des révisions prioritaires avec barres de progression colorées.
 - **Journal Quotidien Détaillé** :
   - Timeline ordonnée (du plus récent au plus ancien) listant chaque jour d'entraînement avec badge « Aujourd'hui », volume, justes, fautes, durée et sessions.
-- **Synchronisation Cloud Multi-Appareils (`studyHistory`)** :
-  - Stockage local dans `localStorage` sous `pedia_study_history_v1`.
+- **Synchronisation Cloud Multi-Appareils (`studyHistory` & `firstPassRecords`)** :
+  - Stockage local dans `localStorage` sous `pedia_study_history_v1` et `pedia_first_pass_records_v1`.
   - Synchronisation bidirectionnelle automatique dans Google Cloud Firestore (`users/{uid}/pedia/progress`).
   - Fusion non destructive (`mergeHistory`) assurant la conservation des sessions entre PC, tablette et smartphone Android.
   - Badge de date : `📅 JJ/MM HH:MM` (`stat-date`).

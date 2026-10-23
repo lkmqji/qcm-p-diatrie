@@ -3776,6 +3776,14 @@ body {
 }
 
 /* Range Toggle */
+.stats-range-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  position: relative;
+}
+
 .stats-range-toggle {
   display: flex;
   align-items: center;
@@ -3797,6 +3805,7 @@ body {
   border-radius: var(--radius-full);
   cursor: pointer;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .range-btn:hover {
@@ -3811,10 +3820,78 @@ body {
   box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
 }
 
+/* Custom Range Picker Panel */
+.custom-range-picker {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-active);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4), 0 0 12px rgba(0, 212, 255, 0.15);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  animation: fadeIn 0.2s ease-out;
+  z-index: 10;
+}
+
+.custom-range-inputs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.date-field-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.date-field-label {
+  font-weight: 600;
+}
+
+.date-input {
+  background: var(--bg-deep);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  padding: 5px 8px;
+  font-size: 0.78rem;
+  font-family: var(--font-body);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.date-input:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+}
+
+.btn-apply-range {
+  background: linear-gradient(135deg, #00d4ff, #0284c7);
+  color: #051024;
+  font-weight: 700;
+  font-size: 0.76rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+}
+
+.btn-apply-range:hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0, 212, 255, 0.4);
+}
+
 /* Hero KPIs Grid */
 .stats-kpi-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 12px;
   width: 100%;
 }
@@ -3863,6 +3940,15 @@ body {
 .stat-kpi-card.accent-emerald .kpi-icon-wrap {
   color: var(--emerald);
   background: rgba(16, 185, 129, 0.15);
+}
+
+.stat-kpi-card.accent-teal {
+  background: linear-gradient(145deg, rgba(20, 184, 166, 0.1), var(--bg-surface) 60%);
+  border-color: rgba(20, 184, 166, 0.3);
+}
+.stat-kpi-card.accent-teal .kpi-icon-wrap {
+  color: #14b8a6;
+  background: rgba(20, 184, 166, 0.18);
 }
 
 .stat-kpi-card.accent-purple {
