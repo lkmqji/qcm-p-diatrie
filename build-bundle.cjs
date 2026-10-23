@@ -26,6 +26,7 @@ function cleanModuleCode(code) {
 
 let gemini = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'services', 'gemini.js'), 'utf8'));
 let queue = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'services', 'queueEngine.js'), 'utf8'));
+let tracker = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'services', 'studyTracker.js'), 'utf8'));
 let sync = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'services', 'firebaseSyncService.js'), 'utf8'));
 let app = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'app.js'), 'utf8'));
 
@@ -36,6 +37,8 @@ const bundle = `// ==========================================
 ${gemini}
 
 ${queue}
+
+${tracker}
 
 ${sync}
 

@@ -1,5 +1,5 @@
 # PédiaDrill — Master Product & Technical Context
-*Dernière mise à jour : 2026-10-21 07:40:00 CET*
+*Dernière mise à jour : 2026-10-23 10:10:00 CET*
 *Source unique de vérité technique et fonctionnelle du projet PédiaDrill.*
 
 ---
@@ -34,6 +34,7 @@ qcm-p-diatrie/
 │   ├── services/
 │   │   ├── gemini.js                     # Service IA Gemini 3.8 Flash (évaluation & raisonnement)
 │   │   ├── queueEngine.js                # Algorithme de file active et répétition espacée
+│   │   ├── studyTracker.js               # Suivi du progrès journalier, chronométrage & sessions
 │   │   ├── firebaseSyncService.js        # Auth Google & synchronisation bidirectionnelle Firestore
 │   │   └── syncService.js                # Service de synchronisation générique
 │   ├── app.js                            # Contrôleur d'interface, gestion des vues et événements
@@ -148,6 +149,38 @@ Lorsqu'une réponse est incorrecte (dans la modale d'erreur ou dans le carnet) :
 - **Badges contextuels sur chaque fiche de question** :
   - Badge de rang : `#N` (en mode continu).
   - Badge de fautes : `⚠️ X faute(s)` (`stat-mistakes`).
+
+### 3.7. Suivi du Progrès d'Étude & Infographies Analytiques (`view-stats` & `src/services/studyTracker.js`)
+La vue dédiée `view-stats` offre un tableau de bord analytique complet pour mesurer la progression vers le concours :
+- **Chronométrage Intelligent & Gestion des Sessions (`StudyTracker`)** :
+  - **Démarrage automatique** : Au chargement de chaque question dans l'arène (`loadNextArenaQuestion`), le chronomètre s'active.
+  - **Pause automatique** : Si l'utilisateur change d'onglet ou verrouille son téléphone (`visibilitychange` / `document.hidden`), ou après 2 minutes d'inactivité, le chronomètre se met en pause.
+  - **Détection des sessions** : Une nouvelle session d'étude est automatiquement comptabilisée dès qu'une pause dépasse 5 minutes (`SESSION_GAP_THRESHOLD_MS = 5 * 60 * 1000`).
+  - **Plafonnement de sécurité** : Chaque question est plafonnée à 180 secondes maximum pour éviter toute dérive statistique si le terminal reste allumé sans interaction.
+- **Métriques Héroïques (5 KPI Cards)** :
+  1. 🔥 **Study Streak** : Série de jours consécutifs d'entraînement et record historique.
+  2. 📝 **Questions Faites** : Volume total répondu et volume accompli aujourd'hui.
+  3. 🎯 **Taux de Précision** : Pourcentage global de bonnes réponses (`correct / total * 100`).
+  4. ⏱️ **Temps Total d'Étude** : Temps cumulé au format lisible (`Xh Ym`) et nombre de sessions actives.
+  5. ⚡ **Vélocité Moyenne** : Vitesse en secondes par QCM, segmentée sur les réussites vs sur les erreurs.
+- **Heatmap d'Activité Style GitHub (60 à 90 jours)** :
+  - Grille SVG responsive de 7 lignes (jours de la semaine) x 9 colonnes (semaines) avec 5 paliers d'intensité de couleur (`#121d33` neutre, `#064e3b`, `#047857`, `#10b981`, `#00d4ff` intensif).
+  - Infobulles contextuelles `<title>` affichant la date, le nombre de questions, les réussites et le temps passé.
+- **Graphique Combiné SVG Interactif (Bilan Journalier)** :
+  - Barres empilées par date : Émeraude pour les réponses justes, Rose pour les fautes.
+  - Courbe ambre superposée pour l'évolution de la vitesse de réponse (secondes/QCM).
+  - Sélecteur de période temporelle : 7 jours, 30 jours, ou Historique complet (`Tout`).
+- **Projection Dynamique Concours J-28 (10/11)** :
+  - Calcule automatiquement la cadence observée (QCM/jour actif) et estime la date d'achèvement de l'ensemble du programme des 1 905 questions.
+  - Alerte de motivation : félicite si la cadence est supérieure à l'objectif ou indique le nombre de QCM/jour à maintenir pour être prêt le 10/11.
+- **Analyse Clinique par Chapitres** :
+  - Classement des cours par taux de maîtrise : Top 4 des points forts vs Top 4 des révisions prioritaires avec barres de progression colorées.
+- **Journal Quotidien Détaillé** :
+  - Timeline ordonnée (du plus récent au plus ancien) listant chaque jour d'entraînement avec badge « Aujourd'hui », volume, justes, fautes, durée et sessions.
+- **Synchronisation Cloud Multi-Appareils (`studyHistory`)** :
+  - Stockage local dans `localStorage` sous `pedia_study_history_v1`.
+  - Synchronisation bidirectionnelle automatique dans Google Cloud Firestore (`users/{uid}/pedia/progress`).
+  - Fusion non destructive (`mergeHistory`) assurant la conservation des sessions entre PC, tablette et smartphone Android.
   - Badge de date : `📅 JJ/MM HH:MM` (`stat-date`).
   - Badge de score CROQ : `Score : X%` (`stat-score`).
   - Sélecteur d'historique de tentatives multiples avec dates, scores et switch instantané d'onglets.
@@ -374,7 +407,7 @@ Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes
   - **Fichier servi par Vercel** : Conformément à `vercel.json` (`"routes": [{ "src": "/(.*)", "dest": "/index.html" }]`), Vercel sert directement le fichier racine `index.html`.
   - **Assemblage obligatoire** : Toute modification apportée aux sources dans `src/` doit être compilée via `node build-bundle.cjs` qui synchronise à la fois `src/app.bundle.js`, `index.html` (racine pour Vercel) et `dist/index.html` (pour le build mobile et PWA).
   - **Protocole de validation syntaxique pré-déploiement** :
-    1. Validation des sources : `node -c src/services/gemini.js`, `node -c src/services/queueEngine.js`, `node -c src/app.js`.
+    1. Validation des sources : `node -c src/services/gemini.js`, `node -c src/services/queueEngine.js`, `node -c src/services/studyTracker.js`, `node -c src/services/firebaseSyncService.js`, `node -c src/app.js`.
     2. Validation du bundle généré : `node -c src/app.bundle.js`.
     3. Validation des balises `<script>` intégrées dans `index.html` via script Node VM.
     4. Cela garantit un chargement sans erreur (`SyntaxError`) évitant le blocage de l'initialisation du DOM et des métriques (`--`).

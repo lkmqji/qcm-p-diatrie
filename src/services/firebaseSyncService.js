@@ -14,6 +14,7 @@ const DEFAULT_FIREBASE_CONFIG = {
 };
 
 import { slimNote } from './queueEngine.js';
+import { studyTracker } from './studyTracker.js';
 
 function toSlimNote(note) {
   if (typeof slimNote === 'function') return slimNote(note);
@@ -107,6 +108,13 @@ export function mergeStates(local, remote) {
     dateStr: todayStr,
     count: Math.max(localToday, remoteToday)
   };
+
+  // Merge study history across devices non-destructively
+  if (remote.studyHistory && typeof remote.studyHistory === 'object') {
+    if (typeof studyTracker !== 'undefined' && studyTracker && typeof studyTracker.mergeHistory === 'function') {
+      studyTracker.mergeHistory(remote.studyHistory);
+    }
+  }
 
   return merged;
 }
@@ -593,6 +601,9 @@ export class FirebaseSyncService {
         selectedChapterIds: state.selectedChapterIds || [],
         totalMistakesCount: state.totalMistakesCount || 0,
         todayTracker: state.todayTracker || null,
+        studyHistory: (typeof studyTracker !== 'undefined' && studyTracker && typeof studyTracker.getRawHistory === 'function')
+          ? studyTracker.getRawHistory()
+          : (state.studyHistory || {}),
         userEmail: this.user.email || '',
         userDisplayName: this.user.displayName || '',
         lastClientTimestamp: Date.now(),

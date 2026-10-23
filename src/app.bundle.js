@@ -1044,6 +1044,408 @@ class QueueEngine {
 }
 
 
+// Study Progress & Analytics Tracking Service for PédiaDrill
+// Manages daily study history, intelligent sessions, precise question timers, streaks, and analytics.
+
+const STUDY_HISTORY_KEY = 'pedia_study_history_v1';
+const INACTIVITY_THRESHOLD_MS = 2 * 60 * 1000; // 2 minutes: pause timer
+const SESSION_GAP_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes: new session
+const MAX_QUESTION_TIME_CAP_SEC = 180; // 3 minutes cap per question to prevent outlier skew
+
+class StudyTracker {
+  constructor() {
+    this.history = this.loadHistory();
+    this.currentQuestionStartTime = null;
+    this.accumulatedQuestionTimeMs = 0;
+    this.isTimerPaused = false;
+    this.lastPauseTimestamp = null;
+    this.activeSessionStarted = false;
+    this.lastActionTimestamp = Date.now();
+  }
+
+  loadHistory() {
+    try {
+      if (typeof localStorage === 'undefined') return {};
+      const raw = localStorage.getItem(STUDY_HISTORY_KEY);
+      if (!raw) return {};
+      const parsed = JSON.parse(raw);
+      return (parsed && typeof parsed === 'object') ? parsed : {};
+    } catch (e) {
+      console.warn("Failed to load study history:", e);
+      return {};
+    }
+  }
+
+  saveHistory() {
+    try {
+      if (typeof localStorage === 'undefined') return;
+      localStorage.setItem(STUDY_HISTORY_KEY, JSON.stringify(this.history));
+    } catch (e) {
+      console.warn("Failed to save study history:", e);
+    }
+  }
+
+  getTodayDateStr() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  /**
+   * Get or initialize daily study record
+   */
+  getOrCreateDayRecord(dateStr = this.getTodayDateStr()) {
+    if (!this.history[dateStr]) {
+      this.history[dateStr] = {
+        dateStr,
+        totalQuestions: 0,
+        correctAnswers: 0,
+        wrongAnswers: 0,
+        totalTimeSeconds: 0,
+        sessionsCount: 0,
+        avgTimePerQuestion: 0,
+        totalTimeCorrect: 0,
+        totalTimeWrong: 0,
+        avgTimeCorrect: 0,
+        avgTimeWrong: 0,
+        chaptersStats: {}, // chapterId -> { correct: 0, wrong: 0, timeSeconds: 0 }
+        lastActivityTimestamp: Date.now()
+      };
+    }
+    return this.history[dateStr];
+  }
+
+  /**
+   * Called when a question is displayed in the Arena
+   */
+  startQuestionTimer() {
+    const now = Date.now();
+    const dayRecord = this.getOrCreateDayRecord();
+
+    // Check if we need to increment session count
+    const timeSinceLastAction = now - (dayRecord.lastActivityTimestamp || 0);
+    if (!this.activeSessionStarted || timeSinceLastAction > SESSION_GAP_THRESHOLD_MS) {
+      dayRecord.sessionsCount = (dayRecord.sessionsCount || 0) + 1;
+      this.activeSessionStarted = true;
+    }
+
+    dayRecord.lastActivityTimestamp = now;
+    this.currentQuestionStartTime = now;
+    this.accumulatedQuestionTimeMs = 0;
+    this.isTimerPaused = false;
+    this.lastPauseTimestamp = null;
+    this.lastActionTimestamp = now;
+  }
+
+  /**
+   * Pause timer when user leaves tab/window or becomes inactive
+   */
+  pauseTimer() {
+    if (this.currentQuestionStartTime && !this.isTimerPaused) {
+      const now = Date.now();
+      this.accumulatedQuestionTimeMs += (now - this.currentQuestionStartTime);
+      this.currentQuestionStartTime = null;
+      this.isTimerPaused = true;
+      this.lastPauseTimestamp = now;
+    }
+  }
+
+  /**
+   * Resume timer when user comes back
+   */
+  resumeTimer() {
+    if (this.isTimerPaused) {
+      this.currentQuestionStartTime = Date.now();
+      this.isTimerPaused = false;
+      this.lastPauseTimestamp = null;
+      this.lastActionTimestamp = Date.now();
+    }
+  }
+
+  /**
+   * Called when a question is answered (right or wrong)
+   * Returns elapsed time in seconds for this question
+   */
+  recordAnswer(isCorrect, chapterId = 'general') {
+    const now = Date.now();
+    let durationMs = this.accumulatedQuestionTimeMs;
+
+    if (this.currentQuestionStartTime && !this.isTimerPaused) {
+      durationMs += (now - this.currentQuestionStartTime);
+    }
+
+    // Default to at least 1 second if answered very quickly, and cap at max to avoid idle inflation
+    let durationSeconds = Math.round(durationMs / 1000);
+    if (durationSeconds < 1) durationSeconds = 1;
+    if (durationSeconds > MAX_QUESTION_TIME_CAP_SEC) {
+      durationSeconds = MAX_QUESTION_TIME_CAP_SEC;
+    }
+
+    const todayStr = this.getTodayDateStr();
+    const day = this.getOrCreateDayRecord(todayStr);
+
+    day.totalQuestions += 1;
+    day.totalTimeSeconds += durationSeconds;
+
+    if (isCorrect) {
+      day.correctAnswers += 1;
+      day.totalTimeCorrect = (day.totalTimeCorrect || 0) + durationSeconds;
+    } else {
+      day.wrongAnswers += 1;
+      day.totalTimeWrong = (day.totalTimeWrong || 0) + durationSeconds;
+    }
+
+    // Averages
+    day.avgTimePerQuestion = day.totalQuestions > 0 
+      ? Math.round((day.totalTimeSeconds / day.totalQuestions) * 10) / 10 
+      : 0;
+
+    day.avgTimeCorrect = day.correctAnswers > 0
+      ? Math.round((day.totalTimeCorrect / day.correctAnswers) * 10) / 10
+      : 0;
+
+    day.avgTimeWrong = day.wrongAnswers > 0
+      ? Math.round((day.totalTimeWrong / day.wrongAnswers) * 10) / 10
+      : 0;
+
+    // Chapter breakdown
+    if (chapterId) {
+      if (!day.chaptersStats) day.chaptersStats = {};
+      if (!day.chaptersStats[chapterId]) {
+        day.chaptersStats[chapterId] = { correct: 0, wrong: 0, timeSeconds: 0 };
+      }
+      const ch = day.chaptersStats[chapterId];
+      if (isCorrect) ch.correct += 1;
+      else ch.wrong += 1;
+      ch.timeSeconds += durationSeconds;
+    }
+
+    day.lastActivityTimestamp = now;
+    this.lastActionTimestamp = now;
+
+    // Reset current question timers
+    this.currentQuestionStartTime = null;
+    this.accumulatedQuestionTimeMs = 0;
+    this.isTimerPaused = false;
+
+    this.saveHistory();
+    return durationSeconds;
+  }
+
+  /**
+   * Calculate consecutive days study streak
+   */
+  getStreakMetrics() {
+    const dates = Object.keys(this.history)
+      .filter(d => this.history[d].totalQuestions > 0)
+      .sort();
+
+    if (dates.length === 0) {
+      return { currentStreak: 0, maxStreak: 0, isStudiedToday: false };
+    }
+
+    const todayStr = this.getTodayDateStr();
+    const isStudiedToday = (this.history[todayStr] && this.history[todayStr].totalQuestions > 0);
+
+    // Date math
+    const oneDayMs = 24 * 60 * 60 * 1000;
+    let currentStreak = 0;
+    let maxStreak = 0;
+    let tempStreak = 0;
+
+    // Parse all active dates as midnight timestamps
+    const activeTimestamps = dates.map(d => {
+      const parts = d.split('-').map(Number);
+      return new Date(parts[0], parts[1] - 1, parts[2]).getTime();
+    }).sort((a, b) => a - b);
+
+    // Calculate max streak across all time
+    for (let i = 0; i < activeTimestamps.length; i++) {
+      if (i === 0) {
+        tempStreak = 1;
+      } else {
+        const diffDays = Math.round((activeTimestamps[i] - activeTimestamps[i - 1]) / oneDayMs);
+        if (diffDays === 1) {
+          tempStreak += 1;
+        } else if (diffDays > 1) {
+          tempStreak = 1;
+        }
+      }
+      if (tempStreak > maxStreak) {
+        maxStreak = tempStreak;
+      }
+    }
+
+    // Calculate current streak backwards from today or yesterday
+    const now = new Date();
+    const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const yesterdayMidnight = todayMidnight - oneDayMs;
+
+    let checkTime = isStudiedToday ? todayMidnight : yesterdayMidnight;
+    const activeSet = new Set(activeTimestamps);
+
+    while (activeSet.has(checkTime)) {
+      currentStreak += 1;
+      checkTime -= oneDayMs;
+    }
+
+    return {
+      currentStreak,
+      maxStreak: Math.max(maxStreak, currentStreak),
+      isStudiedToday: !!isStudiedToday
+    };
+  }
+
+  /**
+   * Get aggregated global statistics across all recorded days
+   */
+  getGlobalAnalytics() {
+    const days = Object.values(this.history).sort((a, b) => a.dateStr.localeCompare(b.dateStr));
+    let totalQuestions = 0;
+    let totalCorrect = 0;
+    let totalWrong = 0;
+    let totalTimeSeconds = 0;
+    let totalSessions = 0;
+    let totalTimeCorrect = 0;
+    let totalTimeWrong = 0;
+
+    const chapterTotals = {}; // chapterId -> { correct: 0, wrong: 0, timeSeconds: 0 }
+
+    for (const d of days) {
+      totalQuestions += (d.totalQuestions || 0);
+      totalCorrect += (d.correctAnswers || 0);
+      totalWrong += (d.wrongAnswers || 0);
+      totalTimeSeconds += (d.totalTimeSeconds || 0);
+      totalSessions += (d.sessionsCount || 0);
+      totalTimeCorrect += (d.totalTimeCorrect || 0);
+      totalTimeWrong += (d.totalTimeWrong || 0);
+
+      if (d.chaptersStats) {
+        for (const [chId, st] of Object.entries(d.chaptersStats)) {
+          if (!chapterTotals[chId]) {
+            chapterTotals[chId] = { correct: 0, wrong: 0, timeSeconds: 0 };
+          }
+          chapterTotals[chId].correct += (st.correct || 0);
+          chapterTotals[chId].wrong += (st.wrong || 0);
+          chapterTotals[chId].timeSeconds += (st.timeSeconds || 0);
+        }
+      }
+    }
+
+    const accuracyPct = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+    const avgTimePerQuestion = totalQuestions > 0 ? Math.round((totalTimeSeconds / totalQuestions) * 10) / 10 : 0;
+    const avgTimeCorrect = totalCorrect > 0 ? Math.round((totalTimeCorrect / totalCorrect) * 10) / 10 : 0;
+    const avgTimeWrong = totalWrong > 0 ? Math.round((totalTimeWrong / totalWrong) * 10) / 10 : 0;
+
+    const streak = this.getStreakMetrics();
+
+    return {
+      totalDaysActive: days.filter(d => d.totalQuestions > 0).length,
+      totalQuestions,
+      totalCorrect,
+      totalWrong,
+      accuracyPct,
+      totalTimeSeconds,
+      totalSessions,
+      avgTimePerQuestion,
+      avgTimeCorrect,
+      avgTimeWrong,
+      currentStreak: streak.currentStreak,
+      maxStreak: streak.maxStreak,
+      isStudiedToday: streak.isStudiedToday,
+      chapterTotals,
+      days
+    };
+  }
+
+  /**
+   * Get days filtered by range: '7' | '30' | 'all'
+   */
+  getDaysByRange(range = '30') {
+    const allDays = Object.values(this.history).sort((a, b) => a.dateStr.localeCompare(b.dateStr));
+    if (range === 'all') return allDays;
+
+    const numDays = parseInt(range, 10) || 30;
+    const now = new Date();
+    const result = [];
+
+    for (let i = numDays - 1; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const dateStr = `${year}-${month}-${day}`;
+      result.push(this.history[dateStr] || {
+        dateStr,
+        totalQuestions: 0,
+        correctAnswers: 0,
+        wrongAnswers: 0,
+        totalTimeSeconds: 0,
+        sessionsCount: 0,
+        avgTimePerQuestion: 0,
+        chaptersStats: {}
+      });
+    }
+
+    return result;
+  }
+
+  /**
+   * Merge external study history object (e.g. from Google Cloud Firestore)
+   */
+  mergeHistory(remoteHistory) {
+    if (!remoteHistory || typeof remoteHistory !== 'object') return false;
+
+    for (const [dateStr, rDay] of Object.entries(remoteHistory)) {
+      if (!rDay || typeof rDay !== 'object') continue;
+      const lDay = this.history[dateStr];
+
+      if (!lDay) {
+        this.history[dateStr] = { ...rDay };
+      } else {
+        // Non-destructive combination: retain highest question volume or combine sessions
+        const maxQuestions = Math.max(lDay.totalQuestions || 0, rDay.totalQuestions || 0);
+        const maxCorrect = Math.max(lDay.correctAnswers || 0, rDay.correctAnswers || 0);
+        const maxWrong = Math.max(lDay.wrongAnswers || 0, rDay.wrongAnswers || 0);
+        const maxTime = Math.max(lDay.totalTimeSeconds || 0, rDay.totalTimeSeconds || 0);
+        const maxSessions = Math.max(lDay.sessionsCount || 0, rDay.sessionsCount || 0);
+
+        lDay.totalQuestions = maxQuestions;
+        lDay.correctAnswers = maxCorrect;
+        lDay.wrongAnswers = maxWrong;
+        lDay.totalTimeSeconds = maxTime;
+        lDay.sessionsCount = maxSessions;
+        lDay.avgTimePerQuestion = maxQuestions > 0 ? Math.round((maxTime / maxQuestions) * 10) / 10 : 0;
+        lDay.lastActivityTimestamp = Math.max(lDay.lastActivityTimestamp || 0, rDay.lastActivityTimestamp || 0);
+
+        // Merge chapter stats
+        if (rDay.chaptersStats) {
+          if (!lDay.chaptersStats) lDay.chaptersStats = {};
+          for (const [chId, rCh] of Object.entries(rDay.chaptersStats)) {
+            const lCh = lDay.chaptersStats[chId] || { correct: 0, wrong: 0, timeSeconds: 0 };
+            lCh.correct = Math.max(lCh.correct || 0, rCh.correct || 0);
+            lCh.wrong = Math.max(lCh.wrong || 0, rCh.wrong || 0);
+            lCh.timeSeconds = Math.max(lCh.timeSeconds || 0, rCh.timeSeconds || 0);
+            lDay.chaptersStats[chId] = lCh;
+          }
+        }
+      }
+    }
+
+    this.saveHistory();
+    return true;
+  }
+
+  getRawHistory() {
+    return this.history;
+  }
+}
+
+const studyTracker = new StudyTracker();
+
+
 // Firebase Authentication (Google Sign-In) & Firestore Real-time Sync Service for PédiaDrill
 // Provides seamless multi-device progress sync across PC, Smartphone, and Tablet.
 
@@ -1152,6 +1554,13 @@ function mergeStates(local, remote) {
     dateStr: todayStr,
     count: Math.max(localToday, remoteToday)
   };
+
+  // Merge study history across devices non-destructively
+  if (remote.studyHistory && typeof remote.studyHistory === 'object') {
+    if (typeof studyTracker !== 'undefined' && studyTracker && typeof studyTracker.mergeHistory === 'function') {
+      studyTracker.mergeHistory(remote.studyHistory);
+    }
+  }
 
   return merged;
 }
@@ -1638,6 +2047,9 @@ class FirebaseSyncService {
         selectedChapterIds: state.selectedChapterIds || [],
         totalMistakesCount: state.totalMistakesCount || 0,
         todayTracker: state.todayTracker || null,
+        studyHistory: (typeof studyTracker !== 'undefined' && studyTracker && typeof studyTracker.getRawHistory === 'function')
+          ? studyTracker.getRawHistory()
+          : (state.studyHistory || {}),
         userEmail: this.user.email || '',
         userDisplayName: this.user.displayName || '',
         lastClientTimestamp: Date.now(),
@@ -1769,6 +2181,7 @@ const firebaseSyncService = new FirebaseSyncService(
     // Whenever Firestore data is received and merged
     updateDashboardUI();
     if (currentView === 'notebook') renderNotebookUI();
+    if (currentView === 'stats') renderStatsUI();
     updateArenaDailyBadge();
     updateModalLocalSummary();
     refreshLucide();
@@ -1803,7 +2216,8 @@ function getEffectiveArenaQuestion() {
 const views = {
   dashboard: document.getElementById('view-dashboard'),
   arena: document.getElementById('view-arena'),
-  notebook: document.getElementById('view-notebook')
+  notebook: document.getElementById('view-notebook'),
+  stats: document.getElementById('view-stats')
 };
 
 const modals = {
@@ -1927,6 +2341,8 @@ function switchView(viewName) {
     loadNextArenaQuestion();
   } else if (viewName === 'notebook') {
     renderNotebookUI();
+  } else if (viewName === 'stats') {
+    renderStatsUI();
   }
 
   // Floating AI Tutor button in Arena
@@ -3000,6 +3416,11 @@ function loadNextArenaQuestion() {
   selectedOptionIds.clear();
   isEvaluating = false;
 
+  // Start question timer for study tracking
+  if (currentQuestion) {
+    studyTracker.startQuestionTimer();
+  }
+
   // Reset & update AI chat context for the new question
   arenaChatHistory = [];
   updateArenaChatContext();
@@ -3248,6 +3669,7 @@ function handleAnswerSuccess(score = null, feedback = null, customLetters = null
 
   const result = queueEngine.handleSuccess(currentQuestion.uid);
   queueEngine.incrementTodayCount();
+  studyTracker.recordAnswer(true, currentQuestion ? currentQuestion.chapterId : null);
   updateArenaDailyBadge();
   firebaseSyncService.triggerAutoPush();
 
@@ -3320,8 +3742,10 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
   pushToAnsweredHistory(currentQuestion, userAnswerLetters, false, score);
 
   const result = queueEngine.handleFailure(currentQuestion.uid);
+  studyTracker.recordAnswer(false, currentQuestion ? currentQuestion.chapterId : null);
   // Seules les réponses justes incrémentent le compteur journalier de QCM
   updateArenaDailyBadge();
+  firebaseSyncService.triggerAutoPush();
   isCurrentQuestionAnswered = true;
   window.toggleArenaChapterTitle(true);
 
@@ -3979,6 +4403,461 @@ function applyChapterSelection() {
 }
 
 // ============================================================================
+// STUDY PROGRESS & ANALYTICS INFOGRAPHIC ENGINE
+// ============================================================================
+let currentStatsRange = '7'; // '7' | '30' | 'all'
+
+function formatDuration(totalSeconds) {
+  if (!totalSeconds || totalSeconds <= 0) return '0m';
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  if (hours > 0) {
+    return `${hours}h ${minutes > 0 ? minutes + 'm' : ''}`;
+  }
+  if (minutes > 0) {
+    return `${minutes}m ${seconds > 0 ? seconds + 's' : ''}`;
+  }
+  return `${seconds}s`;
+}
+
+function formatDateFr(dateStr) {
+  if (!dateStr) return '';
+  const parts = dateStr.split('-');
+  if (parts.length !== 3) return dateStr;
+  const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+  const options = { weekday: 'short', day: 'numeric', month: 'short' };
+  return d.toLocaleDateString('fr-FR', options);
+}
+
+function renderStatsUI() {
+  const globalAnalytics = studyTracker.getGlobalAnalytics();
+  const todayStr = studyTracker.getTodayDateStr();
+  const todayRecord = studyTracker.getOrCreateDayRecord(todayStr);
+  const rangeDays = studyTracker.getDaysByRange(currentStatsRange);
+
+  // 1. Hero KPIs
+  const streakDaysEl = document.getElementById('kpi-streak-days');
+  const streakSubEl = document.getElementById('kpi-streak-sub');
+  if (streakDaysEl) streakDaysEl.textContent = globalAnalytics.currentStreak;
+  if (streakSubEl) streakSubEl.textContent = `Record : ${globalAnalytics.maxStreak} jour${globalAnalytics.maxStreak > 1 ? 's' : ''}`;
+
+  const qTotalEl = document.getElementById('kpi-total-questions');
+  const qSubEl = document.getElementById('kpi-questions-sub');
+  if (qTotalEl) qTotalEl.textContent = formatNumber(globalAnalytics.totalQuestions);
+  if (qSubEl) qSubEl.textContent = `${todayRecord.totalQuestions} auj. (${todayRecord.correctAnswers} justes)`;
+
+  const accEl = document.getElementById('kpi-accuracy-pct');
+  const accSubEl = document.getElementById('kpi-accuracy-sub');
+  if (accEl) accEl.textContent = `${globalAnalytics.accuracyPct}%`;
+  if (accSubEl) accSubEl.textContent = `${formatNumber(globalAnalytics.totalCorrect)} justes • ${formatNumber(globalAnalytics.totalWrong)} fautes`;
+
+  const timeEl = document.getElementById('kpi-total-time');
+  const sessSubEl = document.getElementById('kpi-sessions-sub');
+  if (timeEl) timeEl.textContent = formatDuration(globalAnalytics.totalTimeSeconds);
+  if (sessSubEl) sessSubEl.textContent = `${globalAnalytics.totalSessions} session${globalAnalytics.totalSessions > 1 ? 's' : ''} active${globalAnalytics.totalSessions > 1 ? 's' : ''}`;
+
+  const speedEl = document.getElementById('kpi-avg-speed');
+  const speedSubEl = document.getElementById('kpi-speed-sub');
+  if (speedEl) speedEl.textContent = globalAnalytics.avgTimePerQuestion || '--';
+  if (speedSubEl) speedSubEl.textContent = `Justes : ${globalAnalytics.avgTimeCorrect || '--'}s • Fautes : ${globalAnalytics.avgTimeWrong || '--'}s`;
+
+  // 2. Heatmap
+  renderStatsHeatmap(studyTracker.getRawHistory());
+
+  // 3. Activity Chart (Stacked Bars & Velocity curve)
+  renderStatsActivityChart(rangeDays);
+
+  // 4. Velocity breakdown & Exam projection
+  renderStatsVelocityAndProjection(globalAnalytics);
+
+  // 5. Chapters breakdown
+  renderStatsChapters(globalAnalytics.chapterTotals);
+
+  // 6. Daily Timeline
+  renderStatsTimeline(globalAnalytics.days);
+
+  refreshLucide();
+}
+
+/**
+ * Renders GitHub-style activity contribution heatmap for last 60 days
+ */
+function renderStatsHeatmap(history) {
+  const container = document.getElementById('stats-heatmap-container');
+  if (!container) return;
+
+  const now = new Date();
+  const daysCount = 63; // 9 full weeks of 7 days
+  const cellWidth = 14;
+  const cellHeight = 14;
+  const gap = 4;
+  const leftMargin = 34;
+  const topMargin = 22;
+
+  const width = leftMargin + (9 * (cellWidth + gap)) + 10;
+  const height = topMargin + (7 * (cellHeight + gap)) + 6;
+
+  // Build 63 days list ending today
+  const daysList = [];
+  for (let i = daysCount - 1; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const dateStr = `${year}-${month}-${day}`;
+    const dayData = history[dateStr] || null;
+    const dayOfWeek = (d.getDay() + 6) % 7; // 0 = Mon, 6 = Sun
+    daysList.push({ dateStr, dayData, dateObj: d, dayOfWeek });
+  }
+
+  let svgContent = `<svg class="heatmap-svg" viewBox="0 0 ${width} ${height}" style="max-width:100%;height:auto;">`;
+
+  // Day of week labels on left
+  const dayNames = ['Lun', '', 'Mer', '', 'Ven', '', 'Dim'];
+  dayNames.forEach((name, idx) => {
+    if (name) {
+      const y = topMargin + idx * (cellHeight + gap) + 11;
+      svgContent += `<text x="4" y="${y}" fill="#64748b" font-size="9" font-family="var(--font-body)">${name}</text>`;
+    }
+  });
+
+  // Cells grouped by weeks
+  for (let col = 0; col < 9; col++) {
+    for (let row = 0; row < 7; row++) {
+      const itemIndex = col * 7 + row;
+      const item = daysList[itemIndex];
+      if (!item) continue;
+
+      const x = leftMargin + col * (cellWidth + gap);
+      const y = topMargin + row * (cellHeight + gap);
+
+      const total = item.dayData ? (item.dayData.totalQuestions || 0) : 0;
+      const correct = item.dayData ? (item.dayData.correctAnswers || 0) : 0;
+      const wrong = item.dayData ? (item.dayData.wrongAnswers || 0) : 0;
+      const timeSec = item.dayData ? (item.dayData.totalTimeSeconds || 0) : 0;
+
+      let color = '#121d33';
+      let stroke = 'rgba(255,255,255,0.06)';
+      if (total >= 80) { color = '#00d4ff'; stroke = 'none'; }
+      else if (total >= 40) { color = '#10b981'; stroke = 'none'; }
+      else if (total >= 15) { color = '#047857'; stroke = 'none'; }
+      else if (total >= 1) { color = '#064e3b'; stroke = 'none'; }
+
+      const dateLabel = item.dateObj.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
+      const tooltipText = total > 0
+        ? `${dateLabel} : ${total} QCM (${correct} justes, ${wrong} fautes, ${formatDuration(timeSec)})`
+        : `${dateLabel} : Aucun entraînement`;
+
+      svgContent += `
+        <rect class="heatmap-day-cell" x="${x}" y="${y}" width="${cellWidth}" height="${cellHeight}" rx="3" ry="3"
+              fill="${color}" stroke="${stroke}" stroke-width="1">
+          <title>${escapeHtml(tooltipText)}</title>
+        </rect>
+      `;
+    }
+  }
+
+  svgContent += '</svg>';
+  container.innerHTML = svgContent;
+}
+
+/**
+ * Renders combined SVG activity chart (Stacked bars for Justes vs Fautes + Polyline for velocity)
+ */
+function renderStatsActivityChart(rangeDays) {
+  const container = document.getElementById('stats-activity-chart');
+  if (!container) return;
+
+  const totalRange = rangeDays.length;
+  const chartTitleEl = document.getElementById('activity-chart-title');
+  if (chartTitleEl) {
+    chartTitleEl.textContent = totalRange <= 7
+      ? 'Activité des 7 derniers jours (Volume, Justes vs Fautes & Vélocité)'
+      : (totalRange <= 30 ? 'Activité des 30 derniers jours' : 'Historique complet d\'activité');
+  }
+
+  if (rangeDays.length === 0) {
+    container.innerHTML = '<div class="stats-empty-state"><p>Aucune donnée d\'entraînement sur cette période.</p></div>';
+    return;
+  }
+
+  const svgWidth = 840;
+  const svgHeight = 250;
+  const padLeft = 46;
+  const padRight = 50;
+  const padTop = 30;
+  const padBottom = 42;
+
+  const plotW = svgWidth - padLeft - padRight;
+  const plotH = svgHeight - padTop - padBottom;
+
+  const maxQ = Math.max(10, ...rangeDays.map(d => d.totalQuestions || 0));
+  const maxVel = Math.max(60, ...rangeDays.map(d => d.avgTimePerQuestion || 0));
+
+  let svg = `<svg class="chart-svg" viewBox="0 0 ${svgWidth} ${svgHeight}" preserveAspectRatio="none">`;
+
+  // Background Grid Lines (Horizontal)
+  const gridSteps = 4;
+  for (let s = 0; s <= gridSteps; s++) {
+    const yVal = padTop + (plotH / gridSteps) * s;
+    const qValue = Math.round(maxQ - (maxQ / gridSteps) * s);
+    const velValue = Math.round(maxVel - (maxVel / gridSteps) * s);
+
+    svg += `<line x1="${padLeft}" y1="${yVal}" x2="${svgWidth - padRight}" y2="${yVal}" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3" />`;
+    // Left axis label (volume)
+    svg += `<text x="${padLeft - 8}" y="${yVal + 4}" fill="#64748b" font-size="9" text-anchor="end" font-family="var(--font-body)">${qValue}</text>`;
+    // Right axis label (velocity in seconds)
+    if (s < gridSteps) {
+      svg += `<text x="${svgWidth - padRight + 8}" y="${yVal + 4}" fill="#f59e0b" font-size="9" text-anchor="start" font-family="var(--font-body)">${velValue}s</text>`;
+    }
+  }
+
+  const N = rangeDays.length;
+  const colWidth = plotW / N;
+  const barWidth = Math.max(6, Math.min(36, colWidth * 0.65));
+  const velocityPoints = [];
+
+  // Draw Bars
+  rangeDays.forEach((d, i) => {
+    const xCenter = padLeft + (i + 0.5) * colWidth;
+    const xBar = xCenter - barWidth / 2;
+
+    const total = d.totalQuestions || 0;
+    const cor = d.correctAnswers || 0;
+    const wr = d.wrongAnswers || 0;
+    const speed = d.avgTimePerQuestion || 0;
+
+    const hTotal = (total / maxQ) * plotH;
+    const hCor = (cor / maxQ) * plotH;
+    const hWr = (wr / maxQ) * plotH;
+
+    const yCor = padTop + plotH - hCor;
+    const yWr = yCor - hWr;
+
+    const tooltip = `${formatDateFr(d.dateStr)} : ${total} QCM (${cor} justes, ${wr} fautes) • Vitesse : ${speed || '--'}s/QCM`;
+
+    if (total > 0) {
+      // Correct bar (bottom emerald)
+      if (cor > 0) {
+        svg += `
+          <rect class="chart-bar-rect" x="${xBar}" y="${yCor}" width="${barWidth}" height="${Math.max(2, hCor)}" rx="2" fill="var(--emerald)">
+            <title>${escapeHtml(tooltip)}</title>
+          </rect>
+        `;
+      }
+      // Wrong bar (top rose)
+      if (wr > 0) {
+        svg += `
+          <rect class="chart-bar-rect" x="${xBar}" y="${yWr}" width="${barWidth}" height="${Math.max(2, hWr)}" rx="2" fill="var(--rose)">
+            <title>${escapeHtml(tooltip)}</title>
+          </rect>
+        `;
+      }
+    } else {
+      // Empty day placeholder bar
+      svg += `
+        <rect x="${xBar}" y="${padTop + plotH - 3}" width="${barWidth}" height="3" rx="1" fill="rgba(255,255,255,0.06)">
+          <title>${escapeHtml(formatDateFr(d.dateStr))} : Aucun entraînement</title>
+        </rect>
+      `;
+    }
+
+    // Velocity point calculation
+    if (speed > 0) {
+      const yVel = padTop + plotH - (speed / maxVel) * plotH;
+      velocityPoints.push({ x: xCenter, y: yVel, speed, dateStr: d.dateStr });
+    }
+
+    // X-axis date labels (show filtered according to range size)
+    const shouldShowLabel = (N <= 10) || (N <= 31 && i % 3 === 0) || (i === N - 1);
+    if (shouldShowLabel) {
+      const labelText = d.dateStr ? d.dateStr.slice(5).replace('-', '/') : '';
+      svg += `<text x="${xCenter}" y="${svgHeight - padBottom + 16}" fill="#8ca2c4" font-size="9" text-anchor="middle" font-family="var(--font-body)">${labelText}</text>`;
+    }
+  });
+
+  // Draw Velocity curve (amber polyline)
+  if (velocityPoints.length > 1) {
+    const pointsStr = velocityPoints.map(p => `${p.x},${p.y}`).join(' ');
+    svg += `<polyline points="${pointsStr}" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />`;
+    velocityPoints.forEach(p => {
+      svg += `
+        <circle cx="${p.x}" cy="${p.y}" r="3.5" fill="#f59e0b" stroke="#070b14" stroke-width="1.5">
+          <title>${escapeHtml(formatDateFr(p.dateStr))} • Vitesse : ${p.speed} s/QCM</title>
+        </circle>
+      `;
+    });
+  } else if (velocityPoints.length === 1) {
+    const p = velocityPoints[0];
+    svg += `
+      <circle cx="${p.x}" cy="${p.y}" r="4" fill="#f59e0b" stroke="#070b14" stroke-width="1.5">
+        <title>${escapeHtml(formatDateFr(p.dateStr))} • Vitesse : ${p.speed} s/QCM</title>
+      </circle>
+    `;
+  }
+
+  svg += '</svg>';
+  container.innerHTML = svg;
+}
+
+/**
+ * Renders velocity metrics and adaptive countdown projection to November 10 exam
+ */
+function renderStatsVelocityAndProjection(globalAnalytics) {
+  const velCorEl = document.getElementById('stat-vel-correct');
+  const velWrEl = document.getElementById('stat-vel-wrong');
+  const cadenceEl = document.getElementById('stat-cadence-observed');
+  const projTextEl = document.getElementById('stat-exam-projection-text');
+
+  if (velCorEl) velCorEl.textContent = globalAnalytics.avgTimeCorrect ? `${globalAnalytics.avgTimeCorrect} s` : '-- s';
+  if (velWrEl) velWrEl.textContent = globalAnalytics.avgTimeWrong ? `${globalAnalytics.avgTimeWrong} s` : '-- s';
+
+  const activeDays = Math.max(1, globalAnalytics.totalDaysActive);
+  const observedCadence = Math.round(globalAnalytics.totalQuestions / activeDays);
+  if (cadenceEl) cadenceEl.textContent = `${observedCadence} QCM / jour actif`;
+
+  if (!projTextEl) return;
+
+  const dashboardMetrics = queueEngine.getDashboardMetrics();
+  const iterationsRemaining = dashboardMetrics.totalIterationsRequired;
+  const countdown = getExamCountdownMetrics(iterationsRemaining);
+
+  if (observedCadence > 0) {
+    const daysNeeded = Math.ceil(iterationsRemaining / observedCadence);
+    const estDate = new Date();
+    estDate.setDate(estDate.getDate() + daysNeeded);
+    const estDateStr = estDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
+
+    if (daysNeeded <= countdown.daysLeft) {
+      projTextEl.innerHTML = `<strong>🏆 Cadence excellente !</strong> Au rythme observé de <strong>${observedCadence} QCM/jour</strong>, vous aurez validé l'intégralité du programme en <strong>${daysNeeded} jours</strong> (vers le ${estDateStr}), soit avant l'échéance du concours (J-${countdown.daysLeft}) !`;
+    } else {
+      projTextEl.innerHTML = `<strong>⚠️ Recommandation Concours :</strong> Au rythme actuel (${observedCadence} QCM/j), il faudrait ${daysNeeded} jours pour tout nettoyer. Pour franchir la ligne d'arrivée avant le 10/11 (J-${countdown.daysLeft}), maintenez la cadence cible de <strong>${countdown.dailyIterationsRequired} QCM/jour</strong>.`;
+    }
+  } else {
+    projTextEl.innerHTML = `<em>Répondez à vos premiers QCM pour activer la projection personnalisée vers l'examen du 10/11. Cadence cible recommandée : <strong>${countdown.dailyIterationsRequired} QCM/jour</strong>.</em>`;
+  }
+}
+
+/**
+ * Renders top strengths and urgent revision chapters
+ */
+function renderStatsChapters(chapterTotals = {}) {
+  const container = document.getElementById('stats-chapters-breakdown');
+  if (!container) return;
+
+  const entries = Object.entries(chapterTotals).filter(([_, st]) => (st.correct + st.wrong) > 0);
+
+  if (entries.length === 0) {
+    container.innerHTML = `
+      <div style="font-size:0.8rem;color:var(--text-muted);padding:14px;text-align:center;">
+        Aucun entraînement par cours enregistré pour le moment.
+      </div>
+    `;
+    return;
+  }
+
+  // Map to chapter metadata
+  const list = entries.map(([chId, st]) => {
+    const ch = allChapters.find(c => c.id === chId) || { title: chId };
+    const total = st.correct + st.wrong;
+    const pct = Math.round((st.correct / total) * 100);
+    return {
+      id: chId,
+      title: ch.title,
+      correct: st.correct,
+      wrong: st.wrong,
+      total,
+      pct
+    };
+  });
+
+  // Sort by accuracy descending
+  list.sort((a, b) => b.pct - a.pct || b.total - a.total);
+
+  let html = '';
+  list.slice(0, 6).forEach(item => {
+    let colorClass = 'var(--emerald)';
+    if (item.pct < 50) colorClass = 'var(--rose)';
+    else if (item.pct < 75) colorClass = 'var(--amber)';
+
+    html += `
+      <div class="chapter-stat-item">
+        <div class="chapter-stat-header">
+          <span class="chapter-stat-name" title="${escapeHtml(item.title)}">${escapeHtml(item.title)}</span>
+          <span class="chapter-stat-pct" style="color:${colorClass}">${item.pct}% <small style="font-size:0.7rem;color:var(--text-dim);">(${item.correct}/${item.total})</small></span>
+        </div>
+        <div class="chapter-progress-track">
+          <div class="chapter-progress-fill" style="width: ${item.pct}%; background: ${colorClass};"></div>
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+/**
+ * Renders daily detailed history cards
+ */
+function renderStatsTimeline(days = []) {
+  const container = document.getElementById('stats-daily-timeline');
+  const countBadge = document.getElementById('stats-days-count-badge');
+  if (!container) return;
+
+  const activeDays = (days || [])
+    .filter(d => d.totalQuestions > 0)
+    .sort((a, b) => b.dateStr.localeCompare(a.dateStr));
+
+  if (countBadge) {
+    countBadge.textContent = `${activeDays.length} jour${activeDays.length > 1 ? 's' : ''} enregistré${activeDays.length > 1 ? 's' : ''}`;
+  }
+
+  if (activeDays.length === 0) {
+    container.innerHTML = `
+      <div class="stats-empty-state">
+        <i data-lucide="calendar-x2"></i>
+        <div>
+          <div style="font-weight:700;color:#ffffff;margin-bottom:4px;">Aucun historique d'entraînement</div>
+          <div style="font-size:0.8rem;color:var(--text-muted);">Lancez une arène de QCM pour démarrer l'enregistrement de vos journées d'étude !</div>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  const todayStr = studyTracker.getTodayDateStr();
+
+  let html = '';
+  activeDays.forEach(d => {
+    const isToday = (d.dateStr === todayStr);
+    const accuracy = d.totalQuestions > 0 ? Math.round((d.correctAnswers / d.totalQuestions) * 100) : 0;
+    const dateFormatted = formatDateFr(d.dateStr);
+
+    html += `
+      <div class="timeline-day-card">
+        <div class="timeline-day-top">
+          <div class="timeline-date-wrap">
+            <span class="timeline-date-badge">${escapeHtml(dateFormatted)}</span>
+            ${isToday ? '<span class="timeline-day-today">Aujourd\'hui</span>' : ''}
+          </div>
+          <div class="timeline-badges-row">
+            <span class="timeline-pill pill-count"><i data-lucide="check-square" style="width:12px;height:12px;"></i> ${d.totalQuestions} QCM</span>
+            <span class="timeline-pill pill-correct">✓ ${d.correctAnswers} justes (${accuracy}%)</span>
+            <span class="timeline-pill pill-wrong">✗ ${d.wrongAnswers} fautes</span>
+            <span class="timeline-pill pill-time"><i data-lucide="clock" style="width:12px;height:12px;"></i> ${formatDuration(d.totalTimeSeconds)}</span>
+            <span class="timeline-pill pill-sessions"><i data-lucide="zap" style="width:12px;height:12px;"></i> ${d.sessionsCount || 1} sess.</span>
+            <span class="timeline-pill pill-speed">${d.avgTimePerQuestion || '--'}s/QCM</span>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+// ============================================================================
 // EVENT LISTENERS & KEYBOARD BINDINGS
 // ============================================================================
 function setupEventListeners() {
@@ -3986,8 +4865,39 @@ function setupEventListeners() {
   document.getElementById('btn-home-logo').onclick = () => switchView('dashboard');
   document.getElementById('btn-leave-arena').onclick = () => switchView('dashboard');
   document.getElementById('btn-leave-notebook').onclick = () => switchView('dashboard');
+  const btnLeaveStats = document.getElementById('btn-leave-stats');
+  if (btnLeaveStats) btnLeaveStats.onclick = () => switchView('dashboard');
+
   document.getElementById('btn-open-notebook').onclick = () => switchView('notebook');
   document.getElementById('btn-open-notebook-icon').onclick = () => switchView('notebook');
+
+  const btnOpenStats = document.getElementById('btn-open-stats');
+  if (btnOpenStats) btnOpenStats.onclick = () => switchView('stats');
+
+  const btnOpenStatsIcon = document.getElementById('btn-open-stats-icon');
+  if (btnOpenStatsIcon) btnOpenStatsIcon.onclick = () => switchView('stats');
+
+  // Stats range toggle buttons
+  const rangeToggle = document.getElementById('stats-range-toggle');
+  if (rangeToggle) {
+    rangeToggle.querySelectorAll('.range-btn').forEach(btn => {
+      btn.onclick = () => {
+        rangeToggle.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentStatsRange = btn.dataset.range || '7';
+        renderStatsUI();
+      };
+    });
+  }
+
+  // Auto-pause timer when tab is hidden or phone goes to lock screen
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      studyTracker.pauseTimer();
+    } else {
+      studyTracker.resumeTimer();
+    }
+  });
 
   // Dashboard primary buttons
   document.getElementById('btn-start-random').onclick = () => {
