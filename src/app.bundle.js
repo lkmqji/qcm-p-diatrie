@@ -4997,6 +4997,9 @@ function renderStatsUI() {
   // 7. Lesson Stopwatch & Study Time per Lesson
   renderLessonTrackerUI();
 
+  // Ensure active subpage visibility
+  switchStatsSubpage(currentStatsSubpage, false);
+
   refreshLucide();
 }
 
@@ -5395,6 +5398,50 @@ let currentLessonSelected = {
   chapterId: null
 };
 let lessonTimerInterval = null;
+let currentStatsSubpage = 'qcm'; // 'qcm' | 'lessons'
+
+function switchStatsSubpage(subtab, animate = true) {
+  currentStatsSubpage = subtab;
+  const btnQcm = document.getElementById('btn-subnav-qcm');
+  const btnLessons = document.getElementById('btn-subnav-lessons');
+  const pageQcm = document.getElementById('stats-subpage-qcm');
+  const pageLessons = document.getElementById('stats-subpage-lessons');
+  const rangeWrap = document.getElementById('stats-qcm-range-wrap');
+
+  if (!pageQcm || !pageLessons) return;
+
+  if (subtab === 'qcm') {
+    if (btnQcm) btnQcm.classList.add('active');
+    if (btnLessons) btnLessons.classList.remove('active');
+
+    pageLessons.style.display = 'none';
+    pageQcm.style.display = 'flex';
+
+    if (animate) {
+      pageQcm.classList.remove('slide-from-left', 'slide-from-right');
+      void pageQcm.offsetWidth;
+      pageQcm.classList.add('slide-from-left');
+    }
+
+    if (rangeWrap) rangeWrap.style.display = 'flex';
+  } else {
+    if (btnLessons) btnLessons.classList.add('active');
+    if (btnQcm) btnQcm.classList.remove('active');
+
+    pageQcm.style.display = 'none';
+    pageLessons.style.display = 'flex';
+
+    if (animate) {
+      pageLessons.classList.remove('slide-from-left', 'slide-from-right');
+      void pageLessons.offsetWidth;
+      pageLessons.classList.add('slide-from-right');
+    }
+
+    if (rangeWrap) rangeWrap.style.display = 'none';
+    renderLessonTrackerUI();
+  }
+  refreshLucide();
+}
 
 function formatDigitalClockTime(totalSeconds) {
   const sec = Math.max(0, Math.floor(totalSeconds));
@@ -5426,6 +5473,13 @@ function updateLessonTimerTick() {
       if (headerTime) headerTime.textContent = formatted;
     }
 
+    // Update subnav timer pill
+    const subnavTimerPill = document.getElementById('subnav-active-lesson-time');
+    if (subnavTimerPill) {
+      subnavTimerPill.style.display = 'inline-block';
+      subnavTimerPill.textContent = formatted;
+    }
+
     // Update stats view digital clock
     if (digitalClock) {
       digitalClock.textContent = formatted;
@@ -5440,6 +5494,10 @@ function updateLessonTimerTick() {
     // No active timer running
     if (headerBadge) {
       headerBadge.style.display = 'none';
+    }
+    const subnavTimerPill = document.getElementById('subnav-active-lesson-time');
+    if (subnavTimerPill) {
+      subnavTimerPill.style.display = 'none';
     }
     if (digitalClock) {
       digitalClock.textContent = '00:00:00';
@@ -5796,15 +5854,23 @@ function setupLessonTrackerEventListeners() {
     };
   }
 
+  // Sub-navigation buttons (QCM vs Cours)
+  const btnSubnavQcm = document.getElementById('btn-subnav-qcm');
+  if (btnSubnavQcm) {
+    btnSubnavQcm.onclick = () => switchStatsSubpage('qcm');
+  }
+
+  const btnSubnavLessons = document.getElementById('btn-subnav-lessons');
+  if (btnSubnavLessons) {
+    btnSubnavLessons.onclick = () => switchStatsSubpage('lessons');
+  }
+
   // Header quick badge click
   const headerBadge = document.getElementById('active-lesson-header-badge');
   if (headerBadge) {
     headerBadge.onclick = () => {
       switchView('stats');
-      setTimeout(() => {
-        const sec = document.getElementById('lesson-tracker-section');
-        if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 150);
+      switchStatsSubpage('lessons');
     };
   }
 }

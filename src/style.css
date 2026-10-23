@@ -3775,6 +3775,114 @@ body {
   animation: fadeIn 0.25s ease-out;
 }
 
+/* Sub-Page Horizontal Navigation Tabs (QCM vs Cours) */
+.stats-subnav-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: -4px;
+  margin-bottom: 4px;
+}
+
+.stats-subnav-pills {
+  display: flex;
+  align-items: center;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  padding: 4px;
+  gap: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  max-width: 480px;
+  width: 100%;
+}
+
+.stats-subnav-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  padding: 10px 18px;
+  font-family: var(--font-heading);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+
+.stats-subnav-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.stats-subnav-btn:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.stats-subnav-btn.active {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.18), rgba(16, 185, 129, 0.18));
+  border-color: rgba(0, 212, 255, 0.45);
+  color: #ffffff;
+  box-shadow: 0 0 16px rgba(0, 212, 255, 0.22);
+}
+
+.subnav-timer-pill {
+  font-family: 'Outfit', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--emerald);
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  animation: lessonPulse 1.6s infinite ease-in-out;
+}
+
+/* Sub-pages container & horizontal slide transitions */
+.stats-subpage {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.stats-subpage.slide-from-left {
+  animation: slideFromLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.stats-subpage.slide-from-right {
+  animation: slideFromRight 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideFromRight {
+  0% {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 /* Range Toggle */
 .stats-range-wrap {
   display: flex;

@@ -3800,6 +3800,114 @@ body {
   animation: fadeIn 0.25s ease-out;
 }
 
+/* Sub-Page Horizontal Navigation Tabs (QCM vs Cours) */
+.stats-subnav-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: -4px;
+  margin-bottom: 4px;
+}
+
+.stats-subnav-pills {
+  display: flex;
+  align-items: center;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  padding: 4px;
+  gap: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  max-width: 480px;
+  width: 100%;
+}
+
+.stats-subnav-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  padding: 10px 18px;
+  font-family: var(--font-heading);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+
+.stats-subnav-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.stats-subnav-btn:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.stats-subnav-btn.active {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.18), rgba(16, 185, 129, 0.18));
+  border-color: rgba(0, 212, 255, 0.45);
+  color: #ffffff;
+  box-shadow: 0 0 16px rgba(0, 212, 255, 0.22);
+}
+
+.subnav-timer-pill {
+  font-family: 'Outfit', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--emerald);
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  animation: lessonPulse 1.6s infinite ease-in-out;
+}
+
+/* Sub-pages container & horizontal slide transitions */
+.stats-subpage {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.stats-subpage.slide-from-left {
+  animation: slideFromLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.stats-subpage.slide-from-right {
+  animation: slideFromRight 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideFromLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideFromRight {
+  0% {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 /* Range Toggle */
 .stats-range-wrap {
   display: flex;
@@ -5389,7 +5497,7 @@ body {
             <i data-lucide="bar-chart-2" style="width:22px;height:22px;color:var(--emerald);"></i>
             <span>Suivi &amp; Statistiques d'Étude</span>
           </div>
-          <div class="stats-range-wrap">
+          <div class="stats-range-wrap" id="stats-qcm-range-wrap">
             <div class="stats-range-toggle" id="stats-range-toggle">
               <button class="range-btn" data-range="today">Aujourd'hui</button>
               <button class="range-btn active" data-range="7">7 jours</button>
@@ -5417,6 +5525,24 @@ body {
             </div>
           </div>
         </div>
+
+        <!-- Horizontal Sub-Page Navigation Tabs: QCM vs Cours -->
+        <div class="stats-subnav-container">
+          <div class="stats-subnav-pills" id="stats-subnav-toggle">
+            <button type="button" class="stats-subnav-btn active" id="btn-subnav-qcm" data-subtab="qcm">
+              <i data-lucide="check-square"></i>
+              <span>Statistiques QCM</span>
+            </button>
+            <button type="button" class="stats-subnav-btn" id="btn-subnav-lessons" data-subtab="lessons">
+              <i data-lucide="timer"></i>
+              <span>Chronomètre Cours</span>
+              <span class="subnav-timer-pill" id="subnav-active-lesson-time" style="display:none;">00:00:00</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sub-page 1: Statistiques QCM -->
+        <div class="stats-subpage stats-subpage-qcm active" id="stats-subpage-qcm">
 
         <!-- Hero KPIs Grid -->
         <div class="stats-kpi-grid">
@@ -5579,6 +5705,11 @@ body {
           </div>
         </div>
 
+        </div> <!-- end stats-subpage-qcm -->
+
+        <!-- Sub-page 2: Chronomètre Cours & Leçons -->
+        <div class="stats-subpage stats-subpage-lessons" id="stats-subpage-lessons" style="display:none;">
+
         <!-- Section: Chronomètre & Suivi du Temps par Leçon -->
         <div class="stats-panel-box lesson-tracker-panel" id="lesson-tracker-section">
           <div class="panel-box-header">
@@ -5676,6 +5807,8 @@ body {
           </div>
 
         </div>
+
+        </div> <!-- end stats-subpage-lessons -->
 
       </section>
 
@@ -11266,6 +11399,9 @@ function renderStatsUI() {
   // 7. Lesson Stopwatch & Study Time per Lesson
   renderLessonTrackerUI();
 
+  // Ensure active subpage visibility
+  switchStatsSubpage(currentStatsSubpage, false);
+
   refreshLucide();
 }
 
@@ -11664,6 +11800,50 @@ let currentLessonSelected = {
   chapterId: null
 };
 let lessonTimerInterval = null;
+let currentStatsSubpage = 'qcm'; // 'qcm' | 'lessons'
+
+function switchStatsSubpage(subtab, animate = true) {
+  currentStatsSubpage = subtab;
+  const btnQcm = document.getElementById('btn-subnav-qcm');
+  const btnLessons = document.getElementById('btn-subnav-lessons');
+  const pageQcm = document.getElementById('stats-subpage-qcm');
+  const pageLessons = document.getElementById('stats-subpage-lessons');
+  const rangeWrap = document.getElementById('stats-qcm-range-wrap');
+
+  if (!pageQcm || !pageLessons) return;
+
+  if (subtab === 'qcm') {
+    if (btnQcm) btnQcm.classList.add('active');
+    if (btnLessons) btnLessons.classList.remove('active');
+
+    pageLessons.style.display = 'none';
+    pageQcm.style.display = 'flex';
+
+    if (animate) {
+      pageQcm.classList.remove('slide-from-left', 'slide-from-right');
+      void pageQcm.offsetWidth;
+      pageQcm.classList.add('slide-from-left');
+    }
+
+    if (rangeWrap) rangeWrap.style.display = 'flex';
+  } else {
+    if (btnLessons) btnLessons.classList.add('active');
+    if (btnQcm) btnQcm.classList.remove('active');
+
+    pageQcm.style.display = 'none';
+    pageLessons.style.display = 'flex';
+
+    if (animate) {
+      pageLessons.classList.remove('slide-from-left', 'slide-from-right');
+      void pageLessons.offsetWidth;
+      pageLessons.classList.add('slide-from-right');
+    }
+
+    if (rangeWrap) rangeWrap.style.display = 'none';
+    renderLessonTrackerUI();
+  }
+  refreshLucide();
+}
 
 function formatDigitalClockTime(totalSeconds) {
   const sec = Math.max(0, Math.floor(totalSeconds));
@@ -11695,6 +11875,13 @@ function updateLessonTimerTick() {
       if (headerTime) headerTime.textContent = formatted;
     }
 
+    // Update subnav timer pill
+    const subnavTimerPill = document.getElementById('subnav-active-lesson-time');
+    if (subnavTimerPill) {
+      subnavTimerPill.style.display = 'inline-block';
+      subnavTimerPill.textContent = formatted;
+    }
+
     // Update stats view digital clock
     if (digitalClock) {
       digitalClock.textContent = formatted;
@@ -11709,6 +11896,10 @@ function updateLessonTimerTick() {
     // No active timer running
     if (headerBadge) {
       headerBadge.style.display = 'none';
+    }
+    const subnavTimerPill = document.getElementById('subnav-active-lesson-time');
+    if (subnavTimerPill) {
+      subnavTimerPill.style.display = 'none';
     }
     if (digitalClock) {
       digitalClock.textContent = '00:00:00';
@@ -12065,15 +12256,23 @@ function setupLessonTrackerEventListeners() {
     };
   }
 
+  // Sub-navigation buttons (QCM vs Cours)
+  const btnSubnavQcm = document.getElementById('btn-subnav-qcm');
+  if (btnSubnavQcm) {
+    btnSubnavQcm.onclick = () => switchStatsSubpage('qcm');
+  }
+
+  const btnSubnavLessons = document.getElementById('btn-subnav-lessons');
+  if (btnSubnavLessons) {
+    btnSubnavLessons.onclick = () => switchStatsSubpage('lessons');
+  }
+
   // Header quick badge click
   const headerBadge = document.getElementById('active-lesson-header-badge');
   if (headerBadge) {
     headerBadge.onclick = () => {
       switchView('stats');
-      setTimeout(() => {
-        const sec = document.getElementById('lesson-tracker-section');
-        if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 150);
+      switchStatsSubpage('lessons');
     };
   }
 }

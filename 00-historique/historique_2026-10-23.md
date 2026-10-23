@@ -133,4 +133,37 @@
   - Validation de la syntaxe JS sur tous les fichiers via `node -c` (0 erreur).
   - Test unitaire automatisé du cycle de vie du chronomètre sous Node.js (démarrage, pause, reprise, annulation) validé à 100%.
 
+---
+
+## 2026-10-23 15:58 - Navigation Horizontale par Sous-Pages (Onglets QCM vs Cours) dans la Page de Statistiques
+
+- **Contexte & Retour Utilisateur** :
+  - L'utilisateur a demandé d'éviter l'empilement vertical excessif (2640px de hauteur) en séparant la page de statistiques en 2 sous-pages horizontales avec deux boutons de navigation en haut : « QCM » et « Cours ».
+
+- **Modifications Appliquées** :
+  1. **Structure HTML (`template.html`)** :
+     - Ajout en haut de `view-stats` de la barre de navigation sous forme de pilules segmentées (`.stats-subnav-container`) contenant deux boutons interactifs :
+       - `#btn-subnav-qcm` : **Statistiques QCM** (`data-subtab="qcm"`)
+       - `#btn-subnav-lessons` : **Chronomètre Cours** (`data-subtab="lessons"`) avec badge dynamique `#subnav-active-lesson-time` indiquant le chrono en direct.
+     - Découpage du contenu en deux sous-pages distinctes :
+       - `#stats-subpage-qcm` : regroupe les 6 Hero KPI Cards, la Heatmap, le Graphique combiné SVG, l'analyse de vélocité/projection J-28, les spécialités et la timeline journalière.
+       - `#stats-subpage-lessons` : regroupe le chronomètre digital de cours, le sélecteur avec recherche, le tableau récapitulatif par leçon et l'historique des sessions.
+     - Attribution de l'ID `stats-qcm-range-wrap` au sélecteur temporel (7j, 30j, etc.) pour le masquer automatiquement lorsqu'on est sur l'onglet Cours et n'afficher que les filtres pertinents.
+
+  2. **Styles CSS (`src/style.css`)** :
+     - Design System médical avec boutons segmentés en pilule (`.stats-subnav-pills`), fond sombre satiné, bordures actives cyan/émeraude et lueur subtile.
+     - Animations de transition horizontale fluide par translation CSS : `slide-from-left` et `slide-from-right` (`@keyframes slideFromLeft`, `@keyframes slideFromRight`).
+     - Hauteur de page adaptative : l'onglet Cours ne fait plus défiler 2600px de vide, offrant une interface compacte et épurée.
+
+  3. **Contrôleur d'Application (`src/app.js`)** :
+     - Variable d'état `currentStatsSubpage = 'qcm'`.
+     - Fonction de bascule `switchStatsSubpage(subtab, animate)` gérant les classes actives, les affichages conditionnels et les animations glissantes.
+     - Mise à jour en temps réel du badge chrono dans l'onglet `#subnav-active-lesson-time` lors de chaque seconde (`updateLessonTimerTick`).
+     - Redirection intelligente : cliquer sur le mini-badge header `#active-lesson-header-badge` bascule automatiquement sur l'onglet « Cours ».
+
+  4. **Compilation & Déploiement** :
+     - Recompilation avec `node build-bundle.cjs` (génération de `src/app.bundle.js` 251 Ko et `dist/index.html` 4.7 Mo).
+     - Validation de la syntaxe JS via `node -c` (0 erreur).
+
+
 

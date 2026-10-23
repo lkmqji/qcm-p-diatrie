@@ -202,7 +202,13 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet pour me
   - Synthèse `#notebook-summary-bar` reflétant en direct le nombre de questions, d'analyses et le rappel du tri actif (`Tri : [Critère] ([Croissant/Décroissant])`).
 
 ### 3.8. Chronomètre & Suivi du Temps par Leçon (`src/services/lessonTracker.js` & `view-stats`)
-Module dédié au chronométrage autonome de l'apprentissage par cours (polycopiés, fiches, cours magistraux) intégré en bas de la page de statistiques :
+Module dédié au chronométrage autonome de l'apprentissage par cours (polycopiés, fiches, cours magistraux) intégré dans la page de statistiques via une navigation horizontale par sous-pages :
+- **Architecture de Navigation Horizontale par Sous-Pages (`stats-subnav-pills`)** :
+  - **Barre d'onglets segmentée en haut de `view-stats`** : Permet de basculer instantanément d'un simple clic entre deux sous-vues dédiées, éliminant tout défilement vertical fastidieux (évitant un scroll monolithique de 2640px) :
+    1. **Statistiques QCM** (`#stats-subpage-qcm`) : 6 Hero KPI Cards, Heatmap GitHub, Graphique combiné SVG, analyse de vélocité/projection J-28, Top spécialités et timeline quotidienne d'arène. Le sélecteur de période temporelle (`#stats-qcm-range-wrap`) y est associé.
+    2. **Chronomètre Cours** (`#stats-subpage-lessons`) : Espace dédié au chronométrage par cours, affichage digital grand format, tableau récapitulatif par leçon et historique des sessions de révision. Le sélecteur temporel s'y masque automatiquement pour épurer l'interface.
+  - **Animations glissantes fluides** : Transitions horizontales par translations CSS (`slide-from-left` et `slide-from-right`), procurant une sensation de fluidité native sans rechargement.
+  - **Pill chrono live dans l'onglet** : L'onglet « Chronomètre Cours » affiche en direct un badge vert pulsant avec le décompte du temps écoulé (`#subnav-active-lesson-time`) lorsqu'un chronomètre est actif, même si l'étudiant consulte l'onglet QCM.
 - **Moteur de Chronométrage Persistant (`LessonTracker`)** :
   - **Chronomètre progressif (Stopwatch)** : Compteur dynamique `00:00:00` avec fonctions Démarrer, Pause, Reprendre, Terminer & Enregistrer, et Annuler.
   - **Calcul persistant par delta d'horodatage (`startTimestamp` & `accumulatedMs`)** : Même si l'étudiant quitte la page de stats, navigue dans l'arène ou ferme temporairement l'application, le temps continue de tourner en tâche de fond sans décalage ni perte de secondes.
@@ -214,7 +220,7 @@ Module dédié au chronométrage autonome de l'apprentissage par cours (polycopi
 - **Mini-Badge Flottant dans le Header (`#active-lesson-header-badge`)** :
   - Visible automatiquement dès qu'un chronomètre est actif sur n'importe quel écran de l'application.
   - Affiche un voyant vert pulsant, le nom abrégé de la leçon et le chronomètre digital qui s'incrémente en direct.
-  - Clic interactif redirigeant automatiquement l'étudiant vers la section du chronomètre dans `view-stats` avec défilement fluide.
+  - Clic interactif redirigeant automatiquement l'étudiant directement vers la sous-page « Cours » dans `view-stats`.
 - **Restitution & Tableaux de Bord** :
   - **Tableau récapitulatif par leçon** : Nom du cours, temps total cumulé sous forme de badge digital, nombre de sessions, date de dernière session, et barre de progression visuelle émeraude/cyan.
   - **Historique des sessions récentes** : Liste chronologique des dernières sessions avec horodatage détaillé, durée et bouton de suppression individuelle pour éliminer les sessions parasites.
