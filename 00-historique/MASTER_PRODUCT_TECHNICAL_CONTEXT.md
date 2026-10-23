@@ -161,7 +161,9 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet pour me
   1. 🔥 **Study Streak** : Série de jours consécutifs d'entraînement et record historique.
   2. 📝 **Questions Faites** : Volume total répondu et volume accompli aujourd'hui.
   3. 🎯 **Taux de Précision** : Pourcentage global de bonnes réponses (`correct / total * 100`).
-  4. ✨ **Réussite 1er Passage (Découverte)** : Pourcentage de réussite lors de la toute première confrontation à une question (`pedia_first_pass_records_v1`), ignorant strictement les 2èmes et 3èmes passages de révision espacée.
+  4. ✨ **Réussite 1er Passage (Inédit / Découverte)** : Pourcentage de réussite lors de la toute première confrontation à une question (`pedia_first_pass_records_v2`), ignorant strictement les 2èmes et 3èmes passages de révision espacée.
+     - **Reconstruction Option B** : L'amorçage initial (`seedFirstPassFromExistingStats`) croise l'état de `queueEngine.stats` et le carnet d'erreurs IA `reasoningNotes`. Toute question ayant au moins une faute enregistrée (`st.mistakes > 0` ou présente dans le carnet) est identifiée comme ratée à la découverte (`false`). Toute question maîtrisée sans aucune faute (`st.current > 0 && st.mistakes === 0`) est identifiée comme réussie (`true`). Les questions encore non entamées sont exclues. En cours de jeu, chaque nouvelle découverte enregistre fidèlement le résultat live.
+     - **Affichage contextuel** : En vue périodique ("Aujourd'hui", "7j", "30j", "Personnalisé") où aucune question inédite n'a été découverte, l'indicateur affiche clairement `--%` et `0 inédit (que des révisions)` pour éviter de fausser la lecture avec le cumul global.
   5. ⏱️ **Temps Total d'Étude** : Temps cumulé au format lisible (`Xh Ym`) et nombre de sessions actives.
   6. ⚡ **Vélocité Moyenne** : Vitesse en secondes par QCM, segmentée sur les réussites vs sur les erreurs.
 - **Sélecteur Temporel Multi-Périodes (`stats-range-toggle` & `custom-range-picker`)** :

@@ -2,7 +2,7 @@
 // Manages daily study history, intelligent sessions, precise question timers, streaks, first-pass discovery tracking, and analytics.
 
 export const STUDY_HISTORY_KEY = 'pedia_study_history_v1';
-export const FIRST_PASS_KEY = 'pedia_first_pass_records_v1';
+export const FIRST_PASS_KEY = 'pedia_first_pass_records_v2';
 export const INACTIVITY_THRESHOLD_MS = 2 * 60 * 1000; // 2 minutes: pause timer
 export const SESSION_GAP_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes: new session
 export const MAX_QUESTION_TIME_CAP_SEC = 180; // 3 minutes cap per question to prevent outlier skew
@@ -44,6 +44,10 @@ export class StudyTracker {
   loadFirstPassRecords() {
     try {
       if (typeof localStorage === 'undefined') return {};
+      // Purge legacy biased v1 store if migrating to v2
+      if (localStorage.getItem('pedia_first_pass_records_v1') && !localStorage.getItem(FIRST_PASS_KEY)) {
+        localStorage.removeItem('pedia_first_pass_records_v1');
+      }
       const raw = localStorage.getItem(FIRST_PASS_KEY);
       if (!raw) return {};
       const parsed = JSON.parse(raw);
@@ -64,22 +68,46 @@ export class StudyTracker {
   }
 
   /**
-   * Seed first-pass records from pre-existing queueEngine.stats if available
+   * Seed first-pass records from pre-existing queueEngine.stats and reasoning notes
+   * Option B: Reconstructs realistic discovery history:
+   * - Any question with registered mistakes (st.mistakes > 0 or in reasoningNotes notebook)
+   *   is identified as failed upon 1st discovery encounter.
+   * - Any question cleared without mistakes (st.current > 0 && st.mistakes === 0)
+   *   is identified as succeeded on 1st discovery encounter.
    */
-  seedFirstPassFromExistingStats(queueStats) {
+  seedFirstPassFromExistingStats(queueStats, rawReasoningNotes = []) {
     if (!queueStats || typeof queueStats !== 'object') return;
+
+    // Collect mistake question UIDs from AI reasoning notebook
+    const notebookMistakeUids = new Set();
+    if (Array.isArray(rawReasoningNotes)) {
+      rawReasoningNotes.forEach(note => {
+        if (note && note.questionUid) {
+          notebookMistakeUids.add(note.questionUid);
+        }
+      });
+    }
+
     let modified = false;
     for (const [uid, st] of Object.entries(queueStats)) {
       if (!st || typeof this.firstPassRecords[uid] !== 'undefined') continue;
-      // If questions were answered before tracking:
-      if (st.current > 0 && st.mistakes === 0) {
-        this.firstPassRecords[uid] = true;
-        modified = true;
-      } else if (st.mistakes > 0 && st.current === 0) {
+
+      const hasMistakes = (st.mistakes > 0) || notebookMistakeUids.has(uid);
+      const hasAttempts = (st.current > 0) || (st.mistakes > 0);
+
+      if (!hasAttempts) continue; // Unanswered question
+
+      if (hasMistakes) {
+        // Option B reconstruction: In SRS, any question with an error was failed on discovery pass
         this.firstPassRecords[uid] = false;
+        modified = true;
+      } else if (st.current > 0 && st.mistakes === 0) {
+        // Cleared flawlessly with 0 mistakes
+        this.firstPassRecords[uid] = true;
         modified = true;
       }
     }
+
     if (modified) {
       this.saveFirstPassRecords();
     }

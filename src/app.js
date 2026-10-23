@@ -70,7 +70,7 @@ const modals = {
 // ============================================================================
 function initApp() {
   queueEngine.setQuestions(allQuestions, allChapters);
-  studyTracker.seedFirstPassFromExistingStats(queueEngine.stats);
+  studyTracker.seedFirstPassFromExistingStats(queueEngine.stats, queueEngine.getRawReasoningNotes());
   updateDashboardUI();
   setupEventListeners();
   setupKeyboardShortcuts();
@@ -2311,15 +2311,17 @@ function renderStatsUI() {
     : studyTracker.getFirstPassInDays(rangeDays);
 
   if (fpCardPct) {
-    fpCardPct.textContent = fpData.total > 0 ? `${fpData.pct}%` : (globalAnalytics.firstPass?.total > 0 ? `${globalAnalytics.firstPass.pct}%` : '--%');
+    fpCardPct.textContent = fpData.total > 0 ? `${fpData.pct}%` : '--%';
   }
   if (fpCardSub) {
     if (fpData.total > 0) {
-      fpCardSub.textContent = `${fpData.correct}/${fpData.total} découverts`;
-    } else if (globalAnalytics.firstPass?.total > 0) {
-      fpCardSub.textContent = `${globalAnalytics.firstPass.correct}/${globalAnalytics.firstPass.total} global`;
+      fpCardSub.textContent = (currentStatsRange === 'all')
+        ? `${formatNumber(fpData.correct)}/${formatNumber(fpData.total)} découverts (global)`
+        : `${formatNumber(fpData.correct)}/${formatNumber(fpData.total)} inédits sur période`;
     } else {
-      fpCardSub.textContent = '0 découverte';
+      fpCardSub.textContent = (currentStatsRange === 'all')
+        ? '0 découverte'
+        : '0 inédit (que des révisions)';
     }
   }
 
