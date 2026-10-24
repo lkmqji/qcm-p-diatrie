@@ -376,10 +376,9 @@ export class StudyTracker {
   }
 
   /**
-   * Get aggregated global statistics across all recorded days
+   * Get aggregated statistics for a specific subset or range of day records
    */
-  getGlobalAnalytics() {
-    const days = Object.values(this.history).sort((a, b) => a.dateStr.localeCompare(b.dateStr));
+  getAnalyticsForDays(days = []) {
     let totalQuestions = 0;
     let totalCorrect = 0;
     let totalWrong = 0;
@@ -391,13 +390,22 @@ export class StudyTracker {
     const chapterTotals = {}; // chapterId -> { correct: 0, wrong: 0, timeSeconds: 0 }
 
     for (const d of days) {
+      if (!d) continue;
       totalQuestions += (d.totalQuestions || 0);
       totalCorrect += (d.correctAnswers || 0);
       totalWrong += (d.wrongAnswers || 0);
       totalTimeSeconds += (d.totalTimeSeconds || 0);
       totalSessions += (d.sessionsCount || 0);
-      totalTimeCorrect += (d.totalTimeCorrect || 0);
-      totalTimeWrong += (d.totalTimeWrong || 0);
+
+      const timeCorrect = (typeof d.totalTimeCorrect === 'number' && d.totalTimeCorrect > 0)
+        ? d.totalTimeCorrect
+        : Math.round((d.avgTimeCorrect || 0) * (d.correctAnswers || 0));
+      const timeWrong = (typeof d.totalTimeWrong === 'number' && d.totalTimeWrong > 0)
+        ? d.totalTimeWrong
+        : Math.round((d.avgTimeWrong || 0) * (d.wrongAnswers || 0));
+
+      totalTimeCorrect += timeCorrect;
+      totalTimeWrong += timeWrong;
 
       if (d.chaptersStats) {
         for (const [chId, st] of Object.entries(d.chaptersStats)) {
@@ -416,11 +424,12 @@ export class StudyTracker {
     const avgTimeCorrect = totalCorrect > 0 ? Math.round((totalTimeCorrect / totalCorrect) * 10) / 10 : 0;
     const avgTimeWrong = totalWrong > 0 ? Math.round((totalTimeWrong / totalWrong) * 10) / 10 : 0;
 
+    const activeDays = days.filter(d => (d && (d.totalQuestions || 0) > 0));
     const streak = this.getStreakMetrics();
-    const firstPass = this.getFirstPassAnalytics();
+    const firstPass = this.getFirstPassInDays(days);
 
     return {
-      totalDaysActive: days.filter(d => d.totalQuestions > 0).length,
+      totalDaysActive: activeDays.length,
       totalQuestions,
       totalCorrect,
       totalWrong,
@@ -437,6 +446,17 @@ export class StudyTracker {
       chapterTotals,
       days
     };
+  }
+
+  /**
+   * Get aggregated global statistics across all recorded days
+   */
+  getGlobalAnalytics() {
+    const allDays = Object.values(this.history).sort((a, b) => a.dateStr.localeCompare(b.dateStr));
+    const analytics = this.getAnalyticsForDays(allDays);
+    // For global analytics, firstPass covers all unique records ever
+    analytics.firstPass = this.getFirstPassAnalytics();
+    return analytics;
   }
 
   /**

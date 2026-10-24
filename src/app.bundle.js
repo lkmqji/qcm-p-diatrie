@@ -1422,10 +1422,9 @@ class StudyTracker {
   }
 
   /**
-   * Get aggregated global statistics across all recorded days
+   * Get aggregated statistics for a specific subset or range of day records
    */
-  getGlobalAnalytics() {
-    const days = Object.values(this.history).sort((a, b) => a.dateStr.localeCompare(b.dateStr));
+  getAnalyticsForDays(days = []) {
     let totalQuestions = 0;
     let totalCorrect = 0;
     let totalWrong = 0;
@@ -1437,13 +1436,22 @@ class StudyTracker {
     const chapterTotals = {}; // chapterId -> { correct: 0, wrong: 0, timeSeconds: 0 }
 
     for (const d of days) {
+      if (!d) continue;
       totalQuestions += (d.totalQuestions || 0);
       totalCorrect += (d.correctAnswers || 0);
       totalWrong += (d.wrongAnswers || 0);
       totalTimeSeconds += (d.totalTimeSeconds || 0);
       totalSessions += (d.sessionsCount || 0);
-      totalTimeCorrect += (d.totalTimeCorrect || 0);
-      totalTimeWrong += (d.totalTimeWrong || 0);
+
+      const timeCorrect = (typeof d.totalTimeCorrect === 'number' && d.totalTimeCorrect > 0)
+        ? d.totalTimeCorrect
+        : Math.round((d.avgTimeCorrect || 0) * (d.correctAnswers || 0));
+      const timeWrong = (typeof d.totalTimeWrong === 'number' && d.totalTimeWrong > 0)
+        ? d.totalTimeWrong
+        : Math.round((d.avgTimeWrong || 0) * (d.wrongAnswers || 0));
+
+      totalTimeCorrect += timeCorrect;
+      totalTimeWrong += timeWrong;
 
       if (d.chaptersStats) {
         for (const [chId, st] of Object.entries(d.chaptersStats)) {
@@ -1462,11 +1470,12 @@ class StudyTracker {
     const avgTimeCorrect = totalCorrect > 0 ? Math.round((totalTimeCorrect / totalCorrect) * 10) / 10 : 0;
     const avgTimeWrong = totalWrong > 0 ? Math.round((totalTimeWrong / totalWrong) * 10) / 10 : 0;
 
+    const activeDays = days.filter(d => (d && (d.totalQuestions || 0) > 0));
     const streak = this.getStreakMetrics();
-    const firstPass = this.getFirstPassAnalytics();
+    const firstPass = this.getFirstPassInDays(days);
 
     return {
-      totalDaysActive: days.filter(d => d.totalQuestions > 0).length,
+      totalDaysActive: activeDays.length,
       totalQuestions,
       totalCorrect,
       totalWrong,
@@ -1483,6 +1492,17 @@ class StudyTracker {
       chapterTotals,
       days
     };
+  }
+
+  /**
+   * Get aggregated global statistics across all recorded days
+   */
+  getGlobalAnalytics() {
+    const allDays = Object.values(this.history).sort((a, b) => a.dateStr.localeCompare(b.dateStr));
+    const analytics = this.getAnalyticsForDays(allDays);
+    // For global analytics, firstPass covers all unique records ever
+    analytics.firstPass = this.getFirstPassAnalytics();
+    return analytics;
   }
 
   /**
@@ -4916,43 +4936,98 @@ function formatDateFr(dateStr) {
 }
 
 function renderStatsUI() {
-  const globalAnalytics = studyTracker.getGlobalAnalytics();
   const todayStr = studyTracker.getTodayDateStr();
   const todayRecord = studyTracker.getOrCreateDayRecord(todayStr);
 
   let rangeDays;
+  let rangeLabel = '7 jours';
   if (currentStatsRange === 'today') {
     rangeDays = studyTracker.getDaysByRange('today');
+    rangeLabel = "Aujourd'hui";
   } else if (currentStatsRange === 'custom') {
     const start = customStatsStart || document.getElementById('custom-date-start')?.value || todayStr;
     const end = customStatsEnd || document.getElementById('custom-date-end')?.value || todayStr;
     rangeDays = studyTracker.getDaysByCustomRange(start, end);
+    rangeLabel = `${formatDateFr(start)} ➔ ${formatDateFr(end)}`;
+  } else if (currentStatsRange === 'all') {
+    rangeDays = studyTracker.getDaysByRange('all');
+    rangeLabel = "Tout l'historique";
+  } else if (currentStatsRange === '30') {
+    rangeDays = studyTracker.getDaysByRange('30');
+    rangeLabel = '30 jours';
   } else {
-    rangeDays = studyTracker.getDaysByRange(currentStatsRange);
+    rangeDays = studyTracker.getDaysByRange('7');
+    rangeLabel = '7 jours';
   }
 
+  // Calculate statistics strictly for the selected period
+  const periodAnalytics = (currentStatsRange === 'all')
+    ? studyTracker.getGlobalAnalytics()
+    : studyTracker.getAnalyticsForDays(rangeDays);
+
+  const streakMetrics = studyTracker.getStreakMetrics();
+
   // 1. Hero KPIs
+  // Card 1: Streak (Série d'étude)
   const streakDaysEl = document.getElementById('kpi-streak-days');
   const streakSubEl = document.getElementById('kpi-streak-sub');
-  if (streakDaysEl) streakDaysEl.textContent = globalAnalytics.currentStreak;
-  if (streakSubEl) streakSubEl.textContent = `Record : ${globalAnalytics.maxStreak} jour${globalAnalytics.maxStreak > 1 ? 's' : ''}`;
+  if (streakDaysEl) streakDaysEl.textContent = streakMetrics.currentStreak;
+  if (streakSubEl) {
+    if (currentStatsRange === 'today') {
+      const studiedToday = todayRecord.totalQuestions > 0;
+      streakSubEl.textContent = studiedToday
+        ? `Record : ${streakMetrics.maxStreak} j • ✓ Validé aujourd'hui`
+        : `Record : ${streakMetrics.maxStreak} j • ⏳ En attente aujourd'hui`;
+    } else {
+      const activeText = `${periodAnalytics.totalDaysActive} jour${periodAnalytics.totalDaysActive > 1 ? 's' : ''} actif${periodAnalytics.totalDaysActive > 1 ? 's' : ''}`;
+      streakSubEl.textContent = `Record : ${streakMetrics.maxStreak} j • ${activeText}`;
+    }
+  }
 
+  // Card 2: Questions Faites (Période sélectionnée)
+  const qLabelEl = document.getElementById('kpi-questions-label');
   const qTotalEl = document.getElementById('kpi-total-questions');
   const qSubEl = document.getElementById('kpi-questions-sub');
-  if (qTotalEl) qTotalEl.textContent = formatNumber(globalAnalytics.totalQuestions);
-  if (qSubEl) qSubEl.textContent = `${todayRecord.totalQuestions} auj. (${todayRecord.correctAnswers} justes)`;
+  if (qLabelEl) {
+    if (currentStatsRange === 'today') qLabelEl.textContent = "Questions (Aujourd'hui)";
+    else if (currentStatsRange === 'all') qLabelEl.textContent = "Total Questions Faites";
+    else qLabelEl.textContent = `Questions (${rangeLabel})`;
+  }
+  if (qTotalEl) qTotalEl.textContent = formatNumber(periodAnalytics.totalQuestions);
+  if (qSubEl) {
+    if (currentStatsRange === 'today') {
+      qSubEl.textContent = `${periodAnalytics.totalCorrect} justes • ${periodAnalytics.totalWrong} fautes`;
+    } else if (currentStatsRange === 'all') {
+      qSubEl.textContent = `${todayRecord.totalQuestions} aujourd'hui • ${formatNumber(periodAnalytics.totalCorrect)} justes`;
+    } else {
+      qSubEl.textContent = `${formatNumber(periodAnalytics.totalCorrect)} justes • ${formatNumber(periodAnalytics.totalWrong)} fautes (${todayRecord.totalQuestions} auj.)`;
+    }
+  }
 
+  // Card 3: Taux de Précision (Période sélectionnée)
+  const accLabelEl = document.getElementById('kpi-accuracy-label');
   const accEl = document.getElementById('kpi-accuracy-pct');
   const accSubEl = document.getElementById('kpi-accuracy-sub');
-  if (accEl) accEl.textContent = `${globalAnalytics.accuracyPct}%`;
-  if (accSubEl) accSubEl.textContent = `${formatNumber(globalAnalytics.totalCorrect)} justes • ${formatNumber(globalAnalytics.totalWrong)} fautes`;
+  if (accLabelEl) {
+    if (currentStatsRange === 'today') accLabelEl.textContent = "Précision (Aujourd'hui)";
+    else if (currentStatsRange === 'all') accLabelEl.textContent = "Précision Globale";
+    else accLabelEl.textContent = `Précision (${rangeLabel})`;
+  }
+  if (accEl) {
+    accEl.textContent = periodAnalytics.totalQuestions > 0 ? `${periodAnalytics.accuracyPct}%` : '--%';
+  }
+  if (accSubEl) {
+    if (periodAnalytics.totalQuestions > 0) {
+      accSubEl.textContent = `${formatNumber(periodAnalytics.totalCorrect)} justes • ${formatNumber(periodAnalytics.totalWrong)} fautes`;
+    } else {
+      accSubEl.textContent = 'Aucun QCM sur la période';
+    }
+  }
 
-  // First Pass (Découverte) KPI Card
+  // Card 4: First Pass (Découverte) KPI Card (Période sélectionnée)
   const fpCardPct = document.getElementById('kpi-first-pass-pct');
   const fpCardSub = document.getElementById('kpi-first-pass-sub');
-  const fpData = (currentStatsRange === 'all')
-    ? studyTracker.getFirstPassAnalytics()
-    : studyTracker.getFirstPassInDays(rangeDays);
+  const fpData = periodAnalytics.firstPass;
 
   if (fpCardPct) {
     fpCardPct.textContent = fpData.total > 0 ? `${fpData.pct}%` : '--%';
@@ -4969,15 +5044,43 @@ function renderStatsUI() {
     }
   }
 
+  // Card 5: Temps d'Étude (Période sélectionnée)
+  const timeLabelEl = document.getElementById('kpi-time-label');
   const timeEl = document.getElementById('kpi-total-time');
   const sessSubEl = document.getElementById('kpi-sessions-sub');
-  if (timeEl) timeEl.textContent = formatDuration(globalAnalytics.totalTimeSeconds);
-  if (sessSubEl) sessSubEl.textContent = `${globalAnalytics.totalSessions} session${globalAnalytics.totalSessions > 1 ? 's' : ''} active${globalAnalytics.totalSessions > 1 ? 's' : ''}`;
+  if (timeLabelEl) {
+    if (currentStatsRange === 'today') timeLabelEl.textContent = "Temps (Aujourd'hui)";
+    else if (currentStatsRange === 'all') timeLabelEl.textContent = "Temps Total d'Étude";
+    else timeLabelEl.textContent = `Temps d'Étude (${rangeLabel})`;
+  }
+  if (timeEl) timeEl.textContent = formatDuration(periodAnalytics.totalTimeSeconds);
+  if (sessSubEl) {
+    sessSubEl.textContent = `${periodAnalytics.totalSessions} session${periodAnalytics.totalSessions > 1 ? 's' : ''} active${periodAnalytics.totalSessions > 1 ? 's' : ''}`;
+  }
 
+  // Card 6: Vitesse Moyenne (Période sélectionnée)
+  const speedLabelEl = document.getElementById('kpi-speed-label');
   const speedEl = document.getElementById('kpi-avg-speed');
   const speedSubEl = document.getElementById('kpi-speed-sub');
-  if (speedEl) speedEl.textContent = globalAnalytics.avgTimePerQuestion || '--';
-  if (speedSubEl) speedSubEl.textContent = `Justes : ${globalAnalytics.avgTimeCorrect || '--'}s • Fautes : ${globalAnalytics.avgTimeWrong || '--'}s`;
+  if (speedLabelEl) {
+    if (currentStatsRange === 'today') speedLabelEl.textContent = "Vitesse (Aujourd'hui)";
+    else if (currentStatsRange === 'all') speedLabelEl.textContent = "Vitesse Moyenne Globale";
+    else speedLabelEl.textContent = `Vitesse Moyenne (${rangeLabel})`;
+  }
+  if (speedEl) {
+    speedEl.textContent = (periodAnalytics.totalQuestions > 0 && periodAnalytics.avgTimePerQuestion > 0)
+      ? periodAnalytics.avgTimePerQuestion
+      : '--';
+  }
+  if (speedSubEl) {
+    if (periodAnalytics.totalQuestions > 0) {
+      const cTime = periodAnalytics.avgTimeCorrect > 0 ? `${periodAnalytics.avgTimeCorrect}s` : '--s';
+      const wTime = periodAnalytics.avgTimeWrong > 0 ? `${periodAnalytics.avgTimeWrong}s` : '--s';
+      speedSubEl.textContent = `Justes : ${cTime} • Fautes : ${wTime}`;
+    } else {
+      speedSubEl.textContent = `Justes : --s • Fautes : --s`;
+    }
+  }
 
   // 2. Heatmap
   renderStatsHeatmap(studyTracker.getRawHistory());
@@ -4986,13 +5089,13 @@ function renderStatsUI() {
   renderStatsActivityChart(rangeDays);
 
   // 4. Velocity breakdown & Exam projection
-  renderStatsVelocityAndProjection(globalAnalytics);
+  renderStatsVelocityAndProjection(periodAnalytics, rangeLabel);
 
   // 5. Chapters breakdown
-  renderStatsChapters(globalAnalytics.chapterTotals);
+  renderStatsChapters(periodAnalytics.chapterTotals, rangeLabel);
 
   // 6. Daily Timeline
-  renderStatsTimeline(globalAnalytics.days);
+  renderStatsTimeline(rangeDays);
 
   // 7. Lesson Stopwatch & Study Time per Lesson
   renderLessonTrackerUI();
@@ -5237,18 +5340,26 @@ function renderStatsActivityChart(rangeDays) {
 /**
  * Renders velocity metrics and adaptive countdown projection to November 10 exam
  */
-function renderStatsVelocityAndProjection(globalAnalytics) {
+function renderStatsVelocityAndProjection(analytics, periodLabel = '') {
   const velCorEl = document.getElementById('stat-vel-correct');
   const velWrEl = document.getElementById('stat-vel-wrong');
   const cadenceEl = document.getElementById('stat-cadence-observed');
   const projTextEl = document.getElementById('stat-exam-projection-text');
 
-  if (velCorEl) velCorEl.textContent = globalAnalytics.avgTimeCorrect ? `${globalAnalytics.avgTimeCorrect} s` : '-- s';
-  if (velWrEl) velWrEl.textContent = globalAnalytics.avgTimeWrong ? `${globalAnalytics.avgTimeWrong} s` : '-- s';
+  if (velCorEl) velCorEl.textContent = analytics.avgTimeCorrect ? `${analytics.avgTimeCorrect} s` : '-- s';
+  if (velWrEl) velWrEl.textContent = analytics.avgTimeWrong ? `${analytics.avgTimeWrong} s` : '-- s';
 
-  const activeDays = Math.max(1, globalAnalytics.totalDaysActive);
-  const observedCadence = Math.round(globalAnalytics.totalQuestions / activeDays);
-  if (cadenceEl) cadenceEl.textContent = `${observedCadence} QCM / jour actif`;
+  const activeDays = Math.max(1, analytics.totalDaysActive);
+  const observedCadence = Math.round(analytics.totalQuestions / activeDays);
+  if (cadenceEl) {
+    if (analytics.totalQuestions === 0) {
+      cadenceEl.textContent = '0 QCM sur la période';
+    } else if (currentStatsRange === 'today') {
+      cadenceEl.textContent = `${analytics.totalQuestions} QCM aujourd'hui`;
+    } else {
+      cadenceEl.textContent = `${observedCadence} QCM / jour actif (${analytics.totalDaysActive} j)`;
+    }
+  }
 
   if (!projTextEl) return;
 
@@ -5256,16 +5367,26 @@ function renderStatsVelocityAndProjection(globalAnalytics) {
   const iterationsRemaining = dashboardMetrics.totalIterationsRequired;
   const countdown = getExamCountdownMetrics(iterationsRemaining);
 
-  if (observedCadence > 0) {
-    const daysNeeded = Math.ceil(iterationsRemaining / observedCadence);
+  let effectiveCadence = observedCadence;
+  let cadenceNote = `observée (${periodLabel || 'sur la période'})`;
+  if (effectiveCadence === 0) {
+    const globalA = studyTracker.getGlobalAnalytics();
+    if (globalA.totalQuestions > 0) {
+      effectiveCadence = Math.round(globalA.totalQuestions / Math.max(1, globalA.totalDaysActive));
+      cadenceNote = 'globale historique';
+    }
+  }
+
+  if (effectiveCadence > 0) {
+    const daysNeeded = Math.ceil(iterationsRemaining / effectiveCadence);
     const estDate = new Date();
     estDate.setDate(estDate.getDate() + daysNeeded);
     const estDateStr = estDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
 
     if (daysNeeded <= countdown.daysLeft) {
-      projTextEl.innerHTML = `<strong>🏆 Cadence excellente !</strong> Au rythme observé de <strong>${observedCadence} QCM/jour</strong>, vous aurez validé l'intégralité du programme en <strong>${daysNeeded} jours</strong> (vers le ${estDateStr}), soit avant l'échéance du concours (J-${countdown.daysLeft}) !`;
+      projTextEl.innerHTML = `<strong>🏆 Cadence excellente !</strong> Au rythme (${cadenceNote}) de <strong>${effectiveCadence} QCM/jour</strong>, vous aurez validé l'intégralité du programme en <strong>${daysNeeded} jours</strong> (vers le ${estDateStr}), soit avant l'échéance du concours (J-${countdown.daysLeft}) !`;
     } else {
-      projTextEl.innerHTML = `<strong>⚠️ Recommandation Concours :</strong> Au rythme actuel (${observedCadence} QCM/j), il faudrait ${daysNeeded} jours pour tout nettoyer. Pour franchir la ligne d'arrivée avant le 10/11 (J-${countdown.daysLeft}), maintenez la cadence cible de <strong>${countdown.dailyIterationsRequired} QCM/jour</strong>.`;
+      projTextEl.innerHTML = `<strong>⚠️ Recommandation Concours :</strong> Au rythme (${cadenceNote}) de ${effectiveCadence} QCM/j, il faudrait ${daysNeeded} jours pour tout nettoyer. Pour franchir la ligne d'arrivée avant le 10/11 (J-${countdown.daysLeft}), maintenez la cadence cible de <strong>${countdown.dailyIterationsRequired} QCM/jour</strong>.`;
     }
   } else {
     projTextEl.innerHTML = `<em>Répondez à vos premiers QCM pour activer la projection personnalisée vers l'examen du 10/11. Cadence cible recommandée : <strong>${countdown.dailyIterationsRequired} QCM/jour</strong>.</em>`;
@@ -5275,7 +5396,7 @@ function renderStatsVelocityAndProjection(globalAnalytics) {
 /**
  * Renders top strengths and urgent revision chapters
  */
-function renderStatsChapters(chapterTotals = {}) {
+function renderStatsChapters(chapterTotals = {}, periodLabel = '') {
   const container = document.getElementById('stats-chapters-breakdown');
   if (!container) return;
 
@@ -5284,7 +5405,7 @@ function renderStatsChapters(chapterTotals = {}) {
   if (entries.length === 0) {
     container.innerHTML = `
       <div style="font-size:0.8rem;color:var(--text-muted);padding:14px;text-align:center;">
-        Aucun entraînement par cours enregistré pour le moment.
+        Aucun entraînement par cours enregistré sur la période sélectionnée (${periodLabel || 'période en cours'}).
       </div>
     `;
     return;
@@ -5339,11 +5460,15 @@ function renderStatsTimeline(days = []) {
   if (!container) return;
 
   const activeDays = (days || [])
-    .filter(d => d.totalQuestions > 0)
+    .filter(d => (d && (d.totalQuestions || 0) > 0))
     .sort((a, b) => b.dateStr.localeCompare(a.dateStr));
 
   if (countBadge) {
-    countBadge.textContent = `${activeDays.length} jour${activeDays.length > 1 ? 's' : ''} enregistré${activeDays.length > 1 ? 's' : ''}`;
+    if (currentStatsRange === 'today') {
+      countBadge.textContent = activeDays.length > 0 ? "Aujourd'hui (1 jour actif)" : "Aujourd'hui (0 session)";
+    } else {
+      countBadge.textContent = `${activeDays.length} jour${activeDays.length > 1 ? 's' : ''} actif${activeDays.length > 1 ? 's' : ''} sur la période`;
+    }
   }
 
   if (activeDays.length === 0) {
@@ -5351,7 +5476,7 @@ function renderStatsTimeline(days = []) {
       <div class="stats-empty-state">
         <i data-lucide="calendar-x2"></i>
         <div>
-          <div style="font-weight:700;color:#ffffff;margin-bottom:4px;">Aucun historique d'entraînement</div>
+          <div style="font-weight:700;color:#ffffff;margin-bottom:4px;">Aucun historique sur cette période</div>
           <div style="font-size:0.8rem;color:var(--text-muted);">Lancez une arène de QCM pour démarrer l'enregistrement de vos journées d'étude !</div>
         </div>
       </div>
@@ -5923,6 +6048,9 @@ function setupEventListeners() {
               const day = String(d.getDate()).padStart(2, '0');
               customStartInput.value = `${y}-${m}-${day}`;
             }
+            customStatsStart = customStartInput.value;
+            customStatsEnd = customEndInput.value;
+            renderStatsUI();
           }
         } else {
           if (customPicker) customPicker.style.display = 'none';

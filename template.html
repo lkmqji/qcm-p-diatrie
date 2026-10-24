@@ -5547,10 +5547,11 @@ body {
         <!-- Hero KPIs Grid -->
         <div class="stats-kpi-grid">
           <!-- Card 1: Streak -->
+          <!-- Card 1: Streak -->
           <div class="stat-kpi-card accent-amber">
             <div class="kpi-icon-wrap"><i data-lucide="flame"></i></div>
             <div class="kpi-content">
-              <div class="kpi-label">Série d'étude (Streak)</div>
+              <div class="kpi-label" id="kpi-streak-label">Série d'étude (Streak)</div>
               <div class="kpi-value"><span id="kpi-streak-days">0</span> <small style="font-size:0.9rem;font-weight:600;">jours</small></div>
               <div class="kpi-subtext" id="kpi-streak-sub">Record : 0 jours</div>
             </div>
@@ -5560,7 +5561,7 @@ body {
           <div class="stat-kpi-card accent-cyan">
             <div class="kpi-icon-wrap"><i data-lucide="check-square"></i></div>
             <div class="kpi-content">
-              <div class="kpi-label">Questions Faites</div>
+              <div class="kpi-label" id="kpi-questions-label">Questions Faites</div>
               <div class="kpi-value" id="kpi-total-questions">0</div>
               <div class="kpi-subtext" id="kpi-questions-sub">0 aujourd'hui</div>
             </div>
@@ -5570,7 +5571,7 @@ body {
           <div class="stat-kpi-card accent-emerald">
             <div class="kpi-icon-wrap"><i data-lucide="target"></i></div>
             <div class="kpi-content">
-              <div class="kpi-label">Taux de Précision</div>
+              <div class="kpi-label" id="kpi-accuracy-label">Taux de Précision</div>
               <div class="kpi-value" id="kpi-accuracy-pct">0%</div>
               <div class="kpi-subtext" id="kpi-accuracy-sub">0 justes • 0 fautes</div>
             </div>
@@ -5580,17 +5581,17 @@ body {
           <div class="stat-kpi-card accent-teal" title="Pourcentage de réponses justes lors de la toute première apparition d'une question (sans répétition)">
             <div class="kpi-icon-wrap"><i data-lucide="sparkles"></i></div>
             <div class="kpi-content">
-              <div class="kpi-label">1er Passage (Inédit)</div>
+              <div class="kpi-label" id="kpi-firstpass-label">1er Passage (Inédit)</div>
               <div class="kpi-value" id="kpi-first-pass-pct">--%</div>
               <div class="kpi-subtext" id="kpi-first-pass-sub">0/0 à la découverte</div>
             </div>
           </div>
 
-          <!-- Card 5: Temps Cumulé -->
+          <!-- Card 5: Temps d'Étude -->
           <div class="stat-kpi-card accent-purple">
             <div class="kpi-icon-wrap"><i data-lucide="clock"></i></div>
             <div class="kpi-content">
-              <div class="kpi-label">Temps Total d'Étude</div>
+              <div class="kpi-label" id="kpi-time-label">Temps d'Étude</div>
               <div class="kpi-value" id="kpi-total-time">0m</div>
               <div class="kpi-subtext" id="kpi-sessions-sub">0 sessions actives</div>
             </div>
@@ -5600,7 +5601,7 @@ body {
           <div class="stat-kpi-card accent-rose">
             <div class="kpi-icon-wrap"><i data-lucide="zap"></i></div>
             <div class="kpi-content">
-              <div class="kpi-label">Vitesse Moyenne</div>
+              <div class="kpi-label" id="kpi-speed-label">Vitesse Moyenne</div>
               <div class="kpi-value"><span id="kpi-avg-speed">--</span> <small style="font-size:0.85rem;font-weight:600;">s/QCM</small></div>
               <div class="kpi-subtext" id="kpi-speed-sub">Justes : --s • Fautes : --s</div>
             </div>

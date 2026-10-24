@@ -158,20 +158,23 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet pour me
   - **Pause automatique** : Si l'utilisateur change d'onglet ou verrouille son téléphone (`visibilitychange` / `document.hidden`), ou après 2 minutes d'inactivité, le chronomètre se met en pause.
   - **Détection des sessions** : Une nouvelle session d'étude est automatiquement comptabilisée dès qu'une pause dépasse 5 minutes (`SESSION_GAP_THRESHOLD_MS = 5 * 60 * 1000`).
   - **Plafonnement de sécurité** : Chaque question est plafonnée à 180 secondes maximum pour éviter toute dérive statistique si le terminal reste allumé sans interaction.
-- **Métriques Héroïques (6 KPI Cards)** :
-  1. 🔥 **Study Streak** : Série de jours consécutifs d'entraînement et record historique.
-  2. 📝 **Questions Faites** : Volume total répondu et volume accompli aujourd'hui.
-  3. 🎯 **Taux de Précision** : Pourcentage global de bonnes réponses (`correct / total * 100`).
-  4. ✨ **Réussite 1er Passage (Inédit / Découverte)** : Pourcentage de réussite lors de la toute première confrontation à une question (`pedia_first_pass_records_v2`), ignorant strictement les 2èmes et 3èmes passages de révision espacée.
+- **Métriques Héroïques Périodiques (6 KPI Cards contextualisées selon la plage temporelle choisie)** :
+  1. 🔥 **Study Streak** : Série de jours consécutifs d'entraînement, record historique et validation du travail accompli aujourd'hui ou nombre de jours actifs sur la période.
+  2. 📝 **Questions Faites (`#kpi-total-questions`)** : Volume strict de questions répondues au cours de la période sélectionnée (libellé dynamique : *Questions (Aujourd'hui)*, *Questions (7 jours)*, etc.) et sous-titre détaillé (`X justes • Y fautes`).
+  3. 🎯 **Taux de Précision (`#kpi-accuracy-pct`)** : Pourcentage de bonnes réponses calculé strictement sur la période (`correct / total * 100` ou `--%` si 0 QCM sur la période).
+  4. ✨ **Réussite 1er Passage (Inédit / Découverte) (`#kpi-first-pass-pct`)** : Pourcentage de réussite lors de la toute première confrontation à une question (`pedia_first_pass_records_v2`), calculé sur les questions découvertes pour la 1ère fois au sein de la période sélectionnée.
      - **Reconstruction Option B** : L'amorçage initial (`seedFirstPassFromExistingStats`) croise l'état de `queueEngine.stats` et le carnet d'erreurs IA `reasoningNotes`. Toute question ayant au moins une faute enregistrée (`st.mistakes > 0` ou présente dans le carnet) est identifiée comme ratée à la découverte (`false`). Toute question maîtrisée sans aucune faute (`st.current > 0 && st.mistakes === 0`) est identifiée comme réussie (`true`). Les questions encore non entamées sont exclues. En cours de jeu, chaque nouvelle découverte enregistre fidèlement le résultat live.
      - **Affichage contextuel** : En vue périodique ("Aujourd'hui", "7j", "30j", "Personnalisé") où aucune question inédite n'a été découverte, l'indicateur affiche clairement `--%` et `0 inédit (que des révisions)` pour éviter de fausser la lecture avec le cumul global.
-  5. ⏱️ **Temps Total d'Étude** : Temps cumulé au format lisible (`Xh Ym`) et nombre de sessions actives.
-  6. ⚡ **Vélocité Moyenne** : Vitesse en secondes par QCM, segmentée sur les réussites vs sur les erreurs.
+  5. ⏱️ **Temps d'Étude (`#kpi-total-time`)** : Temps exact passé à étudier sur la période sélectionnée (format lisible `Xh Ym` ou `Xm Ys`), libellé contextualisé (*Temps (Aujourd'hui)*, *Temps d'Étude (7 jours)*, etc.) et nombre de sessions actives de cette période.
+  6. ⚡ **Vélocité Moyenne (`#kpi-avg-speed`)** : Vitesse moyenne en secondes par QCM calculée strictement sur la période sélectionnée, avec décomposition précise de la cadence sur les réussites (`avgTimeCorrect`) vs sur les erreurs (`avgTimeWrong`) de la période.
 - **Sélecteur Temporel Multi-Périodes (`stats-range-toggle` & `custom-range-picker`)** :
-  - **Aujourd'hui** : Isole les métriques et l'activité de la journée en cours.
+  - **Aujourd'hui** : Isole strictement les métriques, le temps passé, les sessions et l'activité de la journée en cours.
   - **7 jours** / **30 jours** : Fenêtre glissante hebdomadaire ou mensuelle.
-  - **Tout** : Historique global depuis le premier jour d'entraînement.
-  - **Personnalisé 📅** : Panneau rétractable avec sélecteurs de dates `[Du] [Au]` permettant d'analyser n'importe quel intervalle calendaire.
+  - **Tout** : Historique global complet depuis le premier jour d'entraînement.
+  - **Personnalisé 📅** : Panneau rétractable avec sélecteurs de dates `[Du] [Au]` permettant d'analyser n'importe quel intervalle calendaire, avec application et affichage immédiats.
+- **Moteur d'Agrégation Temporelle (`StudyTracker.getAnalyticsForDays(days)`)** :
+  - Calcule dynamiquement et sans effet de bord l'intégralité des métriques (questions, temps, sessions, moyennes justes/fautes, chapitres, premier passage) pour un sous-ensemble arbitraire de jours.
+  - `getGlobalAnalytics()` réutilise cette logique en fournissant la totalité des jours de l'historique, garantissant une cohérence arithmétique parfaite entre filtres périodiques et historique global.
 - **Heatmap d'Activité Style GitHub (60 à 90 jours)** :
   - Grille SVG responsive de 7 lignes (jours de la semaine) x 9 colonnes (semaines) avec 5 paliers d'intensité de couleur (`#121d33` neutre, `#064e3b`, `#047857`, `#10b981`, `#00d4ff` intensif).
   - Infobulles contextuelles `<title>` affichant la date, le nombre de questions, les réussites et le temps passé.
@@ -180,14 +183,14 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet pour me
   - Courbe ambre superposée pour l'évolution de la vitesse de réponse (secondes/QCM).
   - Titre dynamique et mise à l'échelle automatique selon la période choisie (journée seule, personnalisée, 7j, 30j ou historique complet).
 - **Projection Dynamique Concours J-28 (10/11)** :
-  - Calcule automatiquement la cadence observée (QCM/jour actif) et estime la date d'achèvement de l'ensemble du programme des 1 905 questions.
+  - Calcule automatiquement la cadence observée (QCM/jour actif) sur la période sélectionnée et estime la date d'achèvement de l'ensemble du programme.
   - Alerte de motivation : félicite si la cadence est supérieure à l'objectif ou indique le nombre de QCM/jour à maintenir pour être prêt le 10/11.
-- **Analyse Clinique par Chapitres** :
-  - Classement des cours par taux de maîtrise : Top 4 des points forts vs Top 4 des révisions prioritaires avec barres de progression colorées.
-- **Journal Quotidien Détaillé** :
-  - Timeline ordonnée (du plus récent au plus ancien) listant chaque jour d'entraînement avec badge « Aujourd'hui », volume, justes, fautes, durée et sessions.
+- **Analyse Clinique par Chapitres (`renderStatsChapters`)** :
+  - Filtrée sur les chapitres travaillés au sein de la période sélectionnée : classement des cours par taux de maîtrise avec barres de progression colorées.
+- **Journal Quotidien Détaillé (`renderStatsTimeline`)** :
+  - Timeline ordonnée (du plus récent au plus ancien) listant exclusivement les jours d'entraînement appartenant à la période sélectionnée, avec badge « Aujourd'hui », volume, justes, fautes, durée et sessions.
 - **Synchronisation Cloud Multi-Appareils (`studyHistory` & `firstPassRecords`)** :
-  - Stockage local dans `localStorage` sous `pedia_study_history_v1` et `pedia_first_pass_records_v1`.
+  - Stockage local dans `localStorage` sous `pedia_study_history_v1` et `pedia_first_pass_records_v2`.
   - Synchronisation bidirectionnelle automatique dans Google Cloud Firestore (`users/{uid}/pedia/progress`).
   - Fusion non destructive (`mergeHistory`) assurant la conservation des sessions entre PC, tablette et smartphone Android.
   - Badge de date : `📅 JJ/MM HH:MM` (`stat-date`).

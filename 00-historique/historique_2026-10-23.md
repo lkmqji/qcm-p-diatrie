@@ -165,5 +165,20 @@
      - Recompilation avec `node build-bundle.cjs` (génération de `src/app.bundle.js` 251 Ko et `dist/index.html` 4.7 Mo).
      - Validation de la syntaxe JS via `node -c` (0 erreur).
 
+---
+
+## 2026-10-23 16:13 - Génération & Mise à Jour du Paquet Android Natif (PediaDrill.apk)
+
+- **Action Réalisée** :
+  - Exécution du script de build complet `build-apk.bat` :
+    1. Recompilation du bundle web de production et synchronisation avec `dist/index.html`.
+    2. Synchronisation Capacitor Android (`npx cap sync android`) : injection des derniers assets web, styles et logiques applicatives dans le projet Android natif.
+    3. Compilation native Gradle via `gradle.bat :app:assembleDebug` (91 tâches exécutées avec succès en 1m 13s).
+    4. Copie de l'APK généré vers la racine du projet sous `PediaDrill.apk`.
+- **Fichier Livré** :
+  - `PediaDrill.apk` (6,875,321 octets, ~6.87 Mo, horodaté au 23/10/2026 16:13:16).
+  - Intègre l'ensemble des dernières fonctionnalités : chronomètre d'étude de leçons, sélection intelligente par cours, persistance d'horodatage en arrière-plan, mini-badge pulsant dans le header, navigation horizontale par sous-pages QCM vs Cours, et synchronisation Cloud Firestore.
+
+
 
 
