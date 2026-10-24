@@ -231,7 +231,25 @@ Module dédié au chronométrage autonome de l'apprentissage par cours (polycopi
   - Synchronisation atomique dans `users/{uid}/pedia/progress`.
   - Fusion bidirectionnelle non destructive (`mergeSessions`) pour consolider l'historique d'étude entre PC, smartphone et tablette.
 
-### 3.7. Moteur de Formatage Médical Intelligent (`formatMedicalContent`)
+### 3.9. Système de Mises à Jour Automatiques & GitHub Releases (`src/services/updateService.js` & CI/CD)
+L'application intègre un sous-système complet de vérification, d'alerte et de téléchargement autonome des nouvelles versions de l'APK depuis GitHub Releases :
+- **Service d'Orchestration des Mises à Jour (`UpdateService`)** :
+  - **Version actuelle déclarée** : `CURRENT_APP_VERSION = '1.3.0'` synchronisée avec `package.json` et `build.gradle`.
+  - **Comparaison sémantique universelle (`compareVersions`)** : Compare fidèlement les versions de type `v1.3.1` vs `1.3.0` ou `2.0` en ignorant les préfixes et en évaluant chaque niveau de version.
+  - **Interrogation de l'API GitHub Releases** : Requête HTTP vers `https://api.github.com/repos/lkmqji/qcm-p-diatrie/releases/latest`.
+  - **Cooldown d'arrière-plan (4 heures)** : Évite toute surconsommation de quota d'API GitHub lors des démarrages répétés de l'application via `pedia_last_update_check_ts`.
+  - **Extraction directe de l'APK** : Recherche prioritaire de l'asset `.apk` (ex: `PediaDrill.apk`) pour fournir le lien direct de téléchargement (`browser_download_url`).
+  - **Installation Native Android** : En environnement Capacitor mobile (`Capacitor.isNativePlatform()`), l'URL de téléchargement direct est ouverte dans le navigateur système (`_system`), déclenchant le gestionnaire de téléchargement Android et la notification d'installation.
+- **Expérience Utilisateur & Interfaces Dédiées** :
+  - **Pastille Pulsante Header (`#badge-update-available`)** : Discrète puce verte animée sur l'icône Paramètres du header, visible uniquement lorsqu'une version plus récente a été détectée.
+  - **Carte Mises à Jour dans la Modale Paramètres (`#modal-settings`)** : Affiche le numéro de version installée, le statut de vérification et un bouton manuel avec icône rotative (`spin-animation`).
+  - **Modale Complète de Mise à Jour (`#modal-app-update`)** : Présentation soignée avec icône émeraude, comparatif `vActuelle ➔ vNouvelle`, date de publication, notes de mise à jour / changelog défilant et bouton d'action principal « Télécharger l'APK ».
+- **Pipeline CI/CD Automatisé (`.github/workflows/build-and-release.yml`)** :
+  - **Déclencheurs** : Push d'un tag git `v*` (ex: `v1.3.1`) ou déclenchement manuel en 1 clic via `workflow_dispatch`.
+  - **Environnement de build** : Ubuntu Latest avec Node 20, Java 17 Temurin et Android SDK officiel.
+  - **Compilation & Publication** : Exécute `build-bundle.cjs`, synchronise Capacitor, compile `:app:assembleDebug`, renomme l'APK en `PediaDrill.apk` et crée automatiquement une Release GitHub complète avec notes de version générées et l'APK attaché en téléchargement direct.
+
+### 3.10. Moteur de Formatage Médical Intelligent (`formatMedicalContent`)
 Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes issus de l'extraction de cours :
 - **Dégel des justifications de propositions (ex: `A-Vrai`, `A/ Vrai`, `B : Faux`, `1- Vrai`, `1-Perplexe`)** : Détection et conversion systématique en listes à puces avec badges en gras (`- **A) Vrai** :`).
 - **Dégel des colonnes multi-espaces de diapositives** : Détection des énumérations séparées par de multiples espaces insécables (`\u00A0`) et conversion en éléments de liste à puces individuels.

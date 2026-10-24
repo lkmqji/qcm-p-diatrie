@@ -5121,6 +5121,164 @@ body {
   }
 }
 
+/* ==========================================================================
+   APP UPDATE MODAL & GITHUB RELEASES UI
+   ========================================================================== */
+.update-modal-card {
+  max-width: 480px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
+  animation: modalScaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalScaleUp {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.update-version-banner {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(0, 212, 255, 0.08));
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.update-version-chips {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.version-chip {
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.version-chip.current {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
+}
+
+.version-chip.new {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--emerald);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.update-release-date {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+.update-notes-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  max-height: 200px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.update-notes-title {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cyan);
+}
+
+.update-notes-body {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.update-notes-body ul {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.update-notes-body li {
+  color: var(--text-main);
+}
+
+.update-actions-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+/* Toast alert notification */
+.pedia-toast-alert {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(30px);
+  background: #121d33;
+  color: #ffffff;
+  border: 1px solid var(--cyan);
+  border-radius: var(--radius-md);
+  padding: 12px 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  z-index: 11000;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 90vw;
+  text-align: center;
+}
+
+.pedia-toast-alert.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Spin animation for refresh icon */
+.spin-animation {
+  animation: spinSlow 1s linear infinite;
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.update-pulse-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--emerald);
+  box-shadow: 0 0 10px var(--emerald);
+  animation: pulseGreen 2s infinite;
+}
+
+@keyframes pulseGreen {
+  0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1.15); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
 
 </style>
 </head>
@@ -5175,9 +5333,10 @@ body {
           <i data-lucide="book-open"></i>
         </button>
 
-        <!-- Settings -->
-        <button class="icon-btn" id="btn-open-settings" title="Paramètres & Modèles IA">
+        <!-- Settings & Updates -->
+        <button class="icon-btn" id="btn-open-settings" title="Paramètres & Mises à jour" style="position:relative;">
           <i data-lucide="settings"></i>
+          <span class="update-pulse-dot" id="badge-update-available" style="display:none;" title="Nouvelle version disponible !"></span>
         </button>
       </div>
     </header>
@@ -6082,10 +6241,69 @@ body {
         </ol>
       </div>
 
+      <!-- SECTION: Mises à Jour de l'Application via GitHub Releases -->
+      <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:14px;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <i data-lucide="github" style="width:16px;height:16px;color:var(--cyan);"></i>
+            <span style="font-size:0.78rem;font-weight:700;color:var(--text-main);text-transform:uppercase;">Mises à Jour Application</span>
+          </div>
+          <span class="badge" id="settings-current-app-version" style="background:rgba(0,212,255,0.15);color:var(--cyan);font-size:0.72rem;padding:3px 8px;border-radius:10px;font-weight:700;">v1.3.0</span>
+        </div>
+        <div style="font-size:0.75rem;color:var(--text-muted);line-height:1.45;" id="settings-update-status">
+          Vérifie automatiquement les nouvelles versions et correctifs disponibles sur GitHub Releases.
+        </div>
+        <button class="btn-secondary" id="btn-check-updates-manual" type="button" style="padding:10px;font-size:0.82rem;width:100%;justify-content:center;gap:8px;">
+          <i data-lucide="refresh-cw" id="icon-check-updates" style="width:14px;height:14px;"></i>
+          <span id="text-check-updates">Vérifier les mises à jour maintenant</span>
+        </button>
+      </div>
+
       <button class="btn-primary-large" id="btn-save-settings">
         <span>Enregistrer les paramètres</span>
       </button>
 
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODALE 5: MISE À JOUR DISPONIBLE (GITHUB RELEASES)
+       ───────────────────────────────────────────────────────────── -->
+  <div class="modal-overlay" id="modal-app-update" style="display:none;z-index:10000;">
+    <div class="modal-content update-modal-card">
+      <div class="modal-header">
+        <div class="modal-title" style="color:var(--emerald);">
+          <i data-lucide="sparkles"></i>
+          <span>Mise à Jour Disponible !</span>
+        </div>
+        <button class="close-btn" id="btn-close-update-modal">&times;</button>
+      </div>
+
+      <div class="update-version-banner">
+        <div class="update-version-chips">
+          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.3.0</strong></span>
+          <i data-lucide="arrow-right" style="width:14px;height:14px;color:var(--text-dim);"></i>
+          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.4.0</strong></span>
+        </div>
+        <div class="update-release-date" id="update-modal-date">Publiée sur GitHub Releases</div>
+      </div>
+
+      <div class="update-notes-container">
+        <div class="update-notes-title">Nouveautés & Améliorations :</div>
+        <div class="update-notes-body" id="update-modal-notes">
+          Chargement des notes de version...
+        </div>
+      </div>
+
+      <div class="update-actions-row">
+        <button type="button" class="btn-secondary" id="btn-update-later" style="flex:1;padding:12px;">
+          Plus tard
+        </button>
+        <button type="button" class="btn-primary-large" id="btn-download-update" style="flex:2;padding:12px;background:linear-gradient(135deg, #059669, #10b981);">
+          <i data-lucide="download"></i>
+          <span>Télécharger l'APK</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -9068,6 +9286,248 @@ class FirebaseSyncService {
 }
 
 
+// Update Management Service for PédiaDrill
+// Checks GitHub Releases for new APK versions, notifies the user, and triggers direct download.
+
+const CURRENT_APP_VERSION = '1.3.0';
+const GITHUB_REPO = 'lkmqji/qcm-p-diatrie';
+const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
+const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours auto-check cooldown
+const LAST_CHECK_KEY = 'pedia_last_update_check_ts';
+
+class UpdateService {
+  constructor() {
+    this.currentVersion = CURRENT_APP_VERSION;
+    this.latestRelease = null;
+    this.isChecking = false;
+  }
+
+  /**
+   * Compare two semantic versions (e.g. "1.3.1" vs "1.3.0" or "v1.4" vs "1.3.0")
+   * Returns:
+   *   1 if v1 > v2
+   *  -1 if v1 < v2
+   *   0 if v1 === v2
+   */
+  compareVersions(v1, v2) {
+    if (!v1 || !v2) return 0;
+    const clean = v => String(v).trim().replace(/^[vV]/, '');
+    const parts1 = clean(v1).split('.').map(n => parseInt(n, 10) || 0);
+    const parts2 = clean(v2).split('.').map(n => parseInt(n, 10) || 0);
+
+    const maxLength = Math.max(parts1.length, parts2.length);
+    for (let i = 0; i < maxLength; i++) {
+      const p1 = parts1[i] || 0;
+      const p2 = parts2[i] || 0;
+      if (p1 > p2) return 1;
+      if (p1 < p2) return -1;
+    }
+    return 0;
+  }
+
+  /**
+   * Check GitHub API for the latest release
+   * @param {boolean} manual Whether this check was triggered manually by user
+   */
+  async checkForUpdates(manual = false) {
+    if (this.isChecking) return;
+
+    // Cooldown check for automatic background check
+    const now = Date.now();
+    if (!manual) {
+      try {
+        const lastCheck = parseInt(localStorage.getItem(LAST_CHECK_KEY) || '0', 10);
+        if (now - lastCheck < UPDATE_CHECK_INTERVAL_MS) {
+          return; // Skipped, cooldown active
+        }
+      } catch (e) {
+        // Ignore localStorage error
+      }
+    }
+
+    this.isChecking = true;
+    this.updateStatusText('Vérification en cours...', true);
+
+    try {
+      const response = await fetch(GITHUB_API_URL, {
+        headers: {
+          'Accept': 'application/vnd.github.v3+json',
+          'User-Agent': 'PediaDrill-App'
+        }
+      });
+
+      try {
+        localStorage.setItem(LAST_CHECK_KEY, String(now));
+      } catch (e) {}
+
+      if (response.status === 404) {
+        // No releases published yet on GitHub
+        this.updateStatusText(`Application à jour (v${this.currentVersion}) - Aucun tag sur GitHub.`);
+        if (manual) {
+          this.showToast(`✅ Vous utilisez la version la plus récente (v${this.currentVersion}).`);
+        }
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error(`Erreur GitHub API (${response.status})`);
+      }
+
+      const release = await response.json();
+      this.latestRelease = release;
+
+      const remoteTag = release.tag_name || release.name || '';
+      const isNewer = this.compareVersions(remoteTag, this.currentVersion) > 0;
+
+      if (isNewer) {
+        this.updateStatusText(`🎉 Nouvelle version disponible : ${remoteTag}`);
+        this.openUpdateModal(release);
+      } else {
+        this.updateStatusText(`✅ Version à jour (v${this.currentVersion})`);
+        if (manual) {
+          this.showToast(`✅ Vous êtes à jour avec la dernière version (v${this.currentVersion}).`);
+        }
+      }
+    } catch (err) {
+      console.warn('[UpdateService] Check failed:', err);
+      this.updateStatusText('Impossible de joindre GitHub');
+      if (manual) {
+        this.showToast('⚠️ Impossible de vérifier les mises à jour (vérifiez votre connexion Internet).');
+      }
+    } finally {
+      this.isChecking = false;
+    }
+  }
+
+  /**
+   * Find direct APK asset download URL or fallback to release webpage
+   */
+  getApkDownloadUrl(release) {
+    if (!release) return `https://github.com/${GITHUB_REPO}/releases/latest`;
+
+    if (Array.isArray(release.assets) && release.assets.length > 0) {
+      // Prioritize PediaDrill.apk or any .apk file
+      const apkAsset = release.assets.find(a => a.name && a.name.toLowerCase().endsWith('.apk'));
+      if (apkAsset && apkAsset.browser_download_url) {
+        return apkAsset.browser_download_url;
+      }
+    }
+
+    // Fallback to release page
+    return release.html_url || `https://github.com/${GITHUB_REPO}/releases/latest`;
+  }
+
+  /**
+   * Trigger direct APK download or open in external system browser on Android
+   */
+  downloadAndInstall(url) {
+    if (!url) return;
+
+    try {
+      // On Android Capacitor native shell, open in system browser to trigger download manager
+      if (typeof window !== 'undefined' && window.Capacitor && window.Capacitor.isNativePlatform()) {
+        window.open(url, '_system');
+      } else {
+        const a = document.createElement('a');
+        a.href = url;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+    } catch (e) {
+      window.location.href = url;
+    }
+  }
+
+  /**
+   * Displays the update modal with release details
+   */
+  openUpdateModal(release) {
+    const modal = document.getElementById('modal-app-update');
+    if (!modal) return;
+
+    const currVersionEl = document.getElementById('update-modal-curr-version');
+    const newVersionEl = document.getElementById('update-modal-new-version');
+    const dateEl = document.getElementById('update-modal-date');
+    const notesEl = document.getElementById('update-modal-notes');
+    const btnDownload = document.getElementById('btn-download-update');
+
+    const newTag = release.tag_name || release.name || 'Nouvelle version';
+    if (currVersionEl) currVersionEl.textContent = `v${this.currentVersion}`;
+    if (newVersionEl) newVersionEl.textContent = newTag;
+
+    if (dateEl && release.published_at) {
+      const d = new Date(release.published_at);
+      dateEl.textContent = `Publiée le ${d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+    }
+
+    if (notesEl) {
+      const rawBody = (release.body || 'Mise à jour de maintenance et améliorations de performances.').trim();
+      // Format simple markdown lines (bullet points, bold)
+      const formatted = rawBody
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/^[\*\-]\s+(.*)$/gm, '<li>$1</li>')
+        .replace(/\n\n/g, '<br><br>');
+
+      notesEl.innerHTML = formatted.includes('<li>') ? `<ul>${formatted}</ul>` : formatted;
+    }
+
+    const downloadUrl = this.getApkDownloadUrl(release);
+    if (btnDownload) {
+      btnDownload.onclick = () => {
+        this.downloadAndInstall(downloadUrl);
+        modal.style.display = 'none';
+        this.showToast('🚀 Téléchargement de l\'APK en cours dans vos notifications Android...');
+      };
+    }
+
+    modal.style.display = 'flex';
+  }
+
+  closeUpdateModal() {
+    const modal = document.getElementById('modal-app-update');
+    if (modal) modal.style.display = 'none';
+  }
+
+  updateStatusText(msg, isLoading = false) {
+    const statusEl = document.getElementById('settings-update-status');
+    const iconEl = document.getElementById('icon-check-updates');
+    if (statusEl) statusEl.textContent = msg;
+    if (iconEl) {
+      if (isLoading) iconEl.classList.add('spin-animation');
+      else iconEl.classList.remove('spin-animation');
+    }
+  }
+
+  showToast(message) {
+    const existing = document.getElementById('pedia-toast-alert');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.id = 'pedia-toast-alert';
+    toast.className = 'pedia-toast-alert';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+      toast.classList.add('show');
+    }, 50);
+
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, 4500);
+  }
+}
+
+const updateService = new UpdateService();
+
+
 // PédiaDrill - Application Controller & Orchestration
 
 // Global Data Access
@@ -9128,7 +9588,8 @@ const modals = {
   error: document.getElementById('modal-error'),
   chapters: document.getElementById('modal-chapters'),
   sync: document.getElementById('modal-sync'),
-  settings: document.getElementById('modal-settings')
+  settings: document.getElementById('modal-settings'),
+  update: document.getElementById('modal-app-update')
 };
 
 // ============================================================================
@@ -9150,6 +9611,13 @@ function initApp() {
       console.warn('SW registration:', err);
     });
   }
+
+  // Check for app updates via GitHub Releases in background (with 4h cooldown)
+  setTimeout(() => {
+    if (typeof updateService !== 'undefined' && updateService) {
+      updateService.checkForUpdates(false);
+    }
+  }, 3000);
 }
 
 function updateModalLocalSummary() {
@@ -12758,6 +13226,11 @@ function setupEventListeners() {
   };
 
   // Settings Modal
+  const versionBadgeEl = document.getElementById('settings-current-app-version');
+  if (versionBadgeEl && typeof CURRENT_APP_VERSION !== 'undefined') {
+    versionBadgeEl.textContent = `v${CURRENT_APP_VERSION}`;
+  }
+
   document.getElementById('btn-open-settings').onclick = () => {
     document.getElementById('settings-gemini-key').value = geminiService.getApiKey();
     modals.settings.style.display = 'flex';
@@ -12769,6 +13242,38 @@ function setupEventListeners() {
     alert('Clé API Gemini enregistrée !');
     modals.settings.style.display = 'none';
   };
+
+  // GitHub Releases Update Buttons
+  const btnCheckUpdates = document.getElementById('btn-check-updates-manual');
+  if (btnCheckUpdates) {
+    btnCheckUpdates.onclick = () => {
+      if (typeof updateService !== 'undefined' && updateService) {
+        updateService.checkForUpdates(true);
+      }
+    };
+  }
+
+  const btnCloseUpdateModal = document.getElementById('btn-close-update-modal');
+  if (btnCloseUpdateModal) {
+    btnCloseUpdateModal.onclick = () => {
+      if (typeof updateService !== 'undefined' && updateService) {
+        updateService.closeUpdateModal();
+      } else if (modals.update) {
+        modals.update.style.display = 'none';
+      }
+    };
+  }
+
+  const btnUpdateLater = document.getElementById('btn-update-later');
+  if (btnUpdateLater) {
+    btnUpdateLater.onclick = () => {
+      if (typeof updateService !== 'undefined' && updateService) {
+        updateService.closeUpdateModal();
+      } else if (modals.update) {
+        modals.update.style.display = 'none';
+      }
+    };
+  }
 
   // Modal backdrop click to close
   window.onclick = (e) => {

@@ -29,6 +29,7 @@ let queue = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'service
 let tracker = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'services', 'studyTracker.js'), 'utf8'));
 let lesson = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'services', 'lessonTracker.js'), 'utf8'));
 let sync = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'services', 'firebaseSyncService.js'), 'utf8'));
+let updater = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'services', 'updateService.js'), 'utf8'));
 let app = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'app.js'), 'utf8'));
 
 const bundle = `// ==========================================
@@ -44,6 +45,8 @@ ${tracker}
 ${lesson}
 
 ${sync}
+
+${updater}
 
 ${app}
 })();

@@ -44,3 +44,40 @@
   4. **Compilation & Déploiement** :
      - Exécution réussie de `node build-bundle.cjs` : synchronisation du CSS, régénération de `src/app.bundle.js`, mise à jour d'`index.html` et copie dans `dist/index.html`.
      - Tests unitaires automatisés validant l'isolation stricte des métriques journalières et la conservation de l'agrégation globale.
+
+### 20:30 - Intégration du Système de Vérification et Téléchargement des Mises à Jour depuis GitHub Releases
+
+- **Besoin Exprimé par l'Utilisateur** :
+  - Permettre à l'APK installé sur smartphone Android de vérifier automatiquement les mises à jour publiées sur GitHub, d'afficher les nouveautés et de télécharger / installer la dernière version en un clic.
+  - Automatiser la création des releases sur GitHub avec le fichier `PediaDrill.apk` prêt au téléchargement.
+
+- **Composants & Solutions Développés** :
+  1. **Nouveau Service Dédié (`src/services/updateService.js`)** :
+     - Définition de la version courante (`CURRENT_APP_VERSION = '1.3.0'`) et du dépôt cible (`lkmqji/qcm-p-diatrie`).
+     - Algorithme de comparaison sémantique (`compareVersions`) gérant les préfixes `v` et les versions à 3 niveaux (ex. `1.3.1` > `1.3.0`).
+     - Méthode `checkForUpdates(manual = false)` interrogeant l'API publique `https://api.github.com/repos/lkmqji/qcm-p-diatrie/releases/latest`.
+     - Cooldown automatique de 4 heures en arrière-plan pour éviter de saturer les quotas de requêtes GitHub.
+     - Extraction automatique de l'asset direct `PediaDrill.apk` (`browser_download_url`) ou redirection de secours vers la page de release.
+     - Méthode de téléchargement native (`downloadAndInstall`) : déclenche le gestionnaire de téléchargement Android via `_system` en environnement Capacitor natif.
+     - Notifications toast stylisées (`pedia-toast-alert`) pour les retours utilisateurs immédiats.
+
+  2. **Interface Utilisateur & Expérience Visuelle (`template.html` & `src/style.css`)** :
+     - **Bouton Header & Badge Pulsant** : Ajout d'une puce verte animée (`#badge-update-available`) sur le bouton Paramètres du header alertant discrètement l'étudiant dès qu'une mise à jour est disponible.
+     - **Section Mises à Jour dans la Modale Paramètres (`#modal-settings`)** :
+       - Badge de version installée actuelle (`v1.3.0`).
+       - Statut d'état en direct et bouton manuel `Vérifier les mises à jour maintenant` avec icône tournante (`spin-animation`).
+     - **Modale de Mise à Jour Dédiée (`#modal-app-update`)** :
+       - Entête avec icône sparkles émeraude.
+       - Bannière comparative des versions : `v1.3.0 ➔ v1.4.0` et date de publication.
+       - Conteneur défilant des notes de mise à jour et correctifs (Markdown mis en forme).
+       - Boutons d'action : `Plus tard` et `Télécharger l'APK`.
+
+  3. **Pipeline CI/CD GitHub Actions (`.github/workflows/build-and-release.yml`)** :
+     - Création d'un workflow GitHub Actions automatisé s'exécutant sur chaque tag `v*` (ex: `v1.3.1`) ou déclenchable manuellement en 1 clic via `workflow_dispatch`.
+     - Étapes : Checkout, Node 20, Java 17 Temurin, Android SDK, build du bundle web, `cap sync android`, compilation Gradle native (`:app:assembleDebug`), génération de `PediaDrill.apk` et publication instantanée sur GitHub Releases avec release notes automatiques et APK attaché.
+
+  4. **Assemblage & Synchronisation (`build-bundle.cjs` & `src/app.js`)** :
+     - Intégration de `updateService.js` dans le bundle client unifié `src/app.bundle.js`.
+     - Initialisation automatique en arrière-plan 3 secondes après le lancement de l'application.
+     - Synchronisation de `package.json` sur la version `1.3.0`.
+

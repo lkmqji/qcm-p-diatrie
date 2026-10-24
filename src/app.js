@@ -4,6 +4,7 @@ import { QueueEngine } from './services/queueEngine.js';
 import { FirebaseSyncService } from './services/firebaseSyncService.js';
 import { studyTracker } from './services/studyTracker.js';
 import { lessonTracker } from './services/lessonTracker.js';
+import { updateService, CURRENT_APP_VERSION } from './services/updateService.js';
 
 // Global Data Access
 const allQuestions = window.PEDIA_QUESTIONS || [];
@@ -63,7 +64,8 @@ const modals = {
   error: document.getElementById('modal-error'),
   chapters: document.getElementById('modal-chapters'),
   sync: document.getElementById('modal-sync'),
-  settings: document.getElementById('modal-settings')
+  settings: document.getElementById('modal-settings'),
+  update: document.getElementById('modal-app-update')
 };
 
 // ============================================================================
@@ -85,6 +87,13 @@ function initApp() {
       console.warn('SW registration:', err);
     });
   }
+
+  // Check for app updates via GitHub Releases in background (with 4h cooldown)
+  setTimeout(() => {
+    if (typeof updateService !== 'undefined' && updateService) {
+      updateService.checkForUpdates(false);
+    }
+  }, 3000);
 }
 
 function updateModalLocalSummary() {
@@ -3693,6 +3702,11 @@ function setupEventListeners() {
   };
 
   // Settings Modal
+  const versionBadgeEl = document.getElementById('settings-current-app-version');
+  if (versionBadgeEl && typeof CURRENT_APP_VERSION !== 'undefined') {
+    versionBadgeEl.textContent = `v${CURRENT_APP_VERSION}`;
+  }
+
   document.getElementById('btn-open-settings').onclick = () => {
     document.getElementById('settings-gemini-key').value = geminiService.getApiKey();
     modals.settings.style.display = 'flex';
@@ -3704,6 +3718,38 @@ function setupEventListeners() {
     alert('Clé API Gemini enregistrée !');
     modals.settings.style.display = 'none';
   };
+
+  // GitHub Releases Update Buttons
+  const btnCheckUpdates = document.getElementById('btn-check-updates-manual');
+  if (btnCheckUpdates) {
+    btnCheckUpdates.onclick = () => {
+      if (typeof updateService !== 'undefined' && updateService) {
+        updateService.checkForUpdates(true);
+      }
+    };
+  }
+
+  const btnCloseUpdateModal = document.getElementById('btn-close-update-modal');
+  if (btnCloseUpdateModal) {
+    btnCloseUpdateModal.onclick = () => {
+      if (typeof updateService !== 'undefined' && updateService) {
+        updateService.closeUpdateModal();
+      } else if (modals.update) {
+        modals.update.style.display = 'none';
+      }
+    };
+  }
+
+  const btnUpdateLater = document.getElementById('btn-update-later');
+  if (btnUpdateLater) {
+    btnUpdateLater.onclick = () => {
+      if (typeof updateService !== 'undefined' && updateService) {
+        updateService.closeUpdateModal();
+      } else if (modals.update) {
+        modals.update.style.display = 'none';
+      }
+    };
+  }
 
   // Modal backdrop click to close
   window.onclick = (e) => {

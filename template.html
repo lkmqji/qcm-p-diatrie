@@ -5121,6 +5121,164 @@ body {
   }
 }
 
+/* ==========================================================================
+   APP UPDATE MODAL & GITHUB RELEASES UI
+   ========================================================================== */
+.update-modal-card {
+  max-width: 480px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
+  animation: modalScaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalScaleUp {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.update-version-banner {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(0, 212, 255, 0.08));
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.update-version-chips {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.version-chip {
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.version-chip.current {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
+}
+
+.version-chip.new {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--emerald);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.update-release-date {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+.update-notes-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  max-height: 200px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.update-notes-title {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cyan);
+}
+
+.update-notes-body {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.update-notes-body ul {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.update-notes-body li {
+  color: var(--text-main);
+}
+
+.update-actions-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+/* Toast alert notification */
+.pedia-toast-alert {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(30px);
+  background: #121d33;
+  color: #ffffff;
+  border: 1px solid var(--cyan);
+  border-radius: var(--radius-md);
+  padding: 12px 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  z-index: 11000;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 90vw;
+  text-align: center;
+}
+
+.pedia-toast-alert.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Spin animation for refresh icon */
+.spin-animation {
+  animation: spinSlow 1s linear infinite;
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.update-pulse-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--emerald);
+  box-shadow: 0 0 10px var(--emerald);
+  animation: pulseGreen 2s infinite;
+}
+
+@keyframes pulseGreen {
+  0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1.15); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
 
 </style>
 </head>
@@ -5175,9 +5333,10 @@ body {
           <i data-lucide="book-open"></i>
         </button>
 
-        <!-- Settings -->
-        <button class="icon-btn" id="btn-open-settings" title="Paramètres & Modèles IA">
+        <!-- Settings & Updates -->
+        <button class="icon-btn" id="btn-open-settings" title="Paramètres & Mises à jour" style="position:relative;">
           <i data-lucide="settings"></i>
+          <span class="update-pulse-dot" id="badge-update-available" style="display:none;" title="Nouvelle version disponible !"></span>
         </button>
       </div>
     </header>
@@ -6082,10 +6241,69 @@ body {
         </ol>
       </div>
 
+      <!-- SECTION: Mises à Jour de l'Application via GitHub Releases -->
+      <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:14px;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <i data-lucide="github" style="width:16px;height:16px;color:var(--cyan);"></i>
+            <span style="font-size:0.78rem;font-weight:700;color:var(--text-main);text-transform:uppercase;">Mises à Jour Application</span>
+          </div>
+          <span class="badge" id="settings-current-app-version" style="background:rgba(0,212,255,0.15);color:var(--cyan);font-size:0.72rem;padding:3px 8px;border-radius:10px;font-weight:700;">v1.3.0</span>
+        </div>
+        <div style="font-size:0.75rem;color:var(--text-muted);line-height:1.45;" id="settings-update-status">
+          Vérifie automatiquement les nouvelles versions et correctifs disponibles sur GitHub Releases.
+        </div>
+        <button class="btn-secondary" id="btn-check-updates-manual" type="button" style="padding:10px;font-size:0.82rem;width:100%;justify-content:center;gap:8px;">
+          <i data-lucide="refresh-cw" id="icon-check-updates" style="width:14px;height:14px;"></i>
+          <span id="text-check-updates">Vérifier les mises à jour maintenant</span>
+        </button>
+      </div>
+
       <button class="btn-primary-large" id="btn-save-settings">
         <span>Enregistrer les paramètres</span>
       </button>
 
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODALE 5: MISE À JOUR DISPONIBLE (GITHUB RELEASES)
+       ───────────────────────────────────────────────────────────── -->
+  <div class="modal-overlay" id="modal-app-update" style="display:none;z-index:10000;">
+    <div class="modal-content update-modal-card">
+      <div class="modal-header">
+        <div class="modal-title" style="color:var(--emerald);">
+          <i data-lucide="sparkles"></i>
+          <span>Mise à Jour Disponible !</span>
+        </div>
+        <button class="close-btn" id="btn-close-update-modal">&times;</button>
+      </div>
+
+      <div class="update-version-banner">
+        <div class="update-version-chips">
+          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.3.0</strong></span>
+          <i data-lucide="arrow-right" style="width:14px;height:14px;color:var(--text-dim);"></i>
+          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.4.0</strong></span>
+        </div>
+        <div class="update-release-date" id="update-modal-date">Publiée sur GitHub Releases</div>
+      </div>
+
+      <div class="update-notes-container">
+        <div class="update-notes-title">Nouveautés & Améliorations :</div>
+        <div class="update-notes-body" id="update-modal-notes">
+          Chargement des notes de version...
+        </div>
+      </div>
+
+      <div class="update-actions-row">
+        <button type="button" class="btn-secondary" id="btn-update-later" style="flex:1;padding:12px;">
+          Plus tard
+        </button>
+        <button type="button" class="btn-primary-large" id="btn-download-update" style="flex:2;padding:12px;background:linear-gradient(135deg, #059669, #10b981);">
+          <i data-lucide="download"></i>
+          <span>Télécharger l'APK</span>
+        </button>
+      </div>
     </div>
   </div>
 

@@ -1,0 +1,85 @@
+name: Build & Release Android APK
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Numéro de version de la Release (ex: v1.3.0)'
+        required: false
+        default: 'v1.3.0'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    name: Build APK and Publish GitHub Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Récupérer le code source (Checkout)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🟢 Configurer Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: ☕ Configurer Java JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 📱 Configurer le SDK Android
+        uses: android-actions/setup-android@v3
+
+      - name: 📦 Installer les dépendances Node
+        run: npm install
+
+      - name: 🔨 Générer le bundle web de production
+        run: node build-bundle.cjs
+
+      - name: 🔄 Synchroniser Capacitor Android
+        run: npx cap sync android
+
+      - name: 🤖 Compiler l'APK Android (:app:assembleDebug)
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: 📋 Préparer le fichier PediaDrill.apk pour la release
+        run: |
+          cp android/app/build/outputs/apk/debug/app-debug.apk PediaDrill.apk
+          ls -lh PediaDrill.apk
+
+      - name: 🏷️ Déterminer le tag de version
+        id: get_tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG_VAL="${{ github.event.inputs.version }}"
+          else
+            TAG_VAL="${{ github.ref_name }}"
+          fi
+          echo "tag=$TAG_VAL" >> $GITHUB_OUTPUT
+          echo "Release tag: $TAG_VAL"
+
+      - name: 🚀 Créer la Release GitHub & Attacher PediaDrill.apk
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.get_tag.outputs.tag }}
+          name: PédiaDrill ${{ steps.get_tag.outputs.tag }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          files: |
+            PediaDrill.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
