@@ -1,7 +1,7 @@
 // Update Management Service for PédiaDrill
 // Checks GitHub Releases for new APK versions, notifies the user, and triggers direct download.
 
-export const CURRENT_APP_VERSION = '1.3.2';
+export const CURRENT_APP_VERSION = '1.3.3';
 export const GITHUB_REPO = 'lkmqji/qcm-p-diatrie';
 export const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
 export const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours auto-check cooldown

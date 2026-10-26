@@ -87,3 +87,31 @@
   - Recompilation du bundle web et de l'APK natif `PediaDrill.apk`.
   - Déploiement sur GitHub (`main` et tag `v1.3.2`) pour mise à disposition automatique de la mise à jour corrective.
 
+### 14:38 - Navigation rétroactive par jour (Hier / Avant-hier) & Tracker complet des questions par cours (Release v1.3.3)
+- **Flèches de navigation rapide par jour (`#stats-day-stepper-wrap`)** :
+  - Intégration d'un groupe compact avec flèches de navigation sur le bouton "Aujourd'hui" :
+    - Bouton précédent `#btn-stats-prev-day` (`chevron-left`) : recule d'un jour (`selectedDayOffset--`), mettant à jour le libellé en « Hier », « Avant-hier », « Ven. 24/10 »...
+    - Bouton suivant `#btn-stats-next-day` (`chevron-right`) : avance d'un jour jusqu'à « Aujourd'hui » (désactivé au jour J).
+    - Bouton central `#btn-range-day` : affiche le jour sélectionné et permet de réinitialiser instantanément au jour en cours en 1 clic.
+  - Toutes les métriques analytiques de l'écran (7 KPI cards, temps, questions faites, précision, vitesse, graphique combiné, timeline et suivi de cours) se synchronisent instantanément sur la journée exacte choisie.
+  - La carte KPI 7 adapte son libellé en mode passé : affiche le bilan d'étude du jour ciblé (`formatDuration(totalTimeSeconds)`) et le volume des QCM répondus.
+- **Nouveau panneau interactif « Suivi des Questions par Cours » (`#stats-course-tracker-box`)** :
+  - Refonte complète de la colonne 2 de la grille analytique (`.stats-two-col-grid`) pour tracker exhaustivement les questions par cours.
+  - **Mode « Sur la période »** : Décompte précis des questions traitées sur la fenêtre temporelle active (Aujourd'hui, Hier, 7j, etc.) :
+    - Badge du volume de QCM faits par cours (`X QCM faits`).
+    - Pourcentage de réussite et barre de progression dynamique.
+    - Détail complet sous chaque cours : `✓ X justes`, `✗ Y fautes`, `⚡ Zs/QCM`, et ratio total (`N QCM au total dans ce cours`).
+    - État vide bienveillant avec raccourci direct pour basculer vers la vue d'ensemble globale si aucun QCM n'a été fait sur la journée sélectionnée.
+  - **Mode « Tous les cours (35) »** : Suivi de l'avancement global sur l'intégralité des 35 chapitres du programme :
+    - Compteur de maîtrise : `X/Y maîtrisés` et pourcentage global de validation.
+    - Jauge multi-segments visuelle : vert émeraude (maîtrisés), ambre (en cours d'apprentissage), sombre (restants).
+    - Synthèse détaillée par cours : `🏆 X acquis`, `🔄 Y en cours`, `⚪ Z restants`, `⚠️ N fautes`.
+  - **Champ de recherche instantanée (`#course-tracker-search`)** : Filtrage en direct de la liste des cours lors de la frappe.
+  - **Badge de synthèse automatique (`#course-tracker-summary-badge`)** : Affiche en temps réel le nombre de cours affichés et le total cumulé des questions.
+- **Incrémentation de version v1.3.3 (versionCode 8)** :
+  - `package.json` : `"version": "1.3.3"`
+  - `src/services/updateService.js` : `CURRENT_APP_VERSION = '1.3.3'`
+  - `android/app/build.gradle` : `versionCode 8`, `versionName "1.3.3"`
+  - Recompilation du bundle web autonome (`build-bundle.cjs`) et synchronisation APK natif Android (`build-apk.bat`).
+  - Déploiement sur GitHub (`main` et tag `v1.3.3`) pour mise à disposition de la release.
+

@@ -2695,7 +2695,7 @@ class FirebaseSyncService {
 // Update Management Service for PédiaDrill
 // Checks GitHub Releases for new APK versions, notifies the user, and triggers direct download.
 
-const CURRENT_APP_VERSION = '1.3.2';
+const CURRENT_APP_VERSION = '1.3.3';
 const GITHUB_REPO = 'lkmqji/qcm-p-diatrie';
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
 const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours auto-check cooldown
@@ -5406,6 +5406,28 @@ function applyChapterSelection() {
 let currentStatsRange = '7'; // 'today' | '7' | '30' | 'all' | 'custom'
 let customStatsStart = '';
 let customStatsEnd = '';
+let selectedDayOffset = 0; // 0 = Aujourd'hui, -1 = Hier, -2 = Avant-hier, etc.
+let courseTrackerMode = 'period'; // 'period' | 'global'
+let courseTrackerSearchQuery = '';
+let lastRenderedChapterTotals = {};
+let lastRenderedPeriodLabel = '';
+
+function getDateStrWithOffset(offsetDays = 0) {
+  const d = new Date();
+  d.setDate(d.getDate() + offsetDays);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function getDayLabelForOffset(offsetDays = 0) {
+  if (offsetDays === 0) return "Aujourd'hui";
+  if (offsetDays === -1) return "Hier";
+  if (offsetDays === -2) return "Avant-hier";
+  const dateStr = getDateStrWithOffset(offsetDays);
+  return formatDateFr(dateStr);
+}
 
 function formatDuration(totalSeconds) {
   if (!totalSeconds || totalSeconds <= 0) return '0m';
@@ -5437,8 +5459,10 @@ function renderStatsUI() {
   let rangeDays;
   let rangeLabel = '7 jours';
   if (currentStatsRange === 'today') {
-    rangeDays = studyTracker.getDaysByRange('today');
-    rangeLabel = "Aujourd'hui";
+    const targetDateStr = getDateStrWithOffset(selectedDayOffset);
+    const targetRecord = studyTracker.getOrCreateDayRecord(targetDateStr);
+    rangeDays = [targetRecord];
+    rangeLabel = getDayLabelForOffset(selectedDayOffset);
   } else if (currentStatsRange === 'custom') {
     const start = customStatsStart || document.getElementById('custom-date-start')?.value || todayStr;
     const end = customStatsEnd || document.getElementById('custom-date-end')?.value || todayStr;
@@ -5453,6 +5477,24 @@ function renderStatsUI() {
   } else {
     rangeDays = studyTracker.getDaysByRange('7');
     rangeLabel = '7 jours';
+  }
+
+  // Update Day Stepper UI elements
+  const dayTextEl = document.getElementById('range-day-text');
+  if (dayTextEl) {
+    dayTextEl.textContent = (currentStatsRange === 'today') ? rangeLabel : "Aujourd'hui";
+  }
+  const nextDayBtn = document.getElementById('btn-stats-next-day');
+  if (nextDayBtn) {
+    nextDayBtn.disabled = (selectedDayOffset >= 0);
+  }
+  const dayPillBtn = document.getElementById('btn-range-day');
+  if (dayPillBtn) {
+    if (currentStatsRange === 'today') {
+      dayPillBtn.classList.add('active');
+    } else {
+      dayPillBtn.classList.remove('active');
+    }
   }
 
   // Calculate statistics strictly for the selected period
@@ -5603,20 +5645,32 @@ function renderStatsUI() {
     speedSec = Math.round(speedSec * 10) / 10;
 
     if (currentStatsRange === 'today') {
-      const remainingToday = Math.max(0, countdown.dailyIterationsRequired - todayTrackerObj.count);
-      const totalSecNeededToday = Math.round(remainingToday * speedSec);
+      if (selectedDayOffset === 0) {
+        const remainingToday = Math.max(0, countdown.dailyIterationsRequired - todayTrackerObj.count);
+        const totalSecNeededToday = Math.round(remainingToday * speedSec);
 
-      if (finishLabelEl) finishLabelEl.textContent = "Temps pour Finir (Auj.)";
+        if (finishLabelEl) finishLabelEl.textContent = "Temps pour Finir (Auj.)";
 
-      if (remainingToday === 0) {
-        finishValEl.innerHTML = `<span style="color:var(--emerald);font-weight:700;">0 min</span> <small style="font-size:0.8rem;font-weight:600;color:var(--emerald);">✓ Terminé</small>`;
-        if (finishSubEl) {
-          finishSubEl.innerHTML = `<span style="color:var(--emerald);">✓ Objectif atteint (${todayTrackerObj.count}/${countdown.dailyIterationsRequired} QCM auj.)</span>`;
+        if (remainingToday === 0) {
+          finishValEl.innerHTML = `<span style="color:var(--emerald);font-weight:700;">0 min</span> <small style="font-size:0.8rem;font-weight:600;color:var(--emerald);">✓ Terminé</small>`;
+          if (finishSubEl) {
+            finishSubEl.innerHTML = `<span style="color:var(--emerald);">✓ Objectif atteint (${todayTrackerObj.count}/${countdown.dailyIterationsRequired} QCM auj.)</span>`;
+          }
+        } else {
+          finishValEl.innerHTML = `<span>${formatDuration(totalSecNeededToday)}</span>`;
+          if (finishSubEl) {
+            finishSubEl.textContent = `~${remainingToday} QCM restants auj. • ${speedSec}s/QCM`;
+          }
         }
       } else {
-        finishValEl.innerHTML = `<span>${formatDuration(totalSecNeededToday)}</span>`;
+        if (finishLabelEl) finishLabelEl.textContent = `Bilan du Jour (${rangeLabel})`;
+        const dayTimeSec = periodAnalytics.totalTimeSeconds || 0;
+        const dayQCount = periodAnalytics.totalQuestions || 0;
+        finishValEl.innerHTML = `<span style="font-weight:700;">${formatDuration(dayTimeSec)}</span>`;
         if (finishSubEl) {
-          finishSubEl.textContent = `~${remainingToday} QCM restants auj. • ${speedSec}s/QCM`;
+          finishSubEl.textContent = dayQCount > 0
+            ? `${dayQCount} QCM réalisés ce jour-là (${periodAnalytics.totalCorrect} justes)`
+            : "Aucun QCM enregistré ce jour-là";
         }
       }
     } else {
@@ -5656,7 +5710,9 @@ function renderStatsUI() {
   renderStatsVelocityAndProjection(periodAnalytics, rangeLabel);
 
   // 5. Chapters breakdown
-  renderStatsChapters(periodAnalytics.chapterTotals, rangeLabel);
+  lastRenderedChapterTotals = periodAnalytics.chapterTotals || {};
+  lastRenderedPeriodLabel = rangeLabel;
+  renderStatsChapters(lastRenderedChapterTotals, lastRenderedPeriodLabel);
 
   // 6. Daily Timeline
   renderStatsTimeline(rangeDays);
@@ -5958,61 +6014,203 @@ function renderStatsVelocityAndProjection(analytics, periodLabel = '') {
 }
 
 /**
- * Renders top strengths and urgent revision chapters
+ * Renders course questions tracker (both period activity and global progress across all 35 courses)
  */
 function renderStatsChapters(chapterTotals = {}, periodLabel = '') {
   const container = document.getElementById('stats-chapters-breakdown');
+  const badgeEl = document.getElementById('course-tracker-summary-badge');
+  const titleEl = document.getElementById('course-tracker-title');
   if (!container) return;
 
-  const entries = Object.entries(chapterTotals).filter(([_, st]) => (st.correct + st.wrong) > 0);
+  const query = (courseTrackerSearchQuery || '').trim().toLowerCase();
 
-  if (entries.length === 0) {
-    container.innerHTML = `
-      <div style="font-size:0.8rem;color:var(--text-muted);padding:14px;text-align:center;">
-        Aucun entraînement par cours enregistré sur la période sélectionnée (${periodLabel || 'période en cours'}).
-      </div>
-    `;
-    return;
+  if (courseTrackerMode === 'global') {
+    if (titleEl) titleEl.textContent = 'Suivi Global : Questions par Cours';
+    let totalMasteredAll = 0;
+    let totalAttemptedAll = 0;
+
+    let list = allChapters.map(ch => {
+      const chQuestions = allQuestions.filter(q => q.chapterId === ch.id);
+      const totalQ = chQuestions.length > 0 ? chQuestions.length : (ch.count || 0);
+
+      let masteredCount = 0;
+      let attemptedCount = 0;
+      let totalMistakes = 0;
+
+      chQuestions.forEach(q => {
+        const st = queueEngine.stats[q.uid];
+        if (st) {
+          if (st.current >= st.target && st.target > 0) masteredCount++;
+          if (st.current > 0 || st.mistakes > 0) attemptedCount++;
+          totalMistakes += (st.mistakes || 0);
+        }
+      });
+
+      totalMasteredAll += masteredCount;
+      totalAttemptedAll += attemptedCount;
+
+      const masteredPct = totalQ > 0 ? Math.round((masteredCount / totalQ) * 100) : 0;
+      const attemptedPct = totalQ > 0 ? Math.round((attemptedCount / totalQ) * 100) : 0;
+
+      return {
+        id: ch.id,
+        title: ch.title,
+        totalQ,
+        masteredCount,
+        attemptedCount,
+        untouchedCount: Math.max(0, totalQ - attemptedCount),
+        inProgressCount: Math.max(0, attemptedCount - masteredCount),
+        totalMistakes,
+        masteredPct,
+        attemptedPct
+      };
+    });
+
+    if (query) {
+      list = list.filter(item => item.title.toLowerCase().includes(query));
+    }
+
+    // Sort: highest mastered count or attempted count first, then name
+    list.sort((a, b) => b.masteredCount - a.masteredCount || b.attemptedCount - a.attemptedCount || a.title.localeCompare(b.title));
+
+    if (badgeEl) {
+      badgeEl.textContent = `${list.length}/35 cours • ${totalMasteredAll}/${allQuestions.length} maîtrisés`;
+    }
+
+    if (list.length === 0) {
+      container.innerHTML = `
+        <div class="course-empty-period-box">
+          <div class="empty-period-text">Aucun cours ne correspond à "${escapeHtml(courseTrackerSearchQuery)}".</div>
+        </div>
+      `;
+      return;
+    }
+
+    let html = '';
+    list.forEach(item => {
+      const pctColor = item.masteredPct >= 75 ? 'var(--emerald)' : (item.masteredPct >= 30 ? 'var(--cyan)' : (item.masteredPct > 0 ? 'var(--amber)' : 'var(--text-muted)'));
+      html += `
+        <div class="chapter-stat-item course-tracking-card global-card">
+          <div class="chapter-stat-header">
+            <div class="course-card-title-group">
+              <span class="chapter-stat-name" title="${escapeHtml(item.title)}">${escapeHtml(item.title)}</span>
+              <span class="course-global-ratio-tag">${item.masteredCount}/${item.totalQ} maîtrisés</span>
+            </div>
+            <div class="course-card-metrics-group">
+              <span class="chapter-stat-pct" style="color:${pctColor}">
+                ${item.masteredPct}%
+              </span>
+            </div>
+          </div>
+          <div class="chapter-progress-track-multi">
+            <div class="track-segment-mastered" style="width:${item.masteredPct}%;" title="${item.masteredCount} maîtrisés"></div>
+            <div class="track-segment-attempted" style="width:${Math.max(0, item.attemptedPct - item.masteredPct)}%;" title="${item.inProgressCount} en cours"></div>
+          </div>
+          <div class="course-tracking-sub">
+            <span class="course-sub-detail text-emerald">🏆 ${item.masteredCount} acquis</span>
+            <span class="course-sub-detail text-amber">🔄 ${item.inProgressCount} en cours</span>
+            <span class="course-sub-detail text-muted">⚪ ${item.untouchedCount} restants</span>
+            ${item.totalMistakes > 0 ? `<span class="course-sub-detail text-rose">⚠️ ${item.totalMistakes} faute${item.totalMistakes > 1 ? 's' : ''}</span>` : ''}
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  } else {
+    // Mode period: only courses worked on in this period
+    if (titleEl) titleEl.textContent = `Suivi des Questions (${periodLabel || 'Période'})`;
+    const entries = Object.entries(chapterTotals).filter(([_, st]) => (st.correct + st.wrong) > 0);
+
+    let list = entries.map(([chId, st]) => {
+      const ch = allChapters.find(c => c.id === chId) || { title: chId, count: 0 };
+      const chQuestions = allQuestions.filter(q => q.chapterId === chId);
+      const totalInChapter = chQuestions.length > 0 ? chQuestions.length : (ch.count || 0);
+      const totalDone = (st.correct || 0) + (st.wrong || 0);
+      const pct = totalDone > 0 ? Math.round((st.correct / totalDone) * 100) : 0;
+      const avgSpeed = (st.timeSeconds > 0 && totalDone > 0) ? Math.round((st.timeSeconds / totalDone) * 10) / 10 : 0;
+
+      return {
+        id: chId,
+        title: ch.title,
+        totalDone,
+        correct: st.correct || 0,
+        wrong: st.wrong || 0,
+        pct,
+        avgSpeed,
+        totalInChapter
+      };
+    });
+
+    if (query) {
+      list = list.filter(item => item.title.toLowerCase().includes(query));
+    }
+
+    // Sort by total questions completed descending
+    list.sort((a, b) => b.totalDone - a.totalDone || b.pct - a.pct);
+
+    const totalQPeriod = list.reduce((sum, item) => sum + item.totalDone, 0);
+
+    if (badgeEl) {
+      badgeEl.textContent = `${list.length} cours • ${totalQPeriod} QCM faits`;
+    }
+
+    if (list.length === 0) {
+      container.innerHTML = `
+        <div class="course-empty-period-box">
+          <div class="empty-period-icon"><i data-lucide="book-marked"></i></div>
+          <div class="empty-period-title">Aucun QCM répondu sur cette période (${periodLabel})</div>
+          <div class="empty-period-text">Consultez la progression globale de vos 35 cours de pédiatrie :</div>
+          <button type="button" class="btn-switch-cmode-global" id="btn-trigger-global-mode">
+            <i data-lucide="layers" style="width:14px;height:14px;"></i>
+            <span>Voir le suivi global des 35 cours</span>
+          </button>
+        </div>
+      `;
+      const trigBtn = document.getElementById('btn-trigger-global-mode');
+      if (trigBtn) {
+        trigBtn.onclick = () => {
+          courseTrackerMode = 'global';
+          document.querySelectorAll('.course-pill-btn').forEach(b => b.classList.remove('active'));
+          document.getElementById('btn-cmode-global')?.classList.add('active');
+          renderStatsChapters(chapterTotals, periodLabel);
+          refreshLucide();
+        };
+      }
+      return;
+    }
+
+    let html = '';
+    list.forEach(item => {
+      let colorClass = 'var(--emerald)';
+      if (item.pct < 50) colorClass = 'var(--rose)';
+      else if (item.pct < 75) colorClass = 'var(--amber)';
+
+      html += `
+        <div class="chapter-stat-item course-tracking-card">
+          <div class="chapter-stat-header">
+            <div class="course-card-title-group">
+              <span class="chapter-stat-name" title="${escapeHtml(item.title)}">${escapeHtml(item.title)}</span>
+              <span class="course-global-ratio-tag">${item.totalDone} QCM faits</span>
+            </div>
+            <div class="course-card-metrics-group">
+              <span class="chapter-stat-pct" style="color:${colorClass}">${item.pct}%</span>
+            </div>
+          </div>
+          <div class="chapter-progress-track">
+            <div class="chapter-progress-fill" style="width: ${item.pct}%; background: ${colorClass};"></div>
+          </div>
+          <div class="course-tracking-sub">
+            <span class="course-sub-detail text-emerald">✓ ${item.correct} justes</span>
+            <span class="course-sub-detail text-rose">✗ ${item.wrong} fautes</span>
+            ${item.avgSpeed > 0 ? `<span class="course-sub-detail text-cyan">⚡ ${item.avgSpeed}s/QCM</span>` : ''}
+            <span class="course-sub-detail text-muted">(${item.totalInChapter} QCM au total dans ce cours)</span>
+          </div>
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
   }
-
-  // Map to chapter metadata
-  const list = entries.map(([chId, st]) => {
-    const ch = allChapters.find(c => c.id === chId) || { title: chId };
-    const total = st.correct + st.wrong;
-    const pct = Math.round((st.correct / total) * 100);
-    return {
-      id: chId,
-      title: ch.title,
-      correct: st.correct,
-      wrong: st.wrong,
-      total,
-      pct
-    };
-  });
-
-  // Sort by accuracy descending
-  list.sort((a, b) => b.pct - a.pct || b.total - a.total);
-
-  let html = '';
-  list.slice(0, 6).forEach(item => {
-    let colorClass = 'var(--emerald)';
-    if (item.pct < 50) colorClass = 'var(--rose)';
-    else if (item.pct < 75) colorClass = 'var(--amber)';
-
-    html += `
-      <div class="chapter-stat-item">
-        <div class="chapter-stat-header">
-          <span class="chapter-stat-name" title="${escapeHtml(item.title)}">${escapeHtml(item.title)}</span>
-          <span class="chapter-stat-pct" style="color:${colorClass}">${item.pct}% <small style="font-size:0.7rem;color:var(--text-dim);">(${item.correct}/${item.total})</small></span>
-        </div>
-        <div class="chapter-progress-track">
-          <div class="chapter-progress-fill" style="width: ${item.pct}%; background: ${colorClass};"></div>
-        </div>
-      </div>
-    `;
-  });
-
-  container.innerHTML = html;
 }
 
 /**
@@ -6584,12 +6782,42 @@ function setupEventListeners() {
   const btnOpenStatsIcon = document.getElementById('btn-open-stats-icon');
   if (btnOpenStatsIcon) btnOpenStatsIcon.onclick = () => switchView('stats');
 
-  // Stats range toggle buttons
+  // Stats range toggle buttons & Day Stepper
   const rangeToggle = document.getElementById('stats-range-toggle');
   const customPicker = document.getElementById('custom-range-picker');
   const customStartInput = document.getElementById('custom-date-start');
   const customEndInput = document.getElementById('custom-date-end');
   const btnApplyCustom = document.getElementById('btn-apply-custom-range');
+
+  const btnPrevDay = document.getElementById('btn-stats-prev-day');
+  if (btnPrevDay) {
+    btnPrevDay.onclick = (e) => {
+      e.stopPropagation();
+      selectedDayOffset--;
+      currentStatsRange = 'today';
+      rangeToggle?.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('btn-range-day')?.classList.add('active');
+      if (customPicker) customPicker.style.display = 'none';
+      renderStatsUI();
+      refreshLucide();
+    };
+  }
+
+  const btnNextDay = document.getElementById('btn-stats-next-day');
+  if (btnNextDay) {
+    btnNextDay.onclick = (e) => {
+      e.stopPropagation();
+      if (selectedDayOffset < 0) {
+        selectedDayOffset++;
+        currentStatsRange = 'today';
+        rangeToggle?.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-range-day')?.classList.add('active');
+        if (customPicker) customPicker.style.display = 'none';
+        renderStatsUI();
+        refreshLucide();
+      }
+    };
+  }
 
   if (rangeToggle) {
     rangeToggle.querySelectorAll('.range-btn').forEach(btn => {
@@ -6597,7 +6825,17 @@ function setupEventListeners() {
         rangeToggle.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         const r = btn.dataset.range || '7';
-        currentStatsRange = r;
+
+        if (r === 'today') {
+          if (currentStatsRange === 'today' && selectedDayOffset !== 0) {
+            // Re-cliquer sur le bouton alors qu'on est sur Hier réinitialise à Aujourd'hui
+            selectedDayOffset = 0;
+          }
+          currentStatsRange = 'today';
+        } else {
+          selectedDayOffset = 0; // Réinitialiser le décalage si on va vers 7j, 30j, tout
+          currentStatsRange = r;
+        }
 
         if (r === 'custom') {
           if (customPicker) {
@@ -6620,6 +6858,7 @@ function setupEventListeners() {
           if (customPicker) customPicker.style.display = 'none';
           renderStatsUI();
         }
+        refreshLucide();
       };
     });
   }
@@ -6633,6 +6872,30 @@ function setupEventListeners() {
         return;
       }
       renderStatsUI();
+      refreshLucide();
+    };
+  }
+
+  // Course Questions Tracker (Pills mode & mini search)
+  const cmodeToggle = document.getElementById('course-tracker-mode-toggle');
+  if (cmodeToggle) {
+    cmodeToggle.querySelectorAll('.course-pill-btn').forEach(btn => {
+      btn.onclick = () => {
+        cmodeToggle.querySelectorAll('.course-pill-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        courseTrackerMode = btn.dataset.cmode || 'period';
+        renderStatsChapters(lastRenderedChapterTotals, lastRenderedPeriodLabel);
+        refreshLucide();
+      };
+    });
+  }
+
+  const courseSearchInput = document.getElementById('course-tracker-search');
+  if (courseSearchInput) {
+    courseSearchInput.oninput = (e) => {
+      courseTrackerSearchQuery = e.target.value;
+      renderStatsChapters(lastRenderedChapterTotals, lastRenderedPeriodLabel);
+      refreshLucide();
     };
   }
 

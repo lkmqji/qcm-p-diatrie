@@ -1,5 +1,5 @@
 # PédiaDrill — Master Product & Technical Context
-*Dernière mise à jour : 2026-10-26 14:15:00 CET*
+*Dernière mise à jour : 2026-10-26 14:38:00 CET*
 *Source unique de vérité technique et fonctionnelle du projet PédiaDrill.*
 
 ---
@@ -171,8 +171,12 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet pour me
   7. ⏳ **Temps Nécessaire pour Terminer (`#kpi-card-finish-time`)** : Indicateur dynamique d'estimation du temps requis basé sur la vélocité observée (`avgTimePerQuestion` ou fallback 45s) :
      - **Onglet « Aujourd'hui »** : Temps restant pour achever l'objectif du jour (`remainingToday = Math.max(0, dailyTarget - todayTracker.count)` multiplié par la vitesse en secondes). Affichage en `Xm Ys` ou `0 min ✓ Terminé` si l'objectif est rempli. **S'actualise instantanément après chaque réponse** (`handleAnswerSuccess` & `handleAnswerFailure` rafraîchissent automatiquement la vue si `currentView === 'stats'`).
      - **Autres onglets (« 7 jours », « 30 jours », « Tout », « Personnalisé »)** : Affiche à la fois le **temps par jour** et le **temps total** : `${formattedDailyTime}/j • ${formattedTotalTime} total` avec sous-titre contextualisé (`Total : Zh Wm (N QCM • J-X)`).
-- **Sélecteur Temporel Multi-Périodes (`stats-range-toggle` & `custom-range-picker`)** :
-  - **Aujourd'hui** : Isole strictement les métriques, le temps passé, les sessions et l'activité de la journée en cours.
+- **Sélecteur Temporel Multi-Périodes avec Navigation Rétroactive (`stats-range-toggle` & `stats-day-stepper-wrap`)** :
+  - **Navigation jour par jour (`stats-day-stepper-wrap`)** :
+    - Bouton précédent `#btn-stats-prev-day` : recule d'un jour (`selectedDayOffset--`) et bascule dynamiquement le libellé en « Hier », « Avant-hier », « Ven. 24/10 »...
+    - Bouton suivant `#btn-stats-next-day` : avance d'un jour vers le présent (désactivé automatiquement au jour en cours).
+    - Bouton central `#btn-range-day` : affiche le jour sélectionné et réinitialise à « Aujourd'hui » en 1 clic.
+    - Synchronisation intégrale : l'intégralité du tableau de bord (7 KPI cards, temps, questions, vitesse, graphiques et cours) s'adapte à la journée sélectionnée.
   - **7 jours** / **30 jours** : Fenêtre glissante hebdomadaire ou mensuelle.
   - **Tout** : Historique global complet depuis le premier jour d'entraînement.
   - **Personnalisé 📅** : Panneau rétractable avec sélecteurs de dates `[Du] [Au]` permettant d'analyser n'importe quel intervalle calendaire, avec application et affichage immédiats.
@@ -189,8 +193,12 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet pour me
 - **Projection Dynamique Concours J-28 (10/11)** :
   - Calcule automatiquement la cadence observée (QCM/jour actif) sur la période sélectionnée et estime la date d'achèvement de l'ensemble du programme.
   - Alerte de motivation : félicite si la cadence est supérieure à l'objectif ou indique le nombre de QCM/jour à maintenir pour être prêt le 10/11.
-- **Analyse Clinique par Chapitres (`renderStatsChapters`)** :
-  - Filtrée sur les chapitres travaillés au sein de la période sélectionnée : classement des cours par taux de maîtrise avec barres de progression colorées.
+- **Suivi des Questions par Cours (`#stats-course-tracker-box`)** :
+  - Colonne interactive dédiée au tracking approfondi des questions par chapitre avec deux modes commutables :
+    - **Mode « Sur la période »** : Décompte des QCM traités sur la période active (Aujourd'hui, Hier, 7j...), taux de justes/fautes, vitesse en s/QCM et ratio par rapport au volume total du cours.
+    - **Mode « Tous les cours (35) »** : Suivi de complétion global sur les 35 cours du programme avec barres multi-segments (maîtrisés en vert, en cours en ambre, restants en sombre) et détail des acquis/erreurs.
+  - **Recherche instantanée (`#course-tracker-search`)** : Champ de filtrage dynamique filtrant la liste des cours en direct pendant la frappe.
+  - **Badge de synthèse (`#course-tracker-summary-badge`)** : Compteur instantané du nombre de cours affichés et du total de QCM.
 - **Journal Quotidien Détaillé (`renderStatsTimeline`)** :
   - Timeline ordonnée (du plus récent au plus ancien) listant exclusivement les jours d'entraînement appartenant à la période sélectionnée, avec badge « Aujourd'hui », volume, justes, fautes, durée et sessions.
 - **Synchronisation Cloud Multi-Appareils (`studyHistory` & `firstPassRecords`)** :
@@ -437,7 +445,7 @@ Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.3.2` (`versionCode 7`)
+- **Version native** : `versionName 1.3.3` (`versionCode 8`)
 - **Empreinte SHA-1 (Debug Keystore Gradle & GitHub Actions)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
 - **Empreinte SHA-256 (Debug Keystore Gradle & GitHub Actions)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
 - **Keystore utilisé** : `android/app/debug.keystore` (Alias : `AndroidDebugKey`, garantissant une empreinte cryptographique identique entre les compilations locales et la CI/CD GitHub Actions).

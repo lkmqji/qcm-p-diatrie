@@ -4081,6 +4081,58 @@ body {
   box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
 }
 
+/* Day Stepper (Hier / Avant-hier / Aujourd'hui) */
+.stats-day-stepper-wrap {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-full);
+  padding: 1px 2px;
+  gap: 2px;
+}
+
+.day-step-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.day-step-btn svg,
+.day-step-btn i {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2.5;
+}
+
+.day-step-btn:hover:not(:disabled) {
+  color: var(--cyan);
+  background: rgba(0, 212, 255, 0.15);
+}
+
+.day-step-btn:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.day-step-btn:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+.range-btn-day {
+  padding: 6px 10px;
+}
+
 /* Custom Range Picker Panel */
 .custom-range-picker {
   background: var(--bg-surface);
@@ -4541,6 +4593,208 @@ body {
   height: 100%;
   border-radius: 3px;
   transition: width 0.3s ease;
+}
+
+/* Course Questions Tracker in Stats */
+.course-tracker-pills {
+  display: flex;
+  align-items: center;
+  background: var(--bg-deep);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  padding: 2px;
+  gap: 2px;
+}
+
+.course-pill-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.course-pill-btn:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.course-pill-btn.active {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(16, 185, 129, 0.25));
+  color: var(--cyan);
+  border: 1px solid rgba(0, 212, 255, 0.4);
+}
+
+.course-tracker-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.course-search-wrap {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.search-mini-icon {
+  position: absolute;
+  left: 8px;
+  width: 13px;
+  height: 13px;
+  color: var(--text-dim);
+  pointer-events: none;
+}
+
+.course-tracker-search-input {
+  width: 100%;
+  background: var(--bg-deep);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 5px 8px 5px 28px;
+  font-size: 0.75rem;
+  color: var(--text-main);
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.course-tracker-search-input:focus {
+  border-color: var(--cyan);
+}
+
+.course-summary-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--cyan);
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(0, 212, 255, 0.25);
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+.course-card-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 75%;
+}
+
+.course-global-ratio-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #a78bfa;
+  background: rgba(167, 139, 250, 0.12);
+  border: 1px solid rgba(167, 139, 250, 0.28);
+  padding: 1px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.course-tracking-sub {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.7rem;
+  margin-top: 4px;
+}
+
+.course-sub-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.chapter-progress-track-multi {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  overflow: hidden;
+  display: flex;
+}
+
+.track-segment-mastered {
+  height: 100%;
+  background: var(--emerald);
+  transition: width 0.3s ease;
+}
+
+.track-segment-attempted {
+  height: 100%;
+  background: var(--amber);
+  transition: width 0.3s ease;
+}
+
+.course-empty-period-box {
+  background: var(--bg-deep);
+  border: 1px dashed var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 18px 14px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.empty-period-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(0, 212, 255, 0.1);
+  color: var(--cyan);
+}
+
+.empty-period-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.empty-period-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.empty-period-text {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.btn-switch-cmode-global {
+  background: rgba(0, 212, 255, 0.12);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  color: var(--cyan);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  margin-top: 4px;
+}
+
+.btn-switch-cmode-global:hover {
+  background: rgba(0, 212, 255, 0.22);
+  transform: translateY(-1px);
 }
 
 /* Daily Timeline */
@@ -5818,7 +6072,17 @@ body {
           </div>
           <div class="stats-range-wrap" id="stats-qcm-range-wrap">
             <div class="stats-range-toggle" id="stats-range-toggle">
-              <button class="range-btn" data-range="today">Aujourd'hui</button>
+              <div class="stats-day-stepper-wrap" id="stats-day-stepper-wrap">
+                <button type="button" class="day-step-btn" id="btn-stats-prev-day" title="Jour précédent (Hier, avant-hier...)">
+                  <i data-lucide="chevron-left"></i>
+                </button>
+                <button type="button" class="range-btn range-btn-day" data-range="today" id="btn-range-day">
+                  <span id="range-day-text">Aujourd'hui</span>
+                </button>
+                <button type="button" class="day-step-btn" id="btn-stats-next-day" title="Jour suivant" disabled>
+                  <i data-lucide="chevron-right"></i>
+                </button>
+              </div>
               <button class="range-btn active" data-range="7">7 jours</button>
               <button class="range-btn" data-range="30">30 jours</button>
               <button class="range-btn" data-range="all">Tout</button>
@@ -6007,12 +6271,25 @@ body {
             </div>
           </div>
 
-          <!-- Col 2: Top Chapitres Maîtrisés vs Urgents -->
-          <div class="stats-panel-box">
-            <div class="panel-box-header">
+          <!-- Col 2: Suivi des Questions par Cours -->
+          <div class="stats-panel-box" id="stats-course-tracker-box">
+            <div class="panel-box-header" style="flex-wrap:wrap;gap:8px;">
               <div class="panel-box-title">
-                <i data-lucide="award" style="color:var(--cyan);"></i>
-                <span>Spécialités : Forces &amp; Révisions Prioritaires</span>
+                <i data-lucide="book-open" style="color:var(--cyan);"></i>
+                <span id="course-tracker-title">Suivi des Questions par Cours</span>
+              </div>
+              <div class="course-tracker-pills" id="course-tracker-mode-toggle">
+                <button type="button" class="course-pill-btn active" data-cmode="period" id="btn-cmode-period" title="Questions faites sur la période sélectionnée">Sur la période</button>
+                <button type="button" class="course-pill-btn" data-cmode="global" id="btn-cmode-global" title="Progression globale sur l'ensemble des 35 cours">Tous les cours (35)</button>
+              </div>
+            </div>
+            <div class="course-tracker-toolbar">
+              <div class="course-search-wrap">
+                <i data-lucide="search" class="search-mini-icon"></i>
+                <input type="text" id="course-tracker-search" class="course-tracker-search-input" placeholder="Filtrer un cours...">
+              </div>
+              <div class="course-summary-badge" id="course-tracker-summary-badge">
+                0 cours
               </div>
             </div>
             <div id="stats-chapters-breakdown" class="chapters-breakdown-list">
