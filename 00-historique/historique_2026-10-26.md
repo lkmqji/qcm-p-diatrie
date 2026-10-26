@@ -71,3 +71,19 @@
   - Exécution de `build-apk.bat` : synchronisation Capacitor et build Gradle Android natif produisant `PediaDrill.apk` (6,88 Mo).
 - **Publication GitHub** : Commit, tag `v1.3.1`, push sur GitHub et déclenchement de la CI/CD pour mise à disposition de l'APK dans GitHub Releases.
 
+### 14:25 - Résolution de l'erreur Google Sign-In `[16] Account reauth failed` & Release v1.3.2
+- **Diagnostic de la cause racine** :
+  - L'erreur `[16] Account reauth failed.` survenant sur Android depuis la version `v1.3` était due à une divergence d'empreinte cryptographique (SHA-1 / SHA-256) entre les builds locaux et les builds CI/CD GitHub Actions.
+  - Avant la v1.3, les builds étaient générés localement avec le keystore `C:\Users\Lenovo\.android\debug.keystore`, dont l'empreinte SHA-1 (`87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`) est déclarée dans la console Google Cloud / Firebase.
+  - À partir de la v1.3, le workflow GitHub Actions (`ubuntu-latest`) compilait l'APK avec un keystore debug temporaire généré à la volée par Ubuntu, dont l'empreinte SHA-1 aléatoire n'était pas enregistrée dans Firebase, provoquant le rejet immédiat par Google Play Services avec l'erreur `[16]`.
+- **Correctif appliqué** :
+  - Intégration directe du keystore officiel dans le dépôt : `android/app/debug.keystore`.
+  - Configuration explicite du bloc `signingConfigs.debug` dans `android/app/build.gradle` pointant vers `file('debug.keystore')` avec alias `AndroidDebugKey`, appliqué aux variantes `debug` et `release`.
+  - Vérification par `gradlew signingReport` : tous les builds (locaux et GitHub Actions) signent désormais avec l'empreinte officielle SHA-1 `87:31:A9:DF...` et SHA-256 `98:3A:55:73...` certifiée Firebase.
+- **Incrémentation de version v1.3.2 (versionCode 7)** :
+  - `package.json` : `"version": "1.3.2"`
+  - `src/services/updateService.js` : `CURRENT_APP_VERSION = '1.3.2'`
+  - `android/app/build.gradle` : `versionCode 7`, `versionName "1.3.2"`
+  - Recompilation du bundle web et de l'APK natif `PediaDrill.apk`.
+  - Déploiement sur GitHub (`main` et tag `v1.3.2`) pour mise à disposition automatique de la mise à jour corrective.
+

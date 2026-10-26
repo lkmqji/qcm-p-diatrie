@@ -437,10 +437,10 @@ Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.3.1` (`versionCode 6`)
-- **Empreinte SHA-1 (Debug Keystore local Gradle)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
-- **Empreinte SHA-256 (Debug Keystore local Gradle)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
-- **Keystore utilisé** : `C:\Users\Lenovo\.android\debug.keystore` (Alias : `AndroidDebugKey`)
+- **Version native** : `versionName 1.3.2` (`versionCode 7`)
+- **Empreinte SHA-1 (Debug Keystore Gradle & GitHub Actions)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
+- **Empreinte SHA-256 (Debug Keystore Gradle & GitHub Actions)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
+- **Keystore utilisé** : `android/app/debug.keystore` (Alias : `AndroidDebugKey`, garantissant une empreinte cryptographique identique entre les compilations locales et la CI/CD GitHub Actions).
 - **Dossier web racine (`webDir`)** : `dist`
 - **Fichier de configuration Firebase Android** : `android/app/google-services.json` (Projet `qcm-pediatr`, Package `com.pediadrill.app`).
 - **Plugin Gradle Google Services** : `com.google.gms.google-services` (version `4.4.4`) activé automatiquement à la présence de `android/app/google-services.json`.
