@@ -39,6 +39,8 @@ jobs:
 
       - name: 📱 Configurer le SDK Android
         uses: android-actions/setup-android@v4
+        with:
+          packages: 'platforms;android-36 build-tools;36.0.0 platform-tools'
 
       - name: 📦 Installer les dépendances Node
         run: npm install
@@ -50,7 +52,7 @@ jobs:
         run: chmod +x android/gradlew
 
       - name: 🔄 Synchroniser Capacitor Android
-        run: npx cap sync android
+        run: npx @capacitor/cli sync android --verbose
 
       - name: 🤖 Compiler l'APK Android (:app:assembleDebug)
         working-directory: android
