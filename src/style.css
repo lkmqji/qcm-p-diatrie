@@ -4205,6 +4205,26 @@ body {
   background: rgba(239, 68, 68, 0.15);
 }
 
+.stat-kpi-card.accent-indigo {
+  background: linear-gradient(145deg, rgba(99, 102, 241, 0.10), var(--bg-surface) 60%);
+  border-color: rgba(99, 102, 241, 0.30);
+}
+.stat-kpi-card.accent-indigo .kpi-icon-wrap {
+  color: #818cf8;
+  background: rgba(99, 102, 241, 0.18);
+}
+.stat-kpi-card.accent-indigo:hover {
+  border-color: rgba(99, 102, 241, 0.50);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.22);
+}
+
+.kpi-dual-values {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
 .kpi-icon-wrap {
   width: 40px;
   height: 40px;

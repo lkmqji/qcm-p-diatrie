@@ -1730,6 +1730,7 @@ function handleAnswerSuccess(score = null, feedback = null, customLetters = null
   queueEngine.incrementTodayCount();
   studyTracker.recordAnswer(true, currentQuestion ? currentQuestion.chapterId : null, currentQuestion ? currentQuestion.uid : null);
   updateArenaDailyBadge();
+  if (currentView === 'stats') renderStatsUI();
   firebaseSyncService.triggerAutoPush();
 
   // Trigger celebration confetti
@@ -1807,6 +1808,7 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
   studyTracker.recordAnswer(false, currentQuestion ? currentQuestion.chapterId : null, currentQuestion ? currentQuestion.uid : null);
   // Seules les réponses justes incrémentent le compteur journalier de QCM
   updateArenaDailyBadge();
+  if (currentView === 'stats') renderStatsUI();
   firebaseSyncService.triggerAutoPush();
   isCurrentQuestionAnswered = true;
   window.toggleArenaChapterTitle(true);
@@ -2642,6 +2644,75 @@ function renderStatsUI() {
       speedSubEl.textContent = `Justes : ${cTime} • Fautes : ${wTime}`;
     } else {
       speedSubEl.textContent = `Justes : --s • Fautes : --s`;
+    }
+  }
+
+  // Card 7: Temps Nécessaire pour Terminer
+  // - Mode "Aujourd'hui" : Vitesse × Questions restantes aujourd'hui (s'actualise après chaque réponse)
+  // - Autres modes (7j, 30j, Tout, Personnalisé) : Affiche le temps par jour et le temps total nécessaire
+  const finishLabelEl = document.getElementById('kpi-finish-label');
+  const finishValEl = document.getElementById('kpi-finish-value');
+  const finishSubEl = document.getElementById('kpi-finish-sub');
+
+  if (finishValEl) {
+    const dashboardMetrics = queueEngine.getDashboardMetrics();
+    const totalIterationsRemaining = dashboardMetrics.totalIterationsRequired;
+    const countdown = getExamCountdownMetrics(totalIterationsRemaining);
+    const todayTrackerObj = queueEngine.getTodayTracker();
+
+    // Déterminer la vitesse de réponse de référence (en secondes/QCM)
+    const globalAnalytics = studyTracker.getGlobalAnalytics();
+    let speedSec = 0;
+    if (periodAnalytics.totalQuestions > 0 && periodAnalytics.avgTimePerQuestion > 0) {
+      speedSec = periodAnalytics.avgTimePerQuestion;
+    } else if (globalAnalytics.totalQuestions > 0 && globalAnalytics.avgTimePerQuestion > 0) {
+      speedSec = globalAnalytics.avgTimePerQuestion;
+    } else {
+      speedSec = 45; // Cadence par défaut si aucun QCM n'a encore été chronométré
+    }
+    speedSec = Math.round(speedSec * 10) / 10;
+
+    if (currentStatsRange === 'today') {
+      const remainingToday = Math.max(0, countdown.dailyIterationsRequired - todayTrackerObj.count);
+      const totalSecNeededToday = Math.round(remainingToday * speedSec);
+
+      if (finishLabelEl) finishLabelEl.textContent = "Temps pour Finir (Auj.)";
+
+      if (remainingToday === 0) {
+        finishValEl.innerHTML = `<span style="color:var(--emerald);font-weight:700;">0 min</span> <small style="font-size:0.8rem;font-weight:600;color:var(--emerald);">✓ Terminé</small>`;
+        if (finishSubEl) {
+          finishSubEl.innerHTML = `<span style="color:var(--emerald);">✓ Objectif atteint (${todayTrackerObj.count}/${countdown.dailyIterationsRequired} QCM auj.)</span>`;
+        }
+      } else {
+        finishValEl.innerHTML = `<span>${formatDuration(totalSecNeededToday)}</span>`;
+        if (finishSubEl) {
+          finishSubEl.textContent = `~${remainingToday} QCM restants auj. • ${speedSec}s/QCM`;
+        }
+      }
+    } else {
+      const totalSecNeededOverall = Math.round(totalIterationsRemaining * speedSec);
+      const dailySecNeededForExam = Math.round(countdown.dailyIterationsRequired * speedSec);
+
+      const formattedTotalTime = formatDuration(totalSecNeededOverall);
+      const formattedDailyTime = formatDuration(dailySecNeededForExam);
+
+      if (finishLabelEl) {
+        finishLabelEl.textContent = (currentStatsRange === 'all')
+          ? "Temps Requis (Total & Jour)"
+          : `Temps Requis (${rangeLabel})`;
+      }
+
+      if (totalIterationsRemaining === 0) {
+        finishValEl.innerHTML = `<span style="color:var(--emerald);font-weight:700;">Programme Terminé ! 🎉</span>`;
+        if (finishSubEl) {
+          finishSubEl.textContent = "Toutes les questions maîtrisées (100%)";
+        }
+      } else {
+        finishValEl.innerHTML = `<span style="font-weight:700;">${formattedDailyTime}</span><small style="font-size:0.8rem;font-weight:600;color:var(--text-muted);">/j</small> • <span style="font-weight:700;">${formattedTotalTime}</span><small style="font-size:0.8rem;font-weight:600;color:var(--text-muted);"> total</small>`;
+        if (finishSubEl) {
+          finishSubEl.textContent = `Total : ${formattedTotalTime} (${formatNumber(totalIterationsRemaining)} QCM • J-${countdown.daysLeft})`;
+        }
+      }
     }
   }
 

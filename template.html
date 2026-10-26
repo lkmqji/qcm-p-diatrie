@@ -4230,6 +4230,26 @@ body {
   background: rgba(239, 68, 68, 0.15);
 }
 
+.stat-kpi-card.accent-indigo {
+  background: linear-gradient(145deg, rgba(99, 102, 241, 0.10), var(--bg-surface) 60%);
+  border-color: rgba(99, 102, 241, 0.30);
+}
+.stat-kpi-card.accent-indigo .kpi-icon-wrap {
+  color: #818cf8;
+  background: rgba(99, 102, 241, 0.18);
+}
+.stat-kpi-card.accent-indigo:hover {
+  border-color: rgba(99, 102, 241, 0.50);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.22);
+}
+
+.kpi-dual-values {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
 .kpi-icon-wrap {
   width: 40px;
   height: 40px;
@@ -5905,6 +5925,16 @@ body {
               <div class="kpi-subtext" id="kpi-speed-sub">Justes : --s • Fautes : --s</div>
             </div>
           </div>
+
+          <!-- Card 7: Temps Nécessaire pour Terminer -->
+          <div class="stat-kpi-card accent-indigo" id="kpi-card-finish-time" title="Estimation du temps nécessaire pour terminer selon votre vitesse de réponse">
+            <div class="kpi-icon-wrap"><i data-lucide="timer"></i></div>
+            <div class="kpi-content">
+              <div class="kpi-label" id="kpi-finish-label">Temps pour Terminer</div>
+              <div class="kpi-value" id="kpi-finish-value">--</div>
+              <div class="kpi-subtext" id="kpi-finish-sub">--</div>
+            </div>
+          </div>
         </div>
 
         <!-- Section: Heatmap d'Activité Style GitHub -->
@@ -6388,7 +6418,7 @@ body {
             <i data-lucide="github" style="width:16px;height:16px;color:var(--cyan);"></i>
             <span style="font-size:0.78rem;font-weight:700;color:var(--text-main);text-transform:uppercase;">Mises à Jour Application</span>
           </div>
-          <span class="badge" id="settings-current-app-version" style="background:rgba(0,212,255,0.15);color:var(--cyan);font-size:0.72rem;padding:3px 8px;border-radius:10px;font-weight:700;">v1.3.0</span>
+          <span class="badge" id="settings-current-app-version" style="background:rgba(0,212,255,0.15);color:var(--cyan);font-size:0.72rem;padding:3px 8px;border-radius:10px;font-weight:700;">v1.3.1</span>
         </div>
         <div style="font-size:0.75rem;color:var(--text-muted);line-height:1.45;" id="settings-update-status">
           Vérifie automatiquement les nouvelles versions et correctifs disponibles sur GitHub Releases.

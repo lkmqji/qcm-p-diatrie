@@ -45,3 +45,29 @@
 - Ajustement de la version du wrapper Gradle (`android/gradle/wrapper/gradle-wrapper.properties`) vers `gradle-9.2.0-bin.zip` pour corriger l'incompatibilité de l'Android Gradle Plugin 8.13.0 avec Gradle 9.7 (API interne `InternalProblems` retirée dans Gradle 9.6+).
 - Synchronisation sur `main` et mise à jour du tag `v1.3.0` pour la publication automatique sur GitHub Releases.
 
+### 14:15 - Ajout de la carte KPI « Temps Nécessaire pour Terminer » & Publication de la Release v1.3.1
+- **Nouvelle carte KPI (#kpi-card-finish-time)** dans la grille analytique `#app-main > #view-stats > #stats-subpage-qcm > .stats-kpi-grid` :
+  - **Comportement en onglet « Aujourd'hui »** :
+    - Calcule automatiquement le temps restant pour atteindre l'objectif du jour : `tempsRestant = vitesseMoyenneSec × questionsRestantesAujourdhui`.
+    - `questionsRestantesAujourdhui = Math.max(0, dailyTarget - todayTracker.count)`.
+    - Valeur formatée lisiblement (`Xm Ys` ou `0 min ✓ Terminé` avec badge vert lorsque l'objectif est accompli).
+    - Sous-titre dynamique affichant les questions restantes et la vitesse de référence (`~X QCM restants auj. • Ys/QCM`).
+    - **Actualisation live en temps réel** : Déclenchement automatique de `renderStatsUI()` dans `handleAnswerSuccess` et `handleAnswerFailure` dès qu'un QCM est répondu dans l'arène.
+  - **Comportement sur les autres onglets (« 7 jours », « 30 jours », « Tout », « Personnalisé »)** :
+    - Affiche simultanément le **temps nécessaire par jour** et le **temps total** : `${formattedDailyTime}/j • ${formattedTotalTime} total`.
+    - `tempsTotalRequis = totalIterationsRestantes × vitesseMoyenneSec`.
+    - `tempsParJourRequis = dailyIterationsRequired × vitesseMoyenneSec` (cadence nécessaire pour boucler le programme avant l'échéance concours du 10/11).
+    - Sous-titre contextualisé indiquant le volume total restant et le compte à rebours (`Total : Zh Wm (N QCM • J-X)`).
+  - **Design & Styles (`src/style.css`)** :
+    - Nouvelle variante de style `.stat-kpi-card.accent-indigo` avec dégradé indigo premium (`rgba(99, 102, 241, ...)`), bordure luminescente et effet hover 3D.
+    - Typographie adaptée `.kpi-dual-values` pour un affichage net et compact sur mobiles et écrans larges.
+- **Incrémentation de version v1.3.1 (versionCode 6)** :
+  - `package.json` : `"version": "1.3.1"`
+  - `src/services/updateService.js` : `CURRENT_APP_VERSION = '1.3.1'`
+  - `android/app/build.gradle` : `versionCode 6`, `versionName "1.3.1"`
+  - `template.html` : badge `#settings-current-app-version` passé à `v1.3.1`
+- **Recompilation & Génération APK** :
+  - Exécution de `build-bundle.cjs` (génération de `src/app.bundle.js`, `index.html` et `dist/index.html`).
+  - Exécution de `build-apk.bat` : synchronisation Capacitor et build Gradle Android natif produisant `PediaDrill.apk` (6,88 Mo).
+- **Publication GitHub** : Commit, tag `v1.3.1`, push sur GitHub et déclenchement de la CI/CD pour mise à disposition de l'APK dans GitHub Releases.
+

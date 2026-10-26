@@ -1,5 +1,5 @@
 # PédiaDrill — Master Product & Technical Context
-*Dernière mise à jour : 2026-10-23 10:10:00 CET*
+*Dernière mise à jour : 2026-10-26 14:15:00 CET*
 *Source unique de vérité technique et fonctionnelle du projet PédiaDrill.*
 
 ---
@@ -159,7 +159,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet pour me
   - **Pause automatique** : Si l'utilisateur change d'onglet ou verrouille son téléphone (`visibilitychange` / `document.hidden`), ou après 2 minutes d'inactivité, le chronomètre se met en pause.
   - **Détection des sessions** : Une nouvelle session d'étude est automatiquement comptabilisée dès qu'une pause dépasse 5 minutes (`SESSION_GAP_THRESHOLD_MS = 5 * 60 * 1000`).
   - **Plafonnement de sécurité** : Chaque question est plafonnée à 180 secondes maximum pour éviter toute dérive statistique si le terminal reste allumé sans interaction.
-- **Métriques Héroïques Périodiques (6 KPI Cards contextualisées selon la plage temporelle choisie)** :
+- **Métriques Héroïques Périodiques (7 KPI Cards contextualisées selon la plage temporelle choisie)** :
   1. 🔥 **Study Streak** : Série de jours consécutifs d'entraînement, record historique et validation du travail accompli aujourd'hui ou nombre de jours actifs sur la période.
   2. 📝 **Questions Faites (`#kpi-total-questions`)** : Volume strict de questions répondues au cours de la période sélectionnée (libellé dynamique : *Questions (Aujourd'hui)*, *Questions (7 jours)*, etc.) et sous-titre détaillé (`X justes • Y fautes`).
   3. 🎯 **Taux de Précision (`#kpi-accuracy-pct`)** : Pourcentage de bonnes réponses calculé strictement sur la période (`correct / total * 100` ou `--%` si 0 QCM sur la période).
@@ -168,6 +168,9 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet pour me
      - **Affichage contextuel** : En vue périodique ("Aujourd'hui", "7j", "30j", "Personnalisé") où aucune question inédite n'a été découverte, l'indicateur affiche clairement `--%` et `0 inédit (que des révisions)` pour éviter de fausser la lecture avec le cumul global.
   5. ⏱️ **Temps d'Étude (`#kpi-total-time`)** : Temps exact passé à étudier sur la période sélectionnée (format lisible `Xh Ym` ou `Xm Ys`), libellé contextualisé (*Temps (Aujourd'hui)*, *Temps d'Étude (7 jours)*, etc.) et nombre de sessions actives de cette période.
   6. ⚡ **Vélocité Moyenne (`#kpi-avg-speed`)** : Vitesse moyenne en secondes par QCM calculée strictement sur la période sélectionnée, avec décomposition précise de la cadence sur les réussites (`avgTimeCorrect`) vs sur les erreurs (`avgTimeWrong`) de la période.
+  7. ⏳ **Temps Nécessaire pour Terminer (`#kpi-card-finish-time`)** : Indicateur dynamique d'estimation du temps requis basé sur la vélocité observée (`avgTimePerQuestion` ou fallback 45s) :
+     - **Onglet « Aujourd'hui »** : Temps restant pour achever l'objectif du jour (`remainingToday = Math.max(0, dailyTarget - todayTracker.count)` multiplié par la vitesse en secondes). Affichage en `Xm Ys` ou `0 min ✓ Terminé` si l'objectif est rempli. **S'actualise instantanément après chaque réponse** (`handleAnswerSuccess` & `handleAnswerFailure` rafraîchissent automatiquement la vue si `currentView === 'stats'`).
+     - **Autres onglets (« 7 jours », « 30 jours », « Tout », « Personnalisé »)** : Affiche à la fois le **temps par jour** et le **temps total** : `${formattedDailyTime}/j • ${formattedTotalTime} total` avec sous-titre contextualisé (`Total : Zh Wm (N QCM • J-X)`).
 - **Sélecteur Temporel Multi-Périodes (`stats-range-toggle` & `custom-range-picker`)** :
   - **Aujourd'hui** : Isole strictement les métriques, le temps passé, les sessions et l'activité de la journée en cours.
   - **7 jours** / **30 jours** : Fenêtre glissante hebdomadaire ou mensuelle.
@@ -434,7 +437,7 @@ Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.3` (`versionCode 4`)
+- **Version native** : `versionName 1.3.1` (`versionCode 6`)
 - **Empreinte SHA-1 (Debug Keystore local Gradle)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
 - **Empreinte SHA-256 (Debug Keystore local Gradle)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
 - **Keystore utilisé** : `C:\Users\Lenovo\.android\debug.keystore` (Alias : `AndroidDebugKey`)
