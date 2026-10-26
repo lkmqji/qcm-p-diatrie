@@ -1,16 +1,20 @@
 # PédiaDrill — Master Product & Technical Context
-*Dernière mise à jour : 2026-10-26 14:38:00 CET*
+*Dernière mise à jour : 2026-10-26 17:15:00 CET*
 *Source unique de vérité technique et fonctionnelle du projet PédiaDrill.*
 
 ---
 
 ## 1. Vision du Produit & Résumé Exécutif
-**PédiaDrill** est une Progressive Web App (PWA) médicale et autonome d'entraînement intensif au résidanat et aux examens de 5ème année de médecine en pédiatrie. Elle combine :
-1. **Un moteur de répétition espacée adaptatif (Spaced Repetition System)** calibré pour l'ancrage mnésique concours.
-2. **Une évaluation sémantique par Intelligence Artificielle (exclusivement Gemini 3.8 Flash)** pour noter les questions à réponses ouvertes courtes (CROQ / QROC) et formuler une méthode de raisonnement clinique approfondie.
-3. **Une arène de quiz minimaliste sans distraction** avec support de la sélection multiple (A, B, C...) et affichage en temps réel des explications officielles.
-4. **Un carnet de raisonnement clinique interactif** regroupé par chapitres avec fiches d'erreur complètes (énoncé, cas clinique, propositions colorées avec texte intégral, explication de cours et fiches IA).
-5. **Une synchronisation multi-appareils (PWA / Mobile / Desktop)** adossée à Google Auth et Firebase Firestore.
+**PédiaDrill** est une Progressive Web App (PWA) médicale et autonome d'entraînement intensif au concours de résidanat et aux examens de 5ème année de médecine en pédiatrie. Elle combine :
+1. **Un moteur de répétition espacée adaptatif (Spaced Repetition System)** calibré pour l'ancrage mnésique concours avec plafonnement dynamique à 10 paliers, pénalités d'erreurs dégressives et repositionnement calculé dans la file active.
+2. **Une évaluation sémantique par Intelligence Artificielle (exclusivement Gemini 3.8 Flash & famille Flash)** pour noter les questions à réponses ouvertes courtes (CROQ / QROC) et formuler une méthode de raisonnement clinique approfondie structurée en 4 volets cliniques.
+3. **Une arène de quiz sans distraction** avec sélection multiple universelle (A, B, C, D, E), protection anti-spoiler du cours par flou interactif, pastille de date/session d'annale normalisée (`P [Année]`, `Résidanat [Année]`, `Rattrapage [Année]`), clichés médicaux protégés et floutés par défaut, et affichage en temps réel des explications officielles.
+4. **Une navigation rétrospective dans les 5 derniers QCM** permettant de revoir instantanément les questions précédentes, leurs choix de réponse et leurs explications sans altérer la file de répétition espacée, avec persistance des explications IA générées et du fil de discussion du Tuteur IA par question.
+5. **Un tuteur IA interactif en direct** accessible en Arène via un bouton néon flottant, avec puces cliniques rapides, protection anti-spoiler du diagnostic et mémoire de conversation isolée par question.
+6. **Un carnet de raisonnement clinique interactif** regroupé par chapitres ou en liste plate continue, avec tri multi-critères (date, erreurs, cours, score), accordéons repliables multi-niveaux et fiches d'erreur exhaustives.
+7. **Un tableau de bord analytique complet** articulé en deux sous-pages (Statistiques QCM et Chronomètre de cours), avec 7 cartes KPI dynamiques (dont l'estimation du temps nécessaire pour terminer), navigation jour par jour dans l'historique, heatmap GitHub d'activité, graphique combiné SVG et colonne de suivi de complétion des 35 cours du programme.
+8. **Une synchronisation multi-appareils (PWA / Mobile / Desktop)** adossée à Google Auth et Firebase Firestore, immunisée contre la limite de 1 Mo par document grâce à un partitionnement intelligent des notes par paquets de 50 (Chunked Firestore Storage) et à un horodatage précis de la sélection des cours.
+9. **Une distribution native Android (APK)** propulsée par Capacitor 8 et automatisée par un pipeline CI/CD GitHub Actions avec vérification et téléchargement in-app autonome des mises à jour.
 
 ---
 
@@ -18,37 +22,66 @@
 
 ```
 qcm-p-diatrie/
+├── .github/
+│   └── workflows/
+│       └── build-and-release.yml         # CI/CD GitHub Actions (build Android, signature & publication Release)
 ├── 00-historique/
-│   ├── historique_2026-10-18.md          # Journal quotidien des modifications horodatées
+│   ├── historique_YYYY-MM-DD.md          # Journal quotidien des modifications horodatées
 │   └── MASTER_PRODUCT_TECHNICAL_CONTEXT.md # Contexte technique global (source unique de vérité)
-├── dist/                                  # Bundle de production prêt pour déploiement (Vercel / Web)
-│   ├── index.html                        # Application complète autonome avec assets embarqués
+├── android/                              # Projet natif Android Capacitor 8
+│   ├── app/
+│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 8, versionName 1.3.3)
+│   │   ├── debug.keystore                # Keystore de signature unifié (local & CI/CD)
+│   │   ├── google-services.json          # Configuration Firebase Android (qcm-pediatr, com.pediadrill.app)
+│   │   └── src/main/
+│   │       ├── AndroidManifest.xml       # Permissions réseau et configuration d'activités
+│   │       ├── assets/public/            # Assets web synchronisés par Capacitor
+│   │       └── res/values/strings.xml    # Déclaration de default_web_client_id pour Google Auth
+│   ├── build.gradle                      # Configuration Gradle racine (AGP 8.13.0, Google Services 4.4.4)
+│   ├── gradle/wrapper/                   # Gradle Wrapper 9.2.0 (compatible Java 21 / 25 et AGP 8.13.0)
+│   └── settings.gradle                   # Déclaration des modules natifs Capacitor
+├── api/                                  # Fonctions Serverless Vercel
+│   ├── ping.js                           # Endpoint de test de disponibilité réseau
+│   ├── sync.js                           # Endpoint de relais de synchronisation
+│   └── test.js                           # Endpoint de diagnostic
+├── dist/                                 # Dossier de production web & assets natifs
+│   ├── index.html                        # Application complète autonome avec datasets intégrés (4.7 Mo)
+│   ├── agentation.bundle.js              # Barre d'annotation visuelle standalone
 │   ├── manifest.json                     # Manifeste PWA
 │   ├── sw.js                             # Service Worker de cache hors-ligne
 │   ├── icon-192.svg                      # Icône PWA 192x192
 │   └── icon-512.svg                      # Icône PWA 512x512
+├── public/                               # Assets statiques publics (favicons, icônes)
 ├── src/
 │   ├── data/
-│   │   ├── chapters.js                   # Métadonnées des 35 chapitres de pédiatrie
-│   │   └── questions.js                  # Base de données des questions (QCM & CROQ)
+│   │   ├── chapters.js                   # Déclaration ES module des 35 chapitres de pédiatrie
+│   │   ├── chapters.json                 # Format JSON des chapitres avec décompte de QCM
+│   │   ├── questions.js                  # Déclaration ES module de la base de données (1905 questions)
+│   │   └── questions.json                # Format JSON brut des 1905 questions
 │   ├── services/
-│   │   ├── gemini.js                     # Service IA Gemini 3.8 Flash (évaluation & raisonnement)
-│   │   ├── queueEngine.js                # Algorithme de file active et répétition espacée
+│   │   ├── gemini.js                     # Service IA Gemini Flash (cascade, circuit-breaker, CROQ & tuteur)
+│   │   ├── queueEngine.js                # Algorithme de répétition espacée (SRS), file active et persistance
 │   │   ├── studyTracker.js               # Suivi du progrès journalier, chronométrage & sessions QCM
-│   │   ├── lessonTracker.js              # Chronomètre persistant et suivi du temps d'étude par leçon
-│   │   ├── firebaseSyncService.js        # Auth Google & synchronisation bidirectionnelle Firestore
-│   │   └── syncService.js                # Service de synchronisation générique
-│   ├── app.js                            # Contrôleur d'interface, gestion des vues et événements
-│   ├── app.bundle.js                     # Bundle JS client unifié (IIFE sans imports ES)
-│   └── style.css                         # Feuille de styles principale (Design System médical)
-├── template.html                         # Structure HTML et CSS embarqué pour la génération
-├── index.html                            # Version racine autonome de l'application (4.4 MB)
+│   │   ├── lessonTracker.js              # Chronomètre persistant et suivi du temps d'étude par cours
+│   │   ├── firebaseSyncService.js        # Auth Google (native/web) & synchronisation par paquets Firestore
+│   │   ├── syncService.js                # Service de synchronisation générique
+│   │   └── updateService.js              # Détection des releases GitHub et déclenchement de mise à jour in-app
+│   ├── app.js                            # Contrôleur d'interface principal, gestion des vues et événements
+│   ├── app.bundle.js                     # Bundle JS client unifié (IIFE autonome sans imports ES)
+│   └── style.css                         # Feuille de styles principale (Design System sombre médical)
+├── template.html                         # Structure HTML maîtresse avec CSS synchronisé pour le bundleur
+├── index.html                            # Fichier racine autonome servi par Vercel (4.7 Mo)
+├── PediaDrill.apk                        # Exécutable natif Android produit à la racine (~7.8 Mo)
+├── agentation.bundle.js                  # Outil d'annotation d'interface Agentation
 ├── build.cjs                             # Script de copie vers le dossier dist/
 ├── build-bundle.cjs                      # Script d'assemblage automatique (CSS, bundle JS, index.html)
-├── vercel.json                           # Configuration de routage et headers de cache Vercel
+├── build-apk.bat                         # Script d'automatisation de build natif Android (:app:assembleDebug)
+├── capacitor.config.json                 # Configuration Capacitor (appId, appName, plugins auth)
+├── google-services.json                  # Fichier Firebase Google Services racine
 ├── manifest.json                         # Configuration PWA Web App Manifest
 ├── sw.js                                 # Service Worker (Cache-First / Stale-While-Revalidate)
-└── package.json                          # Métadonnées du projet Node.js
+├── vercel.json                           # Configuration de routage SPA Vercel
+└── package.json                          # Métadonnées, dépendances et scripts du projet Node.js
 ```
 
 ---
@@ -76,9 +109,11 @@ L'apprentissage repose sur une file d'attente circulaire dynamique (`activeQueue
   - Sinon (`target - current > 1`) : **la question réapparaît après 50 à 100 questions** (`Math.floor(Math.random() * 51) + 50`).
 - **Compteur journalier d'itérations (`todayTracker`)** :
   - **Seules les réponses justes** (`handleAnswerSuccess`) ajoutent +1 au compteur de questions faites aujourd'hui (`todayTracker.count`).
-  - Les erreurs (`handleAnswerFailure`) n'incrémentent plus ce compteur, garantissant que l'objectif journalier reflète fidèlement le nombre de validations acquises vers l'échéance de l'examen du 10/11.
+  - Les erreurs (`handleAnswerFailure`) n'incrémentent pas ce compteur, garantissant que l'objectif journalier reflète fidèlement le nombre de validations acquises vers l'échéance du concours.
 - **Persistance locale & Cloud** : Tout l'état (`activeQueue`, `stats`, `cursor`, `reasoningNotes`, `todayTracker`, `selectedChapterIds`, `selectedChaptersUpdatedAt`) est sauvegardé dans `localStorage` sous la clé `pedia_drill_state_v1` et synchronisé via `FirebaseSyncService`.
 - **Synchronisation multi-appareils des cours sélectionnés** : Chaque modification de la sélection des cours met à jour un horodatage précis (`selectedChaptersUpdatedAt`). Lors de la fusion d'états (`mergeStates`), la sélection la plus récente entre l'appareil local et le cloud est automatiquement retenue et appliquée, déclenchant la ré-initialisation dynamique de la file et la mise à jour immédiate de l'interface sur tous les écrans connectés.
+
+---
 
 ### 3.2. Évaluation IA & Raisonnement Clinique (`src/services/gemini.js`)
 - **Modèles 100% Flash Exclusifs & Cascade de résilience ultra-rapide** :
@@ -108,11 +143,12 @@ L'apprentissage repose sur une file d'attente circulaire dynamique (`activeQueue
   - Fallback hors-ligne : analyse sémantique par sac de mots-clés normalisés.
 - **Génération de la note de raisonnement clinique (`generateReasoningNote`)** :
   Organisée strictement en 4 sections cliniques avec parseur de mémo optimisé (`.reasoning-callout-quote`) :
-
   1. `🎯 PIÈGE CLINIQUE & ANALYSE DE L'ERREUR` : explication du piège et de la confusion médicale.
   2. `📋 JUSTIFICATION PROPOSITION PAR PROPOSITION (EXHAUSTIVE & COMPLÈTE)` : analyse systématique de TOUTES les options (A, B, C, D, E) avec texte intégral et justification de véracité.
   3. `🩺 DÉMARCHE DE RAISONNEMENT & CONDUITE CLINIQUE` : maître-symptôme, impact de l'âge de l'enfant, diagnostics différentiels.
   4. `💡 RÈGLE D'OR & MÉMO CONCOURS` : moyen mnémotechnique percutant pour le concours.
+
+---
 
 ### 3.3. Affichage Complet des Erreurs (`formatQuestionMistakeRecap`)
 Lorsqu'une réponse est incorrecte (dans la modale d'erreur ou dans le carnet) :
@@ -129,14 +165,20 @@ Lorsqu'une réponse est incorrecte (dans la modale d'erreur ou dans le carnet) :
 3. **Explication officielle de cours** : Encadré dédié reprenant `question.explanation` structuré avec titres, puces et sauts de ligne aérés.
 4. **Surbrillance en direct dans l'arène** : Les cartes de l'arène sont immédiatement colorées (`wrong-highlight` en rouge, `correct-highlight` en vert).
 
+---
+
 ### 3.4. Sélection Multiple Systématique
-- La restriction sur les types de questions a été levée dans `toggleOptionSelection` : toutes les questions permettent de cocher librement une ou plusieurs options (ex: A + B + C) simultanément.
+- Toutes les questions permettent de cocher librement une ou plusieurs options (A, B, C, D, E) simultanément via `toggleOptionSelection`.
 - Le bouton de validation est activé dès qu'au moins une proposition est sélectionnée.
+
+---
 
 ### 3.5. Explication Directe en Arène (`#arena-explanation-box`)
 - Dès qu'une réponse est validée avec succès, l'explication officielle issue de la base de données s'affiche directement dans l'arène sous la bannière de succès, permettant un rappel immédiat avant de passer à la question suivante.
 
-### 3.6. Carnet de Raisonnement IA : Système de Tri Multi-Critères & Modes de Vue (`view-notebook`)
+---
+
+### 3.6. Carnet de Raisonnement IA : Tri Multi-Critères & Modes de Vue (`view-notebook`)
 - **Tri Multi-Critères Complet (Croissant & Décroissant)** :
   - **Critères disponibles (`notebookSortBy`)** :
     - 📅 **Date de la faute (`date`)** : Tri par horodatage de la dernière tentative (`latestTimestamp`).
@@ -144,268 +186,214 @@ Lorsqu'une réponse est incorrecte (dans la modale d'erreur ou dans le carnet) :
     - 📚 **Cours (`chapter`)** : Tri alphabétique des chapitres de pédiatrie.
     - 🎯 **Score d'évaluation CROQ (`score`)** : Tri par score obtenu pour cibler les questions les plus difficiles.
   - **Inversion de l'ordre en 1 clic (`notebookSortOrder`)** :
-    - Bouton interactif `#btn-toggle-sort-order` basculant instantanément entre **Décroissant ⬇** (Max ➔ Min / Plus récent / Plus d'erreurs) et **Croissant ⬆** (Min ➔ Max / Plus ancien / Moins d'erreurs).
+    - Bouton interactif `#btn-toggle-sort-order` basculant instantanément entre **Décroissant ⬇** (Max ➔ Min) et **Croissant ⬆** (Min ➔ Max).
 - **Deux Modes d'Affichage Complémentaires (`notebookViewMode`)** :
-  - **Mode Par cours (`chapter`)** : Regroupement par spécialités médicales sous forme d'accordéons pliables/dépliables, avec compteurs de questions, d'analyses IA et de total des fautes par cours (`⚠️ X fautes`). Les chapitres eux-mêmes sont classés selon le critère et l'ordre sélectionnés.
-  - **Mode Liste continue (`flat`)** : Liste directe et continue de toutes les questions du carnet classées de façon globale avec badge de rang (`#1`, `#2`, `#3`...). Ce mode permet d'accéder instantanément au Top national personnel des questions les plus échouées.
-- **Badges contextuels sur chaque fiche de question** :
-  - Badge de rang : `#N` (en mode continu).
-  - Badge de fautes : `⚠️ X faute(s)` (`stat-mistakes`).
+  - **Mode Par cours (`chapter`)** : Regroupement par cours sous forme d'accordéons pliables/dépliables, avec compteurs de questions, d'analyses IA et de total des fautes par cours (`⚠️ X fautes`).
+  - **Mode Liste continue (`flat`)** : Liste directe de toutes les questions du carnet classées globalement avec badge de rang (`#1`, `#2`, `#3`...).
+- **Accordéons Interactifs & Repliage Multi-Niveaux** :
+  - **Groupes de cours pliables (`.notebook-chapter-group`)** : Clic sur l'en-tête de cours pour masquer/afficher toutes ses questions.
+  - **Fiches de questions individuelles pliables (`.grouped-question-card`)** : Clic sur l'en-tête pour replier la fiche en une prévisualisation compacte (`.question-collapsed-preview`).
+  - **Bouton Maître « Tout replier / Tout déplier » (`.notebook-toggle-all-btn`)** : Replie ou déplie instantanément l'intégralité des chapitres et questions.
+- **Barre de recherche & synthèse dynamique** :
+  - Recherche instantanée par mot-clé sur énoncés, propositions, explications et raisonnements IA.
+  - Synthèse `#notebook-summary-bar` reflétant le nombre de questions, d'analyses et le rappel du tri actif.
+
+---
 
 ### 3.7. Suivi du Progrès d'Étude & Infographies Analytiques (`view-stats` & `src/services/studyTracker.js`)
-La vue dédiée `view-stats` offre un tableau de bord analytique complet pour mesurer la progression vers le concours :
+La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 - **Chronométrage Intelligent & Gestion des Sessions (`StudyTracker`)** :
   - **Démarrage automatique** : Au chargement de chaque question dans l'arène (`loadNextArenaQuestion`), le chronomètre s'active.
   - **Pause automatique** : Si l'utilisateur change d'onglet ou verrouille son téléphone (`visibilitychange` / `document.hidden`), ou après 2 minutes d'inactivité, le chronomètre se met en pause.
   - **Détection des sessions** : Une nouvelle session d'étude est automatiquement comptabilisée dès qu'une pause dépasse 5 minutes (`SESSION_GAP_THRESHOLD_MS = 5 * 60 * 1000`).
-  - **Plafonnement de sécurité** : Chaque question est plafonnée à 180 secondes maximum pour éviter toute dérive statistique si le terminal reste allumé sans interaction.
-- **Métriques Héroïques Périodiques (7 KPI Cards contextualisées selon la plage temporelle choisie)** :
-  1. 🔥 **Study Streak** : Série de jours consécutifs d'entraînement, record historique et validation du travail accompli aujourd'hui ou nombre de jours actifs sur la période.
-  2. 📝 **Questions Faites (`#kpi-total-questions`)** : Volume strict de questions répondues au cours de la période sélectionnée (libellé dynamique : *Questions (Aujourd'hui)*, *Questions (7 jours)*, etc.) et sous-titre détaillé (`X justes • Y fautes`).
-  3. 🎯 **Taux de Précision (`#kpi-accuracy-pct`)** : Pourcentage de bonnes réponses calculé strictement sur la période (`correct / total * 100` ou `--%` si 0 QCM sur la période).
-  4. ✨ **Réussite 1er Passage (Inédit / Découverte) (`#kpi-first-pass-pct`)** : Pourcentage de réussite lors de la toute première confrontation à une question (`pedia_first_pass_records_v2`), calculé sur les questions découvertes pour la 1ère fois au sein de la période sélectionnée.
-     - **Reconstruction Option B** : L'amorçage initial (`seedFirstPassFromExistingStats`) croise l'état de `queueEngine.stats` et le carnet d'erreurs IA `reasoningNotes`. Toute question ayant au moins une faute enregistrée (`st.mistakes > 0` ou présente dans le carnet) est identifiée comme ratée à la découverte (`false`). Toute question maîtrisée sans aucune faute (`st.current > 0 && st.mistakes === 0`) est identifiée comme réussie (`true`). Les questions encore non entamées sont exclues. En cours de jeu, chaque nouvelle découverte enregistre fidèlement le résultat live.
-     - **Affichage contextuel** : En vue périodique ("Aujourd'hui", "7j", "30j", "Personnalisé") où aucune question inédite n'a été découverte, l'indicateur affiche clairement `--%` et `0 inédit (que des révisions)` pour éviter de fausser la lecture avec le cumul global.
-  5. ⏱️ **Temps d'Étude (`#kpi-total-time`)** : Temps exact passé à étudier sur la période sélectionnée (format lisible `Xh Ym` ou `Xm Ys`), libellé contextualisé (*Temps (Aujourd'hui)*, *Temps d'Étude (7 jours)*, etc.) et nombre de sessions actives de cette période.
-  6. ⚡ **Vélocité Moyenne (`#kpi-avg-speed`)** : Vitesse moyenne en secondes par QCM calculée strictement sur la période sélectionnée, avec décomposition précise de la cadence sur les réussites (`avgTimeCorrect`) vs sur les erreurs (`avgTimeWrong`) de la période.
-  7. ⏳ **Temps Nécessaire pour Terminer (`#kpi-card-finish-time`)** : Indicateur dynamique d'estimation du temps requis basé sur la vélocité observée (`avgTimePerQuestion` ou fallback 45s) :
-     - **Onglet « Aujourd'hui »** : Temps restant pour achever l'objectif du jour (`remainingToday = Math.max(0, dailyTarget - todayTracker.count)` multiplié par la vitesse en secondes). Affichage en `Xm Ys` ou `0 min ✓ Terminé` si l'objectif est rempli. **S'actualise instantanément après chaque réponse** (`handleAnswerSuccess` & `handleAnswerFailure` rafraîchissent automatiquement la vue si `currentView === 'stats'`).
-     - **Autres onglets (« 7 jours », « 30 jours », « Tout », « Personnalisé »)** : Affiche à la fois le **temps par jour** et le **temps total** : `${formattedDailyTime}/j • ${formattedTotalTime} total` avec sous-titre contextualisé (`Total : Zh Wm (N QCM • J-X)`).
+  - **Plafonnement de sécurité** : Chaque question est plafonnée à 180 secondes maximum pour éviter toute dérive statistique.
+- **Métriques Héroïques Périodiques (7 KPI Cards contextualisées)** :
+  1. 🔥 **Study Streak** : Série de jours consécutifs d'entraînement, record historique et validation du travail accompli.
+  2. 📝 **Questions Faites (`#kpi-total-questions`)** : Volume strict de questions répondues sur la période active avec détail (`X justes • Y fautes`).
+  3. 🎯 **Taux de Précision (`#kpi-accuracy-pct`)** : Pourcentage de bonnes réponses calculé strictement sur la période (`correct / total * 100`).
+  4. ✨ **Réussite 1er Passage (`#kpi-first-pass-pct`)** : Pourcentage de réussite lors de la première confrontation à une question (`pedia_first_pass_records_v2`).
+     - **Reconstruction Option B** : L'amorçage initial croise `queueEngine.stats` et le carnet `reasoningNotes`. Toute question ayant au moins une faute (`st.mistakes > 0`) est identifiée comme ratée à la découverte (`false`). Toute question maîtrisée sans faute (`st.current > 0 && st.mistakes === 0`) est identifiée comme réussie (`true`). Les questions non entamées sont exclues.
+     - **Affichage contextuel** : Si 0 question inédite sur la période, l'indicateur affiche `--%` et `0 inédit (que des révisions)`.
+  5. ⏱️ **Temps d'Étude (`#kpi-total-time`)** : Temps exact passé sur la période (format `Xh Ym` ou `Xm Ys`) et nombre de sessions actives.
+  6. ⚡ **Vélocité Moyenne (`#kpi-avg-speed`)** : Vitesse moyenne en secondes/QCM avec décomposition justes vs fautes.
+  7. ⏳ **Temps Nécessaire pour Terminer (`#kpi-card-finish-time`)** :
+     - **Onglet « Aujourd'hui »** : Temps restant pour achever l'objectif du jour (`remainingToday = Math.max(0, dailyTarget - todayTracker.count)` multiplié par la vitesse). S'actualise instantanément après chaque réponse.
+     - **Autres onglets (« 7 jours », « 30 jours », « Tout », « Personnalisé »)** : Affiche à la fois le **temps par jour** et le **temps total** : `${formattedDailyTime}/j • ${formattedTotalTime} total`.
 - **Sélecteur Temporel Multi-Périodes avec Navigation Rétroactive (`stats-range-toggle` & `stats-day-stepper-wrap`)** :
-  - **Navigation jour par jour (`stats-day-stepper-wrap`)** :
-    - Bouton précédent `#btn-stats-prev-day` : recule d'un jour (`selectedDayOffset--`) et bascule dynamiquement le libellé en « Hier », « Avant-hier », « Ven. 24/10 »...
-    - Bouton suivant `#btn-stats-next-day` : avance d'un jour vers le présent (désactivé automatiquement au jour en cours).
-    - Bouton central `#btn-range-day` : affiche le jour sélectionné et réinitialise à « Aujourd'hui » en 1 clic.
-    - Synchronisation intégrale : l'intégralité du tableau de bord (7 KPI cards, temps, questions, vitesse, graphiques et cours) s'adapte à la journée sélectionnée.
-  - **7 jours** / **30 jours** : Fenêtre glissante hebdomadaire ou mensuelle.
-  - **Tout** : Historique global complet depuis le premier jour d'entraînement.
-  - **Personnalisé 📅** : Panneau rétractable avec sélecteurs de dates `[Du] [Au]` permettant d'analyser n'importe quel intervalle calendaire, avec application et affichage immédiats.
-- **Moteur d'Agrégation Temporelle (`StudyTracker.getAnalyticsForDays(days)`)** :
-  - Calcule dynamiquement et sans effet de bord l'intégralité des métriques (questions, temps, sessions, moyennes justes/fautes, chapitres, premier passage) pour un sous-ensemble arbitraire de jours.
-  - `getGlobalAnalytics()` réutilise cette logique en fournissant la totalité des jours de l'historique, garantissant une cohérence arithmétique parfaite entre filtres périodiques et historique global.
+  - **Navigation jour par jour (`stats-day-stepper-wrap`)** : Boutons précédent/suivant et bouton central pour naviguer dans l'historique (« Hier », « Avant-hier », dates calendaires) et réinitialiser à « Aujourd'hui » en 1 clic.
+  - **7 jours / 30 jours / Tout / Personnalisé 📅** : Filtres temporels glissants ou intervalle libre avec panneau rétractable `[Du] [Au]`.
 - **Heatmap d'Activité Style GitHub (60 à 90 jours)** :
-  - Grille SVG responsive de 7 lignes (jours de la semaine) x 9 colonnes (semaines) avec 5 paliers d'intensité de couleur (`#121d33` neutre, `#064e3b`, `#047857`, `#10b981`, `#00d4ff` intensif).
-  - Infobulles contextuelles `<title>` affichant la date, le nombre de questions, les réussites et le temps passé.
+  - Grille SVG responsive de 7 lignes x 9 colonnes avec 5 paliers d'intensité de couleur (`#121d33` neutre, `#064e3b`, `#047857`, `#10b981`, `#00d4ff` intensif).
 - **Graphique Combiné SVG Interactif (Bilan Journalier)** :
-  - Barres empilées par date : Émeraude pour les réponses justes, Rose pour les fautes.
-  - Courbe ambre superposée pour l'évolution de la vitesse de réponse (secondes/QCM).
-  - Titre dynamique et mise à l'échelle automatique selon la période choisie (journée seule, personnalisée, 7j, 30j ou historique complet).
+  - Barres empilées par date : Émeraude pour les réponses justes, Rose pour les fautes, avec courbe ambre de vitesse de réponse (secondes/QCM).
 - **Projection Dynamique Concours J-28 (10/11)** :
-  - Calcule automatiquement la cadence observée (QCM/jour actif) sur la période sélectionnée et estime la date d'achèvement de l'ensemble du programme.
-  - Alerte de motivation : félicite si la cadence est supérieure à l'objectif ou indique le nombre de QCM/jour à maintenir pour être prêt le 10/11.
+  - Cadence observée (QCM/jour actif) et estimation de la date d'achèvement de l'ensemble du programme.
 - **Suivi des Questions par Cours (`#stats-course-tracker-box`)** :
-  - Colonne interactive dédiée au tracking approfondi des questions par chapitre avec deux modes commutables :
-    - **Mode « Sur la période »** : Décompte des QCM traités sur la période active (Aujourd'hui, Hier, 7j...), taux de justes/fautes, vitesse en s/QCM et ratio par rapport au volume total du cours.
-    - **Mode « Tous les cours (35) »** : Suivi de complétion global sur les 35 cours du programme avec barres multi-segments (maîtrisés en vert, en cours en ambre, restants en sombre) et détail des acquis/erreurs.
-  - **Recherche instantanée (`#course-tracker-search`)** : Champ de filtrage dynamique filtrant la liste des cours en direct pendant la frappe.
-  - **Badge de synthèse (`#course-tracker-summary-badge`)** : Compteur instantané du nombre de cours affichés et du total de QCM.
+  - Deux modes commutables : **« Sur la période »** (volume, ratio justes/fautes, vitesse) vs **« Tous les cours (35) »** (complétion globale avec barres multi-segments).
+  - Champ de recherche instantanée en direct (`#course-tracker-search`).
 - **Journal Quotidien Détaillé (`renderStatsTimeline`)** :
-  - Timeline ordonnée (du plus récent au plus ancien) listant exclusivement les jours d'entraînement appartenant à la période sélectionnée, avec badge « Aujourd'hui », volume, justes, fautes, durée et sessions.
-- **Synchronisation Cloud Multi-Appareils (`studyHistory` & `firstPassRecords`)** :
-  - Stockage local dans `localStorage` sous `pedia_study_history_v1` et `pedia_first_pass_records_v2`.
-  - Synchronisation bidirectionnelle automatique dans Google Cloud Firestore (`users/{uid}/pedia/progress`).
-  - Fusion non destructive (`mergeHistory`) assurant la conservation des sessions entre PC, tablette et smartphone Android.
-  - Badge de date : `📅 JJ/MM HH:MM` (`stat-date`).
-  - Badge de score CROQ : `Score : X%` (`stat-score`).
-  - Sélecteur d'historique de tentatives multiples avec dates, scores et switch instantané d'onglets.
-- **Accordéons Interactifs & Repliage Multi-Niveaux** :
-  - **Groupes de cours pliables (`.notebook-chapter-group`)** : Clic sur l'en-tête de cours pour masquer/afficher toutes ses questions (`.notebook-chapter-body`, `.notebook-chapter-questions`), avec rotation du chevron.
-  - **Fiches de questions individuelles pliables (`.grouped-question-card`)** : Clic sur l'en-tête de chaque question pour la replier individuellement. En état replié, les panneaux lourds d'options et d'analyse IA sont masqués (`display: none !important`), laissant place à une prévisualisation aérée et compacte de l'énoncé (`.question-collapsed-preview`).
-  - **Bouton Maître « Tout replier / Tout déplier » (`.notebook-toggle-all-btn`)** : Présent dans la barre de synthèse, il replie ou déplie instantanément l'intégralité des chapitres et des questions en un seul clic, aussi bien en vue par cours qu'en vue liste plate.
-- **Barre de recherche & synthèse dynamique** :
-  - Recherche instantanée par mot-clé sur les questions, propositions, explications et raisonnements IA.
-  - Synthèse `#notebook-summary-bar` reflétant en direct le nombre de questions, d'analyses et le rappel du tri actif (`Tri : [Critère] ([Croissant/Décroissant])`).
-
-### 3.8. Chronomètre & Suivi du Temps par Leçon (`src/services/lessonTracker.js` & `view-stats`)
-Module dédié au chronométrage autonome de l'apprentissage par cours (polycopiés, fiches, cours magistraux) intégré dans la page de statistiques via une navigation horizontale par sous-pages :
-- **Architecture de Navigation Horizontale par Sous-Pages (`stats-subnav-pills`)** :
-  - **Barre d'onglets segmentée en haut de `view-stats`** : Permet de basculer instantanément d'un simple clic entre deux sous-vues dédiées, éliminant tout défilement vertical fastidieux (évitant un scroll monolithique de 2640px) :
-    1. **Statistiques QCM** (`#stats-subpage-qcm`) : 6 Hero KPI Cards, Heatmap GitHub, Graphique combiné SVG, analyse de vélocité/projection J-28, Top spécialités et timeline quotidienne d'arène. Le sélecteur de période temporelle (`#stats-qcm-range-wrap`) y est associé.
-    2. **Chronomètre Cours** (`#stats-subpage-lessons`) : Espace dédié au chronométrage par cours, affichage digital grand format, tableau récapitulatif par leçon et historique des sessions de révision. Le sélecteur temporel s'y masque automatiquement pour épurer l'interface.
-  - **Animations glissantes fluides** : Transitions horizontales par translations CSS (`slide-from-left` et `slide-from-right`), procurant une sensation de fluidité native sans rechargement.
-  - **Pill chrono live dans l'onglet** : L'onglet « Chronomètre Cours » affiche en direct un badge vert pulsant avec le décompte du temps écoulé (`#subnav-active-lesson-time`) lorsqu'un chronomètre est actif, même si l'étudiant consulte l'onglet QCM.
-- **Moteur de Chronométrage Persistant (`LessonTracker`)** :
-  - **Chronomètre progressif (Stopwatch)** : Compteur dynamique `00:00:00` avec fonctions Démarrer, Pause, Reprendre, Terminer & Enregistrer, et Annuler.
-  - **Calcul persistant par delta d'horodatage (`startTimestamp` & `accumulatedMs`)** : Même si l'étudiant quitte la page de stats, navigue dans l'arène ou ferme temporairement l'application, le temps continue de tourner en tâche de fond sans décalage ni perte de secondes.
-  - **Enregistrement des sessions** : Clé locale `pedia_lesson_sessions_v1` avec `{ id, lessonName, chapterId, startTime, endTime, durationSeconds, dateStr }`.
-  - **Agrégation analytique par leçon (`getLessonSummaries`)** : Cumul total du temps passé par cours, nombre de sessions effectuées, date de dernière révision et calcul de part relative.
-- **Sélecteur Intelligent avec Barre de Recherche** :
-  - Recherche instantanée filtrable parmi les 35 chapitres officiels de pédiatrie avec compteurs de QCM associés.
-  - Prise en charge de la saisie 100% libre permettant de nommer n'importe quel cours ou sous-thème spécifique (ex: « Polycopié Asthme », « Fiche Prise en charge Déshydratation »).
-- **Mini-Badge Flottant dans le Header (`#active-lesson-header-badge`)** :
-  - Visible automatiquement dès qu'un chronomètre est actif sur n'importe quel écran de l'application.
-  - Affiche un voyant vert pulsant, le nom abrégé de la leçon et le chronomètre digital qui s'incrémente en direct.
-  - Clic interactif redirigeant automatiquement l'étudiant directement vers la sous-page « Cours » dans `view-stats`.
-- **Restitution & Tableaux de Bord** :
-  - **Tableau récapitulatif par leçon** : Nom du cours, temps total cumulé sous forme de badge digital, nombre de sessions, date de dernière session, et barre de progression visuelle émeraude/cyan.
-  - **Historique des sessions récentes** : Liste chronologique des dernières sessions avec horodatage détaillé, durée et bouton de suppression individuelle pour éliminer les sessions parasites.
-- **Synchronisation Cloud Firestore (`lessonSessions`)** :
-  - Synchronisation atomique dans `users/{uid}/pedia/progress`.
-  - Fusion bidirectionnelle non destructive (`mergeSessions`) pour consolider l'historique d'étude entre PC, smartphone et tablette.
-
-### 3.9. Système de Mises à Jour Automatiques & GitHub Releases (`src/services/updateService.js` & CI/CD)
-L'application intègre un sous-système complet de vérification, d'alerte et de téléchargement autonome des nouvelles versions de l'APK depuis GitHub Releases :
-- **Service d'Orchestration des Mises à Jour (`UpdateService`)** :
-  - **Version actuelle déclarée** : `CURRENT_APP_VERSION = '1.3.0'` synchronisée avec `package.json` et `build.gradle`.
-  - **Comparaison sémantique universelle (`compareVersions`)** : Compare fidèlement les versions de type `v1.3.1` vs `1.3.0` ou `2.0` en ignorant les préfixes et en évaluant chaque niveau de version.
-  - **Interrogation de l'API GitHub Releases** : Requête HTTP vers `https://api.github.com/repos/lkmqji/qcm-p-diatrie/releases/latest`.
-  - **Cooldown d'arrière-plan (4 heures)** : Évite toute surconsommation de quota d'API GitHub lors des démarrages répétés de l'application via `pedia_last_update_check_ts`.
-  - **Extraction directe de l'APK** : Recherche prioritaire de l'asset `.apk` (ex: `PediaDrill.apk`) pour fournir le lien direct de téléchargement (`browser_download_url`).
-  - **Installation Native Android** : En environnement Capacitor mobile (`Capacitor.isNativePlatform()`), l'URL de téléchargement direct est ouverte dans le navigateur système (`_system`), déclenchant le gestionnaire de téléchargement Android et la notification d'installation.
-- **Expérience Utilisateur & Interfaces Dédiées** :
-  - **Pastille Pulsante Header (`#badge-update-available`)** : Discrète puce verte animée sur l'icône Paramètres du header, visible uniquement lorsqu'une version plus récente a été détectée.
-  - **Carte Mises à Jour dans la Modale Paramètres (`#modal-settings`)** : Affiche le numéro de version installée, le statut de vérification et un bouton manuel avec icône rotative (`spin-animation`).
-  - **Modale Complète de Mise à Jour (`#modal-app-update`)** : Présentation soignée avec icône émeraude, comparatif `vActuelle ➔ vNouvelle`, date de publication, notes de mise à jour / changelog défilant et bouton d'action principal « Télécharger l'APK ».
-- **Pipeline CI/CD Automatisé (`.github/workflows/build-and-release.yml`)** :
-  - **Déclencheurs** : Push d'un tag git `v*` (ex: `v1.3.1`) ou déclenchement manuel en 1 clic via `workflow_dispatch`.
-  - **Environnement de build** : Ubuntu Latest avec Node.js 22, Java JDK 21 Temurin, Android SDK Platform 36 (build-tools 36.0.0 via `android-actions/setup-android@v4`) et Gradle Wrapper 9.2.0 (compatible Android Gradle Plugin 8.13.0).
-  - **Compilation & Publication** : Exécute `build-bundle.cjs`, synchronise Capacitor (`npx @capacitor/cli sync android`), compile `:app:assembleDebug`, copie et renomme l'APK produit en `PediaDrill.apk` et publie automatiquement une Release GitHub complète (`v1.3.0`) avec notes de version générées et l'APK attaché en téléchargement direct pour les mises à jour in-app Android.
-
-### 3.10. Moteur de Formatage Médical Intelligent (`formatMedicalContent`)
-Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes issus de l'extraction de cours :
-- **Dégel des justifications de propositions (ex: `A-Vrai`, `A/ Vrai`, `B : Faux`, `1- Vrai`, `1-Perplexe`)** : Détection et conversion systématique en listes à puces avec badges en gras (`- **A) Vrai** :`).
-- **Dégel des colonnes multi-espaces de diapositives** : Détection des énumérations séparées par de multiples espaces insécables (`\u00A0`) et conversion en éléments de liste à puces individuels.
-- **Séparation des phrases compactées** : Détection des mots et phrases collées sans espace ou sans point (`(TCA).Amyotrophie`, `assurésB-Vrai`, `interstitiel.B/ Vrai`, `vaccinéContamination`, `hyperpigmentationBiologie`).
-- **Dégel des puces (`➢`, `⁃`, `•`, `►`, `▶`, `✔`, `✓`, `-`, `*`)** : Détection regex et insertion de retours à la ligne avec génération de listes HTML `<ul class="medical-bullet-list">` et puces stylisées.
-- **Dégel des énumérations d'énoncés (ex: `1-`, `2-`, `1.`, `2.`)** : Rendu sous forme de listes ordonnées avec badges colorés `<ul class="medical-num-list">` et `<span class="medical-num-badge">`.
-- **Mise en valeur et découpage des en-têtes médicaux** : Détection des marqueurs clés (`Rappel :`, `Définition :`, `Question 01 :`, `Remarque :`, `Source :`, `NB :`, `Attention :`, `CAT :`, `Traitement :`, `Diagnostic :`, `Signes cliniques :`, `Biologie :`, `Physiopathologie :`, `Tableau clinique :`, `Examens :`) avec découpage immédiat du titre et de son paragraphe associé, badges thématiques `<div class="medical-section-title">` et icônes Lucide.
-- **Nettoyage et espacement** : Élimination des BOM (`\uFEFF`) et des blocs d'espaces insécables (`\u00A0`), découpage en paragraphes espacés `<p class="medical-paragraph">` avec `line-height: 1.6`.
-- **Application omni-présente** :
-  - Arène : Énoncé (`#arena-question-text`), Cas clinique (`#arena-clinical-case-text`), Explication officielle en direct (`#arena-explanation-text`).
-  - Modale d'erreur : Énoncé complet, cas clinique et explication officielle dans `formatQuestionMistakeRecap`.
-  - Carnet : Rendu fidèle et aéré dans toutes les fiches d'historique.
-
-### 3.8. Barre d'Outils Visuelle & Annotations UI (Agentation)
-- **Intégration Standalone (`agentation.bundle.js`)** :
-  - Copie du bundle officiel autonome à la racine et dans `dist/` via le pipeline `build.cjs`.
-  - Chargement automatique via `<script src="agentation.bundle.js"></script>` injecté par `build-bundle.cjs`.
-  - Auto-montage sur `#agentation-root` avec la pilule d'interaction, les marqueurs d'annotations, les pastilles bleues et la palette d'outils.
-- **Fonctionnalités activées** :
-  - **Annotation visuelle en direct** : clic sur n'importe quel élément UI de l'arène, du dashboard ou du carnet pour déposer une note avec capture automatique du sélecteur CSS, de la hiérarchie DOM et des styles calculés.
-  - **Mode wireframe / Layout (`L`)** : manipulation et disposition de blocs pour prévisualiser des réorganisations d'interface.
-  - **Mode pause animations (`P`)** : fige les micro-animations pour une inspection sereine.
-  - **Copie structurée (`C`) & Nettoyage (`X`)** : export direct des annotations au format markdown pour transmission immédiate à l'agent.
-- **Serveur MCP en temps réel** :
-  - Connecté via `agentation-mcp` (`mcp_config.json`) sur le port local pour transmission bidirectionnelle transparente.
-
-### 3.9. Iconographie & Clichés Médicaux Protégés (Rétractés & Floutés par Défaut)
-- **Objectif mnésique & ergonomique** : Pour éviter que les clichés d'imagerie, radiographies ou photos cliniques ne divulguent prématurément la réponse ou ne perturbent la lecture de l'énoncé, tous les médias associés aux questions (`media_urls`) sont **rétractés et floutés par défaut**.
-- **Composant UI (`renderQuestionMedia`)** :
-  - **État Rétracté & Flouté (`.medical-media-card.is-collapsed`)** :
-    - Vignette miniature carrée ultra-compacte de **74x74 px** (64x64 px sur smartphone).
-    - Flou prononcé `filter: blur(8px) brightness(0.72)` avec compensation d'échelle `transform: scale(1.15)` pour supprimer les franges de flou aux bords.
-    - Overlay interactif `.medical-media-spoiler-overlay` arborant le badge cyan `Toucher pour afficher` et le rappel `Photo floutée`.
-  - **État Déplié & Net (`.medical-media-card.is-expanded`)** :
-    - Déploiement fluide animé en CSS.
-    - Dimensions adaptées aux résolutions d'écran d'ordinateur et mobile : largeur maximale **340 px** et hauteur maximale **250 px** (210 px sur smartphone), garantissant que l'image ne pousse pas les options hors du champ visuel.
-    - Image en pleine netteté (`filter: none`) avec préservation stricte du ratio d'aspect (`object-fit: contain`).
-    - **Deux boutons de fermeture dédiés** :
-      1. Bouton flottant circulaire `✕` (`.btn-media-card-close`) au coin supérieur droit de l'image.
-      2. Bouton d'action explicite `✕ Fermer la photo` (`.btn-media-close`) sous l'image aux côtés de `Plein écran HD`.
-    - Un clic direct sur l'image dépliée la referme et la refloute également.
-  - **Visionneuse Plein Écran HD (Lightbox)** :
-    - Modal plein écran `#media-lightbox-modal` avec flou d'arrière-plan (`backdrop-filter: blur(10px)`).
-    - Image centrée en résolution maximale sans altération.
-    - Fermeture au clic sur le fond noir, via le bouton de fermeture ou par la touche clavier `Échap`.
-- **Intégration transverse** :
-  - **Arène de Quiz** : Rendu dynamique sous l'énoncé dans `#arena-media-wrap`.
-  - **Modale d'Erreur & Explication** : Intégration systématique dans la fiche d'erreur `formatQuestionMistakeRecap`.
-  - **Carnet de Révision** : Préservation et restitution intégrale dans les fiches de révision sauvegardées localement et synchronisées sur Google Firestore.
-
-### 3.10. Masquage du Titre de Chapitre par Flou Interactif (`#arena-chapter-title`)
-- **Objectif pédagogique** : Éviter que l'étudiant ne déduise le diagnostic d'un cas clinique complexe par simple lecture de la spécialité pédiatrique (ex: *Cardiologie*, *Gastroentérologie*, *Infectiologie*).
-- **Fonctionnement & Ergonomie** :
-  - Par défaut, à chaque chargement de question (`loadNextArenaQuestion`), le badge de chapitre passe en état masqué (`is-blurred`).
-  - Le texte du cours est flouté (`filter: blur(6px); opacity: 0.38; user-select: none`) et accompagné d'un badge interactif `Cours masqué`.
-  - **Pastille de date et session du QCM (`.question-date-pill`)** : Intégrée au sein de `.chapter-title-text`, elle affiche dynamiquement l'année, la session de concours (`P 2020`, `P1 2021`, `R 2019`, `EMD 2022`, `Session 2021`, etc.) ou la source du cours (`Diapo 2024`, `Diapositive 2026`) via `extractQuestionDateOrSession(q)`. En l'absence de date spécifique dans les données, elle affiche le repli `P? 20??`.
-  - **Floutage coordonné** : La pastille de date est floutée en parfaite harmonie avec le nom du cours pour éviter tout indice diagnostique avant la réponse.
-  - Un simple clic sur le badge (`window.toggleArenaChapterTitle()`) retire le flou (`is-revealed`) et révèle l'intitulé du chapitre ainsi que la date de la question.
-  - Un second clic permet de le reflouter à tout moment.
-  - **Défloutage automatique à la réponse** : Dès que l'étudiant valide ou échoue la question (`handleAnswerSuccess` ou `handleAnswerFailure`), ou consulte un QCM d'historique (`historyCursor >= 0`), le titre et la pastille de date sont automatiquement défloutés en clair.
-
-### 3.11. Tuteur IA Interactif en Direct dans l'Arène & Protection Anti-Spoiler du Cours
-- **Objectif mnésique & clinique** : Permettre à l'étudiant de questionner l'IA en temps réel sur n'importe quel aspect de la question en cours de résolution dans l'Arène (demande d'explication d'un signe sémiologique, physiopathologie d'un distracteur, posologie pédiatrique ou piège d'internat).
-- **Protection Anti-Spoiler du Nom de Cours jusqu'à la Réponse (`.chatbox-chapter-blurred`)** :
-  - **Problématique** : L'affichage direct du nom du chapitre dans le message de bienvenue du Tuteur IA (`<strong>${chapTitle}</strong>`) ou dans le sous-titre de l'en-tête dévoilait le diagnostic de la question avant même que l'étudiant n'ait répondu.
-  - **Floutage dynamique conditionnel** :
-    - Tant que la question n'a pas été répondue (`!isCurrentQuestionAnswered` et `historyCursor === -1`), l'intitulé du cours dans le message d'accueil et le sous-titre est automatiquement flouté (`filter: blur(5.5px); opacity: 0.38`).
-    - Dès que l'étudiant répond (succès ou erreur), le cours est immédiatement révélé en clair.
-    - L'étudiant peut également cliquer manuellement sur le texte flouté à tout moment pour le révéler ou le reflouter.
-    - Synchronisation bidirectionnelle : tout basculement (dans la carte ou dans le chatbox) synchronise instantanément les deux zones via `window.toggleArenaChapterTitle()`.
-- **Architecture & Composants UI** :
-  - **Bouton Circulaire Flottant Néon (`#btn-arena-ai-chat`)** : Ancré en bas à droite (`bottom: 24px; right: 24px; z-index: 9999`) avec dégradé cyan/violet, halo pulsant doux et icône étincelle `sparkles`. Visible exclusivement lors de la session de quiz dans l'Arène.
-  - **Fenêtre de Chat Moderne (`#arena-ai-chatbox`)** : Panneau en verre dépoli (`backdrop-filter: blur(20px)`), avec barre d'en-tête (titre, modèle actif `Gemini Flash`, sous-titre de cours, boutons réinitialiser et fermer), bannière de rappel de l'énoncé du QCM, conteneur de messages défilant, puces de suggestions rapides en 1 clic et barre de saisie avec touche <kbd>Entrée</kbd>.
-  - **Amorces Cliniques Rapides (Chips)** :
-    - 💡 *Démarche diagnostique*
-    - 🔍 *Justification clé*
-    - ⚠️ *Piège concours*
-    - 💊 *Traitement & CAT*
-### 3.12. Nettoyeur Universel de Formules & Élimination du LaTeX (`cleanLatexMath`)
-- **Problématique clinique & UX** : Les modèles de langage (LLMs) génèrent fréquemment par réflexe des balises LaTeX (`\text{ g/dl}`, `\mathbf{3}\text{ kg}`, `\times`, `\frac{A}{B}`) lors des calculs de posologies, déficits en hémoglobine, bilans liquidiens ou réhydratation. Sans moteur d'affichage mathématique lourd, ces syntaxes s'affichaient sous forme de code cryptique (`%texte`, `\mathbf`).
-- **Moteur de nettoyage & conversion bidirectionnel (`cleanLatexMath`)** :
-  - **Déballage récursif du texte brut** : `\text{...}`, `\mathrm{...}`, `\operatorname{...}`, `\textrm{...}` ➔ texte clair direct.
-  - **Conversion des styles typographiques** : `\mathbf{...}` et `\textbf{...}` ➔ `**...**` (gras Markdown natif immédiat).
-  - **Conversion des opérateurs mathématiques** : `\times` ➔ `×`, `\cdot` ➔ `·`, `\div` ➔ `÷`, `\pm` ➔ `±`, `\leq` ➔ `≤`, `\geq` ➔ `≥`, `\neq` ➔ `≠`, `\approx` ➔ `≈`, `\to` ➔ `→`, `\implies` ➔ `⇒`.
-  - **Unités pédiatriques & lettres grecques** : `\mu` / `\mum` ➔ `µ` / `µm`, `\alpha`, `\beta`, `\Delta`, `\Omega`.
-  - **Formules de calculs fractionnaires & racines** : `\frac{A}{B}` ➔ `(A / B)`, `\sqrt{A}` ➔ `√(A)`.
-  - **Exposants & indices** : `^{2}` ➔ `²`, `_{2}` ➔ `₂`, `\^\\circ C` ➔ `°C`.
-  - **Suppression des délimiteurs** : Élimination de `$$...$$`, `$..$`, `\[...\]`, `\(...\)`.
-- **Application et double protection** :
-  - **Au niveau de l'API (`src/services/gemini.js`)** : Toutes les réponses brutes issues de Gemini Flash sont systématiquement épurées dès la réception (`_executeModelCall`, `askAboutQuestion`, `generateReasoningNote`, `evaluateCroq`).
-  - **Au niveau du Prompt Engineering** : Consigne stricte interdisant formellement l'usage du LaTeX dans tous les prompts système, imposant un formatage textuel médical direct (ex: `14 g/dl`, `3 kg`, `× 3 ml/kg`).
-  - **Au niveau du Moteur de Rendu (`src/app.js`)** : Déclenché automatiquement dans `formatMedicalContent`, `formatReasoningNote` et `parseMarkdownInline`.
-
-### 3.13. Navigation dans l'Historique des 5 Derniers QCM & Synchronisation Dynamique du Tuteur IA (`view-arena`)
-- **Problématique & Intention Pédagogique** : En cours de session intensive dans l'Arène, l'étudiant ressent le besoin fréquent de revenir sur les questions immédiatement précédentes pour relire une subtilité d'énoncé, vérifier pourquoi une proposition était fausse, ou **interroger le Tuteur IA spécifiquement sur le QCM précédent**.
-- **Architecture de Données & Mécanique Interne (`src/app.js`)** :
-  - **Buffer Glissant des 5 Derniers QCM (`answeredHistory`)** :
-    - À chaque réponse validée (`handleAnswerSuccess`) ou échouée (`handleAnswerFailure`), un instantané complet (`snapshot`) est injecté en tête de tableau (`answeredHistory.unshift(snapshot)`), plafonné strictement à **5 éléments maximum** (`slice(0, 5)`).
-    - Métadonnées capturées : `question` clonée de manière immuable, `userAnswerLetters`, indicateur booléen `isCorrect`, `score` (pour les CROQ), `explanation` officielle et `timestamp`.
-  - **Curseur de Consultation (`historyCursor`)** :
-    - `historyCursor = -1` : Mode Drill Actif (question en cours d'évaluation tirée de la file dynamique).
-    - `historyCursor = 0` : Dernier QCM répondu (`QCM -1`).
-    - `historyCursor = 1..4` : QCM répondus antérieurs jusqu'à 5 questions en arrière.
-  - **Herméticité & Préservation Stricte du SRS** :
-    - La navigation dans l'historique est **rigoureusement isolée de la répétition espacée**.
-    - Aucune modification de `queueEngine.queue`, aucun appel à `handleSuccess` ou `handleFailure`, et aucun impact sur le compteur du jour (`todayTracker`).
-- **Interface Utilisateur & Rendu Visuel Dédié (`template.html`, `src/style.css`)** :
-  - **Barre Supérieure avec Flèches de Navigation (`.arena-history-nav`)** :
-    - Flèche gauche `[◀]` (`#btn-history-prev`) : remonte vers les questions antérieures.
-    - Badge central (`#arena-history-badge`) : affiche `Actuel (N)` en mode drill normal, ou `Précédent X/N` avec thème ambré (`is-past`) et contour distinctif en mode consultation.
-    - Flèche droite `[▶]` (`#btn-history-next`) : redescend vers les questions plus récentes et réenclenche le drill actif quand `historyCursor === 0`.
-  - **Bannière d'Avertissement Dorée (`#arena-history-consult-banner`)** :
-    - S'affiche en haut de la carte pour rappeler clairement que le QCM est en consultation.
-    - Comprend un bouton saillant « Reprendre le drill ➔ » (`.btn-resume-drill`).
-  - **Rendu en Lecture Seule (`renderHistoryQuestion`)** :
-    - Options désactivées (`.option-item.read-only`), boutons de validation masqués.
-    - Surbrillance explicite des choix : propositions justes en vert (`correct-highlight`), choix erronés de l'utilisateur en rouge (`wrong-highlight`).
-    - Chapitre déflouté d'emblée (`is-revealed`) avec badge ambré `QCM Répondu` et pastille de date/session.
-    - Boîte d'explication officielle ouverte automatiquement en bas de carte.
-    - **Carte d'Explication Clinique IA Persistante (`#arena-ai-explanation-box`)** : Affichée sous l'explication officielle dans le conteneur de question (`.question-container`). Elle restitue automatiquement l'explication structurée en 4 volets (Piège, Justification détaillée proposition par proposition A-E, Démarche clinique, Règle d'or & Mémo concours) issue du cache local (`pedia_ai_explanations_cache`), du Carnet de Raisonnement ou de Firestore.
-    - **Génération IA à la demande en 1 clic** : Si aucune explication IA n'avait été générée antérieurement, un bouton d'action `[Générer l'explication clinique IA (Gemini Flash)]` (`window.requestArenaAiExplanation`) permet de déclencher l'analyse complète sans quitter l'Arène, l'enregistrant instantanément pour toutes les consultations futures.
-    - Bouton bas de page « Reprendre le drill en cours ➔ » (`#btn-history-resume-action`).
-- **Synchronisation Temps Réel & Persistance du Tuteur IA (`questionChatHistories`)** :
-  - Le tuteur IA cible toujours la question effectivement visualisée (`getEffectiveArenaQuestion`).
-  - **Préservation des conversations par question** : Les échanges avec le Tuteur IA dans `#arena-ai-chatbox` sont désormais indexés par identifiant de question (`questionChatHistories[effQ.uid]`). Lorsque l'étudiant revient sur un QCM précédent, l'intégralité de sa conversation antérieure avec l'IA est fidèlement restaurée dans le chatbox.
-- **Raccourcis Claviers Dédiés (`setupKeyboardShortcuts`)** :
-  - <kbd>◀ Flèche Gauche</kbd> : remonter d'un QCM dans l'historique.
-  - <kbd>▶ Flèche Droite</kbd> : avancer d'un QCM vers le drill actif.
-  - <kbd>Entrée</kbd> en mode consultation : reprendre immédiatement le drill actif.
-  - Désactivation automatique lorsque le focus est dans un champ texte (recherche, chat ou CROQ).
+  - Timeline ordonnée du plus récent au plus ancien listant exclusivement les jours d'entraînement de la période active.
 
 ---
 
-## 4. Spécificités UI, Responsive & Mobile First
+### 3.8. Chronomètre & Suivi du Temps par Leçon (`src/services/lessonTracker.js` & `view-stats`)
+- **Navigation Horizontale par Sous-Pages (`stats-subnav-pills`)** :
+  - Bascule instantanée entre **Statistiques QCM** (`#stats-subpage-qcm`) et **Chronomètre Cours** (`#stats-subpage-lessons`), éliminant tout défilement vertical excessif.
+  - Transitions glissantes CSS (`slide-from-left` et `slide-from-right`).
+  - Pill chrono live dans l'onglet affichant le décompte en direct (`#subnav-active-lesson-time`) lorsqu'un chronomètre tourne.
+- **Moteur de Chronométrage Persistant (`LessonTracker`)** :
+  - Calcul persistant par delta d'horodatage (`startTimestamp` & `accumulatedMs`) : le temps continue de tourner en tâche de fond même si l'étudiant quitte la page ou ferme l'application.
+  - Enregistrement des sessions sous `pedia_lesson_sessions_v1` et synchronisation Firestore.
+  - Sélecteur intelligent filtrable parmi les 35 chapitres ou saisie 100% libre.
+- **Mini-Badge Flottant dans le Header (`#active-lesson-header-badge`)** :
+  - Visible sur tous les écrans dès qu'un chronomètre est actif, avec voyant vert pulsant, libellé abrégé et décompte digital. Clic redirigeant vers la sous-page Chronomètre.
 
-- **Design System** : Palette médicale sombre moderne (fond `#070b14`, cartes `#121d33`, accents cyan `#00d4ff`, émeraude `#10b981`, rose `#ef4444`, ambre `#f59e0b`, violet `#8b5cf6`).
-- **Typographie Médicale Structurée** :
-  - `Outfit` : Titres de sections, badges numérotés et badges de métriques.
-  - `Inter` : Corps de texte médical, justifications sémiologiques et listes à puces.
-  - Hauteur de ligne aérée (`line-height: 1.55` à `1.6`) avec espacement entre paragraphes pour une lecture sans fatigue oculaire.
-- **Adaptation Mobile & Portrait (`@media (max-width: 768px)`)** :
-  - Réduction générale d'échelle de ~15% pour une densité optimale sans défilement excessif.
-  - Padding ajusté (`10px 8px 18px 8px`), marges et gap réduits.
-  - Modale d'erreur : largeur responsive `max-width: min(780px, 94vw)` et `max-height: 88vh` avec défilement interne fluide.
+---
+
+### 3.9. Système de Mises à Jour Automatiques & GitHub Releases (`src/services/updateService.js` & CI/CD)
+- **Service d'Orchestration des Mises à Jour (`UpdateService`)** :
+  - Version déclarée : `CURRENT_APP_VERSION = '1.4.0'` synchronisée avec `package.json` et `build.gradle` (`versionCode 9`).
+  - Comparaison sémantique universelle (`compareVersions`) ignorant les préfixes `v`.
+  - Interrogation de l'API GitHub Releases (`https://api.github.com/repos/lkmqji/qcm-p-diatrie/releases/latest`) avec cooldown de 4 heures (`pedia_last_update_check_ts`).
+  - Extraction de l'asset `.apk` direct (`PediaDrill.apk`). En environnement natif Android Capacitor, l'URL est ouverte via `_system` pour lancer le gestionnaire de téléchargement Android natif.
+- **Interfaces Dédiées** :
+  - Pastille verte pulsante sur l'icône Paramètres (`#badge-update-available`).
+  - Carte Mises à Jour dans la modale Paramètres (`#modal-settings`) avec bouton de vérification manuelle.
+  - Modale dédiée `#modal-app-update` avec comparatif de version, notes de version et bouton « Télécharger l'APK ».
+- **Pipeline CI/CD Automatisé (`.github/workflows/build-and-release.yml`)** :
+  - Déclencheurs : Push d'un tag git `v*` ou déclenchement manuel `workflow_dispatch`.
+  - Environnement : Ubuntu Latest, Node.js 22, Java JDK 21 Temurin, Android SDK Platform 36 (build-tools 36.0.0 via `setup-android@v4`), Gradle Wrapper 9.2.0.
+  - Compile le bundle web, synchronise Capacitor, compile `:app:assembleDebug`, copie sous `PediaDrill.apk` et publie une Release GitHub avec l'APK attaché.
+
+---
+
+### 3.10. Moteur de Formatage Médical Intelligent (`formatMedicalContent`)
+- **Dégel des justifications de propositions (ex: `A-Vrai`, `A/ Vrai`, `B : Faux`, `1- Vrai`)** : Détection et conversion en listes à puces avec badges en gras (`- **A) Vrai** :`).
+- **Dégel des colonnes multi-espaces de diapositives** : Détection des énumérations séparées par de multiples espaces insécables (`\u00A0`).
+- **Séparation des phrases compactées** : Détection des mots et phrases collées sans espace (`(TCA).Amyotrophie`, `assurésB-Vrai`, `vaccinéContamination`).
+- **Dégel des puces (`➢`, `⁃`, `•`, `►`, `▶`, `✔`, `✓`, `-`, `*`)** : Conversion en listes HTML `<ul class="medical-bullet-list">`.
+- **Dégel des énumérations d'énoncés (ex: `1-`, `2-`)** : Listes ordonnées avec badges `<ul class="medical-num-list">`.
+- **Mise en valeur des en-têtes médicaux** : Marqueurs clés (`Rappel :`, `Définition :`, `Remarque :`, `Source :`, `CAT :`, `Traitement :`, `Signes cliniques :`, `Biologie :`, `Physiopathologie :`) découpés avec badges thématiques `<div class="medical-section-title">` et icônes Lucide.
+- **Application omni-présente** : Arène (`#arena-question-text`, `#arena-clinical-case-text`, `#arena-explanation-text`), Modale d'erreur (`formatQuestionMistakeRecap`) et fiches du Carnet.
+
+---
+
+### 3.11. Iconographie & Clichés Médicaux Protégés (Floutés par Défaut)
+- **Objectif mnésique** : Éviter que les clichés d'imagerie ou radiographies ne divulguent prématurément le diagnostic.
+- **Composant UI (`renderQuestionMedia`)** :
+  - **État Rétracté & Flouté (`.medical-media-card.is-collapsed`)** : Miniature carrée compacte de **74x74 px** (64x64 px sur smartphone), flou prononcé `filter: blur(8px) brightness(0.72)` et overlay interactif `Toucher pour afficher`.
+  - **État Déplié & Net (`.medical-media-card.is-expanded`)** : Largeur maximale **340 px** et hauteur **250 px** (210 px sur smartphone), image nette (`filter: none`), deux boutons de fermeture dédiés (bouton circulaire flottant `✕` et bouton bas `✕ Fermer la photo`).
+  - **Visionneuse Plein Écran HD (Lightbox)** : Modal plein écran `#media-lightbox-modal` avec flou d'arrière-plan, fermable au clic ou via la touche `Échap`.
+
+---
+
+### 3.12. Masquage du Titre de Chapitre & Détection Canonique des Sessions d'Annales (`#arena-chapter-title`)
+- **Objectif pédagogique** : Éviter que l'étudiant ne déduise le diagnostic d'un cas clinique par simple lecture de la spécialité pédiatrique (*Cardiologie*, *Infectiologie*...).
+- **Fonctionnement du flou interactif** :
+  - Par défaut au chargement (`loadNextArenaQuestion`), le badge passe en état masqué (`is-blurred`).
+  - Le texte du cours est flouté (`filter: blur(6px); opacity: 0.38; user-select: none`) avec pastille `Cours masqué`.
+  - Clic manuel (`window.toggleArenaChapterTitle()`) pour révéler ou reflouter à tout moment.
+  - Défloutage automatique dès que l'étudiant répond (succès ou erreur) ou consulte l'historique (`historyCursor >= 0`).
+- **Pastille de date et session du QCM (`.question-date-pill`) & Normalisation Canonique (`extractQuestionDateOrSession`)** :
+  - Intégrée au sein de `.chapter-title-text`, floutée en parfaite synchronisation avec le nom du cours.
+  - **Prise en charge exhaustive des 3 formats canoniques de sessions médicales** :
+    - **Session Principale (`P [Année]`)** : Reconnaissance et normalisation de `P [Année]`, `P1 [Année]`, `P2 [Année]`, `Principale [Année]`, y compris avec années abrégées sur 2 chiffres (ex: `P 21` $\rightarrow$ `P 2021`, `P 2022`).
+    - **Concours de Résidanat (`Résidanat [Ville] [Année]`)** : Reconnaissance de `Résidanat [Année]`, `Résidanat Alger [Année]`, `Residanat [Année]`.
+    - **Session de Rattrapage (`Rattrapage [Année]`)** : Reconnaissance de `Rattrapage [Année]`, `Ratrapage [Année]`, `R [Année]` (ex: `R 2020` $\rightarrow$ `Rattrapage 2020`).
+    - **Épreuves facultaires & Sources officielles** : Support des mentions `EMD [Année]` et des sources datées de cours (`Diapo 2024`, `Diapositive 2026`, `iKb 2024`).
+  - **Filtrage strict anti-faux-positifs** : Exclusion stricte des abréviations anthropométriques ou biologiques médicales (`P50`, `P3`, `P 8 kg` pour le poids, `FR 68` pour la fréquence respiratoire, `CRP 120`, ou `rattrapage vaccinal` sans année).
+  - **Suppression totale du repli factice** : Élimination définitive de l'ancien placeholder `P? 20??`. Si aucune session ou date n'est mentionnée pour la question, la pastille `.question-date-pill` n'est pas injectée dans le DOM, assurant un rendu sobre et épuré (`Pédiatrie — [Nom du cours]`).
+
+---
+
+### 3.13. Tuteur IA Interactif en Direct dans l'Arène & Mémoire de Conversation par Question (`#arena-ai-chatbox`)
+- **Objectif clinique** : Permettre à l'étudiant de dialoguer en temps réel avec Gemini Flash sur la question active sans quitter l'Arène.
+- **Protection Anti-Spoiler du Nom de Cours (`.chatbox-chapter-blurred`)** :
+  - Tant que la question n'est pas répondue, l'intitulé du cours dans le message d'accueil et le sous-titre du chatbox est automatiquement flouté (`filter: blur(5.5px); opacity: 0.38`). Défloutage instantané dès la réponse.
+- **Composants UI** :
+  - Bouton circulaire flottant néon `#btn-arena-ai-chat` ancré en bas à droite avec dégradé cyan/violet et icône étincelle `sparkles`.
+  - Panneau en verre dépoli avec amorces cliniques en 1 clic : 💡 *Démarche diagnostique*, 🔍 *Justification clé*, ⚠️ *Piège concours*, 💊 *Traitement & CAT*.
+- **Persistance des conversations par question (`questionChatHistories[uid]`)** :
+  - Les échanges avec le tuteur sont indexés par identifiant de question. Lors de la navigation dans l'historique ou du retour sur un QCM, la conversation spécifique à cette question est fidèlement restaurée.
+
+---
+
+### 3.14. Nettoyeur Universel de Formules & Élimination du LaTeX (`cleanLatexMath`)
+- **Problématique résolue** : Élimine les syntaxes cryptiques générées par réflexe par les LLMs (`\text{ g/dl}`, `\mathbf{3}\text{ kg}`, `\times`, `\frac{A}{B}`).
+- **Conversions appliquées** :
+  - Déballage de texte : `\text{...}`, `\mathrm{...}`, `\operatorname{...}` $\rightarrow$ texte brut.
+  - Typographie : `\mathbf{...}` et `\textbf{...}` $\rightarrow$ `**...**` (gras Markdown).
+  - Opérateurs mathématiques : `\times` $\rightarrow$ `×`, `\cdot` $\rightarrow$ `·`, `\div` $\rightarrow$ `÷`, `\pm` $\rightarrow$ `±`, `\leq` $\rightarrow$ `≤`, `\geq` $\rightarrow$ `≥`, `\neq` $\rightarrow$ `≠`, `\approx` $\rightarrow$ `≈`, `\to` $\rightarrow$ `→`.
+  - Unités & symboles : `\mu` / `\mum` $\rightarrow$ `µ` / `µm`, fractions `\frac{A}{B}` $\rightarrow$ `(A / B)`, racines `\sqrt{A}` $\rightarrow$ `√(A)`.
+  - Exposants & indices : `^{2}` $\rightarrow$ `²`, `_{2}` $\rightarrow$ `₂`, `\^\\circ C` $\rightarrow$ `°C`.
+  - Suppression des balises englobantes `$$...$$`, `$..$`, `\[...\]`, `\(...\)`.
+- **Application transverse** : Dès réception API dans `src/services/gemini.js`, consigne négative dans les prompts système, et filet de sécurité dans `formatMedicalContent` et `formatReasoningNote`.
+
+---
+
+### 3.15. Navigation dans l'Historique des 5 Derniers QCM & Explications IA Persistantes (`view-arena`)
+- **Buffer Glissant des 5 Derniers QCM (`answeredHistory`)** :
+  - À chaque réponse validée ou échouée, un instantané complet (`snapshot`) est injecté en tête de tableau, plafonné à **5 questions maximum**.
+  - Capture : `question` clonée de manière immuable, `userAnswerLetters`, `isCorrect`, `score` (CROQ), `explanation` et `timestamp`.
+- **Curseur de Navigation (`historyCursor`)** :
+  - `historyCursor = -1` : Mode Drill Actif (question tirée de la file dynamique).
+  - `historyCursor = 0` : Dernier QCM répondu (`QCM -1`).
+  - `historyCursor = 1..4` : QCM répondus antérieurs jusqu'à 5 questions en arrière.
+  - **Isolation stricte du SRS** : Aucun impact sur la file `queueEngine.queue`, aucun appel à `handleSuccess`/`handleFailure`, aucun impact sur le compteur du jour (`todayTracker`).
+- **Interface & Rendu en Lecture Seule (`renderHistoryQuestion`)** :
+  - Barre supérieure avec flèches de navigation `#btn-history-prev` / `#btn-history-next` et badge `Précédent X/N` en thème ambré (`is-past`).
+  - Bannière dorée `#arena-history-consult-banner` avec bouton « Reprendre le drill ➔ ».
+  - Options verrouillées en lecture seule avec surbrillance explicite (vert pour justes, rouge pour fautes).
+  - **Carte d'Explication Clinique IA Persistante (`#arena-ai-explanation-box`)** : Restitue automatiquement l'explication IA structurée depuis le cache local (`pedia_ai_explanations_cache`), le Carnet ou Firestore.
+  - **Bouton Régénérer en 1 clic (`#btn-arena-ai-regenerate`)** : Permet de relancer l'analyse Gemini Flash à tout moment.
+  - **Génération à la demande** : Bouton `[Générer l'explication clinique IA]` si aucune explication n'avait été générée lors du premier passage.
+  - **Sécurisation Anti-Race Conditions (`targetUid`, `targetQuestion`)** : Empêche toute désynchronisation entre l'explication IA et la question affichée lors des clics rapides.
+  - **Validation sémantique (`isExplanationMatchingQuestion`) & Purge silencieuse au démarrage (`scrubCorruptedAiExplanations`)** : Nettoie toute note corrompue ou orpheline dès le lancement.
+- **Raccourcis Clavier Dédiés** : <kbd>◀</kbd> reculer dans l'historique, <kbd>▶</kbd> avancer, <kbd>Entrée</kbd> reprendre le drill actif.
+
+---
+
+### 3.16. Barre d'Outils Visuelle & Annotations UI (Agentation)
+- **Intégration Standalone (`agentation.bundle.js`)** :
+  - Chargé via `<script src="agentation.bundle.js"></script>`, auto-montage sur `#agentation-root`.
+  - Annotation visuelle en direct avec capture automatique du sélecteur CSS, hiérarchie DOM et styles calculés.
+  - Mode Layout (`L`), pause micro-animations (`P`), export Markdown structuré (`C`) et nettoyage (`X`).
+  - Interconnexion avec le serveur MCP local `agentation-mcp` (`mcp_config.json`).
+
+---
+
+## 4. Spécificités UI, Responsive & Optimisation Mode Portrait (Smartphones & Tablettes)
+
+- **Design System Cyber-Médical** : Palette sombre (`#070b14` fond, `#121d33` cartes, `#00d4ff` cyan, `#10b981` émeraude, `#ef4444` rose, `#f59e0b` ambre, `#8b5cf6` violet).
+- **Typographie** : `Outfit` (titres, métriques, badges numérotés) et `Inter` (corps médical, sémiologie, listes à puces), interligne aéré `1.6`.
+
+### 4.1. Architecture Adaptative Spécifique au Mode Portrait (`@media (max-width: 768px), (orientation: portrait) and (max-width: 850px)`)
+- **Header Global (`.app-header`)** :
+  - Masquage automatique du sous-titre `.brand-subtitle` pour libérer l'espace horizontal sur les écrans étroits (360px - 412px).
+  - Compactage du logo `.brand-logo` à `34px × 34px` et réduction proportionnelle du titre `.brand-title` à `1.15rem`.
+  - Boutons d'actions `.header-actions` resserrés avec gap de `4px` et boutons `.icon-btn` tactiles à `34px × 34px`.
+  - Bouton Google (`.btn-google-header`) : masquage du texte `Compte Google` pour n'afficher que l'icône Google officielle.
+  - Badge profil (`.user-profile-badge`) : masquage du prénom pour afficher uniquement l'avatar rond (`20px`) avec le point vert de synchronisation cloud en temps réel.
+  - Mini-chronomètre flottant (`#active-lesson-header-badge`) : masquage de l'intitulé de cours et conservation de l'icône timer, de l'horloge digitale et de la pulsation.
+- **Arène de Quiz (`.arena-top-bar`) — Layout Double Étage Symétrique** :
+  - **Étage 1 (`.arena-top-bar-left`)** : Pleine largeur (`justify-content: space-between`), positionnant le bouton retour à gauche et le module d'historique (`.arena-history-nav`) à droite.
+  - **Étage 2 (`.arena-pills-wrap`)** : Grille CSS à 3 colonnes égales (`grid-template-columns: repeat(3, 1fr)`), centrant les pastilles `QCU/QCM`, `Progression 0/3` et `Objectif quotidien` avec équilibre visuel parfait.
+  - Barre d'action basse (`.arena-actions-bar`) : Masquage du rappel des touches clavier physiques (`#keyboard-shortcuts-hint`), boutons de validation et d'évaluation à 100% de largeur pour une validation ergonomique au pouce.
+- **Suivi & Statistiques (`view-stats`) — Défilement Horizontal Tactile** :
+  - Barre supérieure `.stats-top-bar` organisée en 2 rangées : ligne 1 (`.stats-top-bar-header`) avec retour Dashboard et titre, ligne 2 (`.stats-range-wrap`) avec conteneur de défilement horizontal fluide `.stats-range-toggle` (`overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none`).
+  - Onglets de sous-pages (`#stats-subnav-toggle`) et filtres de cours (`.course-tracker-pills`) équilibrés en deux boutons de largeur égale (50%/50%).
+  - Grille analytique des 7 KPI (`.stats-kpi-grid`) configurée en 2 colonnes (`repeat(2, 1fr)`) sur petits écrans pour un aperçu synthétique sans défilement vertical excessif.
+- **Carnet de Raisonnement Clinique (`view-notebook`)** :
+  - En-tête `.notebook-top-bar` compacté avec titre aligné à droite et bouton retour concis.
+  - Barre d'outils `.notebook-toolbar` restructurée : recherche et sélecteur de chapitre pleine largeur, groupe de tri adaptatif avec sélecteur flex, et bascule de mode d'affichage « Par cours » / « Liste continue » en 50%/50%.
+- **Modales & Tiroirs en Mode Bottom-Sheet** :
+  - Alignement des modales en bas d'écran (`.modal-overlay { align-items: flex-end; }`) avec coins supérieurs arrondis (`border-radius: 20px 20px 0 0`) et hauteur maîtrisée (`max-height: 90dvh`).
+  - **Modale de sélection des cours (`#modal-chapters`)** :
+    - Stylisation de `.chapter-select-item` avec hauteur minimale tactile de 44px (recommandation WCAG/Material Design), surbrillance active cyan et décompte QCM.
+    - Barre de filtre `.modal-chapters-actions-bar` combinant recherche et bouton « Tout cocher ».
+    - Bouton d'action principal « Valider la sélection » fixé au bas de la modale (`position: sticky; bottom: 0; z-index: 5`) avec ombre protectrice pour une validation immédiate sans scroller les 35 cours.
+- **Tuteur IA (`.arena-ai-chatbox`)** :
+  - Tiroir pleine largeur (`100vw × 78dvh`) ancré au bas de l'écran avec pastilles de suggestions cliniques (`.chatbox-chips`) défilables horizontalement.
 
 ---
 
@@ -423,7 +411,7 @@ Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes
     - `hydrateNote(note, questionsList)` : Dès la lecture ou le rendu dans l'interface, chaque note est enrichie à la volée avec l'objet question complet de `allQuestions` (aucun impact visuel, intégrité totale).
     - `sanitizeReasoningNotesStorage()` : Migration automatique en mémoire locale (`localStorage`) dès le démarrage de l'app, libérant plus de 800 Ko sur l'appareil.
   - **2. Partitionnement par paquets de 50 notes (`Chunked Firestore Storage`)** :
-    - **Document `pedia/progress` épuré** : Stocke uniquement l'état SRS (`queue`, `cursor`, `selectedChapterIds`, `totalMistakesCount`, `todayTracker`, `userEmail`, `notesCount`, `notesChunksCount`) et compacte `stats` (omission des QCM non touchés). Le champ `reasoningNotes` y est vidé (`[]`) pour écraser le vieux payload lourd de Firestore. Poids : **~15 à 20 Ko (50 fois sous la limite)**.
+    - **Document `pedia/progress` épuré** : Stocke uniquement l'état SRS (`queue`, `cursor`, `selectedChapterIds`, `selectedChaptersUpdatedAt`, `totalMistakesCount`, `todayTracker`, `userEmail`, `notesCount`, `notesChunksCount`) et compacte `stats` (omission des QCM non touchés). Le champ `reasoningNotes` y est vidé (`[]`) pour écraser le vieux payload lourd de Firestore. Poids : **~15 à 20 Ko (50 fois sous la limite)**.
     - **Documents de partitionnement `pedia/notes_0`, `notes_1`, `notes_2`...** : Chaque document contient 50 notes allégées maximum, pesant ~50 à 75 Ko (**15 fois sous la limite de 1 Mo**).
     - **Écriture atomique (`db.batch()`)** : Sauvegarde conjointe du document de progression et des paquets de notes en une seule transaction réseau.
     - **Nettoyage automatique** : Suppression automatique des anciens paquets orphelins si le nombre total de notes diminue.
@@ -432,6 +420,7 @@ Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes
   - Compare l'horodatage client et serveur.
   - Fusionne les compteurs de maîtrise au maximum (`Math.max(local, remote)`).
   - Déduplique l'ensemble des notes par identifiant unique stable sans suppression intempestive.
+  - Synchronisation des cours sélectionnés : compare `local.selectedChaptersUpdatedAt` vs `remote.selectedChaptersUpdatedAt`, la sélection la plus récente l'emporte et s'applique dynamiquement.
 - **Déclencheurs de synchronisation** :
   - **Auto-push temporisé** (`triggerAutoPush`, délai 1 500 ms) après chaque réponse validée ou erreur enregistrée.
   - **Pull automatique à la connexion** (`syncOnLogin`).
@@ -445,50 +434,50 @@ Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.3.3` (`versionCode 8`)
+- **Version native** : `versionName 1.4.0` (`versionCode 9`)
 - **Empreinte SHA-1 (Debug Keystore Gradle & GitHub Actions)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
 - **Empreinte SHA-256 (Debug Keystore Gradle & GitHub Actions)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
-- **Keystore utilisé** : `android/app/debug.keystore` (Alias : `AndroidDebugKey`, garantissant une empreinte cryptographique identique entre les compilations locales et la CI/CD GitHub Actions).
+- **Keystore unifié** : `android/app/debug.keystore` (Alias : `AndroidDebugKey`, mot de passe `android`, garantissant une empreinte cryptographique identique entre les compilations locales et la CI/CD GitHub Actions).
 - **Dossier web racine (`webDir`)** : `dist`
 - **Fichier de configuration Firebase Android** : `android/app/google-services.json` (Projet `qcm-pediatr`, Package `com.pediadrill.app`).
 - **Plugin Gradle Google Services** : `com.google.gms.google-services` (version `4.4.4`) activé automatiquement à la présence de `android/app/google-services.json`.
 - **Configuration des plugins Capacitor (`capacitor.config.json`)** :
   - `plugins.FirebaseAuthentication` : `skipNativeAuth: false`, `providers: ["google.com"]` (requis pour instancier le handler natif Android `GoogleAuthProviderHandler`).
 - **Ressources natives Android (`strings.xml`)** : `default_web_client_id` explicitement déclaré avec l'ID client Web OAuth Google (`1028938391462-hfo44kaj789r1ruovt4b4v59he6jvarq.apps.googleusercontent.com`).
-- **Dépendances natives** : `@capacitor/core`, `@capacitor/cli`, `@capacitor/android`, `@capacitor-firebase/authentication` (version 8.x).
+- **Dépendances natives** : `@capacitor/core` (8.5.3), `@capacitor/cli` (8.5.3), `@capacitor/android` (8.5.3), `@capacitor-firebase/authentication` (8.5.2).
 
 ### 6.2. Environnement Android Studio & Toolchain
 - **Emplacement Android Studio** : `C:\Program Files\Android\Android Studio` (`bin\studio64.exe`).
-- **JDK / JVM utilisée** : OpenJDK JBR 25 embarqué dans Android Studio (`C:\Program Files\Android\Android Studio\jbr`).
+- **JDK / JVM utilisée** : OpenJDK JBR 25 embarqué dans Android Studio (`C:\Program Files\Android\Android Studio\jbr`) ou JDK 21 Temurin en CI/CD.
 - **Android SDK** : `C:\Users\Lenovo\AppData\Local\Android\Sdk` (plateformes `android-34`, `android-36`, `android-37.0` avec build-tools `34.0.0`, `35.0.0`, `36.0.0`).
-- **Moteur Gradle** : Gradle 9.2 (`gradle-9.2.0-bin`), entièrement compatible avec Java 25 et Android Gradle Plugin (AGP 8.13.0).
+- **Moteur Gradle** : Gradle 9.2 (`gradle-9.2.0-bin`), entièrement compatible avec Java 21/25 et Android Gradle Plugin (AGP 8.13.0).
 
 ### 6.3. Génération & Emplacements de l'APK
-- **Script automatisé** : `build-apk.bat` (exécutable via `npm run build:apk`). Pipeline complet automatisé : 1) build bundle web (`build-bundle.cjs`), 2) sync native Capacitor (`cap sync android`), 3) compilation native Gradle (`:app:assembleDebug`) et copie sous `PediaDrill.apk`.
+- **Script automatisé** : `build-apk.bat` (exécutable via `npm run build:apk`). Pipeline complet automatisé : 1) build bundle web (`build-bundle.cjs`), 2) sync native Capacitor (`npx cap sync android`), 3) compilation native Gradle (`:app:assembleDebug`) et copie sous `PediaDrill.apk`.
 - **Cible Gradle optimisée** : `:app:assembleDebug` (permet de compiler directement l'application et de générer l'APK sans surcharge d'extraction d'annotations ou de construction d'AAR de bibliothèques).
-- **Fichier APK racine (accès direct utilisateur)** : `PediaDrill.apk` (taille : ~7.70 Mo).
+- **Fichier APK racine (accès direct utilisateur)** : `PediaDrill.apk` (taille : ~7.8 Mo).
 - **Fichier APK de build Android** : `android/app/build/outputs/apk/debug/app-debug.apk`.
 - **Ouverture dans l'IDE Android Studio** : `npm run open:android` ou lancement de `studio64.exe android`.
 
 ---
 
-## 7. Pipeline de Compilation & Déploiement
+## 7. Pipeline de Compilation, Déploiement & Intégrité
 
 - **Compilation Web PWA** : `node build.cjs` (prépare `dist/index.html` autonome avec datasets, styles et scripts).
 - **Déploiement Web Cloud (Vercel & GitHub)** :
   - **Fichier servi par Vercel** : Conformément à `vercel.json` (`"routes": [{ "src": "/(.*)", "dest": "/index.html" }]`), Vercel sert directement le fichier racine `index.html`.
   - **Assemblage obligatoire** : Toute modification apportée aux sources dans `src/` doit être compilée via `node build-bundle.cjs` qui synchronise à la fois `src/app.bundle.js`, `index.html` (racine pour Vercel) et `dist/index.html` (pour le build mobile et PWA).
   - **Protocole de validation syntaxique pré-déploiement** :
-    1. Validation des sources : `node -c src/services/gemini.js`, `node -c src/services/queueEngine.js`, `node -c src/services/studyTracker.js`, `node -c src/services/firebaseSyncService.js`, `node -c src/app.js`.
+    1. Validation des sources : `node -c src/services/gemini.js`, `node -c src/services/queueEngine.js`, `node -c src/services/studyTracker.js`, `node -c src/services/lessonTracker.js`, `node -c src/services/firebaseSyncService.js`, `node -c src/services/updateService.js`, `node -c src/app.js`.
     2. Validation du bundle généré : `node -c src/app.bundle.js`.
     3. Validation des balises `<script>` intégrées dans `index.html` via script Node VM.
-    4. Cela garantit un chargement sans erreur (`SyntaxError`) évitant le blocage de l'initialisation du DOM et des métriques (`--`).
+    4. Cela garantit un chargement sans erreur (`SyntaxError`) évitant le blocage de l'initialisation du DOM et des métriques.
 - **Compilation Mobile Android (APK)** :
-  1. `npm run build` : génère les fichiers finaux dans `dist/`.
+  1. `node build-bundle.cjs` : assemble le code client et synchronise le CSS dans `template.html`, `src/app.bundle.js` et `dist/index.html`.
   2. `npx cap sync android` : synchronise les assets web et plugins dans `android/app/src/main/assets/public/`.
-  3. `cmd /c build-apk.bat` : exécute `:app:assembleDebug` avec le JDK Android Studio et copie automatiquement l'APK généré sous `PediaDrill.apk` à la racine du projet.
+  3. `build-apk.bat` : exécute `:app:assembleDebug` avec le JDK Android Studio et copie automatiquement l'APK généré sous `PediaDrill.apk` à la racine du projet.
 - **Scripts `package.json` disponibles** :
   - `npm run build` : génération de `dist/`.
-  - `npm run start` : prévisualisation locale du dossier `dist/`.
+  - `npm run start` : prévisualisation locale du dossier `dist/` via `npx serve`.
   - `npm run build:apk` : build web + sync Capacitor + génération du fichier `.apk`.
   - `npm run open:android` : ouverture du projet natif dans l'interface graphique Android Studio.

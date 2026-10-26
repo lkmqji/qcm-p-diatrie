@@ -1925,6 +1925,134 @@ body {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   MODALE SÉLECTION DES COURS & LISTE DES CHAPITRES
+   ───────────────────────────────────────────────────────────── */
+.modal-chapters-actions-bar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.modal-chapters-actions-bar .search-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.modal-chapters-actions-bar .btn-secondary {
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+}
+
+.chapters-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+  max-height: 52vh;
+  padding-right: 4px;
+  margin: 4px 0;
+}
+
+.chapter-select-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  min-height: 44px;
+}
+
+.chapter-select-item:hover {
+  background: rgba(0, 212, 255, 0.05);
+  border-color: rgba(0, 212, 255, 0.35);
+}
+
+.chapter-select-item.checked {
+  background: rgba(0, 212, 255, 0.1);
+  border-color: var(--cyan);
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.15);
+}
+
+.chapter-checkbox-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.chapter-checkbox-wrap span {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-main);
+  line-height: 1.35;
+}
+
+.chapter-item-count {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.chapter-select-item.checked .chapter-item-count {
+  color: var(--cyan);
+  background: rgba(0, 212, 255, 0.18);
+}
+
+/* Notebook Top Bar Base */
+.notebook-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.notebook-view-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--cyan);
+}
+
+/* Stats Top Bar Base */
+.stats-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.stats-top-bar-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.stats-view-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--cyan);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ─────────────────────────────────────────────────────────────
    CARNET DE RAISONNEMENT IA (Dedicated Page - Grouped by Chapter & Question)
    ───────────────────────────────────────────────────────────── */
 .notebook-view {
@@ -2432,6 +2560,35 @@ body {
   letter-spacing: 0.02em;
 }
 
+.btn-refresh-arena-ai {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(0, 212, 255, 0.08);
+  border: 1px solid rgba(0, 212, 255, 0.28);
+  color: var(--cyan);
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+}
+
+.btn-refresh-arena-ai:hover {
+  background: rgba(0, 212, 255, 0.2);
+  border-color: var(--cyan);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 212, 255, 0.25);
+}
+
+.btn-refresh-arena-ai:active {
+  transform: scale(0.96);
+}
+
 .arena-ai-explanation-body {
   font-size: 0.92rem;
   line-height: 1.6;
@@ -2815,7 +2972,7 @@ body {
 /* ─────────────────────────────────────────────────────────────
    MOBILE FIRST & PORTRAIT COMPACT ADAPTATIONS (-15% SIZE)
    ───────────────────────────────────────────────────────────── */
-@media (max-width: 768px) {
+@media (max-width: 768px), (orientation: portrait) and (max-width: 850px) {
   :root {
     --radius-sm: 6px;
     --radius-md: 10px;
@@ -2830,15 +2987,101 @@ body {
     padding: 10px 8px 18px 8px;
   }
 
+  /* Global Header on Portrait */
   .app-header {
-    padding-bottom: 12px;
-    margin-bottom: 14px;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+    gap: 8px;
+    align-items: center;
   }
 
-  .logo-title {
+  .brand-wrap {
+    gap: 8px;
+    min-width: 0;
+    flex-shrink: 1;
+  }
+
+  .brand-logo {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: var(--radius-sm);
+  }
+
+  .brand-logo svg,
+  .brand-logo i {
+    width: 18px;
+    height: 18px;
+  }
+
+  .brand-title {
     font-size: 1.15rem;
+    line-height: 1.1;
   }
 
+  .brand-subtitle {
+    display: none !important; /* Hide long subtitle in portrait mode to give header actions breathing room */
+  }
+
+  .header-actions {
+    gap: 4px;
+    flex-shrink: 0;
+    align-items: center;
+  }
+
+  .icon-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius-sm);
+    padding: 0;
+  }
+
+  .icon-btn svg,
+  .icon-btn i {
+    width: 16px;
+    height: 16px;
+  }
+
+  .btn-google-header {
+    padding: 6px 8px;
+    font-size: 0.72rem;
+    gap: 4px;
+  }
+
+  .btn-google-header span {
+    display: none; /* Icon-only Google button in portrait */
+  }
+
+  .user-profile-badge {
+    padding: 4px 6px;
+    gap: 4px;
+  }
+
+  .user-profile-badge #header-user-name {
+    display: none; /* Avatar + online indicator in portrait */
+  }
+
+  .user-avatar {
+    width: 20px;
+    height: 20px;
+  }
+
+  .active-lesson-header-badge {
+    max-width: 110px;
+    padding: 4px 6px;
+    font-size: 0.72rem;
+    gap: 4px;
+  }
+
+  .header-lesson-name {
+    display: none;
+  }
+
+  .header-lesson-time {
+    font-size: 0.75rem;
+  }
+
+  /* Dashboard Metrics & Actions */
   .hero-metrics-grid {
     gap: 10px;
   }
@@ -2867,14 +3110,37 @@ body {
     font-size: 1.15rem;
   }
 
+  .dashboard-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
   .btn-primary-large {
+    width: 100%;
     padding: 13px 18px;
     font-size: 0.98rem;
   }
 
   .btn-secondary {
+    width: 100%;
     padding: 12px 14px;
     font-size: 0.88rem;
+  }
+
+  .quick-links-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+
+  .quick-link-btn {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 8px 6px;
+    font-size: 0.8rem;
   }
 
   /* Arena Mobile Portrait */
@@ -2883,7 +3149,79 @@ body {
   }
 
   .arena-top-bar {
+    flex-direction: column;
+    align-items: stretch;
     gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .arena-top-bar-left {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .btn-back {
+    padding: 6px 10px;
+    font-size: 0.78rem;
+    gap: 4px;
+  }
+
+  .arena-history-nav {
+    padding: 2px 4px;
+    gap: 2px;
+  }
+
+  .btn-history-arrow {
+    width: 26px;
+    height: 26px;
+  }
+
+  .btn-history-arrow svg,
+  .btn-history-arrow i {
+    width: 14px;
+    height: 14px;
+  }
+
+  .history-badge {
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    gap: 4px;
+  }
+
+  .arena-pills-wrap {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    width: 100%;
+  }
+
+  .arena-pills-wrap .tag-pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    padding: 5px 4px;
+    font-size: 0.72rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .history-consult-banner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+
+  .history-consult-banner .btn-resume-drill {
+    width: 100%;
+    justify-content: center;
+    padding: 8px 12px;
   }
 
   .question-container {
@@ -2927,11 +3265,34 @@ body {
   .arena-actions-bar {
     margin-top: 10px;
     padding-top: 10px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
   }
 
-  .btn-validate {
+  #keyboard-shortcuts-hint {
+    display: none !important;
+  }
+
+  .btn-validate,
+  .btn-croq-eval,
+  #btn-history-resume-action {
+    width: 100%;
+    justify-content: center;
     padding: 12px 18px;
     font-size: 0.94rem;
+  }
+
+  .success-banner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .success-banner .btn-validate {
+    width: 100%;
+    justify-content: center;
   }
 
   .arena-explanation-card {
@@ -2942,15 +3303,317 @@ body {
     font-size: 0.86rem;
   }
 
-  /* Modals on Mobile */
+  /* Stats View Portrait Top Bar & Menus */
+  .stats-top-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .stats-top-bar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .stats-view-title {
+    font-size: 1.02rem;
+    text-align: right;
+  }
+
+  .stats-range-wrap {
+    width: 100%;
+    align-items: stretch;
+    margin-top: 2px;
+  }
+
+  .stats-range-toggle {
+    width: 100%;
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 3px 4px;
+    gap: 4px;
+    border-radius: var(--radius-full);
+  }
+
+  .stats-range-toggle::-webkit-scrollbar {
+    display: none;
+  }
+
+  .range-btn {
+    padding: 6px 10px;
+    font-size: 0.74rem;
+    flex-shrink: 0;
+  }
+
+  .stats-day-stepper-wrap {
+    flex-shrink: 0;
+  }
+
+  .custom-range-picker {
+    width: 100%;
+    position: static;
+    margin-top: 6px;
+    box-sizing: border-box;
+  }
+
+  .custom-range-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    align-items: flex-end;
+  }
+
+  .btn-apply-range {
+    grid-column: 1 / -1;
+    width: 100%;
+    justify-content: center;
+    padding: 8px;
+  }
+
+  .stats-subnav-container {
+    width: 100%;
+    padding: 0;
+    margin-top: 0;
+  }
+
+  .stats-subnav-pills {
+    max-width: 100%;
+    width: 100%;
+    padding: 3px;
+    gap: 4px;
+  }
+
+  .stats-subnav-btn {
+    padding: 8px 6px;
+    font-size: 0.78rem;
+    gap: 5px;
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+  }
+
+  .stats-subnav-btn svg,
+  .stats-subnav-btn i {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  .subnav-timer-pill {
+    font-size: 0.68rem;
+    padding: 2px 4px;
+  }
+
+  .stats-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .stat-kpi-card {
+    padding: 12px 10px;
+    gap: 8px;
+  }
+
+  .kpi-value {
+    font-size: 1.35rem;
+  }
+
+  .panel-box-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .course-tracker-pills {
+    width: 100%;
+    display: flex;
+  }
+
+  .course-pill-btn {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+    padding: 6px 8px;
+    font-size: 0.74rem;
+  }
+
+  .course-tracker-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .course-summary-badge {
+    align-self: flex-start;
+  }
+
+  /* Notebook View Portrait Top Bar & Toolbar */
+  .notebook-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .notebook-view-title {
+    font-size: 0.95rem;
+    text-align: right;
+  }
+
+  .notebook-toolbar {
+    padding: 10px 12px;
+    gap: 10px;
+    border-radius: var(--radius-md);
+  }
+
+  .notebook-toolbar-row-top {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .notebook-toolbar-row-top .search-input-wrap,
+  .notebook-toolbar-row-top .notebook-select {
+    width: 100%;
+  }
+
+  .notebook-toolbar-row-bottom {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding-top: 8px;
+  }
+
+  .notebook-sort-control {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sort-control-label {
+    font-size: 0.72rem;
+    flex-shrink: 0;
+  }
+
+  .notebook-sort-select {
+    flex: 1;
+    min-width: 0;
+    padding: 7px 10px;
+    font-size: 0.78rem;
+  }
+
+  .btn-sort-order {
+    width: 100%;
+    justify-content: center;
+    padding: 8px 12px;
+    font-size: 0.78rem;
+  }
+
+  .notebook-view-mode-toggle {
+    width: 100%;
+    display: flex;
+  }
+
+  .view-mode-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 7px 10px;
+    font-size: 0.76rem;
+  }
+
+  .note-card {
+    padding: 12px 10px;
+    gap: 10px;
+  }
+
+  .notebook-chapter-header {
+    padding: 12px 14px;
+  }
+
+  .notebook-chapter-title {
+    font-size: 0.88rem;
+  }
+
+  .attempt-tab-btn {
+    padding: 6px 10px;
+    font-size: 0.76rem;
+  }
+
+  /* Modals on Portrait */
+  .modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
   .modal-content {
-    padding: 14px 12px;
-    max-height: 94dvh;
-    border-radius: 14px;
+    padding: 16px 14px 20px 14px;
+    max-height: 90dvh;
+    border-radius: 20px 20px 0 0;
+    gap: 12px;
+  }
+
+  .modal-header {
+    padding-bottom: 10px;
   }
 
   .modal-title {
     font-size: 1.1rem;
+  }
+
+  #modal-chapters .modal-content {
+    max-height: 92dvh;
+  }
+
+  .modal-chapters-actions-bar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .modal-chapters-actions-bar .search-input {
+    font-size: 0.84rem;
+    padding: 9px 12px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .modal-chapters-actions-bar .btn-secondary {
+    padding: 9px 12px;
+    font-size: 0.78rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .chapters-list {
+    max-height: 50dvh;
+  }
+
+  .chapter-select-item {
+    padding: 9px 12px;
+    min-height: 44px;
+  }
+
+  .chapter-checkbox-wrap span {
+    font-size: 0.84rem;
+  }
+
+  #btn-apply-chapters,
+  #btn-continue-after-error {
+    position: sticky;
+    bottom: 0;
+    margin-top: auto;
+    width: 100%;
+    padding: 14px;
+    font-size: 0.95rem;
+    box-shadow: 0 -10px 24px rgba(4, 7, 15, 0.9);
+    z-index: 5;
   }
 
   .penalty-alert-box {
@@ -3009,23 +3672,61 @@ body {
     font-size: 0.84rem;
   }
 
-  /* Notebook on Mobile */
-  .note-card {
-    padding: 12px 10px;
-    gap: 10px;
+  /* Tuteur IA Chatbox on Portrait */
+  .arena-ai-floating-btn {
+    bottom: 18px;
+    right: 18px;
+    padding: 8px 14px;
   }
 
-  .notebook-chapter-header {
-    padding: 12px 14px;
+  .ai-btn-label {
+    font-size: 0.78rem;
   }
 
-  .notebook-chapter-title {
-    font-size: 0.88rem;
+  .arena-ai-chatbox {
+    inset: auto 0 0 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 78dvh !important;
+    max-height: 85dvh !important;
+    border-radius: 20px 20px 0 0 !important;
+    border-bottom: none !important;
   }
 
-  .attempt-tab-btn {
+  .chatbox-header {
+    padding: 10px 14px;
+  }
+
+  .chatbox-title {
+    font-size: 0.85rem;
+  }
+
+  .chatbox-subtitle {
+    max-width: 180px;
+    font-size: 0.68rem;
+  }
+
+  .chatbox-chips {
     padding: 6px 10px;
-    font-size: 0.76rem;
+    gap: 6px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .chat-chip {
+    padding: 5px 10px;
+    font-size: 0.72rem;
+    flex-shrink: 0;
+  }
+
+  .chatbox-input-form {
+    padding: 8px 12px;
+  }
+
+  .chatbox-input {
+    padding: 8px 14px;
+    font-size: 0.82rem;
   }
 }
 
@@ -4929,7 +5630,8 @@ body {
 
 @media (max-width: 520px) {
   .stats-kpi-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
   }
   .timeline-day-top {
     flex-direction: column;
@@ -5507,12 +6209,12 @@ body {
     font-size: 2.5rem;
   }
   .active-lesson-header-badge {
-    max-width: 150px;
-    padding: 4px 8px;
+    max-width: 110px;
+    padding: 4px 6px;
     font-size: 0.72rem;
   }
   .header-lesson-name {
-    max-width: 55px;
+    display: none;
   }
   .btn-timer-action {
     flex: 1 1 45%;
@@ -5893,7 +6595,7 @@ body {
         <div class="question-container">
           
           <div class="chapter-title-badge is-blurred" id="arena-chapter-title" onclick="window.toggleArenaChapterTitle()" title="Chapitre masqué (Cliquer pour afficher)">
-            <span class="chapter-title-text">Pédiatrie — Chapitre <span class="question-date-pill" title="Date ou session du QCM"><i data-lucide="calendar"></i> P? 20??</span></span>
+            <span class="chapter-title-text">Pédiatrie — Chapitre</span>
             <span class="chapter-title-hint"><i data-lucide="eye" style="width:11px;height:11px;"></i> Cours masqué</span>
           </div>
 
@@ -5956,7 +6658,13 @@ body {
                 <i data-lucide="sparkles" style="color:var(--cyan);width:15px;height:15px;"></i>
                 <span>Explication Clinique IA</span>
               </div>
-              <span class="arena-ai-badge" id="arena-ai-model-tag">Gemini 3.8 Flash</span>
+              <div class="arena-ai-header-right" style="display:flex;align-items:center;gap:8px;">
+                <button type="button" class="btn-refresh-arena-ai" id="btn-arena-ai-regenerate" onclick="window.regenerateArenaAiExplanation()" title="Régénérer une nouvelle explication IA pour ce QCM" style="display:none;">
+                  <i data-lucide="rotate-cw" style="width:12px;height:12px;"></i>
+                  <span>Régénérer</span>
+                </button>
+                <span class="arena-ai-badge" id="arena-ai-model-tag">Gemini 3.8 Flash</span>
+              </div>
             </div>
             <div class="arena-ai-explanation-body" id="arena-ai-explanation-text"></div>
           </div>
@@ -5992,13 +6700,13 @@ body {
            ───────────────────────────────────────────────────────────── -->
       <section id="view-notebook" class="notebook-view" style="display:none;">
         
-        <div class="arena-top-bar">
+        <div class="arena-top-bar notebook-top-bar">
           <button class="btn-back" id="btn-leave-notebook">
             <i data-lucide="arrow-left"></i>
-            <span>Retour au Dashboard</span>
+            <span>Retour Dashboard</span>
           </button>
-          <div style="font-family:var(--font-heading);font-weight:700;font-size:1.1rem;color:var(--cyan);">
-            Carnet de Raisonnement Clinique IA
+          <div class="notebook-view-title">
+            Carnet de Raisonnement IA
           </div>
         </div>
 
@@ -6061,14 +6769,16 @@ body {
       <section id="view-stats" class="stats-view" style="display:none;">
         
         <!-- Top Bar -->
-        <div class="arena-top-bar">
-          <button class="btn-back" id="btn-leave-stats">
-            <i data-lucide="arrow-left"></i>
-            <span>Dashboard</span>
-          </button>
-          <div style="font-family:var(--font-heading);font-weight:700;font-size:1.15rem;color:var(--cyan);display:flex;align-items:center;gap:8px;">
-            <i data-lucide="bar-chart-2" style="width:22px;height:22px;color:var(--emerald);"></i>
-            <span>Suivi &amp; Statistiques d'Étude</span>
+        <div class="arena-top-bar stats-top-bar">
+          <div class="stats-top-bar-header">
+            <button class="btn-back" id="btn-leave-stats">
+              <i data-lucide="arrow-left"></i>
+              <span>Dashboard</span>
+            </button>
+            <div class="stats-view-title">
+              <i data-lucide="bar-chart-2" style="width:20px;height:20px;color:var(--emerald);"></i>
+              <span>Suivi &amp; Statistiques</span>
+            </div>
           </div>
           <div class="stats-range-wrap" id="stats-qcm-range-wrap">
             <div class="stats-range-toggle" id="stats-range-toggle">
@@ -6495,9 +7205,9 @@ body {
         <button class="close-btn" id="btn-close-chapters-modal">&times;</button>
       </div>
 
-      <div style="display:flex;gap:10px;">
+      <div class="modal-chapters-actions-bar">
         <input type="text" class="search-input" id="chapters-search-input" placeholder="Filtrer les cours...">
-        <button class="btn-secondary" id="btn-toggle-all-chapters" style="padding:8px 12px;font-size:0.8rem;">
+        <button class="btn-secondary" id="btn-toggle-all-chapters">
           Tout cocher
         </button>
       </div>

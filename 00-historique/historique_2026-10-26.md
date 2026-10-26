@@ -113,5 +113,112 @@
   - `src/services/updateService.js` : `CURRENT_APP_VERSION = '1.3.3'`
   - `android/app/build.gradle` : `versionCode 8`, `versionName "1.3.3"`
   - Recompilation du bundle web autonome (`build-bundle.cjs`) et synchronisation APK natif Android (`build-apk.bat`).
-  - Déploiement sur GitHub (`main` et tag `v1.3.3`) pour mise à disposition de la release.
+### 16:30 - Diagnostic complet et correction du décalage des explications IA (Race Conditions & Validation Sémantique)
+
+- **Diagnostic approfondi de la cause racine du décalage** :
+  - **1. Race Condition asynchrone sur `currentQuestion` (`handleAnswerFailure`)** :
+    - Lorsqu'un étudiant rate une question Q1 (`icteres_du_nouveau-ne_19`), la modale d'erreur s'ouvre et lance la génération asynchrone de l'explication IA (`geminiService.generateReasoningNote`).
+    - Si l'étudiant clique immédiatement sur « Continuer (Entrée/Espace) » sans attendre la fin du chargement, `closeErrorModalAndContinue()` réassigne la variable globale `currentQuestion` au QCM suivant Q2 (`tuberculose_47`).
+    - Lorsque la promesse de Gemini résolvait enfin 2 à 4 secondes plus tard, le code sauvegardait la note de Q1 avec `currentQuestion.uid` (qui était devenu Q2) dans `aiExplanationsCache['tuberculose_47']` et dans le Carnet de Raisonnement (`queueEngine.saveReasoningNote`).
+    - Résultat : la question Q2 héritait de façon permanente de l'explication clinique détaillée, des propositions A-E et du thème médical de Q1.
+  - **2. Désynchronisation de navigation en Arène (`requestArenaAiExplanation` & Chatbox)** :
+    - Si l'étudiant demandait la génération ou envoyait un message au Tuteur IA puis naviguait dans l'historique (`< Précédent 1/5 >`) pendant le temps de calcul, la réponse IA était injectée aveuglément dans le conteneur DOM de la question désormais affichée à l'écran.
+  - **3. Absence de validation sémantique et de bouton de rafraîchissement** :
+    - `getSavedAiExplanation` renvoyait sans aucun contrôle de cohérence toute note enregistrée sous un UID, même si le texte traitait d'un cours complètement étranger (ex: *Ictères du nouveau-né* sur un QCM de *Tuberculose*).
+    - L'interface ne proposait aucun bouton pour forcer la régénération d'une explication erronée.
+
+- **Mesures correctives appliquées** :
+  - **1. Verrouillage strict et immuable du contexte asynchrone (`handleAnswerFailure`, `requestArenaAiExplanation`, `executeSendMessage`)** :
+    - Capture locale immédiate en constante : `const targetQuestion = currentQuestion; const targetUid = targetQuestion.uid;`.
+    - Association de la modale d'erreur à l'UID cible : `modals.error.dataset.questionUid = targetUid;`.
+    - Sauvegarde et persistance garanties sous `targetUid` et `targetQuestion`, quelle que soit la navigation de l'étudiant.
+    - Mise à jour du DOM conditionnée à la présence active de la question : `if (currentEffQ && currentEffQ.uid === targetUid)`.
+  - **2. Algorithme de validation sémantique automatique (`isExplanationMatchingQuestion(noteText, question)`)** :
+    - **Contrôle croisé du thème médical** : Si la note contient `Thème clé : *XYZ*`, vérification de la concordance lexicale avec `question.chapterTitle`. En cas de discordance flagrante sans aucun mot commun significatif, la note est rejetée.
+    - **Contrôle croisé des propositions et de l'énoncé** : Analyse de la présence des mots-clés spécifiques des propositions A-E ou de l'énoncé dans le corps de l'explication.
+  - **3. Détection et purge automatique au démarrage (`scrubCorruptedAiExplanations()`)** :
+    - Exécuté systématiquement lors de `initApp()` : scanne et nettoie silencieusement toutes les entrées corrompues ou désynchronisées dans `localStorage` (`pedia_ai_explanations_cache`) et dans le carnet (`pedia_drill_reasoning_notes_v1`).
+    - Purge instantanée à la volée dans `getSavedAiExplanation` si une note discordante est détectée, rétablissant l'état propre invitant à générer.
+  - **4. Ajout de la méthode `deleteReasoningNotesByQuestionUid` dans `QueueEngine`** : Permet la suppression ciblée et propre de toutes les fiches d'un UID donné.
+  - **5. Nouveau bouton « Régénérer » (`#btn-arena-ai-regenerate`) dans la carte d'explication IA** :
+    - Intégré directement dans le header `.arena-ai-explanation-header` à côté du badge du modèle.
+    - Permet à l'étudiant en un seul clic (`window.regenerateArenaAiExplanation()`) de purger la note actuelle et de relancer Gemini Flash pour obtenir une nouvelle explication certifiée conforme.
+    - Style dédié `.btn-refresh-arena-ai` avec micro-interaction hover/active fluide.
+
+### 16:50 - Optimisation ergonomique complète de tous les menus pour les écrans en mode portrait (Smartphones & Tablettes)
+
+- **Diagnostic des anomalies d'affichage en mode portrait** :
+  - **1. Header global (`.app-header`) saturé** : Le sous-titre de marque « Répétition Espacée & Raisonnement IA » (~210px) et les actions d'en-tête (badge Google, mini-chronomètre de cours, 3 boutons d'icônes) dépassaient 480px, provoquant des chevauchements, des retours à la ligne disgracieux et un débordement horizontal sur les écrans mobiles de 360px à 412px.
+  - **2. Barre supérieure d'Arène (`.arena-top-bar`) étriquée** : Le groupe gauche (bouton Dashboard + navigation historique 5 QCM) et le groupe droit (3 pastilles QCU, progression, objectif quotidien) étaient alignés sur une seule ligne flex (`justify-content: space-between`). En mode portrait, ils entraient en collision et cassaient la mise en page.
+  - **3. Barre de statistiques (`#view-stats .arena-top-bar`) hypertrophiée** : Le bouton retour, le grand titre « Suivi & Statistiques d'Étude » et le sélecteur de plages de dates (stepper Jour + 7j + 30j + Tout + Personnalisé) totalisaient plus de 730px sur une seule ligne flex, débordant largement hors écran.
+  - **4. Modale de sélection des cours (`#modal-chapters`) brute et non stylisée** : Absence de règles CSS sur `.chapters-list`, `.chapter-select-item` et la barre d'action, rendant les cibles tactiles trop petites (< 30px) et obligeant l'utilisateur à scroller l'intégralité des 35 cours pour atteindre le bouton de validation au bas de la modale.
+  - **5. Raccourcis clavier physiques inadaptés en Arène** : La mention `[1-5] options, [Entrée] valider` encombrait inutilement la barre d'action mobile en mode portrait tactile.
+
+- **Mesures d'optimisation appliquées** :
+  - **1. Refonte adaptative du Header Global (`.app-header`) en mode portrait** :
+    - Masquage automatique du sous-titre long (`.brand-subtitle { display: none !important; }`) pour offrir un dégagement maximal aux actions.
+    - Compactage du logo (`34px × 34px`) et réduction fluide du titre (`1.15rem`).
+    - Bouton Google compact en portrait (`.btn-google-header span { display: none; }`) : conserve uniquement l'icône Google colorée pour un look épuré style barre de recherche mobile.
+    - Profil utilisateur (`.user-profile-badge`) : masque le prénom en mode portrait pour n'afficher que l'avatar rond avec le point vert de pulsation cloud en direct.
+    - Mini-chronomètre flottant (`#active-lesson-header-badge`) : masque le nom du cours en portrait et conserve l'icône timer, le décompte digital et le point de pulsation.
+    - Boutons d'icônes optimisés (`.icon-btn` à `34px × 34px` avec espacement resserré à `4px`).
+  - **2. Transformation de l'Arène (`.arena-top-bar`) en layout double étage ergonomique** :
+    - **Étage 1** : Bouton retour « Dashboard » à gauche et mini-navigation historique des 5 derniers QCM (`.arena-history-nav`) parfaitement calée à droite.
+    - **Étage 2** : Grille symétrique à 3 colonnes (`grid-template-columns: repeat(3, 1fr)`) pour les 3 pastilles de statut (`QCU/QCM`, `Score 0/3`, `🎯 Objectif quotidien`), chacune centrée avec texte équilibré.
+    - Masquage du rappel clavier `#keyboard-shortcuts-hint` et boutons d'action d'arène pleine largeur (`.btn-validate`, `.btn-croq-eval`, `.btn-resume-drill` à `width: 100%`).
+  - **3. Réorganisation étagée et défilement horizontal fluide des Statistiques (`#view-stats`)** :
+    - Création du sous-groupe `.stats-top-bar-header` combinant le bouton retour et le titre « Suivi & Statistiques » sur la première ligne.
+    - Déportation de la barre de filtres temporels (`.stats-range-wrap`) sur une seconde ligne pleine largeur avec défilement horizontal tactile fluide (`overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none;`).
+    - Onglets de sous-pages (`#stats-subnav-toggle`) et modes de cours (`.course-tracker-pills`) équilibrés en 50%/50% pour un confort tactile optimal du pouce.
+    - Grille des 7 cartes KPI ajustée en 2 colonnes équilibrées (`repeat(2, 1fr)`) sur petits écrans pour éviter les blocs verticaux infinis.
+  - **4. Optimisation ergonomique de la sélection des cours (`#modal-chapters`) & Modales en mode Bottom-Sheet** :
+    - Transformation des modales en mode portrait en « Bottom-Sheet » moderne ancrée au bas de l'écran avec bords arrondis supérieurs (`border-radius: 20px 20px 0 0`) et hauteur maîtrisée (`max-height: 90dvh`).
+    - Stylisation cyber-médicale de `.chapter-select-item` avec hauteur minimale tactile ergonomique (44px), effet hover/active cyan, surbrillance luminescente et pastille de décompte QCM.
+    - Barre de recherche et bouton « Tout cocher » intégrés dans `.modal-chapters-actions-bar` avec champ flex et bouton non sécable.
+    - Bouton « Valider la sélection » fixé au bas de la modale (`position: sticky; bottom: 0; z-index: 5;`) avec ombre portée protectrice, accessible instantanément sans devoir faire défiler la liste des 35 cours.
+  - **5. Carnet de Raisonnement IA (`#view-notebook`) & Tuteur IA** :
+    - Toolbar réorganisée en portrait : recherche et sélecteur de cours pleine largeur, contrôle de tri avec sélecteur flex, et bascule de mode d'affichage « Par cours » / « Liste continue » à 50%/50%.
+    - Chatbox Tuteur IA configurée en tiroir mobile plein écran (`100vw × 78dvh`) avec pastilles de suggestions défilables horizontalement.
+
+### 17:10 - Correction de la pastille de date/session du QCM (suppression du repli factice « P? 20?? » et prise en charge exhaustive P / Résidanat / Rattrapage)
+
+- **Correction de l'extraction et normalisation de session (`extractQuestionDateOrSession`)** :
+  - Suppression définitive du repli `P? 20??` qui s'affichait sur 97% des questions n'ayant pas de date explicite.
+  - Suppression de la pastille statique `P? 20??` initialement présente dans `template.html` (`#arena-chapter-title > .chapter-title-text`).
+  - Prise en charge exhaustive des 3 types canoniques de sessions et concours médicaux algériens :
+    - **Session Principale (`P [Année]`)** : Détection et normalisation automatique des formats `P [Année]`, `P1 [Année]`, `P2 [Année]`, `Principale [Année]`, y compris avec années abrégées sur 2 chiffres (ex: `P 21` -> `P 2021`, `P 2022`).
+    - **Concours de Résidanat (`Résidanat [Ville] [Année]`)** : Détection et normalisation automatique des mentions `Résidanat [Année]`, `Résidanat Alger [Année]`, `Residanat [Année]`.
+    - **Session de Rattrapage (`Rattrapage [Année]`)** : Détection et normalisation automatique des mentions `Rattrapage [Année]`, `Ratrapage [Année]`, `R [Année]` (ex: `R 2020` -> `Rattrapage 2020`).
+    - **Évaluations et Sources officielles** : Maintien du support des épreuves facultaires (`EMD [Année]`, `EMD1 [Année]`) et des sources médicales datées (`Diapo 2024`, `Diapositive 2026`, `iKb 2024`, `Guide 2022`).
+  - Filtrage strict anti-faux-positifs évitant la capture erronée de constantes cliniques (`P50`, `P3`, `P 8 kg` pour le poids, `CRP 120`, `FR 68`, ou `rattrapage vaccinal` sans année).
+  - Comportement d'affichage épuré : si un QCM ne comporte aucune mention de session ou date dans la base, la pastille `.question-date-pill` n'est pas insérée dans le DOM, permettant un affichage net et professionnel du titre du cours (`Pédiatrie — [Nom du cours]`) sans faux badge ni points d'interrogation trompeurs.
+- **Synchronisation & Recompilation** :
+  - Exécution du bundleur unifié `build-bundle.cjs` générant `src/app.bundle.js`, `index.html` et `dist/index.html`.
+  - Recompilation native Android via `build-apk.bat` mettant à jour `PediaDrill.apk`.
+
+### 17:20 - Audit exhaustif, actualisation et enrichissement du Contexte Technique Global (`MASTER_PRODUCT_TECHNICAL_CONTEXT.md`)
+
+- **Audit complet et mise à jour de la documentation maîtresse** :
+  - Synchronisation de la date d'actualisation (`2026-10-26 17:15:00 CET`) et du numéro de version applicative officiel (`v1.4.0`, `versionCode 9`).
+  - **Enrichissement de l'arborescence du projet (Section 2)** : Ajout des dossiers manquants (`android/`, `api/` serverless Vercel, `.github/workflows/` CI/CD GitHub Actions, `dist/`, scripts d'assemblage et assets natifs).
+  - **Actualisation des règles métier de session (Section 3.12)** : Documentation détaillée de la détection et normalisation canonique des sessions de concours médical algérien (`P [Année]`, `Résidanat [Année]`, `Rattrapage [Année]`), suppression du placeholder `P? 20??` et omission propre de la pastille en l'absence de date.
+  - **Actualisation de l'architecture responsive portrait (Section 4)** : Synthèse exhaustive de toutes les adaptations d'écran mobile portrait (Header compact, Arène double étage, modales en bottom-sheet avec cibles tactiles 44px WCAG, défilement horizontal fluide des stats).
+  - **Vérification technique de conformité** : Exécution de la suite de validation syntaxique (`node -c`) sur l'ensemble des modules JS du projet avec zéro erreur détectée.
+
+### 17:25 - Publication de la Release v1.4.0 (GitHub & Android APK)
+
+- **Incrémentation de version vers v1.4.0 (édition 1.4)** :
+  - `package.json` : `"version": "1.4.0"`
+  - `src/services/updateService.js` : `CURRENT_APP_VERSION = '1.4.0'`
+  - `android/app/build.gradle` : `versionCode 9`, `versionName "1.4.0"`
+  - `00-historique/MASTER_PRODUCT_TECHNICAL_CONTEXT.md` : synchronisé avec `v1.4.0` / `versionCode 9`.
+- **Recompilation & Assemblage** :
+  - Exécution de `build-bundle.cjs` générant `src/app.bundle.js` et le bundle autonome `index.html` / `dist/index.html`.
+  - Exécution de `build-apk.bat` avec synchronisation Capacitor Android et compilation native Gradle (`:app:assembleDebug`) produisant le package officiel `PediaDrill.apk` (~7.8 Mo).
+- **Déploiement GitHub** :
+  - Commit des modifications avec message conventionnel `feat(release): v1.4.0`.
+  - Création du tag annoté `v1.4.0`.
+  - Push vers GitHub (`main` et `v1.4.0`) déclenchant automatiquement le workflow CI/CD GitHub Actions pour publier la Release avec l'APK attaché en téléchargement direct pour les mises à jour in-app.
+
+
 

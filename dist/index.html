@@ -1925,6 +1925,134 @@ body {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   MODALE SÉLECTION DES COURS & LISTE DES CHAPITRES
+   ───────────────────────────────────────────────────────────── */
+.modal-chapters-actions-bar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.modal-chapters-actions-bar .search-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.modal-chapters-actions-bar .btn-secondary {
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+}
+
+.chapters-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+  max-height: 52vh;
+  padding-right: 4px;
+  margin: 4px 0;
+}
+
+.chapter-select-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  min-height: 44px;
+}
+
+.chapter-select-item:hover {
+  background: rgba(0, 212, 255, 0.05);
+  border-color: rgba(0, 212, 255, 0.35);
+}
+
+.chapter-select-item.checked {
+  background: rgba(0, 212, 255, 0.1);
+  border-color: var(--cyan);
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.15);
+}
+
+.chapter-checkbox-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.chapter-checkbox-wrap span {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-main);
+  line-height: 1.35;
+}
+
+.chapter-item-count {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.chapter-select-item.checked .chapter-item-count {
+  color: var(--cyan);
+  background: rgba(0, 212, 255, 0.18);
+}
+
+/* Notebook Top Bar Base */
+.notebook-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.notebook-view-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--cyan);
+}
+
+/* Stats Top Bar Base */
+.stats-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.stats-top-bar-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.stats-view-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--cyan);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ─────────────────────────────────────────────────────────────
    CARNET DE RAISONNEMENT IA (Dedicated Page - Grouped by Chapter & Question)
    ───────────────────────────────────────────────────────────── */
 .notebook-view {
@@ -2432,6 +2560,35 @@ body {
   letter-spacing: 0.02em;
 }
 
+.btn-refresh-arena-ai {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(0, 212, 255, 0.08);
+  border: 1px solid rgba(0, 212, 255, 0.28);
+  color: var(--cyan);
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+}
+
+.btn-refresh-arena-ai:hover {
+  background: rgba(0, 212, 255, 0.2);
+  border-color: var(--cyan);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 212, 255, 0.25);
+}
+
+.btn-refresh-arena-ai:active {
+  transform: scale(0.96);
+}
+
 .arena-ai-explanation-body {
   font-size: 0.92rem;
   line-height: 1.6;
@@ -2815,7 +2972,7 @@ body {
 /* ─────────────────────────────────────────────────────────────
    MOBILE FIRST & PORTRAIT COMPACT ADAPTATIONS (-15% SIZE)
    ───────────────────────────────────────────────────────────── */
-@media (max-width: 768px) {
+@media (max-width: 768px), (orientation: portrait) and (max-width: 850px) {
   :root {
     --radius-sm: 6px;
     --radius-md: 10px;
@@ -2830,15 +2987,101 @@ body {
     padding: 10px 8px 18px 8px;
   }
 
+  /* Global Header on Portrait */
   .app-header {
-    padding-bottom: 12px;
-    margin-bottom: 14px;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+    gap: 8px;
+    align-items: center;
   }
 
-  .logo-title {
+  .brand-wrap {
+    gap: 8px;
+    min-width: 0;
+    flex-shrink: 1;
+  }
+
+  .brand-logo {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: var(--radius-sm);
+  }
+
+  .brand-logo svg,
+  .brand-logo i {
+    width: 18px;
+    height: 18px;
+  }
+
+  .brand-title {
     font-size: 1.15rem;
+    line-height: 1.1;
   }
 
+  .brand-subtitle {
+    display: none !important; /* Hide long subtitle in portrait mode to give header actions breathing room */
+  }
+
+  .header-actions {
+    gap: 4px;
+    flex-shrink: 0;
+    align-items: center;
+  }
+
+  .icon-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius-sm);
+    padding: 0;
+  }
+
+  .icon-btn svg,
+  .icon-btn i {
+    width: 16px;
+    height: 16px;
+  }
+
+  .btn-google-header {
+    padding: 6px 8px;
+    font-size: 0.72rem;
+    gap: 4px;
+  }
+
+  .btn-google-header span {
+    display: none; /* Icon-only Google button in portrait */
+  }
+
+  .user-profile-badge {
+    padding: 4px 6px;
+    gap: 4px;
+  }
+
+  .user-profile-badge #header-user-name {
+    display: none; /* Avatar + online indicator in portrait */
+  }
+
+  .user-avatar {
+    width: 20px;
+    height: 20px;
+  }
+
+  .active-lesson-header-badge {
+    max-width: 110px;
+    padding: 4px 6px;
+    font-size: 0.72rem;
+    gap: 4px;
+  }
+
+  .header-lesson-name {
+    display: none;
+  }
+
+  .header-lesson-time {
+    font-size: 0.75rem;
+  }
+
+  /* Dashboard Metrics & Actions */
   .hero-metrics-grid {
     gap: 10px;
   }
@@ -2867,14 +3110,37 @@ body {
     font-size: 1.15rem;
   }
 
+  .dashboard-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
   .btn-primary-large {
+    width: 100%;
     padding: 13px 18px;
     font-size: 0.98rem;
   }
 
   .btn-secondary {
+    width: 100%;
     padding: 12px 14px;
     font-size: 0.88rem;
+  }
+
+  .quick-links-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+
+  .quick-link-btn {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 8px 6px;
+    font-size: 0.8rem;
   }
 
   /* Arena Mobile Portrait */
@@ -2883,7 +3149,79 @@ body {
   }
 
   .arena-top-bar {
+    flex-direction: column;
+    align-items: stretch;
     gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .arena-top-bar-left {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .btn-back {
+    padding: 6px 10px;
+    font-size: 0.78rem;
+    gap: 4px;
+  }
+
+  .arena-history-nav {
+    padding: 2px 4px;
+    gap: 2px;
+  }
+
+  .btn-history-arrow {
+    width: 26px;
+    height: 26px;
+  }
+
+  .btn-history-arrow svg,
+  .btn-history-arrow i {
+    width: 14px;
+    height: 14px;
+  }
+
+  .history-badge {
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    gap: 4px;
+  }
+
+  .arena-pills-wrap {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    width: 100%;
+  }
+
+  .arena-pills-wrap .tag-pill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    padding: 5px 4px;
+    font-size: 0.72rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .history-consult-banner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+
+  .history-consult-banner .btn-resume-drill {
+    width: 100%;
+    justify-content: center;
+    padding: 8px 12px;
   }
 
   .question-container {
@@ -2927,11 +3265,34 @@ body {
   .arena-actions-bar {
     margin-top: 10px;
     padding-top: 10px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
   }
 
-  .btn-validate {
+  #keyboard-shortcuts-hint {
+    display: none !important;
+  }
+
+  .btn-validate,
+  .btn-croq-eval,
+  #btn-history-resume-action {
+    width: 100%;
+    justify-content: center;
     padding: 12px 18px;
     font-size: 0.94rem;
+  }
+
+  .success-banner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .success-banner .btn-validate {
+    width: 100%;
+    justify-content: center;
   }
 
   .arena-explanation-card {
@@ -2942,15 +3303,317 @@ body {
     font-size: 0.86rem;
   }
 
-  /* Modals on Mobile */
+  /* Stats View Portrait Top Bar & Menus */
+  .stats-top-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .stats-top-bar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .stats-view-title {
+    font-size: 1.02rem;
+    text-align: right;
+  }
+
+  .stats-range-wrap {
+    width: 100%;
+    align-items: stretch;
+    margin-top: 2px;
+  }
+
+  .stats-range-toggle {
+    width: 100%;
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 3px 4px;
+    gap: 4px;
+    border-radius: var(--radius-full);
+  }
+
+  .stats-range-toggle::-webkit-scrollbar {
+    display: none;
+  }
+
+  .range-btn {
+    padding: 6px 10px;
+    font-size: 0.74rem;
+    flex-shrink: 0;
+  }
+
+  .stats-day-stepper-wrap {
+    flex-shrink: 0;
+  }
+
+  .custom-range-picker {
+    width: 100%;
+    position: static;
+    margin-top: 6px;
+    box-sizing: border-box;
+  }
+
+  .custom-range-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    align-items: flex-end;
+  }
+
+  .btn-apply-range {
+    grid-column: 1 / -1;
+    width: 100%;
+    justify-content: center;
+    padding: 8px;
+  }
+
+  .stats-subnav-container {
+    width: 100%;
+    padding: 0;
+    margin-top: 0;
+  }
+
+  .stats-subnav-pills {
+    max-width: 100%;
+    width: 100%;
+    padding: 3px;
+    gap: 4px;
+  }
+
+  .stats-subnav-btn {
+    padding: 8px 6px;
+    font-size: 0.78rem;
+    gap: 5px;
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+  }
+
+  .stats-subnav-btn svg,
+  .stats-subnav-btn i {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  .subnav-timer-pill {
+    font-size: 0.68rem;
+    padding: 2px 4px;
+  }
+
+  .stats-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .stat-kpi-card {
+    padding: 12px 10px;
+    gap: 8px;
+  }
+
+  .kpi-value {
+    font-size: 1.35rem;
+  }
+
+  .panel-box-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .course-tracker-pills {
+    width: 100%;
+    display: flex;
+  }
+
+  .course-pill-btn {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+    padding: 6px 8px;
+    font-size: 0.74rem;
+  }
+
+  .course-tracker-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .course-summary-badge {
+    align-self: flex-start;
+  }
+
+  /* Notebook View Portrait Top Bar & Toolbar */
+  .notebook-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .notebook-view-title {
+    font-size: 0.95rem;
+    text-align: right;
+  }
+
+  .notebook-toolbar {
+    padding: 10px 12px;
+    gap: 10px;
+    border-radius: var(--radius-md);
+  }
+
+  .notebook-toolbar-row-top {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .notebook-toolbar-row-top .search-input-wrap,
+  .notebook-toolbar-row-top .notebook-select {
+    width: 100%;
+  }
+
+  .notebook-toolbar-row-bottom {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding-top: 8px;
+  }
+
+  .notebook-sort-control {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sort-control-label {
+    font-size: 0.72rem;
+    flex-shrink: 0;
+  }
+
+  .notebook-sort-select {
+    flex: 1;
+    min-width: 0;
+    padding: 7px 10px;
+    font-size: 0.78rem;
+  }
+
+  .btn-sort-order {
+    width: 100%;
+    justify-content: center;
+    padding: 8px 12px;
+    font-size: 0.78rem;
+  }
+
+  .notebook-view-mode-toggle {
+    width: 100%;
+    display: flex;
+  }
+
+  .view-mode-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 7px 10px;
+    font-size: 0.76rem;
+  }
+
+  .note-card {
+    padding: 12px 10px;
+    gap: 10px;
+  }
+
+  .notebook-chapter-header {
+    padding: 12px 14px;
+  }
+
+  .notebook-chapter-title {
+    font-size: 0.88rem;
+  }
+
+  .attempt-tab-btn {
+    padding: 6px 10px;
+    font-size: 0.76rem;
+  }
+
+  /* Modals on Portrait */
+  .modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
   .modal-content {
-    padding: 14px 12px;
-    max-height: 94dvh;
-    border-radius: 14px;
+    padding: 16px 14px 20px 14px;
+    max-height: 90dvh;
+    border-radius: 20px 20px 0 0;
+    gap: 12px;
+  }
+
+  .modal-header {
+    padding-bottom: 10px;
   }
 
   .modal-title {
     font-size: 1.1rem;
+  }
+
+  #modal-chapters .modal-content {
+    max-height: 92dvh;
+  }
+
+  .modal-chapters-actions-bar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .modal-chapters-actions-bar .search-input {
+    font-size: 0.84rem;
+    padding: 9px 12px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .modal-chapters-actions-bar .btn-secondary {
+    padding: 9px 12px;
+    font-size: 0.78rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .chapters-list {
+    max-height: 50dvh;
+  }
+
+  .chapter-select-item {
+    padding: 9px 12px;
+    min-height: 44px;
+  }
+
+  .chapter-checkbox-wrap span {
+    font-size: 0.84rem;
+  }
+
+  #btn-apply-chapters,
+  #btn-continue-after-error {
+    position: sticky;
+    bottom: 0;
+    margin-top: auto;
+    width: 100%;
+    padding: 14px;
+    font-size: 0.95rem;
+    box-shadow: 0 -10px 24px rgba(4, 7, 15, 0.9);
+    z-index: 5;
   }
 
   .penalty-alert-box {
@@ -3009,23 +3672,61 @@ body {
     font-size: 0.84rem;
   }
 
-  /* Notebook on Mobile */
-  .note-card {
-    padding: 12px 10px;
-    gap: 10px;
+  /* Tuteur IA Chatbox on Portrait */
+  .arena-ai-floating-btn {
+    bottom: 18px;
+    right: 18px;
+    padding: 8px 14px;
   }
 
-  .notebook-chapter-header {
-    padding: 12px 14px;
+  .ai-btn-label {
+    font-size: 0.78rem;
   }
 
-  .notebook-chapter-title {
-    font-size: 0.88rem;
+  .arena-ai-chatbox {
+    inset: auto 0 0 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 78dvh !important;
+    max-height: 85dvh !important;
+    border-radius: 20px 20px 0 0 !important;
+    border-bottom: none !important;
   }
 
-  .attempt-tab-btn {
+  .chatbox-header {
+    padding: 10px 14px;
+  }
+
+  .chatbox-title {
+    font-size: 0.85rem;
+  }
+
+  .chatbox-subtitle {
+    max-width: 180px;
+    font-size: 0.68rem;
+  }
+
+  .chatbox-chips {
     padding: 6px 10px;
-    font-size: 0.76rem;
+    gap: 6px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .chat-chip {
+    padding: 5px 10px;
+    font-size: 0.72rem;
+    flex-shrink: 0;
+  }
+
+  .chatbox-input-form {
+    padding: 8px 12px;
+  }
+
+  .chatbox-input {
+    padding: 8px 14px;
+    font-size: 0.82rem;
   }
 }
 
@@ -4929,7 +5630,8 @@ body {
 
 @media (max-width: 520px) {
   .stats-kpi-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
   }
   .timeline-day-top {
     flex-direction: column;
@@ -5507,12 +6209,12 @@ body {
     font-size: 2.5rem;
   }
   .active-lesson-header-badge {
-    max-width: 150px;
-    padding: 4px 8px;
+    max-width: 110px;
+    padding: 4px 6px;
     font-size: 0.72rem;
   }
   .header-lesson-name {
-    max-width: 55px;
+    display: none;
   }
   .btn-timer-action {
     flex: 1 1 45%;
@@ -5893,7 +6595,7 @@ body {
         <div class="question-container">
           
           <div class="chapter-title-badge is-blurred" id="arena-chapter-title" onclick="window.toggleArenaChapterTitle()" title="Chapitre masqué (Cliquer pour afficher)">
-            <span class="chapter-title-text">Pédiatrie — Chapitre <span class="question-date-pill" title="Date ou session du QCM"><i data-lucide="calendar"></i> P? 20??</span></span>
+            <span class="chapter-title-text">Pédiatrie — Chapitre</span>
             <span class="chapter-title-hint"><i data-lucide="eye" style="width:11px;height:11px;"></i> Cours masqué</span>
           </div>
 
@@ -5956,7 +6658,13 @@ body {
                 <i data-lucide="sparkles" style="color:var(--cyan);width:15px;height:15px;"></i>
                 <span>Explication Clinique IA</span>
               </div>
-              <span class="arena-ai-badge" id="arena-ai-model-tag">Gemini 3.8 Flash</span>
+              <div class="arena-ai-header-right" style="display:flex;align-items:center;gap:8px;">
+                <button type="button" class="btn-refresh-arena-ai" id="btn-arena-ai-regenerate" onclick="window.regenerateArenaAiExplanation()" title="Régénérer une nouvelle explication IA pour ce QCM" style="display:none;">
+                  <i data-lucide="rotate-cw" style="width:12px;height:12px;"></i>
+                  <span>Régénérer</span>
+                </button>
+                <span class="arena-ai-badge" id="arena-ai-model-tag">Gemini 3.8 Flash</span>
+              </div>
             </div>
             <div class="arena-ai-explanation-body" id="arena-ai-explanation-text"></div>
           </div>
@@ -5992,13 +6700,13 @@ body {
            ───────────────────────────────────────────────────────────── -->
       <section id="view-notebook" class="notebook-view" style="display:none;">
         
-        <div class="arena-top-bar">
+        <div class="arena-top-bar notebook-top-bar">
           <button class="btn-back" id="btn-leave-notebook">
             <i data-lucide="arrow-left"></i>
-            <span>Retour au Dashboard</span>
+            <span>Retour Dashboard</span>
           </button>
-          <div style="font-family:var(--font-heading);font-weight:700;font-size:1.1rem;color:var(--cyan);">
-            Carnet de Raisonnement Clinique IA
+          <div class="notebook-view-title">
+            Carnet de Raisonnement IA
           </div>
         </div>
 
@@ -6061,14 +6769,16 @@ body {
       <section id="view-stats" class="stats-view" style="display:none;">
         
         <!-- Top Bar -->
-        <div class="arena-top-bar">
-          <button class="btn-back" id="btn-leave-stats">
-            <i data-lucide="arrow-left"></i>
-            <span>Dashboard</span>
-          </button>
-          <div style="font-family:var(--font-heading);font-weight:700;font-size:1.15rem;color:var(--cyan);display:flex;align-items:center;gap:8px;">
-            <i data-lucide="bar-chart-2" style="width:22px;height:22px;color:var(--emerald);"></i>
-            <span>Suivi &amp; Statistiques d'Étude</span>
+        <div class="arena-top-bar stats-top-bar">
+          <div class="stats-top-bar-header">
+            <button class="btn-back" id="btn-leave-stats">
+              <i data-lucide="arrow-left"></i>
+              <span>Dashboard</span>
+            </button>
+            <div class="stats-view-title">
+              <i data-lucide="bar-chart-2" style="width:20px;height:20px;color:var(--emerald);"></i>
+              <span>Suivi &amp; Statistiques</span>
+            </div>
           </div>
           <div class="stats-range-wrap" id="stats-qcm-range-wrap">
             <div class="stats-range-toggle" id="stats-range-toggle">
@@ -6495,9 +7205,9 @@ body {
         <button class="close-btn" id="btn-close-chapters-modal">&times;</button>
       </div>
 
-      <div style="display:flex;gap:10px;">
+      <div class="modal-chapters-actions-bar">
         <input type="text" class="search-input" id="chapters-search-input" placeholder="Filtrer les cours...">
-        <button class="btn-secondary" id="btn-toggle-all-chapters" style="padding:8px 12px;font-size:0.8rem;">
+        <button class="btn-secondary" id="btn-toggle-all-chapters">
           Tout cocher
         </button>
       </div>
@@ -8002,6 +8712,14 @@ class QueueEngine {
   deleteReasoningNote(id) {
     try {
       const notes = this.getRawReasoningNotes().filter(n => n.id !== id);
+      localStorage.setItem(REASONING_KEY, JSON.stringify(notes));
+    } catch {}
+  }
+
+  deleteReasoningNotesByQuestionUid(questionUid) {
+    if (!questionUid) return;
+    try {
+      const notes = this.getRawReasoningNotes().filter(n => n.questionUid !== questionUid);
       localStorage.setItem(REASONING_KEY, JSON.stringify(notes));
     } catch {}
   }
@@ -9763,7 +10481,7 @@ class FirebaseSyncService {
 // Update Management Service for PédiaDrill
 // Checks GitHub Releases for new APK versions, notifies the user, and triggers direct download.
 
-const CURRENT_APP_VERSION = '1.3.3';
+const CURRENT_APP_VERSION = '1.4.0';
 const GITHUB_REPO = 'lkmqji/qcm-p-diatrie';
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
 const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours auto-check cooldown
@@ -10071,6 +10789,7 @@ const modals = {
 // ============================================================================
 function initApp() {
   queueEngine.setQuestions(allQuestions, allChapters);
+  scrubCorruptedAiExplanations();
   studyTracker.seedFirstPassFromExistingStats(queueEngine.stats, queueEngine.getRawReasoningNotes());
   updateDashboardUI();
   setupEventListeners();
@@ -11025,35 +11744,91 @@ function formatAnswerComparison(userAnswer, correctAnswer, isCroq = false, score
 // QUESTION DATE & SESSION EXTRACTION
 // ============================================================================
 function extractQuestionDateOrSession(q) {
-  if (!q) return 'P? 20??';
+  if (!q) return '';
   let rawDate = '';
-  if (q.date && typeof q.date === 'string' && q.date.trim()) rawDate = q.date.trim();
-  else if (q.session && typeof q.session === 'string' && q.session.trim()) rawDate = q.session.trim();
-  else if (q.year && (typeof q.year === 'string' || typeof q.year === 'number')) rawDate = String(q.year).trim();
+  
+  // 1. Direct metadata properties on the question object
+  if (q.session && typeof q.session === 'string' && q.session.trim()) rawDate = q.session.trim();
+  else if (q.session_type && (q.year || q.annee)) rawDate = String(q.session_type).trim() + ' ' + String(q.year || q.annee).trim();
+  else if (q.date && typeof q.date === 'string' && q.date.trim()) rawDate = q.date.trim();
   else if (q.source_date && typeof q.source_date === 'string') rawDate = q.source_date.trim();
+  else if (q.year && (typeof q.year === 'string' || typeof q.year === 'number')) rawDate = String(q.year).trim();
 
+  // 2. Sift text fields if not directly specified in object properties
   if (!rawDate) {
     const texts = [q.explanation || '', q.clinical_case || '', q.question || ''];
     const full = texts.join(' \n ');
 
-    const sessionMatch = full.match(/\b(P\s*[12]?\s*[-_:/]?\s*20\d\d|R\s*[12]?\s*[-_:/]?\s*20\d\d|EMD\s*[123]?\s*[-_:/]?\s*20\d\d|Session\s*[-_:/]?\s*20\d\d|Rattrapage\s*[-_:/]?\s*20\d\d|Principale\s*[-_:/]?\s*20\d\d|R[ée]sidanat\s*[-_:/]?\s*20\d\d)\b/i);
-    if (sessionMatch) {
-      rawDate = sessionMatch[0].trim();
+    // Match Résidanat (e.g. Résidanat 2021, Residanat 19, Résidanat Alger 2020)
+    const resMatch = full.match(/\b(R[ée]sidanat(?:\s+[A-Za-z]+)?\s*[-_:/]?\s*(?:20\d\d|19\d\d|\b[0-2]\d\b))\b/i);
+    if (resMatch) {
+      rawDate = resMatch[1].trim();
     } else {
-      const sourceMatch = full.match(/(?:Source\s*[:;]?\s*)?((?:Diapo(?:sitive)?|iKb|Guide|Cours|Uptodate|R[ée]f[ée]rentiel|Recommandation|HAS)\s*[^.,;\n]*20\d\d(?:\/20\d\d)?)/i);
-      if (sourceMatch) {
-        const cleaned = sourceMatch[1].replace(/^(?:Source\s*[:;]?\s*)/i, '').trim();
-        if (cleaned.length <= 35) rawDate = cleaned;
+      // Match Rattrapage (e.g. Rattrapage 2021, Ratrapage 19, R 2020)
+      const ratMatch = full.match(/\b(Rat(?:t)?rapage\s*[-_:/]?\s*(?:20\d\d|19\d\d|\b[0-2]\d\b)|\bR\s*[-_:/]?\s*(?:20\d\d))\b/i);
+      if (ratMatch) {
+        rawDate = ratMatch[1].trim();
       } else {
-        const yearMatch = full.match(/\b(20(?:0[89]|1[0-9]|2[0-6]))\b/);
-        if (yearMatch) {
-          rawDate = yearMatch[0];
+        // Match Principale / P (e.g. Principale 2020, P 2021, P1 2019, P2 2020, P 19)
+        const pMatch = full.match(/\b(Principale\s*[-_:/]?\s*(?:20\d\d|19\d\d|\b[0-2]\d\b)|\bP\s*[12]?\s*[-_:/]?\s*(?:20\d\d))\b/i);
+        if (pMatch) {
+          rawDate = pMatch[1].trim();
+        } else {
+          // Match EMD or Session
+          const emdMatch = full.match(/\b(EMD\s*[123]?\s*[-_:/]?\s*(?:20\d\d|19\d\d|\b[0-2]\d\b)|Session\s*[-_:/]?\s*(?:20\d\d|19\d\d))\b/i);
+          if (emdMatch) {
+            rawDate = emdMatch[1].trim();
+          } else {
+            // Match official medical source mentions with year (Diapositive 2024, iKb, Guide)
+            const sourceMatch = full.match(/\b(Diapo(?:sitive)?|iKb|Guide|Cours|Uptodate|R[ée]f[ée]rentiel|Recommandation|HAS)\b\s*[^.,;\n]*20\d\d(?:\/20\d\d)?/i);
+            if (sourceMatch) {
+              const cleaned = sourceMatch[0].replace(/^(?:Source\s*[:;]?\s*)/i, '').trim();
+              if (cleaned.length <= 35) rawDate = cleaned;
+            }
+          }
         }
       }
     }
   }
 
-  if (!rawDate) return 'P? 20??';
+  if (!rawDate) return '';
+
+  // Canonical session & date normalization
+  // 1. Résidanat (e.g. "Résidanat 2022", "residanat alger 18", "Résidanat 19")
+  let m = rawDate.match(/r[ée]sidanat(?:\s+([a-z]+))?\s*[-_/:]?\s*('?(?:20\d\d|19\d\d|[0-2]\d))\b/i);
+  if (m) {
+    let year = m[2].replace("'", '');
+    if (year.length === 2) year = (parseInt(year, 10) > 50 ? '19' : '20') + year;
+    const city = m[1] ? (' ' + m[1].charAt(0).toUpperCase() + m[1].slice(1).toLowerCase()) : '';
+    return 'Résidanat' + city + ' ' + year;
+  }
+
+  // 2. Rattrapage / R (e.g. "Rattrapage 2020", "ratrapage 19", "R 2022")
+  m = rawDate.match(/(?:rat(?:t)?rapage|(?:\bR))\s*([12])?\s*[-_/:]?\s*('?(?:20\d\d|19\d\d|[0-2]\d))\b/i);
+  if (m) {
+    let year = m[2].replace("'", '');
+    if (year.length === 2) year = (parseInt(year, 10) > 50 ? '19' : '20') + year;
+    return 'Rattrapage ' + year;
+  }
+
+  // 3. Principale / P (e.g. "Principale 2020", "P 2021", "P1 2021", "p 19")
+  m = rawDate.match(/(?:principale|(?:\bP))\s*([12])?\s*[-_/:]?\s*('?(?:20\d\d|19\d\d|[0-2]\d))\b/i);
+  if (m) {
+    const pNum = m[1] ? m[1] : '';
+    let year = m[2].replace("'", '');
+    if (year.length === 2) year = (parseInt(year, 10) > 50 ? '19' : '20') + year;
+    return 'P' + (pNum ? pNum + ' ' : ' ') + year;
+  }
+
+  // 4. EMD (e.g. "EMD 2020", "EMD1 2021")
+  m = rawDate.match(/emd\s*([123])?\s*[-_/:]?\s*('?(?:20\d\d|19\d\d|[0-2]\d))\b/i);
+  if (m) {
+    const emdNum = m[1] ? m[1] : '';
+    let year = m[2].replace("'", '');
+    if (year.length === 2) year = (parseInt(year, 10) > 50 ? '19' : '20') + year;
+    return 'EMD' + (emdNum ? emdNum + ' ' : ' ') + year;
+  }
+
   return rawDate.charAt(0).toUpperCase() + rawDate.slice(1);
 }
 
@@ -11071,29 +11846,160 @@ try {
   console.warn('Failed to load AI explanations cache:', e);
 }
 
-function getSavedAiExplanation(questionUid) {
+/**
+ * Validates that an AI reasoning note semantically matches the target question.
+ * Protects against race condition corruption where a note from Question A is saved to Question B.
+ */
+function isExplanationMatchingQuestion(noteText, question) {
+  if (!noteText || typeof noteText !== 'string' || !question) return false;
+
+  const noteLower = noteText.toLowerCase();
+
+  // 1. Explicit theme mismatch check:
+  // If the note has "Thème clé : *XYZ*" and XYZ has zero word overlap with question.chapterTitle, it's a mismatch
+  const themeMatch = noteText.match(/Thème clé\s*:\s*\*?([^\n\*\r\<\>]+)\*?/i);
+  if (themeMatch && question.chapterTitle) {
+    const noteTheme = themeMatch[1].trim().toLowerCase();
+    const qChapter = question.chapterTitle.trim().toLowerCase();
+    const cleanWords = (s) => (s || '').replace(/[^a-z0-9à-öø-ÿ]/gi, ' ').split(/\s+/).filter(w => w.length >= 4);
+    const themeWords = cleanWords(noteTheme);
+    const chapterWords = cleanWords(qChapter);
+    const hasCommonWord = themeWords.some(tw => chapterWords.some(cw => tw.includes(cw) || cw.includes(tw)));
+    if (!hasCommonWord && themeWords.length > 0 && chapterWords.length > 0) {
+      return false; // Clear chapter mismatch!
+    }
+  }
+
+  // 2. Options keyword overlap check for QCMs and CROQs
+  const stopWords = new Set(['dans', 'pour', 'avec', 'sans', 'chez', 'cette', 'sont', 'peut', 'tous', 'tout', 'faire', 'plus', 'leur', 'leurs', 'etre', 'avoir', 'donnez', 'quel', 'quelle', 'quelles', 'quels']);
+  const getWords = (str) => (str || '').toLowerCase().replace(/[^a-z0-9à-öø-ÿ]/gi, ' ').split(/\s+/).filter(w => w.length >= 4 && !stopWords.has(w));
+
+  if (Array.isArray(question.options) && question.options.length >= 2) {
+    const optionKeywords = question.options.flatMap(o => getWords(o.text));
+    const uniqueKeywords = Array.from(new Set(optionKeywords));
+    const matchingKeywords = uniqueKeywords.filter(k => noteLower.includes(k));
+    if (uniqueKeywords.length >= 3 && matchingKeywords.length < 2) {
+      return false;
+    }
+  } else {
+    // For CROQ questions
+    const qKeywords = getWords(question.question || question.statement);
+    const ansKeywords = getWords(question.croq_answer || '');
+    const combined = Array.from(new Set([...qKeywords, ...ansKeywords]));
+    const matching = combined.filter(k => noteLower.includes(k));
+    if (combined.length >= 2 && matching.length === 0) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/**
+ * Automatically purges any previously corrupted or mismatched AI explanations
+ * stored in localStorage or the Spaced Repetition Notebook.
+ */
+function scrubCorruptedAiExplanations() {
+  try {
+    let purgedCacheCount = 0;
+    for (const [uid, item] of Object.entries(aiExplanationsCache)) {
+      if (!item || !item.note) continue;
+      const q = allQuestions.find(it => it.uid === uid);
+      if (!q || !isExplanationMatchingQuestion(item.note, q)) {
+        delete aiExplanationsCache[uid];
+        purgedCacheCount++;
+      }
+    }
+    if (purgedCacheCount > 0) {
+      localStorage.setItem('pedia_ai_explanations_cache', JSON.stringify(aiExplanationsCache));
+      console.log(`[Diagnostic IA] Purged ${purgedCacheCount} mismatched AI explanation(s) from local cache.`);
+    }
+
+    // Scrub notebook notes in QueueEngine
+    const rawNotes = queueEngine.getRawReasoningNotes();
+    let purgedNotesCount = 0;
+    const cleanedNotes = rawNotes.filter(n => {
+      if (!n || !n.questionUid || !n.reasoningNote) return true;
+      const q = allQuestions.find(it => it.uid === n.questionUid);
+      if (q && !isExplanationMatchingQuestion(n.reasoningNote, q)) {
+        purgedNotesCount++;
+        return false;
+      }
+      return true;
+    });
+
+    if (purgedNotesCount > 0) {
+      localStorage.setItem('pedia_drill_reasoning_notes_v1', JSON.stringify(cleanedNotes));
+      console.log(`[Diagnostic IA] Purged ${purgedNotesCount} mismatched AI reasoning note(s) from Notebook.`);
+      firebaseSyncService.triggerAutoPush();
+    }
+  } catch (err) {
+    console.warn('[Diagnostic IA] Error while scrubbing explanations:', err);
+  }
+}
+
+function getSavedAiExplanation(questionUid, question = null) {
   if (!questionUid) return null;
+
+  const targetQ = question || (allQuestions.find(q => q.uid === questionUid) || null);
+
+  const checkAndClean = (entry, source) => {
+    if (!entry || !entry.note) return null;
+    if (targetQ && !isExplanationMatchingQuestion(entry.note, targetQ)) {
+      console.warn(`[AI Explanation] Mismatched note detected from ${source} for ${questionUid}. Purging corrupted entry.`);
+      if (source === 'cache') {
+        delete aiExplanationsCache[questionUid];
+        try {
+          localStorage.setItem('pedia_ai_explanations_cache', JSON.stringify(aiExplanationsCache));
+        } catch {}
+      }
+      return null;
+    }
+    return entry;
+  };
+
   // 1. In-memory cache
-  if (aiExplanationsCache[questionUid]) return aiExplanationsCache[questionUid];
+  if (aiExplanationsCache[questionUid]) {
+    const valid = checkAndClean(aiExplanationsCache[questionUid], 'cache');
+    if (valid) return valid;
+  }
   // 2. Answered history buffer
   const histItem = answeredHistory.find(h => h.question && h.question.uid === questionUid && h.aiReasoning);
   if (histItem) {
-    return { note: histItem.aiReasoning, modelUsed: histItem.modelUsed || 'Gemini 3.8 Flash' };
+    const entry = { note: histItem.aiReasoning, modelUsed: histItem.modelUsed || 'Gemini 3.8 Flash' };
+    const valid = checkAndClean(entry, 'history');
+    if (valid) return valid;
+    histItem.aiReasoning = null;
+    histItem.modelUsed = null;
   }
   // 3. QueueEngine reasoning notes (from notebook or synced from Firestore)
   const notes = queueEngine.getReasoningNotes();
   const note = notes.find(n => n.questionUid === questionUid && n.reasoningNote);
   if (note) {
-    return { note: note.reasoningNote, modelUsed: note.modelUsed || 'Gemini 3.8 Flash' };
+    const entry = { note: note.reasoningNote, modelUsed: note.modelUsed || 'Gemini 3.8 Flash' };
+    const valid = checkAndClean(entry, 'notebook');
+    if (valid) return valid;
+    if (note.id) {
+      queueEngine.deleteReasoningNote(note.id);
+    }
   }
   return null;
 }
 
 function saveAiExplanationForQuestion(questionUid, noteText, modelUsed = 'Gemini 3.8 Flash', question = null) {
   if (!questionUid || !noteText) return;
+
+  const targetQ = question || (allQuestions.find(q => q.uid === questionUid) || null);
+  if (targetQ && !isExplanationMatchingQuestion(noteText, targetQ)) {
+    console.warn(`[AI Explanation] Refusing to save mismatched note for ${questionUid}`);
+    return;
+  }
+
   aiExplanationsCache[questionUid] = {
     note: noteText,
     modelUsed: modelUsed || 'Gemini 3.8 Flash',
+    questionText: targetQ ? (targetQ.question || targetQ.statement) : '',
+    chapterTitle: targetQ ? targetQ.chapterTitle : '',
     timestamp: Date.now()
   };
   try {
@@ -11113,22 +12019,22 @@ function saveAiExplanationForQuestion(questionUid, noteText, modelUsed = 'Gemini
   // Ensure it is saved in queueEngine Notebook
   const existingNotes = queueEngine.getReasoningNotes();
   const alreadySaved = existingNotes.some(n => n.questionUid === questionUid);
-  if (!alreadySaved && question) {
-    const isCroq = !!question.is_croq;
-    const correctLetters = isCroq ? [] : (question.options || []).filter(o => o.is_correct).map(o => o.letter);
-    const correctText = isCroq ? (question.croq_answer || '') : (question.options || []).filter(o => o.is_correct).map(o => `${o.letter}. ${o.text}`).join(' | ');
+  if (!alreadySaved && targetQ) {
+    const isCroq = !!targetQ.is_croq;
+    const correctLetters = isCroq ? [] : (targetQ.options || []).filter(o => o.is_correct).map(o => o.letter);
+    const correctText = isCroq ? (targetQ.croq_answer || '') : (targetQ.options || []).filter(o => o.is_correct).map(o => `${o.letter}. ${o.text}`).join(' | ');
     const noteRecord = {
       id: `note_${Date.now()}`,
-      questionUid: question.uid,
-      questionText: question.question,
-      clinicalCase: question.clinical_case || null,
-      chapterTitle: question.chapterTitle,
-      options: question.options ? JSON.parse(JSON.stringify(question.options)) : [],
-      media_urls: question.media_urls || [],
+      questionUid: targetQ.uid,
+      questionText: targetQ.question,
+      clinicalCase: targetQ.clinical_case || null,
+      chapterTitle: targetQ.chapterTitle,
+      options: targetQ.options ? JSON.parse(JSON.stringify(targetQ.options)) : [],
+      media_urls: targetQ.media_urls || [],
       userAnswer: isCroq ? 'Consultation & Révision' : correctLetters.join(', '),
       userAnswerLetters: correctLetters,
       correctAnswer: correctText,
-      officialExplanation: question.explanation || '',
+      officialExplanation: targetQ.explanation || '',
       isCroq: isCroq,
       score: null,
       reasoningNote: noteText,
@@ -11147,16 +12053,19 @@ function renderArenaAiExplanation(question) {
   const box = document.getElementById('arena-ai-explanation-box');
   const textEl = document.getElementById('arena-ai-explanation-text');
   const modelTag = document.getElementById('arena-ai-model-tag');
+  const regenBtn = document.getElementById('btn-arena-ai-regenerate');
   if (!box || !textEl || !question) return;
 
-  const saved = getSavedAiExplanation(question.uid);
+  const saved = getSavedAiExplanation(question.uid, question);
   box.style.display = 'flex';
 
   if (saved && saved.note) {
     if (modelTag) modelTag.textContent = saved.modelUsed || 'Gemini 3.8 Flash';
+    if (regenBtn) regenBtn.style.display = 'inline-flex';
     textEl.innerHTML = formatReasoningNote(saved.note);
   } else {
     if (modelTag) modelTag.textContent = 'Gemini Flash';
+    if (regenBtn) regenBtn.style.display = 'none';
     textEl.innerHTML = `
       <div class="arena-ai-prompt-box">
         <div class="arena-ai-prompt-info">
@@ -11173,14 +12082,38 @@ function renderArenaAiExplanation(question) {
   refreshLucide();
 }
 
-window.requestArenaAiExplanation = async function() {
+window.regenerateArenaAiExplanation = async function() {
   const effQ = getEffectiveArenaQuestion();
   if (!effQ) return;
+  const targetUid = effQ.uid;
+
+  delete aiExplanationsCache[targetUid];
+  try {
+    localStorage.setItem('pedia_ai_explanations_cache', JSON.stringify(aiExplanationsCache));
+  } catch {}
+
+  answeredHistory.forEach(item => {
+    if (item.question && item.question.uid === targetUid) {
+      item.aiReasoning = null;
+      item.modelUsed = null;
+    }
+  });
+
+  queueEngine.deleteReasoningNotesByQuestionUid(targetUid);
+  await window.requestArenaAiExplanation(true);
+};
+
+window.requestArenaAiExplanation = async function(forceRegen = false) {
+  const effQ = getEffectiveArenaQuestion();
+  if (!effQ) return;
+  const targetUid = effQ.uid;
   const box = document.getElementById('arena-ai-explanation-box');
   const textEl = document.getElementById('arena-ai-explanation-text');
   const modelTag = document.getElementById('arena-ai-model-tag');
+  const regenBtn = document.getElementById('btn-arena-ai-regenerate');
   if (!box || !textEl) return;
 
+  if (regenBtn) regenBtn.style.display = 'none';
   box.style.display = 'flex';
   textEl.innerHTML = `
     <div class="reasoning-loader-wrap" style="padding:16px;text-align:center;">
@@ -11201,20 +12134,28 @@ window.requestArenaAiExplanation = async function() {
       ''
     );
 
-    saveAiExplanationForQuestion(effQ.uid, reasoningObj.note, reasoningObj.modelUsed, effQ);
-    textEl.innerHTML = formatReasoningNote(reasoningObj.note);
-    if (modelTag) modelTag.textContent = reasoningObj.modelUsed;
-    refreshLucide();
+    saveAiExplanationForQuestion(targetUid, reasoningObj.note, reasoningObj.modelUsed, effQ);
+
+    const currentEffQ = getEffectiveArenaQuestion();
+    if (currentEffQ && currentEffQ.uid === targetUid) {
+      textEl.innerHTML = formatReasoningNote(reasoningObj.note);
+      if (modelTag) modelTag.textContent = reasoningObj.modelUsed;
+      if (regenBtn) regenBtn.style.display = 'inline-flex';
+      refreshLucide();
+    }
   } catch (err) {
-    textEl.innerHTML = `
-      <div style="color:var(--rose);padding:12px;font-size:0.85rem;">
-        ⚠️ Impossible de générer l'explication IA : ${escapeHtml(err.message || 'Erreur réseau')}
-        <div style="margin-top:8px;">
-          <button type="button" class="btn-ask-arena-ai" onclick="window.requestArenaAiExplanation()">Réessayer</button>
+    const currentEffQ = getEffectiveArenaQuestion();
+    if (currentEffQ && currentEffQ.uid === targetUid) {
+      textEl.innerHTML = `
+        <div style="color:var(--rose);padding:12px;font-size:0.85rem;">
+          ⚠️ Impossible de générer l'explication IA : ${escapeHtml(err.message || 'Erreur réseau')}
+          <div style="margin-top:8px;">
+            <button type="button" class="btn-ask-arena-ai" onclick="window.requestArenaAiExplanation(true)">Réessayer</button>
+          </div>
         </div>
-      </div>
-    `;
-    refreshLucide();
+      `;
+      refreshLucide();
+    }
   }
 };
 
@@ -11223,7 +12164,7 @@ window.requestArenaAiExplanation = async function() {
 // ============================================================================
 function pushToAnsweredHistory(question, userAnswerLetters, isCorrect, score = null) {
   if (!question) return;
-  const savedAi = getSavedAiExplanation(question.uid);
+  const savedAi = getSavedAiExplanation(question.uid, question);
   const snapshot = {
     question: JSON.parse(JSON.stringify(question)),
     userAnswerLetters: Array.isArray(userAnswerLetters) ? [...userAnswerLetters] : (userAnswerLetters ? [userAnswerLetters] : []),
@@ -11317,9 +12258,9 @@ function renderHistoryQuestion(historyEntry) {
     chapterBadge.classList.add('is-revealed');
     chapterBadge.title = 'Chapitre du QCM révisé';
     const dateStr = extractQuestionDateOrSession(q);
-    const dateBadgeHtml = `<span class="question-date-pill" title="Date ou session du QCM"><i data-lucide="calendar" style="width:11px;height:11px;"></i> ${escapeHtml(dateStr)}</span>`;
+    const dateBadgeHtml = dateStr ? `<span class="question-date-pill" title="Date ou session du QCM : ${escapeHtml(dateStr)}"><i data-lucide="calendar" style="width:11px;height:11px;"></i> ${escapeHtml(dateStr)}</span>` : '';
     chapterBadge.innerHTML = `
-      <span class="chapter-title-text">Pédiatrie — ${escapeHtml(q.chapterTitle || 'Général')} ${dateBadgeHtml}</span>
+      <span class="chapter-title-text">Pédiatrie — ${escapeHtml(q.chapterTitle || 'Général')}${dateBadgeHtml ? ' ' + dateBadgeHtml : ''}</span>
       <span class="chapter-title-hint" style="color:var(--amber);"><i data-lucide="history" style="width:11px;height:11px;"></i> QCM Répondu</span>
     `;
   }
@@ -11506,9 +12447,9 @@ function loadNextArenaQuestion() {
     chapterBadge.classList.remove('is-revealed');
     chapterBadge.title = 'Chapitre masqué (Cliquer pour afficher)';
     const dateStr = extractQuestionDateOrSession(currentQuestion);
-    const dateBadgeHtml = `<span class="question-date-pill" title="Date ou session du QCM"><i data-lucide="calendar" style="width:11px;height:11px;"></i> ${escapeHtml(dateStr)}</span>`;
+    const dateBadgeHtml = dateStr ? `<span class="question-date-pill" title="Date ou session du QCM : ${escapeHtml(dateStr)}"><i data-lucide="calendar" style="width:11px;height:11px;"></i> ${escapeHtml(dateStr)}</span>` : '';
     chapterBadge.innerHTML = `
-      <span class="chapter-title-text">Pédiatrie — ${escapeHtml(currentQuestion.chapterTitle || 'Général')} ${dateBadgeHtml}</span>
+      <span class="chapter-title-text">Pédiatrie — ${escapeHtml(currentQuestion.chapterTitle || 'Général')}${dateBadgeHtml ? ' ' + dateBadgeHtml : ''}</span>
       <span class="chapter-title-hint"><i data-lucide="eye" style="width:11px;height:11px;"></i> Cours masqué</span>
     `;
     chapterBadge.onclick = () => window.toggleArenaChapterTitle();
@@ -11799,11 +12740,16 @@ function triggerMasteryConfetti() {
 // FAILURE HANDLER & ERROR MODAL WITH AI REASONING
 // ============================================================================
 async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq = false, score = 0, feedback = '') {
-  // Enregistrer dans l'historique de consultation (max 5)
-  pushToAnsweredHistory(currentQuestion, userAnswerLetters, false, score);
+  // Capture target question and UID immediately to avoid race conditions when user skips modal
+  const targetQuestion = currentQuestion;
+  if (!targetQuestion) return;
+  const targetUid = targetQuestion.uid;
 
-  const result = queueEngine.handleFailure(currentQuestion.uid);
-  studyTracker.recordAnswer(false, currentQuestion ? currentQuestion.chapterId : null, currentQuestion ? currentQuestion.uid : null);
+  // Enregistrer dans l'historique de consultation (max 5)
+  pushToAnsweredHistory(targetQuestion, userAnswerLetters, false, score);
+
+  const result = queueEngine.handleFailure(targetUid);
+  studyTracker.recordAnswer(false, targetQuestion.chapterId || null, targetUid);
   // Seules les réponses justes incrémentent le compteur journalier de QCM
   updateArenaDailyBadge();
   if (currentView === 'stats') renderStatsUI();
@@ -11837,16 +12783,16 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
     || document.querySelector('.answer-recap-box');
 
   if (comparisonContainer) {
-    const recapHtml = formatQuestionMistakeRecap(currentQuestion, userAnswerLetters, isCroq, userText, score);
+    const recapHtml = formatQuestionMistakeRecap(targetQuestion, userAnswerLetters, isCroq, userText, score);
     comparisonContainer.outerHTML = `<div id="error-modal-comparison-container">${recapHtml}</div>`;
   }
 
   // Highlight options visually in Arena (red for wrong choices, green for correct)
-  if (currentQuestion && currentQuestion.options) {
+  if (targetQuestion && targetQuestion.options) {
     document.querySelectorAll('.option-item').forEach(el => {
       const letter = el.dataset.letter;
       const isSelected = userAnswerLetters.includes(letter);
-      const isCor = (currentQuestion.options || []).some(o => o.letter === letter && o.is_correct);
+      const isCor = (targetQuestion.options || []).some(o => o.letter === letter && o.is_correct);
 
       if (isSelected && !isCor) {
         el.classList.add('wrong-highlight');
@@ -11856,7 +12802,8 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
     });
   }
 
-  // Show modal immediately
+  // Show modal immediately linked to targetUid
+  modals.error.dataset.questionUid = targetUid;
   modals.error.style.display = 'flex';
   const aiNoteContainer = document.getElementById('error-modal-ai-note');
   aiNoteContainer.innerHTML = `
@@ -11867,32 +12814,36 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
   `;
   refreshLucide();
 
-  // Request AI reasoning note asynchronously
+  // Request AI reasoning note asynchronously using targetQuestion
   const reasoningObj = await geminiService.generateReasoningNote(
-    currentQuestion,
+    targetQuestion,
     userAnswerLetters,
     isCroq,
     userAnswerLetters[0] || ''
   );
 
-  saveAiExplanationForQuestion(currentQuestion.uid, reasoningObj.note, reasoningObj.modelUsed, currentQuestion);
+  saveAiExplanationForQuestion(targetUid, reasoningObj.note, reasoningObj.modelUsed, targetQuestion);
 
-  aiNoteContainer.innerHTML = formatReasoningNote(reasoningObj.note);
-  document.getElementById('error-modal-model-tag').textContent = reasoningObj.modelUsed;
+  // ONLY update modal if still visible AND still representing targetUid
+  if (modals.error.style.display === 'flex' && modals.error.dataset.questionUid === targetUid) {
+    aiNoteContainer.innerHTML = formatReasoningNote(reasoningObj.note);
+    document.getElementById('error-modal-model-tag').textContent = reasoningObj.modelUsed;
+    refreshLucide();
+  }
 
-  // Save to Notebook with complete question metadata and options
+  // Save to Notebook with targetQuestion metadata
   const noteRecord = {
     id: `note_${Date.now()}`,
-    questionUid: currentQuestion.uid,
-    questionText: currentQuestion.question,
-    clinicalCase: currentQuestion.clinical_case || null,
-    chapterTitle: currentQuestion.chapterTitle,
-    options: currentQuestion.options ? JSON.parse(JSON.stringify(currentQuestion.options)) : [],
-    media_urls: currentQuestion.media_urls || [],
+    questionUid: targetUid,
+    questionText: targetQuestion.question,
+    clinicalCase: targetQuestion.clinical_case || null,
+    chapterTitle: targetQuestion.chapterTitle,
+    options: targetQuestion.options ? JSON.parse(JSON.stringify(targetQuestion.options)) : [],
+    media_urls: targetQuestion.media_urls || [],
     userAnswer: userText,
     userAnswerLetters: Array.isArray(userAnswerLetters) ? userAnswerLetters : [userAnswerLetters],
     correctAnswer: correctAnswerText,
-    officialExplanation: currentQuestion.explanation || '',
+    officialExplanation: targetQuestion.explanation || '',
     isCroq: !!isCroq,
     score: isCroq ? score : null,
     reasoningNote: reasoningObj.note,
@@ -14528,11 +15479,15 @@ function renderChatWelcome() {
 async function executeSendMessage(userText) {
   const effQ = getEffectiveArenaQuestion();
   if (!effQ) return;
+  const targetUid = effQ.uid;
   const listEl = document.getElementById('chatbox-messages-list');
   if (!listEl) return;
 
   // 1. Add user bubble
   arenaChatHistory.push({ role: 'user', text: userText, timestamp: Date.now() });
+  if (targetUid) {
+    questionChatHistories[targetUid] = [...arenaChatHistory];
+  }
 
   const userBubble = document.createElement('div');
   userBubble.className = 'chat-bubble bubble-user';
@@ -14561,34 +15516,40 @@ async function executeSendMessage(userText) {
     const historyForAi = arenaChatHistory.slice(0, -1);
     const response = await geminiService.askAboutQuestion(effQ, historyForAi, userText);
 
-    // Remove loading bubble
-    const existingLoader = document.getElementById('chatbox-loading-indicator');
-    if (existingLoader) existingLoader.remove();
-
-    // 3. Add AI bubble
-    arenaChatHistory.push({ role: 'ai', text: response.text, modelUsed: response.modelUsed, timestamp: Date.now() });
-    if (effQ && effQ.uid) {
-      questionChatHistories[effQ.uid] = [...arenaChatHistory];
+    if (targetUid) {
+      if (!questionChatHistories[targetUid]) questionChatHistories[targetUid] = [];
+      questionChatHistories[targetUid].push({ role: 'ai', text: response.text, modelUsed: response.modelUsed, timestamp: Date.now() });
     }
 
-    const aiBubble = document.createElement('div');
-    aiBubble.className = 'chat-bubble bubble-ai';
-    aiBubble.innerHTML = formatMedicalContent(response.text);
-    listEl.appendChild(aiBubble);
+    // ONLY append to DOM if student is STILL on targetUid!
+    const currentEffQ = getEffectiveArenaQuestion();
+    if (currentEffQ && currentEffQ.uid === targetUid) {
+      const existingLoader = document.getElementById('chatbox-loading-indicator');
+      if (existingLoader) existingLoader.remove();
 
-    const modelTag = document.getElementById('chatbox-model-tag');
-    if (modelTag && response.modelUsed) {
-      modelTag.textContent = response.modelUsed;
+      arenaChatHistory = [...questionChatHistories[targetUid]];
+      const aiBubble = document.createElement('div');
+      aiBubble.className = 'chat-bubble bubble-ai';
+      aiBubble.innerHTML = formatMedicalContent(response.text);
+      listEl.appendChild(aiBubble);
+
+      const modelTag = document.getElementById('chatbox-model-tag');
+      if (modelTag && response.modelUsed) {
+        modelTag.textContent = response.modelUsed;
+      }
     }
   } catch (err) {
     console.error('Chat error:', err);
-    const existingLoader = document.getElementById('chatbox-loading-indicator');
-    if (existingLoader) existingLoader.remove();
+    const currentEffQ = getEffectiveArenaQuestion();
+    if (currentEffQ && currentEffQ.uid === targetUid) {
+      const existingLoader = document.getElementById('chatbox-loading-indicator');
+      if (existingLoader) existingLoader.remove();
 
-    const errBubble = document.createElement('div');
-    errBubble.className = 'chat-bubble bubble-ai';
-    errBubble.innerHTML = `⚠️ Erreur de réponse IA : <em>${escapeHtml(err.message)}</em>`;
-    listEl.appendChild(errBubble);
+      const errBubble = document.createElement('div');
+      errBubble.className = 'chat-bubble bubble-ai';
+      errBubble.innerHTML = `⚠️ Erreur de réponse IA : <em>${escapeHtml(err.message)}</em>`;
+      listEl.appendChild(errBubble);
+    }
   } finally {
     if (sendBtn) sendBtn.disabled = false;
     if (inputEl) {

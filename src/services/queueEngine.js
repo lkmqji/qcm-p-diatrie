@@ -414,6 +414,14 @@ export class QueueEngine {
     } catch {}
   }
 
+  deleteReasoningNotesByQuestionUid(questionUid) {
+    if (!questionUid) return;
+    try {
+      const notes = this.getRawReasoningNotes().filter(n => n.questionUid !== questionUid);
+      localStorage.setItem(REASONING_KEY, JSON.stringify(notes));
+    } catch {}
+  }
+
   /**
    * Reset session progress
    */

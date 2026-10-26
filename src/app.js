@@ -73,6 +73,7 @@ const modals = {
 // ============================================================================
 function initApp() {
   queueEngine.setQuestions(allQuestions, allChapters);
+  scrubCorruptedAiExplanations();
   studyTracker.seedFirstPassFromExistingStats(queueEngine.stats, queueEngine.getRawReasoningNotes());
   updateDashboardUI();
   setupEventListeners();
@@ -1027,35 +1028,91 @@ function formatAnswerComparison(userAnswer, correctAnswer, isCroq = false, score
 // QUESTION DATE & SESSION EXTRACTION
 // ============================================================================
 function extractQuestionDateOrSession(q) {
-  if (!q) return 'P? 20??';
+  if (!q) return '';
   let rawDate = '';
-  if (q.date && typeof q.date === 'string' && q.date.trim()) rawDate = q.date.trim();
-  else if (q.session && typeof q.session === 'string' && q.session.trim()) rawDate = q.session.trim();
-  else if (q.year && (typeof q.year === 'string' || typeof q.year === 'number')) rawDate = String(q.year).trim();
+  
+  // 1. Direct metadata properties on the question object
+  if (q.session && typeof q.session === 'string' && q.session.trim()) rawDate = q.session.trim();
+  else if (q.session_type && (q.year || q.annee)) rawDate = String(q.session_type).trim() + ' ' + String(q.year || q.annee).trim();
+  else if (q.date && typeof q.date === 'string' && q.date.trim()) rawDate = q.date.trim();
   else if (q.source_date && typeof q.source_date === 'string') rawDate = q.source_date.trim();
+  else if (q.year && (typeof q.year === 'string' || typeof q.year === 'number')) rawDate = String(q.year).trim();
 
+  // 2. Sift text fields if not directly specified in object properties
   if (!rawDate) {
     const texts = [q.explanation || '', q.clinical_case || '', q.question || ''];
     const full = texts.join(' \n ');
 
-    const sessionMatch = full.match(/\b(P\s*[12]?\s*[-_:/]?\s*20\d\d|R\s*[12]?\s*[-_:/]?\s*20\d\d|EMD\s*[123]?\s*[-_:/]?\s*20\d\d|Session\s*[-_:/]?\s*20\d\d|Rattrapage\s*[-_:/]?\s*20\d\d|Principale\s*[-_:/]?\s*20\d\d|R[ée]sidanat\s*[-_:/]?\s*20\d\d)\b/i);
-    if (sessionMatch) {
-      rawDate = sessionMatch[0].trim();
+    // Match Résidanat (e.g. Résidanat 2021, Residanat 19, Résidanat Alger 2020)
+    const resMatch = full.match(/\b(R[ée]sidanat(?:\s+[A-Za-z]+)?\s*[-_:/]?\s*(?:20\d\d|19\d\d|\b[0-2]\d\b))\b/i);
+    if (resMatch) {
+      rawDate = resMatch[1].trim();
     } else {
-      const sourceMatch = full.match(/(?:Source\s*[:;]?\s*)?((?:Diapo(?:sitive)?|iKb|Guide|Cours|Uptodate|R[ée]f[ée]rentiel|Recommandation|HAS)\s*[^.,;\n]*20\d\d(?:\/20\d\d)?)/i);
-      if (sourceMatch) {
-        const cleaned = sourceMatch[1].replace(/^(?:Source\s*[:;]?\s*)/i, '').trim();
-        if (cleaned.length <= 35) rawDate = cleaned;
+      // Match Rattrapage (e.g. Rattrapage 2021, Ratrapage 19, R 2020)
+      const ratMatch = full.match(/\b(Rat(?:t)?rapage\s*[-_:/]?\s*(?:20\d\d|19\d\d|\b[0-2]\d\b)|\bR\s*[-_:/]?\s*(?:20\d\d))\b/i);
+      if (ratMatch) {
+        rawDate = ratMatch[1].trim();
       } else {
-        const yearMatch = full.match(/\b(20(?:0[89]|1[0-9]|2[0-6]))\b/);
-        if (yearMatch) {
-          rawDate = yearMatch[0];
+        // Match Principale / P (e.g. Principale 2020, P 2021, P1 2019, P2 2020, P 19)
+        const pMatch = full.match(/\b(Principale\s*[-_:/]?\s*(?:20\d\d|19\d\d|\b[0-2]\d\b)|\bP\s*[12]?\s*[-_:/]?\s*(?:20\d\d))\b/i);
+        if (pMatch) {
+          rawDate = pMatch[1].trim();
+        } else {
+          // Match EMD or Session
+          const emdMatch = full.match(/\b(EMD\s*[123]?\s*[-_:/]?\s*(?:20\d\d|19\d\d|\b[0-2]\d\b)|Session\s*[-_:/]?\s*(?:20\d\d|19\d\d))\b/i);
+          if (emdMatch) {
+            rawDate = emdMatch[1].trim();
+          } else {
+            // Match official medical source mentions with year (Diapositive 2024, iKb, Guide)
+            const sourceMatch = full.match(/\b(Diapo(?:sitive)?|iKb|Guide|Cours|Uptodate|R[ée]f[ée]rentiel|Recommandation|HAS)\b\s*[^.,;\n]*20\d\d(?:\/20\d\d)?/i);
+            if (sourceMatch) {
+              const cleaned = sourceMatch[0].replace(/^(?:Source\s*[:;]?\s*)/i, '').trim();
+              if (cleaned.length <= 35) rawDate = cleaned;
+            }
+          }
         }
       }
     }
   }
 
-  if (!rawDate) return 'P? 20??';
+  if (!rawDate) return '';
+
+  // Canonical session & date normalization
+  // 1. Résidanat (e.g. "Résidanat 2022", "residanat alger 18", "Résidanat 19")
+  let m = rawDate.match(/r[ée]sidanat(?:\s+([a-z]+))?\s*[-_/:]?\s*('?(?:20\d\d|19\d\d|[0-2]\d))\b/i);
+  if (m) {
+    let year = m[2].replace("'", '');
+    if (year.length === 2) year = (parseInt(year, 10) > 50 ? '19' : '20') + year;
+    const city = m[1] ? (' ' + m[1].charAt(0).toUpperCase() + m[1].slice(1).toLowerCase()) : '';
+    return 'Résidanat' + city + ' ' + year;
+  }
+
+  // 2. Rattrapage / R (e.g. "Rattrapage 2020", "ratrapage 19", "R 2022")
+  m = rawDate.match(/(?:rat(?:t)?rapage|(?:\bR))\s*([12])?\s*[-_/:]?\s*('?(?:20\d\d|19\d\d|[0-2]\d))\b/i);
+  if (m) {
+    let year = m[2].replace("'", '');
+    if (year.length === 2) year = (parseInt(year, 10) > 50 ? '19' : '20') + year;
+    return 'Rattrapage ' + year;
+  }
+
+  // 3. Principale / P (e.g. "Principale 2020", "P 2021", "P1 2021", "p 19")
+  m = rawDate.match(/(?:principale|(?:\bP))\s*([12])?\s*[-_/:]?\s*('?(?:20\d\d|19\d\d|[0-2]\d))\b/i);
+  if (m) {
+    const pNum = m[1] ? m[1] : '';
+    let year = m[2].replace("'", '');
+    if (year.length === 2) year = (parseInt(year, 10) > 50 ? '19' : '20') + year;
+    return 'P' + (pNum ? pNum + ' ' : ' ') + year;
+  }
+
+  // 4. EMD (e.g. "EMD 2020", "EMD1 2021")
+  m = rawDate.match(/emd\s*([123])?\s*[-_/:]?\s*('?(?:20\d\d|19\d\d|[0-2]\d))\b/i);
+  if (m) {
+    const emdNum = m[1] ? m[1] : '';
+    let year = m[2].replace("'", '');
+    if (year.length === 2) year = (parseInt(year, 10) > 50 ? '19' : '20') + year;
+    return 'EMD' + (emdNum ? emdNum + ' ' : ' ') + year;
+  }
+
   return rawDate.charAt(0).toUpperCase() + rawDate.slice(1);
 }
 
@@ -1073,29 +1130,160 @@ try {
   console.warn('Failed to load AI explanations cache:', e);
 }
 
-function getSavedAiExplanation(questionUid) {
+/**
+ * Validates that an AI reasoning note semantically matches the target question.
+ * Protects against race condition corruption where a note from Question A is saved to Question B.
+ */
+function isExplanationMatchingQuestion(noteText, question) {
+  if (!noteText || typeof noteText !== 'string' || !question) return false;
+
+  const noteLower = noteText.toLowerCase();
+
+  // 1. Explicit theme mismatch check:
+  // If the note has "Thème clé : *XYZ*" and XYZ has zero word overlap with question.chapterTitle, it's a mismatch
+  const themeMatch = noteText.match(/Thème clé\s*:\s*\*?([^\n\*\r\<\>]+)\*?/i);
+  if (themeMatch && question.chapterTitle) {
+    const noteTheme = themeMatch[1].trim().toLowerCase();
+    const qChapter = question.chapterTitle.trim().toLowerCase();
+    const cleanWords = (s) => (s || '').replace(/[^a-z0-9à-öø-ÿ]/gi, ' ').split(/\s+/).filter(w => w.length >= 4);
+    const themeWords = cleanWords(noteTheme);
+    const chapterWords = cleanWords(qChapter);
+    const hasCommonWord = themeWords.some(tw => chapterWords.some(cw => tw.includes(cw) || cw.includes(tw)));
+    if (!hasCommonWord && themeWords.length > 0 && chapterWords.length > 0) {
+      return false; // Clear chapter mismatch!
+    }
+  }
+
+  // 2. Options keyword overlap check for QCMs and CROQs
+  const stopWords = new Set(['dans', 'pour', 'avec', 'sans', 'chez', 'cette', 'sont', 'peut', 'tous', 'tout', 'faire', 'plus', 'leur', 'leurs', 'etre', 'avoir', 'donnez', 'quel', 'quelle', 'quelles', 'quels']);
+  const getWords = (str) => (str || '').toLowerCase().replace(/[^a-z0-9à-öø-ÿ]/gi, ' ').split(/\s+/).filter(w => w.length >= 4 && !stopWords.has(w));
+
+  if (Array.isArray(question.options) && question.options.length >= 2) {
+    const optionKeywords = question.options.flatMap(o => getWords(o.text));
+    const uniqueKeywords = Array.from(new Set(optionKeywords));
+    const matchingKeywords = uniqueKeywords.filter(k => noteLower.includes(k));
+    if (uniqueKeywords.length >= 3 && matchingKeywords.length < 2) {
+      return false;
+    }
+  } else {
+    // For CROQ questions
+    const qKeywords = getWords(question.question || question.statement);
+    const ansKeywords = getWords(question.croq_answer || '');
+    const combined = Array.from(new Set([...qKeywords, ...ansKeywords]));
+    const matching = combined.filter(k => noteLower.includes(k));
+    if (combined.length >= 2 && matching.length === 0) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/**
+ * Automatically purges any previously corrupted or mismatched AI explanations
+ * stored in localStorage or the Spaced Repetition Notebook.
+ */
+function scrubCorruptedAiExplanations() {
+  try {
+    let purgedCacheCount = 0;
+    for (const [uid, item] of Object.entries(aiExplanationsCache)) {
+      if (!item || !item.note) continue;
+      const q = allQuestions.find(it => it.uid === uid);
+      if (!q || !isExplanationMatchingQuestion(item.note, q)) {
+        delete aiExplanationsCache[uid];
+        purgedCacheCount++;
+      }
+    }
+    if (purgedCacheCount > 0) {
+      localStorage.setItem('pedia_ai_explanations_cache', JSON.stringify(aiExplanationsCache));
+      console.log(`[Diagnostic IA] Purged ${purgedCacheCount} mismatched AI explanation(s) from local cache.`);
+    }
+
+    // Scrub notebook notes in QueueEngine
+    const rawNotes = queueEngine.getRawReasoningNotes();
+    let purgedNotesCount = 0;
+    const cleanedNotes = rawNotes.filter(n => {
+      if (!n || !n.questionUid || !n.reasoningNote) return true;
+      const q = allQuestions.find(it => it.uid === n.questionUid);
+      if (q && !isExplanationMatchingQuestion(n.reasoningNote, q)) {
+        purgedNotesCount++;
+        return false;
+      }
+      return true;
+    });
+
+    if (purgedNotesCount > 0) {
+      localStorage.setItem('pedia_drill_reasoning_notes_v1', JSON.stringify(cleanedNotes));
+      console.log(`[Diagnostic IA] Purged ${purgedNotesCount} mismatched AI reasoning note(s) from Notebook.`);
+      firebaseSyncService.triggerAutoPush();
+    }
+  } catch (err) {
+    console.warn('[Diagnostic IA] Error while scrubbing explanations:', err);
+  }
+}
+
+function getSavedAiExplanation(questionUid, question = null) {
   if (!questionUid) return null;
+
+  const targetQ = question || (allQuestions.find(q => q.uid === questionUid) || null);
+
+  const checkAndClean = (entry, source) => {
+    if (!entry || !entry.note) return null;
+    if (targetQ && !isExplanationMatchingQuestion(entry.note, targetQ)) {
+      console.warn(`[AI Explanation] Mismatched note detected from ${source} for ${questionUid}. Purging corrupted entry.`);
+      if (source === 'cache') {
+        delete aiExplanationsCache[questionUid];
+        try {
+          localStorage.setItem('pedia_ai_explanations_cache', JSON.stringify(aiExplanationsCache));
+        } catch {}
+      }
+      return null;
+    }
+    return entry;
+  };
+
   // 1. In-memory cache
-  if (aiExplanationsCache[questionUid]) return aiExplanationsCache[questionUid];
+  if (aiExplanationsCache[questionUid]) {
+    const valid = checkAndClean(aiExplanationsCache[questionUid], 'cache');
+    if (valid) return valid;
+  }
   // 2. Answered history buffer
   const histItem = answeredHistory.find(h => h.question && h.question.uid === questionUid && h.aiReasoning);
   if (histItem) {
-    return { note: histItem.aiReasoning, modelUsed: histItem.modelUsed || 'Gemini 3.8 Flash' };
+    const entry = { note: histItem.aiReasoning, modelUsed: histItem.modelUsed || 'Gemini 3.8 Flash' };
+    const valid = checkAndClean(entry, 'history');
+    if (valid) return valid;
+    histItem.aiReasoning = null;
+    histItem.modelUsed = null;
   }
   // 3. QueueEngine reasoning notes (from notebook or synced from Firestore)
   const notes = queueEngine.getReasoningNotes();
   const note = notes.find(n => n.questionUid === questionUid && n.reasoningNote);
   if (note) {
-    return { note: note.reasoningNote, modelUsed: note.modelUsed || 'Gemini 3.8 Flash' };
+    const entry = { note: note.reasoningNote, modelUsed: note.modelUsed || 'Gemini 3.8 Flash' };
+    const valid = checkAndClean(entry, 'notebook');
+    if (valid) return valid;
+    if (note.id) {
+      queueEngine.deleteReasoningNote(note.id);
+    }
   }
   return null;
 }
 
 function saveAiExplanationForQuestion(questionUid, noteText, modelUsed = 'Gemini 3.8 Flash', question = null) {
   if (!questionUid || !noteText) return;
+
+  const targetQ = question || (allQuestions.find(q => q.uid === questionUid) || null);
+  if (targetQ && !isExplanationMatchingQuestion(noteText, targetQ)) {
+    console.warn(`[AI Explanation] Refusing to save mismatched note for ${questionUid}`);
+    return;
+  }
+
   aiExplanationsCache[questionUid] = {
     note: noteText,
     modelUsed: modelUsed || 'Gemini 3.8 Flash',
+    questionText: targetQ ? (targetQ.question || targetQ.statement) : '',
+    chapterTitle: targetQ ? targetQ.chapterTitle : '',
     timestamp: Date.now()
   };
   try {
@@ -1115,22 +1303,22 @@ function saveAiExplanationForQuestion(questionUid, noteText, modelUsed = 'Gemini
   // Ensure it is saved in queueEngine Notebook
   const existingNotes = queueEngine.getReasoningNotes();
   const alreadySaved = existingNotes.some(n => n.questionUid === questionUid);
-  if (!alreadySaved && question) {
-    const isCroq = !!question.is_croq;
-    const correctLetters = isCroq ? [] : (question.options || []).filter(o => o.is_correct).map(o => o.letter);
-    const correctText = isCroq ? (question.croq_answer || '') : (question.options || []).filter(o => o.is_correct).map(o => `${o.letter}. ${o.text}`).join(' | ');
+  if (!alreadySaved && targetQ) {
+    const isCroq = !!targetQ.is_croq;
+    const correctLetters = isCroq ? [] : (targetQ.options || []).filter(o => o.is_correct).map(o => o.letter);
+    const correctText = isCroq ? (targetQ.croq_answer || '') : (targetQ.options || []).filter(o => o.is_correct).map(o => `${o.letter}. ${o.text}`).join(' | ');
     const noteRecord = {
       id: `note_${Date.now()}`,
-      questionUid: question.uid,
-      questionText: question.question,
-      clinicalCase: question.clinical_case || null,
-      chapterTitle: question.chapterTitle,
-      options: question.options ? JSON.parse(JSON.stringify(question.options)) : [],
-      media_urls: question.media_urls || [],
+      questionUid: targetQ.uid,
+      questionText: targetQ.question,
+      clinicalCase: targetQ.clinical_case || null,
+      chapterTitle: targetQ.chapterTitle,
+      options: targetQ.options ? JSON.parse(JSON.stringify(targetQ.options)) : [],
+      media_urls: targetQ.media_urls || [],
       userAnswer: isCroq ? 'Consultation & Révision' : correctLetters.join(', '),
       userAnswerLetters: correctLetters,
       correctAnswer: correctText,
-      officialExplanation: question.explanation || '',
+      officialExplanation: targetQ.explanation || '',
       isCroq: isCroq,
       score: null,
       reasoningNote: noteText,
@@ -1149,16 +1337,19 @@ function renderArenaAiExplanation(question) {
   const box = document.getElementById('arena-ai-explanation-box');
   const textEl = document.getElementById('arena-ai-explanation-text');
   const modelTag = document.getElementById('arena-ai-model-tag');
+  const regenBtn = document.getElementById('btn-arena-ai-regenerate');
   if (!box || !textEl || !question) return;
 
-  const saved = getSavedAiExplanation(question.uid);
+  const saved = getSavedAiExplanation(question.uid, question);
   box.style.display = 'flex';
 
   if (saved && saved.note) {
     if (modelTag) modelTag.textContent = saved.modelUsed || 'Gemini 3.8 Flash';
+    if (regenBtn) regenBtn.style.display = 'inline-flex';
     textEl.innerHTML = formatReasoningNote(saved.note);
   } else {
     if (modelTag) modelTag.textContent = 'Gemini Flash';
+    if (regenBtn) regenBtn.style.display = 'none';
     textEl.innerHTML = `
       <div class="arena-ai-prompt-box">
         <div class="arena-ai-prompt-info">
@@ -1175,14 +1366,38 @@ function renderArenaAiExplanation(question) {
   refreshLucide();
 }
 
-window.requestArenaAiExplanation = async function() {
+window.regenerateArenaAiExplanation = async function() {
   const effQ = getEffectiveArenaQuestion();
   if (!effQ) return;
+  const targetUid = effQ.uid;
+
+  delete aiExplanationsCache[targetUid];
+  try {
+    localStorage.setItem('pedia_ai_explanations_cache', JSON.stringify(aiExplanationsCache));
+  } catch {}
+
+  answeredHistory.forEach(item => {
+    if (item.question && item.question.uid === targetUid) {
+      item.aiReasoning = null;
+      item.modelUsed = null;
+    }
+  });
+
+  queueEngine.deleteReasoningNotesByQuestionUid(targetUid);
+  await window.requestArenaAiExplanation(true);
+};
+
+window.requestArenaAiExplanation = async function(forceRegen = false) {
+  const effQ = getEffectiveArenaQuestion();
+  if (!effQ) return;
+  const targetUid = effQ.uid;
   const box = document.getElementById('arena-ai-explanation-box');
   const textEl = document.getElementById('arena-ai-explanation-text');
   const modelTag = document.getElementById('arena-ai-model-tag');
+  const regenBtn = document.getElementById('btn-arena-ai-regenerate');
   if (!box || !textEl) return;
 
+  if (regenBtn) regenBtn.style.display = 'none';
   box.style.display = 'flex';
   textEl.innerHTML = `
     <div class="reasoning-loader-wrap" style="padding:16px;text-align:center;">
@@ -1203,20 +1418,28 @@ window.requestArenaAiExplanation = async function() {
       ''
     );
 
-    saveAiExplanationForQuestion(effQ.uid, reasoningObj.note, reasoningObj.modelUsed, effQ);
-    textEl.innerHTML = formatReasoningNote(reasoningObj.note);
-    if (modelTag) modelTag.textContent = reasoningObj.modelUsed;
-    refreshLucide();
+    saveAiExplanationForQuestion(targetUid, reasoningObj.note, reasoningObj.modelUsed, effQ);
+
+    const currentEffQ = getEffectiveArenaQuestion();
+    if (currentEffQ && currentEffQ.uid === targetUid) {
+      textEl.innerHTML = formatReasoningNote(reasoningObj.note);
+      if (modelTag) modelTag.textContent = reasoningObj.modelUsed;
+      if (regenBtn) regenBtn.style.display = 'inline-flex';
+      refreshLucide();
+    }
   } catch (err) {
-    textEl.innerHTML = `
-      <div style="color:var(--rose);padding:12px;font-size:0.85rem;">
-        ⚠️ Impossible de générer l'explication IA : ${escapeHtml(err.message || 'Erreur réseau')}
-        <div style="margin-top:8px;">
-          <button type="button" class="btn-ask-arena-ai" onclick="window.requestArenaAiExplanation()">Réessayer</button>
+    const currentEffQ = getEffectiveArenaQuestion();
+    if (currentEffQ && currentEffQ.uid === targetUid) {
+      textEl.innerHTML = `
+        <div style="color:var(--rose);padding:12px;font-size:0.85rem;">
+          ⚠️ Impossible de générer l'explication IA : ${escapeHtml(err.message || 'Erreur réseau')}
+          <div style="margin-top:8px;">
+            <button type="button" class="btn-ask-arena-ai" onclick="window.requestArenaAiExplanation(true)">Réessayer</button>
+          </div>
         </div>
-      </div>
-    `;
-    refreshLucide();
+      `;
+      refreshLucide();
+    }
   }
 };
 
@@ -1225,7 +1448,7 @@ window.requestArenaAiExplanation = async function() {
 // ============================================================================
 function pushToAnsweredHistory(question, userAnswerLetters, isCorrect, score = null) {
   if (!question) return;
-  const savedAi = getSavedAiExplanation(question.uid);
+  const savedAi = getSavedAiExplanation(question.uid, question);
   const snapshot = {
     question: JSON.parse(JSON.stringify(question)),
     userAnswerLetters: Array.isArray(userAnswerLetters) ? [...userAnswerLetters] : (userAnswerLetters ? [userAnswerLetters] : []),
@@ -1319,9 +1542,9 @@ function renderHistoryQuestion(historyEntry) {
     chapterBadge.classList.add('is-revealed');
     chapterBadge.title = 'Chapitre du QCM révisé';
     const dateStr = extractQuestionDateOrSession(q);
-    const dateBadgeHtml = `<span class="question-date-pill" title="Date ou session du QCM"><i data-lucide="calendar" style="width:11px;height:11px;"></i> ${escapeHtml(dateStr)}</span>`;
+    const dateBadgeHtml = dateStr ? `<span class="question-date-pill" title="Date ou session du QCM : ${escapeHtml(dateStr)}"><i data-lucide="calendar" style="width:11px;height:11px;"></i> ${escapeHtml(dateStr)}</span>` : '';
     chapterBadge.innerHTML = `
-      <span class="chapter-title-text">Pédiatrie — ${escapeHtml(q.chapterTitle || 'Général')} ${dateBadgeHtml}</span>
+      <span class="chapter-title-text">Pédiatrie — ${escapeHtml(q.chapterTitle || 'Général')}${dateBadgeHtml ? ' ' + dateBadgeHtml : ''}</span>
       <span class="chapter-title-hint" style="color:var(--amber);"><i data-lucide="history" style="width:11px;height:11px;"></i> QCM Répondu</span>
     `;
   }
@@ -1508,9 +1731,9 @@ function loadNextArenaQuestion() {
     chapterBadge.classList.remove('is-revealed');
     chapterBadge.title = 'Chapitre masqué (Cliquer pour afficher)';
     const dateStr = extractQuestionDateOrSession(currentQuestion);
-    const dateBadgeHtml = `<span class="question-date-pill" title="Date ou session du QCM"><i data-lucide="calendar" style="width:11px;height:11px;"></i> ${escapeHtml(dateStr)}</span>`;
+    const dateBadgeHtml = dateStr ? `<span class="question-date-pill" title="Date ou session du QCM : ${escapeHtml(dateStr)}"><i data-lucide="calendar" style="width:11px;height:11px;"></i> ${escapeHtml(dateStr)}</span>` : '';
     chapterBadge.innerHTML = `
-      <span class="chapter-title-text">Pédiatrie — ${escapeHtml(currentQuestion.chapterTitle || 'Général')} ${dateBadgeHtml}</span>
+      <span class="chapter-title-text">Pédiatrie — ${escapeHtml(currentQuestion.chapterTitle || 'Général')}${dateBadgeHtml ? ' ' + dateBadgeHtml : ''}</span>
       <span class="chapter-title-hint"><i data-lucide="eye" style="width:11px;height:11px;"></i> Cours masqué</span>
     `;
     chapterBadge.onclick = () => window.toggleArenaChapterTitle();
@@ -1801,11 +2024,16 @@ function triggerMasteryConfetti() {
 // FAILURE HANDLER & ERROR MODAL WITH AI REASONING
 // ============================================================================
 async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq = false, score = 0, feedback = '') {
-  // Enregistrer dans l'historique de consultation (max 5)
-  pushToAnsweredHistory(currentQuestion, userAnswerLetters, false, score);
+  // Capture target question and UID immediately to avoid race conditions when user skips modal
+  const targetQuestion = currentQuestion;
+  if (!targetQuestion) return;
+  const targetUid = targetQuestion.uid;
 
-  const result = queueEngine.handleFailure(currentQuestion.uid);
-  studyTracker.recordAnswer(false, currentQuestion ? currentQuestion.chapterId : null, currentQuestion ? currentQuestion.uid : null);
+  // Enregistrer dans l'historique de consultation (max 5)
+  pushToAnsweredHistory(targetQuestion, userAnswerLetters, false, score);
+
+  const result = queueEngine.handleFailure(targetUid);
+  studyTracker.recordAnswer(false, targetQuestion.chapterId || null, targetUid);
   // Seules les réponses justes incrémentent le compteur journalier de QCM
   updateArenaDailyBadge();
   if (currentView === 'stats') renderStatsUI();
@@ -1839,16 +2067,16 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
     || document.querySelector('.answer-recap-box');
 
   if (comparisonContainer) {
-    const recapHtml = formatQuestionMistakeRecap(currentQuestion, userAnswerLetters, isCroq, userText, score);
+    const recapHtml = formatQuestionMistakeRecap(targetQuestion, userAnswerLetters, isCroq, userText, score);
     comparisonContainer.outerHTML = `<div id="error-modal-comparison-container">${recapHtml}</div>`;
   }
 
   // Highlight options visually in Arena (red for wrong choices, green for correct)
-  if (currentQuestion && currentQuestion.options) {
+  if (targetQuestion && targetQuestion.options) {
     document.querySelectorAll('.option-item').forEach(el => {
       const letter = el.dataset.letter;
       const isSelected = userAnswerLetters.includes(letter);
-      const isCor = (currentQuestion.options || []).some(o => o.letter === letter && o.is_correct);
+      const isCor = (targetQuestion.options || []).some(o => o.letter === letter && o.is_correct);
 
       if (isSelected && !isCor) {
         el.classList.add('wrong-highlight');
@@ -1858,7 +2086,8 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
     });
   }
 
-  // Show modal immediately
+  // Show modal immediately linked to targetUid
+  modals.error.dataset.questionUid = targetUid;
   modals.error.style.display = 'flex';
   const aiNoteContainer = document.getElementById('error-modal-ai-note');
   aiNoteContainer.innerHTML = `
@@ -1869,32 +2098,36 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
   `;
   refreshLucide();
 
-  // Request AI reasoning note asynchronously
+  // Request AI reasoning note asynchronously using targetQuestion
   const reasoningObj = await geminiService.generateReasoningNote(
-    currentQuestion,
+    targetQuestion,
     userAnswerLetters,
     isCroq,
     userAnswerLetters[0] || ''
   );
 
-  saveAiExplanationForQuestion(currentQuestion.uid, reasoningObj.note, reasoningObj.modelUsed, currentQuestion);
+  saveAiExplanationForQuestion(targetUid, reasoningObj.note, reasoningObj.modelUsed, targetQuestion);
 
-  aiNoteContainer.innerHTML = formatReasoningNote(reasoningObj.note);
-  document.getElementById('error-modal-model-tag').textContent = reasoningObj.modelUsed;
+  // ONLY update modal if still visible AND still representing targetUid
+  if (modals.error.style.display === 'flex' && modals.error.dataset.questionUid === targetUid) {
+    aiNoteContainer.innerHTML = formatReasoningNote(reasoningObj.note);
+    document.getElementById('error-modal-model-tag').textContent = reasoningObj.modelUsed;
+    refreshLucide();
+  }
 
-  // Save to Notebook with complete question metadata and options
+  // Save to Notebook with targetQuestion metadata
   const noteRecord = {
     id: `note_${Date.now()}`,
-    questionUid: currentQuestion.uid,
-    questionText: currentQuestion.question,
-    clinicalCase: currentQuestion.clinical_case || null,
-    chapterTitle: currentQuestion.chapterTitle,
-    options: currentQuestion.options ? JSON.parse(JSON.stringify(currentQuestion.options)) : [],
-    media_urls: currentQuestion.media_urls || [],
+    questionUid: targetUid,
+    questionText: targetQuestion.question,
+    clinicalCase: targetQuestion.clinical_case || null,
+    chapterTitle: targetQuestion.chapterTitle,
+    options: targetQuestion.options ? JSON.parse(JSON.stringify(targetQuestion.options)) : [],
+    media_urls: targetQuestion.media_urls || [],
     userAnswer: userText,
     userAnswerLetters: Array.isArray(userAnswerLetters) ? userAnswerLetters : [userAnswerLetters],
     correctAnswer: correctAnswerText,
-    officialExplanation: currentQuestion.explanation || '',
+    officialExplanation: targetQuestion.explanation || '',
     isCroq: !!isCroq,
     score: isCroq ? score : null,
     reasoningNote: reasoningObj.note,
@@ -4530,11 +4763,15 @@ function renderChatWelcome() {
 async function executeSendMessage(userText) {
   const effQ = getEffectiveArenaQuestion();
   if (!effQ) return;
+  const targetUid = effQ.uid;
   const listEl = document.getElementById('chatbox-messages-list');
   if (!listEl) return;
 
   // 1. Add user bubble
   arenaChatHistory.push({ role: 'user', text: userText, timestamp: Date.now() });
+  if (targetUid) {
+    questionChatHistories[targetUid] = [...arenaChatHistory];
+  }
 
   const userBubble = document.createElement('div');
   userBubble.className = 'chat-bubble bubble-user';
@@ -4563,34 +4800,40 @@ async function executeSendMessage(userText) {
     const historyForAi = arenaChatHistory.slice(0, -1);
     const response = await geminiService.askAboutQuestion(effQ, historyForAi, userText);
 
-    // Remove loading bubble
-    const existingLoader = document.getElementById('chatbox-loading-indicator');
-    if (existingLoader) existingLoader.remove();
-
-    // 3. Add AI bubble
-    arenaChatHistory.push({ role: 'ai', text: response.text, modelUsed: response.modelUsed, timestamp: Date.now() });
-    if (effQ && effQ.uid) {
-      questionChatHistories[effQ.uid] = [...arenaChatHistory];
+    if (targetUid) {
+      if (!questionChatHistories[targetUid]) questionChatHistories[targetUid] = [];
+      questionChatHistories[targetUid].push({ role: 'ai', text: response.text, modelUsed: response.modelUsed, timestamp: Date.now() });
     }
 
-    const aiBubble = document.createElement('div');
-    aiBubble.className = 'chat-bubble bubble-ai';
-    aiBubble.innerHTML = formatMedicalContent(response.text);
-    listEl.appendChild(aiBubble);
+    // ONLY append to DOM if student is STILL on targetUid!
+    const currentEffQ = getEffectiveArenaQuestion();
+    if (currentEffQ && currentEffQ.uid === targetUid) {
+      const existingLoader = document.getElementById('chatbox-loading-indicator');
+      if (existingLoader) existingLoader.remove();
 
-    const modelTag = document.getElementById('chatbox-model-tag');
-    if (modelTag && response.modelUsed) {
-      modelTag.textContent = response.modelUsed;
+      arenaChatHistory = [...questionChatHistories[targetUid]];
+      const aiBubble = document.createElement('div');
+      aiBubble.className = 'chat-bubble bubble-ai';
+      aiBubble.innerHTML = formatMedicalContent(response.text);
+      listEl.appendChild(aiBubble);
+
+      const modelTag = document.getElementById('chatbox-model-tag');
+      if (modelTag && response.modelUsed) {
+        modelTag.textContent = response.modelUsed;
+      }
     }
   } catch (err) {
     console.error('Chat error:', err);
-    const existingLoader = document.getElementById('chatbox-loading-indicator');
-    if (existingLoader) existingLoader.remove();
+    const currentEffQ = getEffectiveArenaQuestion();
+    if (currentEffQ && currentEffQ.uid === targetUid) {
+      const existingLoader = document.getElementById('chatbox-loading-indicator');
+      if (existingLoader) existingLoader.remove();
 
-    const errBubble = document.createElement('div');
-    errBubble.className = 'chat-bubble bubble-ai';
-    errBubble.innerHTML = `⚠️ Erreur de réponse IA : <em>${escapeHtml(err.message)}</em>`;
-    listEl.appendChild(errBubble);
+      const errBubble = document.createElement('div');
+      errBubble.className = 'chat-bubble bubble-ai';
+      errBubble.innerHTML = `⚠️ Erreur de réponse IA : <em>${escapeHtml(err.message)}</em>`;
+      listEl.appendChild(errBubble);
+    }
   } finally {
     if (sendBtn) sendBtn.disabled = false;
     if (inputEl) {
