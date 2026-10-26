@@ -229,8 +229,9 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
      - **Onglet « Aujourd'hui »** : Temps restant pour achever l'objectif du jour (`remainingToday = Math.max(0, dailyTarget - todayTracker.count)` multiplié par la vitesse). S'actualise instantanément après chaque réponse.
      - **Autres onglets (« 7 jours », « 30 jours », « Tout », « Personnalisé »)** : Affiche à la fois le **temps par jour** et le **temps total** : `${formattedDailyTime}/j • ${formattedTotalTime} total`.
 - **Sélecteur Temporel Multi-Périodes avec Navigation Rétroactive (`stats-range-toggle` & `stats-day-stepper-wrap`)** :
+  - **Onglet actif par défaut (« Aujourd'hui », `currentStatsRange = 'today'`)** : L'onglet journalier `#btn-range-day` est sélectionné et illuminé par défaut à l'ouverture des statistiques, centrant l'analyse sur le travail du jour (ou du jour sélectionné dans le passé).
   - **Navigation jour par jour (`stats-day-stepper-wrap`)** : Boutons précédent/suivant et bouton central pour naviguer dans l'historique (« Hier », « Avant-hier », dates calendaires) et réinitialiser à « Aujourd'hui » en 1 clic.
-  - **7 jours / 30 jours / Tout / Personnalisé 📅** : Filtres temporels glissants ou intervalle libre avec panneau rétractable `[Du] [Au]`.
+  - **7 jours / 30 jours / Tout / Personnalisé 📅** : Filtres temporels glissants ou intervalle libre avec panneau rétractable `[Du] [Au]`. Synchronisation dynamique de la classe `.active` sur l'ensemble des boutons.
 - **Heatmap d'Activité Style GitHub (60 à 90 jours)** :
   - Grille SVG responsive de 7 lignes x 9 colonnes avec 5 paliers d'intensité de couleur (`#121d33` neutre, `#064e3b`, `#047857`, `#10b981`, `#00d4ff` intensif).
 - **Graphique Combiné SVG Interactif (Bilan Journalier)** :

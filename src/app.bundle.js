@@ -5780,7 +5780,7 @@ function applyChapterSelection() {
 // ============================================================================
 // STUDY PROGRESS & ANALYTICS INFOGRAPHIC ENGINE
 // ============================================================================
-let currentStatsRange = '7'; // 'today' | '7' | '30' | 'all' | 'custom'
+let currentStatsRange = 'today'; // 'today' | '7' | '30' | 'all' | 'custom' (Aujourd'hui par défaut)
 let customStatsStart = '';
 let customStatsEnd = '';
 let selectedDayOffset = 0; // 0 = Aujourd'hui, -1 = Hier, -2 = Avant-hier, etc.
@@ -5834,7 +5834,7 @@ function renderStatsUI() {
   const todayRecord = studyTracker.getOrCreateDayRecord(todayStr);
 
   let rangeDays;
-  let rangeLabel = '7 jours';
+  let rangeLabel = "Aujourd'hui";
   if (currentStatsRange === 'today') {
     const targetDateStr = getDateStrWithOffset(selectedDayOffset);
     const targetRecord = studyTracker.getOrCreateDayRecord(targetDateStr);
@@ -5851,9 +5851,15 @@ function renderStatsUI() {
   } else if (currentStatsRange === '30') {
     rangeDays = studyTracker.getDaysByRange('30');
     rangeLabel = '30 jours';
-  } else {
+  } else if (currentStatsRange === '7') {
     rangeDays = studyTracker.getDaysByRange('7');
     rangeLabel = '7 jours';
+  } else {
+    // Par défaut : Aujourd'hui (ou décalage sélectionné)
+    const targetDateStr = getDateStrWithOffset(selectedDayOffset);
+    const targetRecord = studyTracker.getOrCreateDayRecord(targetDateStr);
+    rangeDays = [targetRecord];
+    rangeLabel = getDayLabelForOffset(selectedDayOffset);
   }
 
   // Update Day Stepper UI elements
@@ -5865,13 +5871,18 @@ function renderStatsUI() {
   if (nextDayBtn) {
     nextDayBtn.disabled = (selectedDayOffset >= 0);
   }
-  const dayPillBtn = document.getElementById('btn-range-day');
-  if (dayPillBtn) {
-    if (currentStatsRange === 'today') {
-      dayPillBtn.classList.add('active');
-    } else {
-      dayPillBtn.classList.remove('active');
-    }
+
+  // Synchroniser la classe active sur tous les boutons de période du sélecteur
+  const rangeToggleEl = document.getElementById('stats-range-toggle');
+  if (rangeToggleEl) {
+    rangeToggleEl.querySelectorAll('.range-btn').forEach(btn => {
+      const r = btn.dataset.range;
+      if (r === currentStatsRange) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
   }
 
   // Calculate statistics strictly for the selected period
@@ -7201,7 +7212,7 @@ function setupEventListeners() {
       btn.onclick = () => {
         rangeToggle.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        const r = btn.dataset.range || '7';
+        const r = btn.dataset.range || 'today';
 
         if (r === 'today') {
           if (currentStatsRange === 'today' && selectedDayOffset !== 0) {

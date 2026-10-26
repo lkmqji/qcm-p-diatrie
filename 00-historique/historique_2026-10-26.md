@@ -273,5 +273,21 @@
   - Création du tag Git annoté `v1.4.1`.
   - Push vers GitHub (`main` et tag `v1.4.1`) déclenchant le workflow CI/CD `.github/workflows/build-and-release.yml` pour publier automatiquement la Release officielle et l'APK sur GitHub Releases.
 
+### 20:10 - Activation par défaut de l'onglet "Aujourd'hui" dans les statistiques d'étude
 
-
+- **Contexte & Demande utilisateur** :
+  - Sur la page de statistiques (`#stats-range-toggle`), l'onglet "Aujourd'hui" (`#btn-range-day`) doit être sélectionné et actif par défaut au chargement de l'application et à l'ouverture de la vue stats, à la place de l'onglet "7 jours".
+- **Modifications appliquées** :
+  - **Structure HTML (`template.html`, `index.html`, `dist/index.html`)** :
+    - Ajout de la classe `active` sur le bouton de plage journalière `#btn-range-day` (`<button type="button" class="range-btn range-btn-day active" data-range="today" id="btn-range-day">`).
+    - Suppression de la classe `active` du bouton 7 jours (`<button class="range-btn" data-range="7">7 jours</button>`).
+  - **Logique d'état & d'affichage (`src/app.js`)** :
+    - Initialisation de la variable globale d'état sur `let currentStatsRange = 'today';` (au lieu de `'7'`).
+    - Dans `renderStatsUI()` :
+      - Initialisation du libellé par défaut sur `let rangeLabel = "Aujourd'hui";`.
+      - Synchronisation dynamique systématique de la classe `.active` sur tous les boutons `.range-btn` de `#stats-range-toggle` selon `currentStatsRange`.
+      - Branchement explicite de `currentStatsRange === '7'` et repli (fallback) par défaut garanti sur la journée courante.
+    - Dans la gestion des événements `setupEventListeners()` :
+      - Sécurisation du fallback de plage sur `'today'` (`btn.dataset.range || 'today'`).
+  - **Recompilation complète** :
+    - Exécution de `build-bundle.cjs` régénérant `src/app.bundle.js`, `index.html` et `dist/index.html`.
