@@ -56,7 +56,12 @@ jobs:
 
       - name: 🤖 Compiler l'APK Android (:app:assembleDebug)
         working-directory: android
-        run: ./gradlew assembleDebug --no-daemon --stacktrace
+        run: |
+          ./gradlew assembleDebug --no-daemon --stacktrace > gradle_build.log 2>&1 || {
+            ERR=$(tail -n 25 gradle_build.log | tr '\n' ' ' | sed 's/"//g')
+            echo "::error::$ERR"
+            exit 1
+          }
 
       - name: 📋 Préparer le fichier PediaDrill.apk pour la release
         run: |
