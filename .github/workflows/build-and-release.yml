@@ -52,7 +52,15 @@ jobs:
         run: chmod +x android/gradlew
 
       - name: 🔄 Synchroniser Capacitor Android
-        run: npx @capacitor/cli sync android --verbose
+        run: |
+          npx @capacitor/cli sync android --verbose > cap_sync.log 2>&1 || {
+            echo "### ❌ Capacitor Sync Error Log" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat cap_sync.log >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat cap_sync.log
+            exit 1
+          }
 
       - name: 🤖 Compiler l'APK Android (:app:assembleDebug)
         working-directory: android
