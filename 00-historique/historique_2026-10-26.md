@@ -37,8 +37,9 @@
   - Enregistrement du commit et création du tag Git annoté `v1.3.0`.
   - Push vers GitHub (`main` et `v1.3.0`) déclenchant automatiquement le workflow CI/CD `.github/workflows/build-and-release.yml` pour publier la Release officielle sur GitHub Releases et permettre aux smartphones Android de télécharger la mise à jour directement depuis l'application.
 
-### 13:28 - Correctif CI/CD du workflow de build Android sur GitHub Actions
+### 13:35 - Correctif CI/CD du workflow de build Android sur GitHub Actions
 - Mise à niveau de l'action `android-actions/setup-android` de `@v3` vers `@v4` dans `.github/workflows/build-and-release.yml` pour résoudre l'incompatibilité avec les versions récentes des SDK Command-line Tools de Google.
 - Migration vers Java JDK 21 (`actions/setup-java@v4` avec `java-version: '21'`), requis par Capacitor 7/8 et la configuration de compilation `JavaVersion.VERSION_21`.
 - Attribution des droits d'exécution sur le wrapper Gradle (`git update-index --chmod=+x android/gradlew` et étape explicite `chmod +x android/gradlew`) avant l'exécution de `npx cap sync android`.
+- Intégration et versionnement du module `android/capacitor-cordova-android-plugins` dans Git (retrait du `.gitignore`) et sécurisation défensive dans `android/settings.gradle` et `android/app/build.gradle` (`findProject`) pour garantir que `npx cap sync android` s'exécute sans erreur sur tout runner CI/CD fraîchement cloné.
 - Synchronisation sur `main` et mise à jour du tag `v1.3.0` pour la publication automatique sur GitHub Releases.
