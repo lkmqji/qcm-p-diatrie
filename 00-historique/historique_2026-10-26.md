@@ -36,3 +36,7 @@
 - **Publication GitHub & Mises à Jour Android** :
   - Enregistrement du commit et création du tag Git annoté `v1.3.0`.
   - Push vers GitHub (`main` et `v1.3.0`) déclenchant automatiquement le workflow CI/CD `.github/workflows/build-and-release.yml` pour publier la Release officielle sur GitHub Releases et permettre aux smartphones Android de télécharger la mise à jour directement depuis l'application.
+
+### 13:28 - Correctif CI/CD du workflow de build Android sur GitHub Actions
+- Mise à niveau de l'action `android-actions/setup-android` de `@v3` vers `@v4` dans `.github/workflows/build-and-release.yml` pour résoudre l'incompatibilité avec les versions récentes des SDK Command-line Tools de Google.
+- Synchronisation sur `main` et mise à jour du tag `v1.3.0` pour la publication automatique sur GitHub Releases.

@@ -38,7 +38,7 @@ jobs:
           java-version: '17'
 
       - name: 📱 Configurer le SDK Android
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
 
       - name: 📦 Installer les dépendances Node
         run: npm install
