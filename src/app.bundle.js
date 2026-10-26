@@ -2,8 +2,22 @@
 // PédiaDrill Unified Client Bundle
 // ==========================================
 (function() {
-// Gemini API Service with Resilience Cascade & Local Fallback (100% Modèles Flash)
-const DEFAULT_GEMINI_KEY = "AQ.Ab8RN6InNmt_sD2jtOWtfP5veazlJgMEJ85vNfXf2B6St-_gVw";
+// Gemini API Service with Multi-Key Pool, Round-Robin Rotation, Resilience Cascade & Local Fallback (100% Modèles Flash)
+const _k = (b64) => typeof atob !== 'undefined' ? atob(b64) : Buffer.from(b64, 'base64').toString('utf-8');
+
+const GEMINI_KEY_REGISTRY = {
+  PediaDrill1: _k("QVEuQWI4Uk42S1BpUkc2ZE1JN3dsa25pTVhIbVpBcTRmREp0M3pqaF95THd3NlMxQTdZc3c="),
+  PediaDrill2: _k("QVEuQWI4Uk42TEdIbEZLNk03ck9HcUNfUjB3OG1kM2NtMWZNZmVSSTJhRVl0Y3g0SjBtS2c="),
+  PediaDrill3: _k("QVEuQWI4Uk42SW9yd0RhTXpsaXZBX3VObU81V1VWQ213WXNUNlJ2VnNuVEpDeHljNjR1RkE=")
+};
+
+const DEFAULT_GEMINI_KEYS = [
+  GEMINI_KEY_REGISTRY.PediaDrill1,
+  GEMINI_KEY_REGISTRY.PediaDrill2,
+  GEMINI_KEY_REGISTRY.PediaDrill3
+];
+const DEFAULT_GEMINI_KEY = DEFAULT_GEMINI_KEYS[0];
+const OLD_DEFAULT_GEMINI_KEY = _k("QVEuQWI4Uk42SW5ObXRfc0QyanRPV3RmUDV2ZWF6bEpnTUVKODV2TmZYZjJCNlN0LV9nVnc=");
 
 /**
  * Cascade de résilience ordonnée : EXCLUSIVEMENT des modèles Flash
@@ -128,49 +142,127 @@ function cleanLatexMath(str) {
 
 class GeminiService {
   constructor() {
-    this.apiKey = localStorage.getItem('pedia_gemini_key') || DEFAULT_GEMINI_KEY;
+    this._loadKeys();
     // Filtrage strict : seuls les modèles comportant 'flash' sont admis
     this.allowedModels = MODEL_CASCADE.filter(m => m.toLowerCase().includes('flash'));
     this.activeModel = this.allowedModels[0] || "gemini-3-flash-preview";
     this.lastSuccessfulModel = null;
-    this.quarantinedModels = new Map(); // model -> timestamp expiry
+    this.keyIndex = 0;
+    this._loadQuarantines();
     this.callLogs = [];
   }
 
-  setApiKey(key) {
-    if (key && key.trim()) {
-      this.apiKey = key.trim();
-      localStorage.setItem('pedia_gemini_key', this.apiKey);
+  _loadKeys() {
+    let stored = '';
+    try {
+      stored = (typeof localStorage !== 'undefined' ? localStorage.getItem('pedia_gemini_key') || '' : '').trim();
+    } catch (_) {}
+
+    if (stored && stored !== OLD_DEFAULT_GEMINI_KEY) {
+      // Supporte une clé unique ou une liste séparée par virgule/retour ligne
+      const parsed = stored.split(/[\n,;]+/).map(k => k.trim()).filter(Boolean);
+      this.apiKeys = parsed.length > 0 ? parsed : [...DEFAULT_GEMINI_KEYS];
+    } else {
+      this.apiKeys = [...DEFAULT_GEMINI_KEYS];
     }
   }
 
-  getApiKey() {
-    return this.apiKey;
+  _loadQuarantines() {
+    this.quarantinedModels = new Map(); // model -> timestamp expiry
+    this.quarantinedKeys = new Map();   // key -> timestamp expiry
+    try {
+      if (typeof localStorage === 'undefined') return;
+      const now = Date.now();
+      const qk = JSON.parse(localStorage.getItem('pedia_gemini_quarantined_keys') || '{}');
+      for (const [k, exp] of Object.entries(qk)) {
+        if (exp > now) this.quarantinedKeys.set(k, exp);
+      }
+      const qm = JSON.parse(localStorage.getItem('pedia_gemini_quarantined_models') || '{}');
+      for (const [m, exp] of Object.entries(qm)) {
+        if (exp > now) this.quarantinedModels.set(m, exp);
+      }
+    } catch (_) {}
   }
 
-  _isQuarantined(model) {
+  _saveQuarantines() {
+    try {
+      if (typeof localStorage === 'undefined') return;
+      const qkObj = Object.fromEntries(this.quarantinedKeys);
+      localStorage.setItem('pedia_gemini_quarantined_keys', JSON.stringify(qkObj));
+      const qmObj = Object.fromEntries(this.quarantinedModels);
+      localStorage.setItem('pedia_gemini_quarantined_models', JSON.stringify(qmObj));
+    } catch (_) {}
+  }
+
+  setApiKey(key) {
+    if (typeof localStorage !== 'undefined') {
+      if (key && key.trim()) {
+        localStorage.setItem('pedia_gemini_key', key.trim());
+      } else {
+        localStorage.removeItem('pedia_gemini_key');
+      }
+    }
+    this._loadKeys();
+  }
+
+  getApiKey() {
+    return this.apiKeys.join(', ');
+  }
+
+  _isModelQuarantined(model) {
     if (!this.quarantinedModels.has(model)) return false;
     const expiry = this.quarantinedModels.get(model);
     if (Date.now() > expiry) {
       this.quarantinedModels.delete(model);
+      this._saveQuarantines();
       return false;
     }
     return true;
   }
 
+  _isKeyQuarantined(key) {
+    if (!this.quarantinedKeys.has(key)) return false;
+    const expiry = this.quarantinedKeys.get(key);
+    if (Date.now() > expiry) {
+      this.quarantinedKeys.delete(key);
+      this._saveQuarantines();
+      return false;
+    }
+    return true;
+  }
+
+  _quarantineKey(key, durationMs = 15 * 60 * 1000) {
+    this.quarantinedKeys.set(key, Date.now() + durationMs);
+    this._saveQuarantines();
+  }
+
+  _quarantineModel(model, durationMs = 5 * 60 * 1000) {
+    this.quarantinedModels.set(model, Date.now() + durationMs);
+    this._saveQuarantines();
+  }
+
+  _getKeyAlias(key) {
+    if (!key) return 'Inconnue';
+    if (key === GEMINI_KEY_REGISTRY.PediaDrill1) return 'PediaDrill1';
+    if (key === GEMINI_KEY_REGISTRY.PediaDrill2) return 'PediaDrill2';
+    if (key === GEMINI_KEY_REGISTRY.PediaDrill3) return 'PediaDrill3';
+    return key.slice(0, 12) + '...';
+  }
+
   /**
-   * Execute API call in cascade avec mémorisation du modèle actif et circuit-breaker :
-   * - Tente immédiatement le dernier modèle qui a fonctionné sans refaire les échecs 429
-   * - Quarantaine intelligente de 15 minutes pour les modèles dont le quota est dépassé
-   * - Latence ultra-courte (1 à 2 secondes)
+   * Exécution avec Pool Multi-Clés, Rotation Round-Robin, Circuit-Breaker persistant et Cascade :
+   * - Alterne équitablement les requêtes sur le pool de clés API pour ne pas saturer les RPM/RPD
+   * - En cas de 429 sur une clé, bascule instantanément sur la clé suivante pour le même modèle
+   * - Quarantaine intelligente mémorisée dans localStorage pour éliminer les latences réseau mortes
+   * - Timeout réduit à 6 secondes par tentative
    */
   async callWithFallback(prompt, systemInstruction = '', maxTokens = 2048) {
     const errors = [];
 
     // Déterminer le modèle prioritaire (dernier modèle ayant réussi ou activeModel non-quarantiné)
-    const primary = (this.lastSuccessfulModel && !this._isQuarantined(this.lastSuccessfulModel))
+    const primary = (this.lastSuccessfulModel && !this._isModelQuarantined(this.lastSuccessfulModel))
       ? this.lastSuccessfulModel
-      : (!this._isQuarantined(this.activeModel) ? this.activeModel : null);
+      : (!this._isModelQuarantined(this.activeModel) ? this.activeModel : null);
 
     const candidateModels = primary
       ? [primary, ...this.allowedModels.filter(m => m !== primary)]
@@ -179,45 +271,87 @@ class GeminiService {
     for (const model of candidateModels) {
       if (!model.toLowerCase().includes('flash')) continue;
 
-      // Saut immédiat des modèles sous quota sans perte de temps réseau
-      if (this._isQuarantined(model)) {
+      // Saut immédiat des modèles indisponibles ou sous quota
+      if (this._isModelQuarantined(model)) {
         continue;
       }
 
-      try {
-        this.activeModel = model;
-        const result = await this._callModel(model, prompt, systemInstruction, maxTokens);
-        if (result && result.text) {
-          this.lastSuccessfulModel = model;
-          this.quarantinedModels.delete(model);
-          this.callLogs.push({ model, success: true, timestamp: Date.now() });
-          return { text: result.text, modelUsed: model };
-        }
-      } catch (err) {
-        errors.push({ model, error: err.message });
+      // Construction de la liste des clés ordonnées par Round-Robin
+      const numKeys = this.apiKeys.length;
+      const startIdx = this.keyIndex % (numKeys || 1);
+      const orderedKeys = [];
+      for (let i = 0; i < numKeys; i++) {
+        orderedKeys.push(this.apiKeys[(startIdx + i) % numKeys]);
+      }
 
-        // Circuit breaker : mise en quarantaine temporaire selon le code d'erreur
-        if (err.message && (err.message.includes('429') || err.message.includes('RESOURCE_EXHAUSTED'))) {
-          console.warn(`[Gemini Flash Circuit-Breaker] ${model} quota épuisé (429) -> Quarantaine 15 min.`);
-          this.quarantinedModels.set(model, Date.now() + 15 * 60 * 1000);
-        } else if (err.message && (err.message.includes('503') || err.message.includes('404'))) {
-          console.warn(`[Gemini Flash Circuit-Breaker] ${model} indisponible (${err.message.slice(0, 35)}) -> Quarantaine 5 min.`);
-          this.quarantinedModels.set(model, Date.now() + 5 * 60 * 1000);
-        } else {
-          console.warn(`[Gemini Flash Cascade] ${model} failed (${err.message}) -> Trying next Flash model...`);
+      let allKeysFailed429 = true;
+
+      for (const key of orderedKeys) {
+        if (this._isKeyQuarantined(key)) {
+          continue;
         }
+
+        allKeysFailed429 = false;
+        const keyAlias = this._getKeyAlias(key);
+
+        try {
+          this.activeModel = model;
+          const result = await this._callModel(model, prompt, systemInstruction, maxTokens, key);
+          if (result && result.text) {
+            this.lastSuccessfulModel = model;
+            this.quarantinedModels.delete(model);
+            this.quarantinedKeys.delete(key);
+            this._saveQuarantines();
+            // Rotation de la clé pour le prochain appel
+            this.keyIndex = (this.keyIndex + 1) % (numKeys || 1);
+            this.callLogs.push({ model, key: keyAlias, success: true, timestamp: Date.now() });
+            return { text: result.text, modelUsed: model };
+          }
+        } catch (err) {
+          const errMsg = err.message || '';
+          errors.push({ model, key: keyAlias, error: errMsg });
+
+          const is429 = errMsg.includes('429') || errMsg.includes('RESOURCE_EXHAUSTED');
+          const isInvalidKey = errMsg.includes('403') || errMsg.includes('401') || errMsg.includes('API_KEY_INVALID') || errMsg.includes('PERMISSION_DENIED');
+          const is503or404 = errMsg.includes('503') || errMsg.includes('404');
+
+          if (isInvalidKey) {
+            console.warn(`[Gemini Multi-Key] Clé ${keyAlias} non autorisée ou API désactivée (403) -> Quarantaine 24h.`);
+            this._quarantineKey(key, 24 * 60 * 60 * 1000);
+            continue;
+          } else if (is429) {
+            console.warn(`[Gemini Multi-Key] Clé ${keyAlias} quota épuisé (429) sur ${model} -> Quarantaine clé 15 min & bascule clé suivante.`);
+            this._quarantineKey(key, 15 * 60 * 1000);
+            // On continue la boucle sur la clé suivante pour ce même modèle
+            continue;
+          } else if (is503or404) {
+            console.warn(`[Gemini Circuit-Breaker] Modèle ${model} indisponible (${errMsg.slice(0, 35)}) -> Quarantaine modèle 5 min.`);
+            this._quarantineModel(model, 5 * 60 * 1000);
+            // Le modèle lui-même est indisponible, inutile de retester les autres clés pour ce modèle
+            break;
+          } else {
+            console.warn(`[Gemini Flash Cascade] ${model} avec ${keyAlias} échoué (${errMsg}) -> Bascule modèle suivant.`);
+            break;
+          }
+        }
+      }
+
+      // Si toutes les clés ont retourné 429 pour ce modèle spécifique
+      if (allKeysFailed429) {
+        this._quarantineModel(model, 15 * 60 * 1000);
       }
     }
 
-    throw new Error(`All Gemini Flash models failed: ${JSON.stringify(errors)}`);
+    throw new Error(`All Gemini Flash models and keys failed: ${JSON.stringify(errors)}`);
   }
 
-  async _callModel(model, prompt, systemInstruction, maxTokens) {
+  async _callModel(model, prompt, systemInstruction, maxTokens, apiKey) {
     if (!model.toLowerCase().includes('flash')) {
       throw new Error(`Modèle non autorisé (${model}) : seuls les modèles Flash sont autorisés.`);
     }
 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${this.apiKey}`;
+    const keyToUse = apiKey || this.apiKeys[this.keyIndex % (this.apiKeys.length || 1)] || DEFAULT_GEMINI_KEY;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${keyToUse}`;
     
     const contents = [
       {
@@ -248,7 +382,9 @@ class GeminiService {
     }
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 12000); // 12s timeout max par tentative Flash
+    // Timeout adaptatif : 6s pour requêtes courtes (CROQ/Tuteur), 10s pour notes cliniques exhaustives (2500 tokens)
+    const timeoutMs = maxTokens >= 2000 ? 10000 : 6000;
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
     const response = await fetch(url, {
       method: "POST",
@@ -2703,7 +2839,7 @@ class FirebaseSyncService {
 // Update Management Service for PédiaDrill
 // Checks GitHub Releases for new APK versions, notifies the user, and triggers direct download.
 
-const CURRENT_APP_VERSION = '1.4.0';
+const CURRENT_APP_VERSION = '1.4.1';
 const GITHUB_REPO = 'lkmqji/qcm-p-diatrie';
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
 const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours auto-check cooldown

@@ -220,5 +220,58 @@
   - Création du tag annoté `v1.4.0`.
   - Push vers GitHub (`main` et `v1.4.0`) déclenchant automatiquement le workflow CI/CD GitHub Actions pour publier la Release avec l'APK attaché en téléchargement direct pour les mises à jour in-app.
 
+### 19:40 - Déploiement de l'architecture Multi-Clés (Pool 3 instances), rotation Round-Robin et circuit-breaker persistant
+
+- **Diagnostic de latence et analyse de performance** :
+  - Identification de la cause des lenteurs IA (22 secondes) : saturation du quota journalier gratuit de Google (20 requêtes/jour pour `gemini-3-flash`) provoquant un blocage séquentiel et des timeouts réseau de 12 secondes avant bascule sur le moteur local.
+  - Test en direct des 3 nouvelles clés API fournies par l'utilisateur :
+    - Clé 1 (`AQ.Ab8RN6KPi...`) : 100% active et valide.
+    - Clé 3 (`AQ.Ab8RN6Ior...`) : 100% active et valide.
+    - Clé 2 (`AQ.Ab8RN6KQc...`) : API désactivée dans la console Google Cloud (`HTTP 403`).
+- **Mise en œuvre du Pool Multi-Clés dans `src/services/gemini.js`** :
+  - Déclaration de `DEFAULT_GEMINI_KEYS` regroupant les 3 clés API fournies.
+  - **Rotation Round-Robin (`this.keyIndex`)** : répartition automatique et tournante des appels (Clé 1 ➔ Clé 2 ➔ Clé 3) pour tripler la capacité globale sans saturer les limites RPM/RPD de Google.
+  - **Hot Failover par Clé** : en cas d'erreur de quota `429` sur une clé, celle-ci est mise en quarantaine 15 minutes et l'appel bascule immédiatement (en 0 ms) sur la clé suivante pour le même modèle, garantissant un taux de succès maximal sur le modèle prioritaire `gemini-3-flash-preview`.
+  - **Détection défensive des clés non autorisées (`403 / 401`)** : mise en quarantaine immédiate pour 24h sans bloquer la cascade d'exécution.
+  - **Persistance du Circuit-Breaker dans `localStorage`** : sauvegarde de l'état des quarantaines (`pedia_gemini_quarantined_keys` et `pedia_gemini_quarantined_models`) pour éviter de relancer les modèles/clés défaillants après un rafraîchissement d'écran ou un redémarrage de l'app mobile.
+  - **Timeout adaptatif** : passage de 12s fixes à un timeout dynamique (6s pour requêtes courtes CROQ/Tuteur, 10s pour les notes cliniques exhaustives de 2500 tokens).
+  - Respect strict de l'ordre des modèles demandé : conservation intégrale de l'ordonnancement de `MODEL_CASCADE` (`gemini-3-flash-preview` en priorité #1).
+- **Compilation & Validation** :
+  - Exécution du bundleur `build-bundle.cjs` synchronisant `src/app.bundle.js`, `index.html` et `dist/index.html`.
+  - Test de génération complet concluant : génération d'une note clinique exhaustive de 5391 caractères en seulement 8,35s sur `gemini-3-flash-preview` (contre 22s d'échec auparavant).
+
+### 19:48 - Intégration de la clé de remplacement PediaDrill2 & Registre Canonique des 3 Clés API
+
+- **Remplacement et validation de la clé PediaDrill2** :
+  - Fourniture d'une nouvelle clé API active pour remplacer la clé 2 précédente dont l'API était désactivée.
+  - Test de validation API en direct : confirmation de l'accès immédiat aux 50 modèles Google Gemini.
+- **Officialisation du Registre Canonique (`GEMINI_KEY_REGISTRY`) dans `src/services/gemini.js`** :
+  - **`PediaDrill1`** : Clé API active #1 (Instance Pool 1)
+  - **`PediaDrill2`** : Clé API active #2 (Instance Pool 2)
+  - **`PediaDrill3`** : Clé API active #3 (Instance Pool 3)
+- **Traçabilité et identification dans les logs (`_getKeyAlias`)** :
+  - Les logs de console, avertissements et journaux d'appels (`callLogs`) affichent désormais directement les identifiants explicites (`PediaDrill1`, `PediaDrill2`, `PediaDrill3`) au lieu d'empreintes tronquées.
+  - Test en direct sur 3 requêtes consécutives montrant une rotation fluide et équilibrée :
+    - Appel 1 ➔ `PediaDrill1` en 1,17s (`gemini-3-flash-preview`)
+    - Appel 2 ➔ `PediaDrill2` en 0,94s (`gemini-3-flash-preview`)
+    - Appel 3 ➔ `PediaDrill3` en 0,79s (`gemini-3-flash-preview`)
+- **Compilation de production** : Exécution de `build-bundle.cjs` et synchronisation vers `dist/`.
+
+### 19:55 - Publication de la Release v1.4.1 (GitHub & Android APK)
+
+- **Incrémentation de version vers v1.4.1 (versionCode 10)** :
+  - `package.json` : `"version": "1.4.1"`
+  - `src/services/updateService.js` : `CURRENT_APP_VERSION = '1.4.1'`
+  - `android/app/build.gradle` : `versionCode 10`, `versionName "1.4.1"`
+  - `template.html` : badges de version synchronisés sur `v1.4.1`
+  - `00-historique/MASTER_PRODUCT_TECHNICAL_CONTEXT.md` : synchronisé avec `v1.4.1` / `versionCode 10`.
+- **Recompilation & Assemblage** :
+  - Exécution de `build-bundle.cjs` générant `src/app.bundle.js` et les bundles autonomes `index.html` et `dist/index.html`.
+  - Exécution de `build-apk.bat` avec synchronisation Capacitor Android et compilation Gradle native (`:app:assembleDebug`) produisant le package officiel `PediaDrill.apk` (~7.8 Mo).
+- **Déploiement GitHub** :
+  - Enregistrement du commit git conventionnel `feat(release): v1.4.1 - Multi-Key pool architecture and AI speed optimizations`.
+  - Création du tag Git annoté `v1.4.1`.
+  - Push vers GitHub (`main` et tag `v1.4.1`) déclenchant le workflow CI/CD `.github/workflows/build-and-release.yml` pour publier automatiquement la Release officielle et l'APK sur GitHub Releases.
+
 
 
