@@ -3832,6 +3832,55 @@ body {
   gap: 6px;
 }
 
+.medical-media-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.btn-media-bulk {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(0, 212, 255, 0.08);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  color: var(--cyan);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  white-space: nowrap;
+}
+
+.btn-media-bulk:hover {
+  background: rgba(0, 212, 255, 0.2);
+  border-color: var(--cyan);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.btn-media-bulk:active {
+  transform: translateY(0);
+}
+
+.btn-media-bulk.btn-media-collapse-all {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.16);
+  color: var(--text-muted);
+}
+
+.btn-media-bulk.btn-media-collapse-all:hover {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+  transform: translateY(-1px);
+}
+
 .medical-media-grid {
   display: flex;
   flex-wrap: wrap;

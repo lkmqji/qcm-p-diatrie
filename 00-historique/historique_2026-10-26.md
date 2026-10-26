@@ -336,3 +336,22 @@
   - **Recompilation & validation** :
     - Tests automatisés validés (`test_snooze.js`).
     - Assemblage du bundle de production via `build-bundle.cjs`.
+
+### 21:08 - Ajout des boutons « Tout afficher » et « Tout fermer » pour l'iconographie médicale
+
+- **Contexte & Demande utilisateur** :
+  - Sur la grille d'iconographie médicale (`.question-container > #arena-media-wrap > .medical-media-section > .medical-media-grid`), ajout d'un contrôle permettant d'afficher toutes les photos ou de toutes les fermer/reflouter en 1 clic.
+- **Modifications appliquées** :
+  - **Interface utilisateur & Structure (`src/app.js`, `template.html`, `src/style.css`)** :
+    - Remplacement du texte statique par un groupe de boutons d'action rapide dans l'en-tête `.medical-media-header` :
+      - Bouton `[ 👁️ Tout afficher ]` (`.btn-media-expand-all`) : déplie et affiche simultanément toutes les photos de la question en clair sans floutage.
+      - Bouton `[ 🚫 Tout fermer ]` (`.btn-media-collapse-all`) : replie et masque l'ensemble des photos en mode compact flouté (74×74px).
+  - **Logique JavaScript (`src/app.js`)** :
+    - Implémentation de la fonction globale `window.toggleAllMedicalMedia(forceExpand, event)` :
+      - Si `forceExpand === true` : itère sur toutes les cartes `.medical-media-card` pour retirer `.is-collapsed` et ajouter `.is-expanded`.
+      - Si `forceExpand === false` : retire `.is-expanded` et ajoute `.is-collapsed`.
+      - Si appelé sans argument : bascule intelligente (déplie tout si au moins une photo est fermée, sinon replie tout).
+      - Rafraîchissement automatique des icônes Lucide.
+  - **Recompilation complète** :
+    - Exécution de `build-bundle.cjs` synchronisant `src/app.bundle.js`, `index.html` et `dist/index.html`.
+

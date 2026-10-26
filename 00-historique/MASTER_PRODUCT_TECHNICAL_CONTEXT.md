@@ -295,6 +295,10 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 ### 3.11. Iconographie & Clichés Médicaux Protégés (Floutés par Défaut)
 - **Objectif mnésique** : Éviter que les clichés d'imagerie ou radiographies ne divulguent prématurément le diagnostic.
 - **Composant UI (`renderQuestionMedia`)** :
+  - **Boutons d'action globale (« Tout afficher » et « Tout fermer », `window.toggleAllMedicalMedia`)** : En-tête `.medical-media-header` doté de deux contrôles rapides :
+    - `[ 👁️ Tout afficher ]` (`.btn-media-expand-all`) : déplie et affiche simultanément toutes les photos médicales de la question active en clair.
+    - `[ 🚫 Tout fermer ]` (`.btn-media-collapse-all`) : replie et masque d'un coup toutes les photos en mode miniature floutée.
+    - Fonction `window.toggleAllMedicalMedia(forceExpand)` : supporte un booléen forcé ou une bascule dynamique intelligente (si au moins une photo est repliée, déplie tout ; sinon, replie tout).
   - **État Rétracté & Flouté (`.medical-media-card.is-collapsed`)** : Miniature carrée compacte de **74x74 px** (64x64 px sur smartphone), flou prononcé `filter: blur(8px) brightness(0.72)` et overlay interactif `Toucher pour afficher`.
   - **État Déplié & Net (`.medical-media-card.is-expanded`)** : Largeur maximale **340 px** et hauteur **250 px** (210 px sur smartphone), image nette (`filter: none`), deux boutons de fermeture dédiés (bouton circulaire flottant `✕` et bouton bas `✕ Fermer la photo`).
   - **Visionneuse Plein Écran HD (Lightbox)** : Modal plein écran `#media-lightbox-modal` avec flou d'arrière-plan, fermable au clic ou via la touche `Échap`.

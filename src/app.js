@@ -759,12 +759,19 @@ function renderQuestionMedia(mediaUrls) {
     <div class="medical-media-section">
       <div class="medical-media-header">
         <div class="medical-media-title">
-          <i data-lucide="image" style="width:13px;height:13px;color:var(--cyan);"></i>
+          <i data-lucide="image" style="width:14px;height:14px;color:var(--cyan);"></i>
           <span>Iconographie médicale (${count} photo${count > 1 ? 's' : ''})</span>
         </div>
-        <span style="font-size:0.68rem;color:var(--text-dim);font-weight:500;">
-          Floutée par défaut • Toucher pour afficher
-        </span>
+        <div class="medical-media-header-actions">
+          <button type="button" class="btn-media-bulk btn-media-expand-all" onclick="window.toggleAllMedicalMedia(true, event)" title="Afficher toutes les photos de la question">
+            <i data-lucide="eye" style="width:12px;height:12px;"></i>
+            <span>Tout afficher</span>
+          </button>
+          <button type="button" class="btn-media-bulk btn-media-collapse-all" onclick="window.toggleAllMedicalMedia(false, event)" title="Fermer et reflouter toutes les photos">
+            <i data-lucide="eye-off" style="width:12px;height:12px;"></i>
+            <span>Tout fermer</span>
+          </button>
+        </div>
       </div>
       <div class="medical-media-grid">
         ${cardsHtml}
@@ -784,6 +791,34 @@ window.toggleMedicalMedia = function(cardEl, event) {
     cardEl.classList.remove('is-expanded');
     cardEl.classList.add('is-collapsed');
   }
+  refreshLucide();
+};
+
+window.toggleAllMedicalMedia = function(forceExpand = null, event = null) {
+  if (event) event.stopPropagation();
+  const wrap = document.getElementById('arena-media-wrap');
+  if (!wrap) return;
+  const cards = wrap.querySelectorAll('.medical-media-card');
+  if (!cards || cards.length === 0) return;
+
+  let expand;
+  if (typeof forceExpand === 'boolean') {
+    expand = forceExpand;
+  } else {
+    const hasCollapsed = Array.from(cards).some(c => c.classList.contains('is-collapsed'));
+    expand = hasCollapsed;
+  }
+
+  cards.forEach(card => {
+    if (expand) {
+      card.classList.remove('is-collapsed');
+      card.classList.add('is-expanded');
+    } else {
+      card.classList.remove('is-expanded');
+      card.classList.add('is-collapsed');
+    }
+  });
+
   refreshLucide();
 };
 
