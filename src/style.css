@@ -936,6 +936,31 @@ body {
   display: none;
 }
 
+.question-date-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(0, 212, 255, 0.12);
+  border: 1px solid rgba(0, 212, 255, 0.32);
+  color: #38bdf8;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 999px;
+  margin-left: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.03em;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.question-date-pill i {
+  color: #38bdf8;
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+}
+
 /* Chapter name blurred in Chatbox until student answers */
 .chatbox-chapter-blurred {
   display: inline-block;
@@ -2332,6 +2357,109 @@ body {
   font-size: 0.92rem;
   line-height: 1.6;
   color: #e2e8f0;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ARENA LIVE AI CLINICAL EXPLANATION CARD (PERSISTANTE & SAUVEGARDÉE)
+   ───────────────────────────────────────────────────────────── */
+.arena-ai-explanation-card {
+  background: linear-gradient(145deg, rgba(14, 25, 45, 0.96), rgba(11, 19, 36, 0.98));
+  border: 1px solid rgba(0, 212, 255, 0.28);
+  border-left: 3px solid #8b5cf6;
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: slideUp 0.3s ease-out;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35), 0 0 15px rgba(0, 212, 255, 0.08);
+}
+
+.arena-ai-explanation-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.arena-ai-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.86rem;
+  color: var(--cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.arena-ai-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #c084fc;
+  background: rgba(139, 92, 246, 0.12);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  padding: 2px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+}
+
+.arena-ai-explanation-body {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: #e2e8f0;
+}
+
+.arena-ai-explanation-body .reasoning-cards-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.arena-ai-prompt-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--radius-sm);
+  border: 1px dashed rgba(0, 212, 255, 0.22);
+}
+
+.arena-ai-prompt-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.84rem;
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+
+.btn-ask-arena-ai {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  align-self: flex-start;
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.18), rgba(139, 92, 246, 0.22));
+  border: 1px solid rgba(0, 212, 255, 0.45);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.82rem;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-ask-arena-ai:hover {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.28), rgba(139, 92, 246, 0.32));
+  border-color: var(--cyan);
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.25);
+  transform: translateY(-1px);
 }
 
 .option-item.correct-highlight {

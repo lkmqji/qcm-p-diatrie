@@ -77,7 +77,8 @@ L'apprentissage repose sur une file d'attente circulaire dynamique (`activeQueue
 - **Compteur journalier d'itérations (`todayTracker`)** :
   - **Seules les réponses justes** (`handleAnswerSuccess`) ajoutent +1 au compteur de questions faites aujourd'hui (`todayTracker.count`).
   - Les erreurs (`handleAnswerFailure`) n'incrémentent plus ce compteur, garantissant que l'objectif journalier reflète fidèlement le nombre de validations acquises vers l'échéance de l'examen du 10/11.
-- **Persistance locale & Cloud** : Tout l'état (`activeQueue`, `stats`, `cursor`, `reasoningNotes`, `todayTracker`) est sauvegardé dans `localStorage` sous la clé `pedia_drill_state_v1` et synchronisé via `FirebaseSyncService`.
+- **Persistance locale & Cloud** : Tout l'état (`activeQueue`, `stats`, `cursor`, `reasoningNotes`, `todayTracker`, `selectedChapterIds`, `selectedChaptersUpdatedAt`) est sauvegardé dans `localStorage` sous la clé `pedia_drill_state_v1` et synchronisé via `FirebaseSyncService`.
+- **Synchronisation multi-appareils des cours sélectionnés** : Chaque modification de la sélection des cours met à jour un horodatage précis (`selectedChaptersUpdatedAt`). Lors de la fusion d'états (`mergeStates`), la sélection la plus récente entre l'appareil local et le cloud est automatiquement retenue et appliquée, déclenchant la ré-initialisation dynamique de la file et la mise à jour immédiate de l'interface sur tous les écrans connectés.
 
 ### 3.2. Évaluation IA & Raisonnement Clinique (`src/services/gemini.js`)
 - **Modèles 100% Flash Exclusifs & Cascade de résilience ultra-rapide** :
@@ -305,9 +306,11 @@ Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes
 - **Fonctionnement & Ergonomie** :
   - Par défaut, à chaque chargement de question (`loadNextArenaQuestion`), le badge de chapitre passe en état masqué (`is-blurred`).
   - Le texte du cours est flouté (`filter: blur(6px); opacity: 0.38; user-select: none`) et accompagné d'un badge interactif `Cours masqué`.
-  - Un simple clic sur le badge (`window.toggleArenaChapterTitle()`) retire le flou (`is-revealed`) et révèle l'intitulé du chapitre.
+  - **Pastille de date et session du QCM (`.question-date-pill`)** : Intégrée au sein de `.chapter-title-text`, elle affiche dynamiquement l'année, la session de concours (`P 2020`, `P1 2021`, `R 2019`, `EMD 2022`, `Session 2021`, etc.) ou la source du cours (`Diapo 2024`, `Diapositive 2026`) via `extractQuestionDateOrSession(q)`. En l'absence de date spécifique dans les données, elle affiche le repli `P? 20??`.
+  - **Floutage coordonné** : La pastille de date est floutée en parfaite harmonie avec le nom du cours pour éviter tout indice diagnostique avant la réponse.
+  - Un simple clic sur le badge (`window.toggleArenaChapterTitle()`) retire le flou (`is-revealed`) et révèle l'intitulé du chapitre ainsi que la date de la question.
   - Un second clic permet de le reflouter à tout moment.
-  - **Défloutage automatique à la réponse** : Dès que l'étudiant valide ou échoue la question (`handleAnswerSuccess` ou `handleAnswerFailure`), ou consulte un QCM d'historique (`historyCursor >= 0`), le titre est automatiquement déflouté.
+  - **Défloutage automatique à la réponse** : Dès que l'étudiant valide ou échoue la question (`handleAnswerSuccess` ou `handleAnswerFailure`), ou consulte un QCM d'historique (`historyCursor >= 0`), le titre et la pastille de date sont automatiquement défloutés en clair.
 
 ### 3.11. Tuteur IA Interactif en Direct dans l'Arène & Protection Anti-Spoiler du Cours
 - **Objectif mnésique & clinique** : Permettre à l'étudiant de questionner l'IA en temps réel sur n'importe quel aspect de la question en cours de résolution dans l'Arène (demande d'explication d'un signe sémiologique, physiopathologie d'un distracteur, posologie pédiatrique ou piège d'internat).
@@ -365,13 +368,14 @@ Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes
   - **Rendu en Lecture Seule (`renderHistoryQuestion`)** :
     - Options désactivées (`.option-item.read-only`), boutons de validation masqués.
     - Surbrillance explicite des choix : propositions justes en vert (`correct-highlight`), choix erronés de l'utilisateur en rouge (`wrong-highlight`).
-    - Chapitre déflouté d'emblée (`is-revealed`) avec badge ambré `QCM Répondu`.
+    - Chapitre déflouté d'emblée (`is-revealed`) avec badge ambré `QCM Répondu` et pastille de date/session.
     - Boîte d'explication officielle ouverte automatiquement en bas de carte.
+    - **Carte d'Explication Clinique IA Persistante (`#arena-ai-explanation-box`)** : Affichée sous l'explication officielle dans le conteneur de question (`.question-container`). Elle restitue automatiquement l'explication structurée en 4 volets (Piège, Justification détaillée proposition par proposition A-E, Démarche clinique, Règle d'or & Mémo concours) issue du cache local (`pedia_ai_explanations_cache`), du Carnet de Raisonnement ou de Firestore.
+    - **Génération IA à la demande en 1 clic** : Si aucune explication IA n'avait été générée antérieurement, un bouton d'action `[Générer l'explication clinique IA (Gemini Flash)]` (`window.requestArenaAiExplanation`) permet de déclencher l'analyse complète sans quitter l'Arène, l'enregistrant instantanément pour toutes les consultations futures.
     - Bouton bas de page « Reprendre le drill en cours ➔ » (`#btn-history-resume-action`).
-- **Synchronisation Temps Réel du Tuteur IA (`getEffectiveArenaQuestion`)** :
-  - Le tuteur IA cible toujours la question effectivement visualisée :
-    - En mode consultation, le prompt, la contextualisation et les suggestions ciblent le QCM d'historique affiché.
-    - Le chat contextuel est réinitialisé lors du basculement pour garantir des échanges sans interférence d'un QCM à l'autre.
+- **Synchronisation Temps Réel & Persistance du Tuteur IA (`questionChatHistories`)** :
+  - Le tuteur IA cible toujours la question effectivement visualisée (`getEffectiveArenaQuestion`).
+  - **Préservation des conversations par question** : Les échanges avec le Tuteur IA dans `#arena-ai-chatbox` sont désormais indexés par identifiant de question (`questionChatHistories[effQ.uid]`). Lorsque l'étudiant revient sur un QCM précédent, l'intégralité de sa conversation antérieure avec l'IA est fidèlement restaurée dans le chatbox.
 - **Raccourcis Claviers Dédiés (`setupKeyboardShortcuts`)** :
   - <kbd>◀ Flèche Gauche</kbd> : remonter d'un QCM dans l'historique.
   - <kbd>▶ Flèche Droite</kbd> : avancer d'un QCM vers le drill actif.

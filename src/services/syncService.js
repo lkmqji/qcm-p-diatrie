@@ -39,9 +39,19 @@ export function mergeStates(local, remote) {
     stats: {},
     queue: Array.isArray(local.queue) && local.queue.length > 0 ? local.queue : (remote.queue || []),
     cursor: local.cursor || remote.cursor || 0,
-    selectedChapterIds: Array.isArray(local.selectedChapterIds) && local.selectedChapterIds.length > 0
-      ? local.selectedChapterIds 
-      : (remote.selectedChapterIds || []),
+    selectedChapterIds: (() => {
+      const localTs = Number(local.selectedChaptersUpdatedAt || 0);
+      const remoteTs = Number(remote.selectedChaptersUpdatedAt || 0);
+      if (remoteTs > localTs) {
+        return Array.isArray(remote.selectedChapterIds) ? remote.selectedChapterIds : [];
+      } else if (localTs > remoteTs) {
+        return Array.isArray(local.selectedChapterIds) ? local.selectedChapterIds : [];
+      }
+      return (Array.isArray(remote.selectedChapterIds) && remote.selectedChapterIds.length > 0)
+        ? remote.selectedChapterIds
+        : (Array.isArray(local.selectedChapterIds) ? local.selectedChapterIds : []);
+    })(),
+    selectedChaptersUpdatedAt: Math.max(Number(local.selectedChaptersUpdatedAt || 0), Number(remote.selectedChaptersUpdatedAt || 0)),
     totalMistakesCount: Math.max(local.totalMistakesCount || 0, remote.totalMistakesCount || 0),
     reasoningNotes: []
   };

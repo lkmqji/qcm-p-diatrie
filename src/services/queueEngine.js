@@ -59,6 +59,7 @@ export class QueueEngine {
     this.allQuestions = allQuestions;
     this.chapters = chapters;
     this.selectedChapterIds = []; // Empty = all chapters (Grand Mix)
+    this.selectedChaptersUpdatedAt = 0; // Timestamp of last chapter selection change
     
     // Per-question state map: uid -> { target: number, current: number, mistakes: number, done: boolean }
     this.stats = {};
@@ -102,6 +103,7 @@ export class QueueEngine {
         this.queue = parsed.queue || [];
         this.cursor = parsed.cursor || 0;
         this.selectedChapterIds = parsed.selectedChapterIds || [];
+        this.selectedChaptersUpdatedAt = parsed.selectedChaptersUpdatedAt || 0;
         this.totalMistakesCount = parsed.totalMistakesCount || 0;
       }
     } catch (err) {
@@ -137,6 +139,7 @@ export class QueueEngine {
         queue: this.queue,
         cursor: this.cursor,
         selectedChapterIds: this.selectedChapterIds,
+        selectedChaptersUpdatedAt: this.selectedChaptersUpdatedAt || Date.now(),
         totalMistakesCount: this.totalMistakesCount,
         lastUpdated: Date.now()
       };
@@ -151,6 +154,7 @@ export class QueueEngine {
    */
   initSession(chapterIds = []) {
     this.selectedChapterIds = chapterIds;
+    this.selectedChaptersUpdatedAt = Date.now();
     
     // Filter questions
     let filtered = this.allQuestions;
@@ -462,6 +466,7 @@ export class QueueEngine {
       queue: this.queue,
       cursor: this.cursor,
       selectedChapterIds: this.selectedChapterIds,
+      selectedChaptersUpdatedAt: this.selectedChaptersUpdatedAt || Date.now(),
       totalMistakesCount: this.totalMistakesCount,
       reasoningNotes: this.getRawReasoningNotes().map(n => slimNote(n)),
       todayTracker: this.getTodayTracker()
@@ -484,7 +489,18 @@ export class QueueEngine {
       if (merged.stats) this.stats = merged.stats;
       if (Array.isArray(merged.queue)) this.queue = merged.queue;
       if (typeof merged.cursor === 'number') this.cursor = merged.cursor;
-      if (Array.isArray(merged.selectedChapterIds)) this.selectedChapterIds = merged.selectedChapterIds;
+      if (Array.isArray(merged.selectedChapterIds)) {
+        const prevChapters = (this.selectedChapterIds || []).slice().sort().join(',');
+        const newChapters = (merged.selectedChapterIds || []).slice().sort().join(',');
+        this.selectedChapterIds = merged.selectedChapterIds;
+        if (typeof merged.selectedChaptersUpdatedAt === 'number') {
+          this.selectedChaptersUpdatedAt = merged.selectedChaptersUpdatedAt;
+        }
+        if (prevChapters !== newChapters) {
+          // Re-filter and initialize session queue to immediately reflect synchronized chapters
+          this.initSession(this.selectedChapterIds);
+        }
+      }
       if (typeof merged.totalMistakesCount === 'number') this.totalMistakesCount = merged.totalMistakesCount;
       if (Array.isArray(merged.reasoningNotes)) {
         const slimmed = merged.reasoningNotes.map(n => slimNote(n));
