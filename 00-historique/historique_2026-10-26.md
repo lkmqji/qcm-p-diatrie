@@ -42,4 +42,6 @@
 - Migration vers Java JDK 21 (`actions/setup-java@v4` avec `java-version: '21'`), requis par Capacitor 7/8 et la configuration de compilation `JavaVersion.VERSION_21`.
 - Attribution des droits d'exécution sur le wrapper Gradle (`git update-index --chmod=+x android/gradlew` et étape explicite `chmod +x android/gradlew`) avant l'exécution de `npx cap sync android`.
 - Intégration et versionnement du module `android/capacitor-cordova-android-plugins` dans Git (retrait du `.gitignore`) et sécurisation défensive dans `android/settings.gradle` et `android/app/build.gradle` (`findProject`) pour garantir que `npx cap sync android` s'exécute sans erreur sur tout runner CI/CD fraîchement cloné.
+- Ajustement de la version du wrapper Gradle (`android/gradle/wrapper/gradle-wrapper.properties`) vers `gradle-9.2.0-bin.zip` pour corriger l'incompatibilité de l'Android Gradle Plugin 8.13.0 avec Gradle 9.7 (API interne `InternalProblems` retirée dans Gradle 9.6+).
 - Synchronisation sur `main` et mise à jour du tag `v1.3.0` pour la publication automatique sur GitHub Releases.
+
