@@ -355,3 +355,28 @@
   - **Recompilation complète** :
     - Exécution de `build-bundle.cjs` synchronisant `src/app.bundle.js`, `index.html` et `dist/index.html`.
 
+### 21:12 - Publication de la Release v1.4.3 (GitHub & Android APK)
+
+- **Incrémentation de version vers v1.4.3 (versionCode 12)** :
+  - `package.json` : `"version": "1.4.3"`
+  - `src/services/updateService.js` : `CURRENT_APP_VERSION = '1.4.3'`
+  - `android/app/build.gradle` : `versionCode 12`, `versionName "1.4.3"`
+  - `template.html` : badges de version synchronisés sur `v1.4.3`
+  - `00-historique/MASTER_PRODUCT_TECHNICAL_CONTEXT.md` : synchronisé avec `v1.4.3` / `versionCode 12`.
+- **Fonctionnalités intégrées dans la release v1.4.3** :
+  - **Mise en sommeil journalière des questions (« Passer pour aujourd'hui »)** :
+    - Bouton `#btn-snooze-question` intégré dans l'en-tête de carte `.question-header-row`.
+    - Moteur `QueueEngine` avec registre persistant `snoozedQuestions`, purge automatique lors du rollover de minuit (`cleanExpiredSnoozes`), et synchronisation cloud `FirebaseSyncService`.
+    - Toast de confirmation avec bouton d'annulation immédiate (`showAppToast`).
+    - Pastille d'état `#arena-snooze-pill` en Arène et bannière d'alerte `#dashboard-snoozed-alert` sur le Dashboard pour réintégrer les questions suspendues.
+    - Raccourci clavier physique `S`.
+  - **Boutons d'action globale pour l'iconographie médicale** :
+    - Contrôles `[ 👁️ Tout afficher ]` et `[ 🚫 Tout fermer ]` dans `.medical-media-header`.
+    - Fonction `window.toggleAllMedicalMedia(forceExpand)` permettant d'ouvrir ou de masquer toutes les photos médicales en 1 clic.
+- **Recompilation & Assemblage** :
+  - Exécution de `build-bundle.cjs` régénérant `src/app.bundle.js` et les bundles autonomes `index.html` et `dist/index.html`.
+  - Exécution de `build-apk.bat` avec synchronisation Capacitor Android et compilation Gradle native (`:app:assembleDebug`) produisant le package officiel `PediaDrill.apk` (~7.8 Mo).
+- **Déploiement GitHub** :
+  - Enregistrement du commit git conventionnel `feat(release): v1.4.3 - daily snooze and medical media bulk toggle controls`.
+  - Création du tag Git annoté `v1.4.3`.
+  - Push vers GitHub (`main` et tag `v1.4.3`) déclenchant le workflow CI/CD `.github/workflows/build-and-release.yml` pour publier automatiquement la Release officielle et l'APK sur GitHub Releases.
