@@ -884,6 +884,23 @@ body {
   gap: 4px;
 }
 
+.tag-pill.snooze-pill {
+  color: #c084fc;
+  border-color: rgba(192, 132, 252, 0.4);
+  background: rgba(192, 132, 252, 0.1);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tag-pill.snooze-pill:hover {
+  background: rgba(192, 132, 252, 0.25);
+  border-color: #c084fc;
+  transform: translateY(-1px);
+}
+
 /* Question Box */
 .question-container {
   background: var(--bg-card);
@@ -894,6 +911,84 @@ body {
   flex-direction: column;
   gap: 18px;
   box-shadow: var(--shadow-sm);
+}
+
+/* Question Card Header Row */
+.question-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Button Snooze Question (Passer pour aujourd'hui) */
+.btn-snooze-question {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  white-space: nowrap;
+}
+
+.btn-snooze-question:hover {
+  background: rgba(192, 132, 252, 0.14);
+  border-color: rgba(192, 132, 252, 0.4);
+  color: #d8b4fe;
+  transform: translateY(-1px);
+}
+
+.btn-snooze-question:active {
+  transform: translateY(0);
+}
+
+/* Dashboard Snoozed Alert Banner */
+.dashboard-snoozed-alert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(192, 132, 252, 0.08);
+  border: 1px solid rgba(192, 132, 252, 0.25);
+  border-radius: var(--radius-sm);
+  margin-top: 12px;
+  font-size: 0.82rem;
+}
+
+.snoozed-alert-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #e9d5ff;
+}
+
+.btn-unsnooze-link {
+  background: none;
+  border: none;
+  color: #c084fc;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.btn-unsnooze-link:hover {
+  color: #ffffff;
+  background: rgba(192, 132, 252, 0.25);
 }
 
 .chapter-title-badge {
@@ -6355,6 +6450,32 @@ body {
   pointer-events: auto;
 }
 
+.pedia-toast-alert .toast-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.pedia-toast-alert .toast-undo-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pedia-toast-alert .toast-undo-btn:hover {
+  background: var(--cyan);
+  border-color: var(--cyan);
+  color: #0d1527;
+}
+
 /* Spin animation for refresh icon */
 .spin-animation {
   animation: spinSlow 1s linear infinite;
@@ -6498,6 +6619,17 @@ body {
                 <div class="daily-progress-fill" id="daily-progress-fill" style="width: 0%;"></div>
               </div>
             </div>
+
+            <!-- Alerte de questions reportées à demain -->
+            <div class="dashboard-snoozed-alert" id="dashboard-snoozed-alert" style="display:none;">
+              <div class="snoozed-alert-content">
+                <i data-lucide="moon" style="width:14px;height:14px;color:#c084fc;"></i>
+                <span id="dashboard-snoozed-text">0 question reportée à demain</span>
+              </div>
+              <button type="button" class="btn-unsnooze-link" onclick="window.unsnoozeAllSnoozedQuestions()">
+                Réintégrer maintenant
+              </button>
+            </div>
           </div>
 
         </div>
@@ -6577,6 +6709,10 @@ body {
             <span class="tag-pill" id="arena-type-pill">QCU</span>
             <span class="tag-pill progress-pill" id="arena-progress-pill">0/3</span>
             <span class="tag-pill daily-pill" id="arena-daily-pill" title="Progression quotidienne (Examen 10/11 • J-28)">🎯 0/-- auj.</span>
+            <span class="tag-pill snooze-pill" id="arena-snooze-pill" style="display:none;" title="Questions reportées pour aujourd'hui (Cliquer pour gérer)" onclick="window.promptManageSnoozedQuestions()">
+              <i data-lucide="moon" style="width:11px;height:11px;"></i>
+              <span id="arena-snooze-pill-text">0 reporté</span>
+            </span>
           </div>
         </div>
 
@@ -6594,9 +6730,16 @@ body {
         <!-- Question Card -->
         <div class="question-container">
           
-          <div class="chapter-title-badge is-blurred" id="arena-chapter-title" onclick="window.toggleArenaChapterTitle()" title="Chapitre masqué (Cliquer pour afficher)">
-            <span class="chapter-title-text">Pédiatrie — Chapitre</span>
-            <span class="chapter-title-hint"><i data-lucide="eye" style="width:11px;height:11px;"></i> Cours masqué</span>
+          <div class="question-header-row">
+            <div class="chapter-title-badge is-blurred" id="arena-chapter-title" onclick="window.toggleArenaChapterTitle()" title="Chapitre masqué (Cliquer pour afficher)">
+              <span class="chapter-title-text">Pédiatrie — Chapitre</span>
+              <span class="chapter-title-hint"><i data-lucide="eye" style="width:11px;height:11px;"></i> Cours masqué</span>
+            </div>
+
+            <button type="button" class="btn-snooze-question" id="btn-snooze-question" onclick="window.snoozeCurrentQuestionForToday()" title="Ne plus afficher cette question aujourd'hui (reporter à demain)">
+              <i data-lucide="moon" style="width:13px;height:13px;"></i>
+              <span>Passer pour aujourd'hui</span>
+            </button>
           </div>
 
           <!-- Clinical Case Box (si présent) -->

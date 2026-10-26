@@ -67,6 +67,10 @@ export function mergeStates(local, remote) {
     })(),
     selectedChaptersUpdatedAt: Math.max(Number(local.selectedChaptersUpdatedAt || 0), Number(remote.selectedChaptersUpdatedAt || 0)),
     totalMistakesCount: Math.max(local.totalMistakesCount || 0, remote.totalMistakesCount || 0),
+    snoozedQuestions: {
+      ...((remote && remote.snoozedQuestions) || {}),
+      ...((local && local.snoozedQuestions) || {})
+    },
     reasoningNotes: []
   };
 

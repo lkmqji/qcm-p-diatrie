@@ -309,5 +309,30 @@
 - **Déploiement GitHub** :
   - Enregistrement du commit git conventionnel `feat(release): v1.4.2 - default stats range to today and package updates`.
   - Création du tag Git annoté `v1.4.2`.
-  - Push vers GitHub (`main` et tag `v1.4.2`) déclenchant le workflow CI/CD `.github/workflows/build-and-release.yml` pour publier automatiquement la Release officielle et l'APK sur GitHub Releases.
+### 21:05 - Ajout du système de mise en sommeil des questions pour la journée ("Passer pour aujourd'hui")
 
+- **Contexte & Demande utilisateur** :
+  - Sur la carte de question en Arène (`.question-container`), ajout d'un bouton permettant de suspendre/masquer une question pour toute la journée (« ne pas afficher une question pour toute la journée »), afin de la repousser au lendemain sans la pénaliser ni fausser les statistiques de réussite/fautes.
+- **Modifications appliquées** :
+  - **Moteur de répétition espacée (`src/services/queueEngine.js`)** :
+    - Ajout du registre `snoozedQuestions` (`uid -> 'YYYY-MM-DD'`) persistant dans `localStorage` (`pedia_drill_state_v1`).
+    - Implémentation des méthodes :
+      - `snoozeQuestionForToday(uid)` : enregistre la question comme suspendue pour la date du jour et la retire immédiatement de la file active `this.queue`.
+      - `unsnoozeQuestion(uid)` : retire la mise en sommeil et réinsère instantanément la question dans la file.
+      - `unsnoozeAllForToday()` : réintègre l'intégralité des questions reportées du jour et remélange la file.
+      - `isQuestionSnoozed(uid, dateStr)` : vérifie la suspension active pour une date donnée.
+      - `cleanExpiredSnoozes(currentDateStr)` : purge automatique au démarrage ou lors du changement de jour (rollover à minuit) de toutes les suspensions de dates antérieures, permettant aux questions de réintégrer naturellement le drill dès le lendemain.
+      - `getSnoozedCountToday()` : décompte en temps réel des questions reportées aujourd'hui.
+    - Prise en compte du filtre snooze dans `initSession()` et `getCurrentQuestion()`.
+  - **Synchronisation Cloud (`src/services/firebaseSyncService.js`)** :
+    - Fusion non destructive (`mergeStates`) du dictionnaire `snoozedQuestions` entre les appareils connectés.
+  - **Interface utilisateur & Design (`template.html`, `src/style.css`, `src/app.js`)** :
+    - En-tête de carte `.question-header-row` intégrant côte-à-côte le badge du cours et le nouveau bouton `#btn-snooze-question` (« Passer pour aujourd'hui » avec icône `moon`).
+    - Pastille d'état dans la barre d'Arène (`#arena-snooze-pill`) affichant le nombre de questions reportées et permettant de les réintégrer en un clic.
+    - Bannière d'alerte sur le Dashboard (`#dashboard-snoozed-alert`) rappelant les questions en attente pour demain avec action directe « Réintégrer maintenant ».
+    - Système de notifications Toast avec action d'annulation immédiate (`showAppToast` avec bouton « Annuler »).
+    - Raccourci clavier physique `S` en Arène pour reporter rapidement au clavier.
+    - Écran de fin de session adapté (`showVictoryScreen`) prévenant l'étudiant lorsque toutes les questions restantes sont en sommeil pour aujourd'hui avec option de réintégration.
+  - **Recompilation & validation** :
+    - Tests automatisés validés (`test_snooze.js`).
+    - Assemblage du bundle de production via `build-bundle.cjs`.

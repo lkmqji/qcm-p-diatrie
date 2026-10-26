@@ -73,6 +73,9 @@ export class QueueEngine {
     // Total mistakes counter
     this.totalMistakesCount = 0;
 
+    // Per-question snoozed map: uid -> 'YYYY-MM-DD'
+    this.snoozedQuestions = {};
+
     // Load persisted state if exists
     this.loadState();
   }
@@ -105,6 +108,8 @@ export class QueueEngine {
         this.selectedChapterIds = parsed.selectedChapterIds || [];
         this.selectedChaptersUpdatedAt = parsed.selectedChaptersUpdatedAt || 0;
         this.totalMistakesCount = parsed.totalMistakesCount || 0;
+        this.snoozedQuestions = (parsed.snoozedQuestions && typeof parsed.snoozedQuestions === 'object') ? parsed.snoozedQuestions : {};
+        this.cleanExpiredSnoozes();
       }
     } catch (err) {
       console.warn("Failed to load queue engine state:", err);
@@ -141,6 +146,7 @@ export class QueueEngine {
         selectedChapterIds: this.selectedChapterIds,
         selectedChaptersUpdatedAt: this.selectedChaptersUpdatedAt || Date.now(),
         totalMistakesCount: this.totalMistakesCount,
+        snoozedQuestions: this.snoozedQuestions || {},
         lastUpdated: Date.now()
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -175,9 +181,12 @@ export class QueueEngine {
       }
     });
 
-    // Build initial queue from unmastered questions in randomized order
+    const todayStr = this.getTodayDateStr();
+    this.cleanExpiredSnoozes(todayStr);
+
+    // Build initial queue from unmastered and un-snoozed questions in randomized order
     const unmasteredUids = filtered
-      .filter(q => !this.stats[q.uid].done)
+      .filter(q => !this.stats[q.uid].done && !this.isQuestionSnoozed(q.uid, todayStr))
       .map(q => q.uid);
 
     // Shuffle
@@ -197,11 +206,122 @@ export class QueueEngine {
 
   getCurrentQuestion() {
     if (this.queue.length === 0) return null;
-    if (this.cursor >= this.queue.length) {
-      this.cursor = 0; // Loop or cycle if still items
+
+    const todayStr = this.getTodayDateStr();
+    let iterations = 0;
+    while (this.queue.length > 0 && iterations < this.queue.length) {
+      if (this.cursor >= this.queue.length) {
+        this.cursor = 0;
+      }
+      const uid = this.queue[this.cursor];
+      const isSnoozed = this.isQuestionSnoozed(uid, todayStr);
+      const isDone = this.stats[uid] && this.stats[uid].done;
+
+      if (isSnoozed || isDone) {
+        this.queue.splice(this.cursor, 1);
+      } else {
+        return this.allQuestions.find(q => q.uid === uid) || null;
+      }
+      iterations++;
     }
-    const uid = this.queue[this.cursor];
-    return this.allQuestions.find(q => q.uid === uid) || null;
+
+    return null;
+  }
+
+  getTodayDateStr() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  isQuestionSnoozed(uid, dateStr = this.getTodayDateStr()) {
+    if (!this.snoozedQuestions || !this.snoozedQuestions[uid]) return false;
+    return this.snoozedQuestions[uid] === dateStr;
+  }
+
+  cleanExpiredSnoozes(currentDateStr = this.getTodayDateStr()) {
+    if (!this.snoozedQuestions || typeof this.snoozedQuestions !== 'object') {
+      this.snoozedQuestions = {};
+      return;
+    }
+    let changed = false;
+    for (const [uid, dateStr] of Object.entries(this.snoozedQuestions)) {
+      if (dateStr !== currentDateStr) {
+        delete this.snoozedQuestions[uid];
+        changed = true;
+      }
+    }
+    if (changed) {
+      this.saveState();
+    }
+  }
+
+  snoozeQuestionForToday(uid) {
+    if (!uid) return null;
+    const today = this.getTodayDateStr();
+    if (!this.snoozedQuestions) this.snoozedQuestions = {};
+    this.snoozedQuestions[uid] = today;
+
+    // Retirer la question de la file active du jour
+    const indexInQueue = this.queue.indexOf(uid);
+    if (indexInQueue !== -1) {
+      this.queue.splice(indexInQueue, 1);
+      if (this.cursor >= this.queue.length && this.queue.length > 0) {
+        this.cursor = 0;
+      }
+    }
+
+    this.saveState();
+    return {
+      uid,
+      snoozedDate: today,
+      remainingInQueue: this.queue.length,
+      totalSnoozedToday: this.getSnoozedCountToday(today)
+    };
+  }
+
+  unsnoozeQuestion(uid) {
+    if (!uid || !this.snoozedQuestions) return false;
+    if (this.snoozedQuestions[uid]) {
+      delete this.snoozedQuestions[uid];
+      const st = this.getQuestionStats(uid);
+      if (!st.done && !this.queue.includes(uid)) {
+        this.queue.splice(this.cursor, 0, uid);
+      }
+      this.saveState();
+      return true;
+    }
+    return false;
+  }
+
+  unsnoozeAllForToday() {
+    const today = this.getTodayDateStr();
+    let count = 0;
+    if (this.snoozedQuestions) {
+      for (const [uid, dateStr] of Object.entries(this.snoozedQuestions)) {
+        if (dateStr === today) {
+          delete this.snoozedQuestions[uid];
+          const st = this.getQuestionStats(uid);
+          if (!st.done && !this.queue.includes(uid)) {
+            this.queue.push(uid);
+          }
+          count++;
+        }
+      }
+    }
+    if (count > 0) {
+      this.queue = this.shuffleArray(this.queue);
+      this.cursor = 0;
+      this.saveState();
+    }
+    return count;
+  }
+
+  getSnoozedCountToday(today = this.getTodayDateStr()) {
+    if (!this.snoozedQuestions) return 0;
+    return Object.values(this.snoozedQuestions).filter(d => d === today).length;
   }
 
   getQuestionStats(uid) {
@@ -476,6 +596,7 @@ export class QueueEngine {
       selectedChapterIds: this.selectedChapterIds,
       selectedChaptersUpdatedAt: this.selectedChaptersUpdatedAt || Date.now(),
       totalMistakesCount: this.totalMistakesCount,
+      snoozedQuestions: this.snoozedQuestions || {},
       reasoningNotes: this.getRawReasoningNotes().map(n => slimNote(n)),
       todayTracker: this.getTodayTracker()
     };
@@ -510,6 +631,10 @@ export class QueueEngine {
         }
       }
       if (typeof merged.totalMistakesCount === 'number') this.totalMistakesCount = merged.totalMistakesCount;
+      if (merged.snoozedQuestions && typeof merged.snoozedQuestions === 'object') {
+        this.snoozedQuestions = { ...(this.snoozedQuestions || {}), ...merged.snoozedQuestions };
+        this.cleanExpiredSnoozes();
+      }
       if (Array.isArray(merged.reasoningNotes)) {
         const slimmed = merged.reasoningNotes.map(n => slimNote(n));
         localStorage.setItem(REASONING_KEY, JSON.stringify(slimmed.slice(0, 500)));

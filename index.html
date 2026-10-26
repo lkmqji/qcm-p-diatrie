@@ -884,6 +884,23 @@ body {
   gap: 4px;
 }
 
+.tag-pill.snooze-pill {
+  color: #c084fc;
+  border-color: rgba(192, 132, 252, 0.4);
+  background: rgba(192, 132, 252, 0.1);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tag-pill.snooze-pill:hover {
+  background: rgba(192, 132, 252, 0.25);
+  border-color: #c084fc;
+  transform: translateY(-1px);
+}
+
 /* Question Box */
 .question-container {
   background: var(--bg-card);
@@ -894,6 +911,84 @@ body {
   flex-direction: column;
   gap: 18px;
   box-shadow: var(--shadow-sm);
+}
+
+/* Question Card Header Row */
+.question-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Button Snooze Question (Passer pour aujourd'hui) */
+.btn-snooze-question {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  white-space: nowrap;
+}
+
+.btn-snooze-question:hover {
+  background: rgba(192, 132, 252, 0.14);
+  border-color: rgba(192, 132, 252, 0.4);
+  color: #d8b4fe;
+  transform: translateY(-1px);
+}
+
+.btn-snooze-question:active {
+  transform: translateY(0);
+}
+
+/* Dashboard Snoozed Alert Banner */
+.dashboard-snoozed-alert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(192, 132, 252, 0.08);
+  border: 1px solid rgba(192, 132, 252, 0.25);
+  border-radius: var(--radius-sm);
+  margin-top: 12px;
+  font-size: 0.82rem;
+}
+
+.snoozed-alert-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #e9d5ff;
+}
+
+.btn-unsnooze-link {
+  background: none;
+  border: none;
+  color: #c084fc;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.btn-unsnooze-link:hover {
+  color: #ffffff;
+  background: rgba(192, 132, 252, 0.25);
 }
 
 .chapter-title-badge {
@@ -6355,6 +6450,32 @@ body {
   pointer-events: auto;
 }
 
+.pedia-toast-alert .toast-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.pedia-toast-alert .toast-undo-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pedia-toast-alert .toast-undo-btn:hover {
+  background: var(--cyan);
+  border-color: var(--cyan);
+  color: #0d1527;
+}
+
 /* Spin animation for refresh icon */
 .spin-animation {
   animation: spinSlow 1s linear infinite;
@@ -6498,6 +6619,17 @@ body {
                 <div class="daily-progress-fill" id="daily-progress-fill" style="width: 0%;"></div>
               </div>
             </div>
+
+            <!-- Alerte de questions reportées à demain -->
+            <div class="dashboard-snoozed-alert" id="dashboard-snoozed-alert" style="display:none;">
+              <div class="snoozed-alert-content">
+                <i data-lucide="moon" style="width:14px;height:14px;color:#c084fc;"></i>
+                <span id="dashboard-snoozed-text">0 question reportée à demain</span>
+              </div>
+              <button type="button" class="btn-unsnooze-link" onclick="window.unsnoozeAllSnoozedQuestions()">
+                Réintégrer maintenant
+              </button>
+            </div>
           </div>
 
         </div>
@@ -6577,6 +6709,10 @@ body {
             <span class="tag-pill" id="arena-type-pill">QCU</span>
             <span class="tag-pill progress-pill" id="arena-progress-pill">0/3</span>
             <span class="tag-pill daily-pill" id="arena-daily-pill" title="Progression quotidienne (Examen 10/11 • J-28)">🎯 0/-- auj.</span>
+            <span class="tag-pill snooze-pill" id="arena-snooze-pill" style="display:none;" title="Questions reportées pour aujourd'hui (Cliquer pour gérer)" onclick="window.promptManageSnoozedQuestions()">
+              <i data-lucide="moon" style="width:11px;height:11px;"></i>
+              <span id="arena-snooze-pill-text">0 reporté</span>
+            </span>
           </div>
         </div>
 
@@ -6594,9 +6730,16 @@ body {
         <!-- Question Card -->
         <div class="question-container">
           
-          <div class="chapter-title-badge is-blurred" id="arena-chapter-title" onclick="window.toggleArenaChapterTitle()" title="Chapitre masqué (Cliquer pour afficher)">
-            <span class="chapter-title-text">Pédiatrie — Chapitre</span>
-            <span class="chapter-title-hint"><i data-lucide="eye" style="width:11px;height:11px;"></i> Cours masqué</span>
+          <div class="question-header-row">
+            <div class="chapter-title-badge is-blurred" id="arena-chapter-title" onclick="window.toggleArenaChapterTitle()" title="Chapitre masqué (Cliquer pour afficher)">
+              <span class="chapter-title-text">Pédiatrie — Chapitre</span>
+              <span class="chapter-title-hint"><i data-lucide="eye" style="width:11px;height:11px;"></i> Cours masqué</span>
+            </div>
+
+            <button type="button" class="btn-snooze-question" id="btn-snooze-question" onclick="window.snoozeCurrentQuestionForToday()" title="Ne plus afficher cette question aujourd'hui (reporter à demain)">
+              <i data-lucide="moon" style="width:13px;height:13px;"></i>
+              <span>Passer pour aujourd'hui</span>
+            </button>
           </div>
 
           <!-- Clinical Case Box (si présent) -->
@@ -8511,6 +8654,9 @@ class QueueEngine {
     // Total mistakes counter
     this.totalMistakesCount = 0;
 
+    // Per-question snoozed map: uid -> 'YYYY-MM-DD'
+    this.snoozedQuestions = {};
+
     // Load persisted state if exists
     this.loadState();
   }
@@ -8543,6 +8689,8 @@ class QueueEngine {
         this.selectedChapterIds = parsed.selectedChapterIds || [];
         this.selectedChaptersUpdatedAt = parsed.selectedChaptersUpdatedAt || 0;
         this.totalMistakesCount = parsed.totalMistakesCount || 0;
+        this.snoozedQuestions = (parsed.snoozedQuestions && typeof parsed.snoozedQuestions === 'object') ? parsed.snoozedQuestions : {};
+        this.cleanExpiredSnoozes();
       }
     } catch (err) {
       console.warn("Failed to load queue engine state:", err);
@@ -8579,6 +8727,7 @@ class QueueEngine {
         selectedChapterIds: this.selectedChapterIds,
         selectedChaptersUpdatedAt: this.selectedChaptersUpdatedAt || Date.now(),
         totalMistakesCount: this.totalMistakesCount,
+        snoozedQuestions: this.snoozedQuestions || {},
         lastUpdated: Date.now()
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -8613,9 +8762,12 @@ class QueueEngine {
       }
     });
 
-    // Build initial queue from unmastered questions in randomized order
+    const todayStr = this.getTodayDateStr();
+    this.cleanExpiredSnoozes(todayStr);
+
+    // Build initial queue from unmastered and un-snoozed questions in randomized order
     const unmasteredUids = filtered
-      .filter(q => !this.stats[q.uid].done)
+      .filter(q => !this.stats[q.uid].done && !this.isQuestionSnoozed(q.uid, todayStr))
       .map(q => q.uid);
 
     // Shuffle
@@ -8635,11 +8787,122 @@ class QueueEngine {
 
   getCurrentQuestion() {
     if (this.queue.length === 0) return null;
-    if (this.cursor >= this.queue.length) {
-      this.cursor = 0; // Loop or cycle if still items
+
+    const todayStr = this.getTodayDateStr();
+    let iterations = 0;
+    while (this.queue.length > 0 && iterations < this.queue.length) {
+      if (this.cursor >= this.queue.length) {
+        this.cursor = 0;
+      }
+      const uid = this.queue[this.cursor];
+      const isSnoozed = this.isQuestionSnoozed(uid, todayStr);
+      const isDone = this.stats[uid] && this.stats[uid].done;
+
+      if (isSnoozed || isDone) {
+        this.queue.splice(this.cursor, 1);
+      } else {
+        return this.allQuestions.find(q => q.uid === uid) || null;
+      }
+      iterations++;
     }
-    const uid = this.queue[this.cursor];
-    return this.allQuestions.find(q => q.uid === uid) || null;
+
+    return null;
+  }
+
+  getTodayDateStr() {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
+  isQuestionSnoozed(uid, dateStr = this.getTodayDateStr()) {
+    if (!this.snoozedQuestions || !this.snoozedQuestions[uid]) return false;
+    return this.snoozedQuestions[uid] === dateStr;
+  }
+
+  cleanExpiredSnoozes(currentDateStr = this.getTodayDateStr()) {
+    if (!this.snoozedQuestions || typeof this.snoozedQuestions !== 'object') {
+      this.snoozedQuestions = {};
+      return;
+    }
+    let changed = false;
+    for (const [uid, dateStr] of Object.entries(this.snoozedQuestions)) {
+      if (dateStr !== currentDateStr) {
+        delete this.snoozedQuestions[uid];
+        changed = true;
+      }
+    }
+    if (changed) {
+      this.saveState();
+    }
+  }
+
+  snoozeQuestionForToday(uid) {
+    if (!uid) return null;
+    const today = this.getTodayDateStr();
+    if (!this.snoozedQuestions) this.snoozedQuestions = {};
+    this.snoozedQuestions[uid] = today;
+
+    // Retirer la question de la file active du jour
+    const indexInQueue = this.queue.indexOf(uid);
+    if (indexInQueue !== -1) {
+      this.queue.splice(indexInQueue, 1);
+      if (this.cursor >= this.queue.length && this.queue.length > 0) {
+        this.cursor = 0;
+      }
+    }
+
+    this.saveState();
+    return {
+      uid,
+      snoozedDate: today,
+      remainingInQueue: this.queue.length,
+      totalSnoozedToday: this.getSnoozedCountToday(today)
+    };
+  }
+
+  unsnoozeQuestion(uid) {
+    if (!uid || !this.snoozedQuestions) return false;
+    if (this.snoozedQuestions[uid]) {
+      delete this.snoozedQuestions[uid];
+      const st = this.getQuestionStats(uid);
+      if (!st.done && !this.queue.includes(uid)) {
+        this.queue.splice(this.cursor, 0, uid);
+      }
+      this.saveState();
+      return true;
+    }
+    return false;
+  }
+
+  unsnoozeAllForToday() {
+    const today = this.getTodayDateStr();
+    let count = 0;
+    if (this.snoozedQuestions) {
+      for (const [uid, dateStr] of Object.entries(this.snoozedQuestions)) {
+        if (dateStr === today) {
+          delete this.snoozedQuestions[uid];
+          const st = this.getQuestionStats(uid);
+          if (!st.done && !this.queue.includes(uid)) {
+            this.queue.push(uid);
+          }
+          count++;
+        }
+      }
+    }
+    if (count > 0) {
+      this.queue = this.shuffleArray(this.queue);
+      this.cursor = 0;
+      this.saveState();
+    }
+    return count;
+  }
+
+  getSnoozedCountToday(today = this.getTodayDateStr()) {
+    if (!this.snoozedQuestions) return 0;
+    return Object.values(this.snoozedQuestions).filter(d => d === today).length;
   }
 
   getQuestionStats(uid) {
@@ -8914,6 +9177,7 @@ class QueueEngine {
       selectedChapterIds: this.selectedChapterIds,
       selectedChaptersUpdatedAt: this.selectedChaptersUpdatedAt || Date.now(),
       totalMistakesCount: this.totalMistakesCount,
+      snoozedQuestions: this.snoozedQuestions || {},
       reasoningNotes: this.getRawReasoningNotes().map(n => slimNote(n)),
       todayTracker: this.getTodayTracker()
     };
@@ -8948,6 +9212,10 @@ class QueueEngine {
         }
       }
       if (typeof merged.totalMistakesCount === 'number') this.totalMistakesCount = merged.totalMistakesCount;
+      if (merged.snoozedQuestions && typeof merged.snoozedQuestions === 'object') {
+        this.snoozedQuestions = { ...(this.snoozedQuestions || {}), ...merged.snoozedQuestions };
+        this.cleanExpiredSnoozes();
+      }
       if (Array.isArray(merged.reasoningNotes)) {
         const slimmed = merged.reasoningNotes.map(n => slimNote(n));
         localStorage.setItem(REASONING_KEY, JSON.stringify(slimmed.slice(0, 500)));
@@ -9941,6 +10209,10 @@ function mergeStates(local, remote) {
     })(),
     selectedChaptersUpdatedAt: Math.max(Number(local.selectedChaptersUpdatedAt || 0), Number(remote.selectedChaptersUpdatedAt || 0)),
     totalMistakesCount: Math.max(local.totalMistakesCount || 0, remote.totalMistakesCount || 0),
+    snoozedQuestions: {
+      ...((remote && remote.snoozedQuestions) || {}),
+      ...((local && local.snoozedQuestions) || {})
+    },
     reasoningNotes: []
   };
 
@@ -11145,6 +11417,21 @@ function updateDashboardUI() {
     chaptersBtnLabel.textContent = `Tous les cours (${allChapters.length})`;
   } else {
     chaptersBtnLabel.textContent = `${metrics.selectedChaptersCount} cours sélectionnés (${metrics.queueLength} QCM en file)`;
+  }
+
+  // Snoozed questions alert on dashboard
+  const snoozedCount = queueEngine.getSnoozedCountToday();
+  const snoozedAlert = document.getElementById('dashboard-snoozed-alert');
+  const snoozedText = document.getElementById('dashboard-snoozed-text');
+  if (snoozedAlert) {
+    if (snoozedCount > 0) {
+      snoozedAlert.style.display = 'flex';
+      if (snoozedText) {
+        snoozedText.textContent = `${snoozedCount} question${snoozedCount > 1 ? 's' : ''} reportée${snoozedCount > 1 ? 's' : ''} à demain`;
+      }
+    } else {
+      snoozedAlert.style.display = 'none';
+    }
   }
 
   // Notebook badge
@@ -12367,6 +12654,11 @@ function updateHistoryNavUI() {
     if (btnSubmitCroq) btnSubmitCroq.style.display = 'none';
     if (shortcutHint) shortcutHint.textContent = 'Mode Révision : QCM en lecture seule & Tuteur IA actif';
   }
+
+  const btnSnooze = document.getElementById('btn-snooze-question');
+  if (btnSnooze) {
+    btnSnooze.style.display = (historyCursor === -1 && !isCurrentQuestionAnswered) ? 'inline-flex' : 'none';
+  }
 }
 
 function renderHistoryQuestion(historyEntry) {
@@ -12531,6 +12823,130 @@ window.resumeActiveDrill = function() {
 };
 
 // ============================================================================
+// QUESTION SNOOZE ENGINE (PASSER POUR AUJOURD'HUI) & TOASTS AVEC ANNULATION
+// ============================================================================
+function showAppToast(message, onUndo = null, undoLabel = 'Annuler', durationMs = 4500) {
+  const existing = document.getElementById('pedia-toast-alert');
+  if (existing) existing.remove();
+
+  const toast = document.createElement('div');
+  toast.id = 'pedia-toast-alert';
+  toast.className = 'pedia-toast-alert';
+
+  let dismissTimer;
+
+  if (onUndo && typeof onUndo === 'function') {
+    const wrap = document.createElement('div');
+    wrap.className = 'toast-content';
+
+    const textSpan = document.createElement('span');
+    textSpan.textContent = message;
+    wrap.appendChild(textSpan);
+
+    const undoBtn = document.createElement('button');
+    undoBtn.type = 'button';
+    undoBtn.className = 'toast-undo-btn';
+    undoBtn.textContent = undoLabel;
+    undoBtn.onclick = () => {
+      clearTimeout(dismissTimer);
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 250);
+      onUndo();
+    };
+    wrap.appendChild(undoBtn);
+    toast.appendChild(wrap);
+  } else {
+    toast.textContent = message;
+  }
+
+  document.body.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.classList.add('show');
+  });
+
+  dismissTimer = setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, durationMs);
+}
+
+function updateArenaSnoozePill() {
+  const snoozePill = document.getElementById('arena-snooze-pill');
+  const snoozeText = document.getElementById('arena-snooze-pill-text');
+  if (!snoozePill) return;
+
+  const count = queueEngine.getSnoozedCountToday();
+  if (count > 0) {
+    snoozePill.style.display = 'inline-flex';
+    if (snoozeText) snoozeText.textContent = `${count} reporté${count > 1 ? 's' : ''}`;
+  } else {
+    snoozePill.style.display = 'none';
+  }
+}
+
+window.snoozeCurrentQuestionForToday = function() {
+  if (!currentQuestion) return;
+  if (isCurrentQuestionAnswered) return;
+
+  const qUid = currentQuestion.uid;
+  const res = queueEngine.snoozeQuestionForToday(qUid);
+  if (!res) return;
+
+  firebaseSyncService.triggerAutoPush();
+
+  showAppToast(`🌙 Question reportée à demain`, () => {
+    window.undoSnoozeQuestion(qUid);
+  }, 'Annuler', 5000);
+
+  loadNextArenaQuestion();
+  updateArenaSnoozePill();
+  updateDashboardUI();
+  refreshLucide();
+};
+
+window.undoSnoozeQuestion = function(uid) {
+  if (!uid) return;
+  const restored = queueEngine.unsnoozeQuestion(uid);
+  if (restored) {
+    showAppToast(`✅ Question réintégrée dans votre session !`);
+    firebaseSyncService.triggerAutoPush();
+    if (!currentQuestion || isCurrentQuestionAnswered) {
+      loadNextArenaQuestion();
+    }
+    updateArenaSnoozePill();
+    updateDashboardUI();
+    refreshLucide();
+  }
+};
+
+window.promptManageSnoozedQuestions = function() {
+  const count = queueEngine.getSnoozedCountToday();
+  if (count === 0) {
+    showAppToast("Aucune question reportée pour aujourd'hui.");
+    return;
+  }
+  const confirmed = confirm(`Vous avez ${count} question(s) reportée(s) à demain.\n\nSouhaitez-vous les réintégrer dans la session immédiatement ?`);
+  if (confirmed) {
+    window.unsnoozeAllSnoozedQuestions();
+  }
+};
+
+window.unsnoozeAllSnoozedQuestions = function() {
+  const count = queueEngine.unsnoozeAllForToday();
+  if (count > 0) {
+    showAppToast(`✅ ${count} question(s) réintégrée(s) dans la session !`);
+    firebaseSyncService.triggerAutoPush();
+    updateArenaSnoozePill();
+    updateDashboardUI();
+    if (!currentQuestion) {
+      loadNextArenaQuestion();
+    }
+    refreshLucide();
+  }
+};
+
+// ============================================================================
 // QUIZ ARENA (QUESTION DISPLAY & SUBMISSION)
 // ============================================================================
 function loadNextArenaQuestion() {
@@ -12567,6 +12983,9 @@ function loadNextArenaQuestion() {
   if (arenaAiBox) arenaAiBox.style.display = 'none';
   document.querySelectorAll('.option-item').forEach(el => el.classList.remove('correct-highlight', 'wrong-highlight'));
   document.getElementById('arena-default-actions').style.display = 'flex';
+  const btnSnooze = document.getElementById('btn-snooze-question');
+  if (btnSnooze) btnSnooze.style.display = 'inline-flex';
+  updateArenaSnoozePill();
 
   if (!currentQuestion) {
     // All questions cleaned!
@@ -12829,6 +13248,8 @@ function handleAnswerSuccess(score = null, feedback = null, customLetters = null
   }
 
   banner.style.display = 'flex';
+  const btnSnoozeSuccess = document.getElementById('btn-snooze-question');
+  if (btnSnoozeSuccess) btnSnoozeSuccess.style.display = 'none';
 
   // Highlight correct options visually in arena
   if (currentQuestion && currentQuestion.options) {
@@ -12891,6 +13312,8 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
   if (currentView === 'stats') renderStatsUI();
   firebaseSyncService.triggerAutoPush();
   isCurrentQuestionAnswered = true;
+  const btnSnoozeFail = document.getElementById('btn-snooze-question');
+  if (btnSnoozeFail) btnSnoozeFail.style.display = 'none';
   window.toggleArenaChapterTitle(true);
 
   // Populate penalty header
@@ -13006,26 +13429,55 @@ function closeErrorModalAndContinue() {
 // ALL CLEANED VICTORY SCREEN
 // ============================================================================
 function showVictoryScreen() {
-  document.getElementById('arena-question-text').innerHTML = `
-    <div style="text-align:center;padding:30px 10px;">
-      <div style="font-size:3rem;margin-bottom:12px;">🏆</div>
-      <h2 style="font-family:var(--font-heading);font-size:1.8rem;color:var(--emerald);margin-bottom:8px;">
-        Félicitations Majeur de Promo !
-      </h2>
-      <p style="color:var(--text-muted);font-size:1rem;max-width:500px;margin:0 auto 20px;">
-        Toutes les questions sélectionnées ont été nettoyées et validées jusqu'à leur seuil de maîtrise.
-      </p>
-      <button class="btn-primary-large" id="btn-victory-home" style="margin:0 auto;">
-        Retour au Dashboard
-      </button>
-    </div>
-  `;
+  const snoozedCount = queueEngine.getSnoozedCountToday();
+  const btnSnooze = document.getElementById('btn-snooze-question');
+  if (btnSnooze) btnSnooze.style.display = 'none';
+
+  if (snoozedCount > 0) {
+    document.getElementById('arena-question-text').innerHTML = `
+      <div style="text-align:center;padding:30px 10px;">
+        <div style="font-size:3rem;margin-bottom:12px;">🌙</div>
+        <h2 style="font-family:var(--font-heading);font-size:1.8rem;color:#c084fc;margin-bottom:8px;">
+          File active terminée pour aujourd'hui !
+        </h2>
+        <p style="color:var(--text-muted);font-size:1rem;max-width:520px;margin:0 auto 20px;">
+          Toutes les questions actives ont été travaillées. Vous avez <strong>${snoozedCount} question${snoozedCount > 1 ? 's' : ''} reportée${snoozedCount > 1 ? 's' : ''} à demain</strong>.
+        </p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <button class="btn-primary-large" id="btn-victory-unsnooze" style="margin:0;">
+            <span>Réintégrer les questions reportées</span>
+          </button>
+          <button class="btn-secondary" id="btn-victory-home" style="margin:0;">
+            <span>Retour au Dashboard</span>
+          </button>
+        </div>
+      </div>
+    `;
+    const btnUnsnooze = document.getElementById('btn-victory-unsnooze');
+    if (btnUnsnooze) btnUnsnooze.onclick = () => window.unsnoozeAllSnoozedQuestions();
+  } else {
+    document.getElementById('arena-question-text').innerHTML = `
+      <div style="text-align:center;padding:30px 10px;">
+        <div style="font-size:3rem;margin-bottom:12px;">🏆</div>
+        <h2 style="font-family:var(--font-heading);font-size:1.8rem;color:var(--emerald);margin-bottom:8px;">
+          Félicitations Majeur de Promo !
+        </h2>
+        <p style="color:var(--text-muted);font-size:1rem;max-width:500px;margin:0 auto 20px;">
+          Toutes les questions sélectionnées ont été nettoyées et validées jusqu'à leur seuil de maîtrise.
+        </p>
+        <button class="btn-primary-large" id="btn-victory-home" style="margin:0 auto;">
+          Retour au Dashboard
+        </button>
+      </div>
+    `;
+    triggerMasteryConfetti();
+  }
   document.getElementById('arena-options-container').innerHTML = '';
   document.getElementById('arena-croq-container').style.display = 'none';
   document.getElementById('arena-default-actions').style.display = 'none';
 
-  document.getElementById('btn-victory-home').onclick = () => switchView('dashboard');
-  triggerMasteryConfetti();
+  const btnHome = document.getElementById('btn-victory-home');
+  if (btnHome) btnHome.onclick = () => switchView('dashboard');
 }
 
 // ============================================================================
@@ -15466,6 +15918,11 @@ function setupKeyboardShortcuts() {
         e.preventDefault();
         const idx = e.key.toLowerCase().charCodeAt(0) - 97;
         selectOptionByIndex(idx);
+      } else if (e.key === 's' || e.key === 'S') {
+        if (!isCurrentQuestionAnswered) {
+          e.preventDefault();
+          window.snoozeCurrentQuestionForToday();
+        }
       } else if (e.key === 'Enter') {
         e.preventDefault();
         // If success banner is showing, enter continues

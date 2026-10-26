@@ -107,10 +107,14 @@ L'apprentissage repose sur une file d'attente circulaire dynamique (`activeQueue
   - Si `current >= target` : la question est marquée maîtrisée (`done = true`) et retirée définitivement de la file.
   - Si `target - current === 1` (dernier palier avant élimination complète) : **la question apparaît aléatoirement au sein des 50% dernières questions totales restantes** de la file (`[Math.floor(remaining * 0.5), remaining]`).
   - Sinon (`target - current > 1`) : **la question réapparaît après 50 à 100 questions** (`Math.floor(Math.random() * 51) + 50`).
-- **Compteur journalier d'itérations (`todayTracker`)** :
-  - **Seules les réponses justes** (`handleAnswerSuccess`) ajoutent +1 au compteur de questions faites aujourd'hui (`todayTracker.count`).
-  - Les erreurs (`handleAnswerFailure`) n'incrémentent pas ce compteur, garantissant que l'objectif journalier reflète fidèlement le nombre de validations acquises vers l'échéance du concours.
-- **Persistance locale & Cloud** : Tout l'état (`activeQueue`, `stats`, `cursor`, `reasoningNotes`, `todayTracker`, `selectedChapterIds`, `selectedChaptersUpdatedAt`) est sauvegardé dans `localStorage` sous la clé `pedia_drill_state_v1` et synchronisé via `FirebaseSyncService`.
+- **Système de Mise en Sommeil Journalière (« Passer pour aujourd'hui », `snoozeQuestionForToday`)** :
+  - **Suspension temporaire sans pénalité** : Permet à l'étudiant en un clic (bouton `#btn-snooze-question` ou raccourci clavier `S`) d'écarter une question de sa session pour toute la journée en cours. La question n'est ni comptabilisée comme faute, ni pénalisée au niveau de sa progression (`st.target` et `st.current` restent intacts).
+  - **Retrait immédiat de la file active** : La question est retirée de `this.queue` et enregistrée dans le dictionnaire `this.snoozedQuestions[uid] = todayStr`.
+  - **Réintégration automatique au changement de jour (Rollover)** : Dès le lendemain (`dateStr !== todayStr`), la méthode `cleanExpiredSnoozes()` purge automatiquement la suspension, réintégrant naturellement la question dans la file de répétition espacée.
+  - **Sécurité et flexibilité d'annulation (Undo & Réintégration)** :
+    - Notification Toast immédiate avec bouton « Annuler » permettant de restaurer instantanément la question en cas de clic involontaire.
+    - Pastille interactive `#arena-snooze-pill` dans l'Arène et bannière `#dashboard-snoozed-alert` sur le Dashboard affichant le nombre de questions suspendues avec option de réintégration immédiate en 1 clic (`unsnoozeAllForToday`).
+- **Persistance locale & Cloud** : Tout l'état (`activeQueue`, `stats`, `cursor`, `snoozedQuestions`, `reasoningNotes`, `todayTracker`, `selectedChapterIds`, `selectedChaptersUpdatedAt`) est sauvegardé dans `localStorage` sous la clé `pedia_drill_state_v1` et synchronisé via `FirebaseSyncService`.
 - **Synchronisation multi-appareils des cours sélectionnés** : Chaque modification de la sélection des cours met à jour un horodatage précis (`selectedChaptersUpdatedAt`). Lors de la fusion d'états (`mergeStates`), la sélection la plus récente entre l'appareil local et le cloud est automatiquement retenue et appliquée, déclenchant la ré-initialisation dynamique de la file et la mise à jour immédiate de l'interface sur tous les écrans connectés.
 
 ---

@@ -295,6 +295,21 @@ function updateDashboardUI() {
     chaptersBtnLabel.textContent = `${metrics.selectedChaptersCount} cours sélectionnés (${metrics.queueLength} QCM en file)`;
   }
 
+  // Snoozed questions alert on dashboard
+  const snoozedCount = queueEngine.getSnoozedCountToday();
+  const snoozedAlert = document.getElementById('dashboard-snoozed-alert');
+  const snoozedText = document.getElementById('dashboard-snoozed-text');
+  if (snoozedAlert) {
+    if (snoozedCount > 0) {
+      snoozedAlert.style.display = 'flex';
+      if (snoozedText) {
+        snoozedText.textContent = `${snoozedCount} question${snoozedCount > 1 ? 's' : ''} reportée${snoozedCount > 1 ? 's' : ''} à demain`;
+      }
+    } else {
+      snoozedAlert.style.display = 'none';
+    }
+  }
+
   // Notebook badge
   const notesCount = queueEngine.getReasoningNotes().length;
   document.getElementById('notebook-count-badge').textContent = notesCount;
@@ -1515,6 +1530,11 @@ function updateHistoryNavUI() {
     if (btnSubmitCroq) btnSubmitCroq.style.display = 'none';
     if (shortcutHint) shortcutHint.textContent = 'Mode Révision : QCM en lecture seule & Tuteur IA actif';
   }
+
+  const btnSnooze = document.getElementById('btn-snooze-question');
+  if (btnSnooze) {
+    btnSnooze.style.display = (historyCursor === -1 && !isCurrentQuestionAnswered) ? 'inline-flex' : 'none';
+  }
 }
 
 function renderHistoryQuestion(historyEntry) {
@@ -1679,6 +1699,130 @@ window.resumeActiveDrill = function() {
 };
 
 // ============================================================================
+// QUESTION SNOOZE ENGINE (PASSER POUR AUJOURD'HUI) & TOASTS AVEC ANNULATION
+// ============================================================================
+function showAppToast(message, onUndo = null, undoLabel = 'Annuler', durationMs = 4500) {
+  const existing = document.getElementById('pedia-toast-alert');
+  if (existing) existing.remove();
+
+  const toast = document.createElement('div');
+  toast.id = 'pedia-toast-alert';
+  toast.className = 'pedia-toast-alert';
+
+  let dismissTimer;
+
+  if (onUndo && typeof onUndo === 'function') {
+    const wrap = document.createElement('div');
+    wrap.className = 'toast-content';
+
+    const textSpan = document.createElement('span');
+    textSpan.textContent = message;
+    wrap.appendChild(textSpan);
+
+    const undoBtn = document.createElement('button');
+    undoBtn.type = 'button';
+    undoBtn.className = 'toast-undo-btn';
+    undoBtn.textContent = undoLabel;
+    undoBtn.onclick = () => {
+      clearTimeout(dismissTimer);
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 250);
+      onUndo();
+    };
+    wrap.appendChild(undoBtn);
+    toast.appendChild(wrap);
+  } else {
+    toast.textContent = message;
+  }
+
+  document.body.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.classList.add('show');
+  });
+
+  dismissTimer = setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, durationMs);
+}
+
+function updateArenaSnoozePill() {
+  const snoozePill = document.getElementById('arena-snooze-pill');
+  const snoozeText = document.getElementById('arena-snooze-pill-text');
+  if (!snoozePill) return;
+
+  const count = queueEngine.getSnoozedCountToday();
+  if (count > 0) {
+    snoozePill.style.display = 'inline-flex';
+    if (snoozeText) snoozeText.textContent = `${count} reporté${count > 1 ? 's' : ''}`;
+  } else {
+    snoozePill.style.display = 'none';
+  }
+}
+
+window.snoozeCurrentQuestionForToday = function() {
+  if (!currentQuestion) return;
+  if (isCurrentQuestionAnswered) return;
+
+  const qUid = currentQuestion.uid;
+  const res = queueEngine.snoozeQuestionForToday(qUid);
+  if (!res) return;
+
+  firebaseSyncService.triggerAutoPush();
+
+  showAppToast(`🌙 Question reportée à demain`, () => {
+    window.undoSnoozeQuestion(qUid);
+  }, 'Annuler', 5000);
+
+  loadNextArenaQuestion();
+  updateArenaSnoozePill();
+  updateDashboardUI();
+  refreshLucide();
+};
+
+window.undoSnoozeQuestion = function(uid) {
+  if (!uid) return;
+  const restored = queueEngine.unsnoozeQuestion(uid);
+  if (restored) {
+    showAppToast(`✅ Question réintégrée dans votre session !`);
+    firebaseSyncService.triggerAutoPush();
+    if (!currentQuestion || isCurrentQuestionAnswered) {
+      loadNextArenaQuestion();
+    }
+    updateArenaSnoozePill();
+    updateDashboardUI();
+    refreshLucide();
+  }
+};
+
+window.promptManageSnoozedQuestions = function() {
+  const count = queueEngine.getSnoozedCountToday();
+  if (count === 0) {
+    showAppToast("Aucune question reportée pour aujourd'hui.");
+    return;
+  }
+  const confirmed = confirm(`Vous avez ${count} question(s) reportée(s) à demain.\n\nSouhaitez-vous les réintégrer dans la session immédiatement ?`);
+  if (confirmed) {
+    window.unsnoozeAllSnoozedQuestions();
+  }
+};
+
+window.unsnoozeAllSnoozedQuestions = function() {
+  const count = queueEngine.unsnoozeAllForToday();
+  if (count > 0) {
+    showAppToast(`✅ ${count} question(s) réintégrée(s) dans la session !`);
+    firebaseSyncService.triggerAutoPush();
+    updateArenaSnoozePill();
+    updateDashboardUI();
+    if (!currentQuestion) {
+      loadNextArenaQuestion();
+    }
+    refreshLucide();
+  }
+};
+
+// ============================================================================
 // QUIZ ARENA (QUESTION DISPLAY & SUBMISSION)
 // ============================================================================
 function loadNextArenaQuestion() {
@@ -1715,6 +1859,9 @@ function loadNextArenaQuestion() {
   if (arenaAiBox) arenaAiBox.style.display = 'none';
   document.querySelectorAll('.option-item').forEach(el => el.classList.remove('correct-highlight', 'wrong-highlight'));
   document.getElementById('arena-default-actions').style.display = 'flex';
+  const btnSnooze = document.getElementById('btn-snooze-question');
+  if (btnSnooze) btnSnooze.style.display = 'inline-flex';
+  updateArenaSnoozePill();
 
   if (!currentQuestion) {
     // All questions cleaned!
@@ -1977,6 +2124,8 @@ function handleAnswerSuccess(score = null, feedback = null, customLetters = null
   }
 
   banner.style.display = 'flex';
+  const btnSnoozeSuccess = document.getElementById('btn-snooze-question');
+  if (btnSnoozeSuccess) btnSnoozeSuccess.style.display = 'none';
 
   // Highlight correct options visually in arena
   if (currentQuestion && currentQuestion.options) {
@@ -2039,6 +2188,8 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
   if (currentView === 'stats') renderStatsUI();
   firebaseSyncService.triggerAutoPush();
   isCurrentQuestionAnswered = true;
+  const btnSnoozeFail = document.getElementById('btn-snooze-question');
+  if (btnSnoozeFail) btnSnoozeFail.style.display = 'none';
   window.toggleArenaChapterTitle(true);
 
   // Populate penalty header
@@ -2154,26 +2305,55 @@ function closeErrorModalAndContinue() {
 // ALL CLEANED VICTORY SCREEN
 // ============================================================================
 function showVictoryScreen() {
-  document.getElementById('arena-question-text').innerHTML = `
-    <div style="text-align:center;padding:30px 10px;">
-      <div style="font-size:3rem;margin-bottom:12px;">🏆</div>
-      <h2 style="font-family:var(--font-heading);font-size:1.8rem;color:var(--emerald);margin-bottom:8px;">
-        Félicitations Majeur de Promo !
-      </h2>
-      <p style="color:var(--text-muted);font-size:1rem;max-width:500px;margin:0 auto 20px;">
-        Toutes les questions sélectionnées ont été nettoyées et validées jusqu'à leur seuil de maîtrise.
-      </p>
-      <button class="btn-primary-large" id="btn-victory-home" style="margin:0 auto;">
-        Retour au Dashboard
-      </button>
-    </div>
-  `;
+  const snoozedCount = queueEngine.getSnoozedCountToday();
+  const btnSnooze = document.getElementById('btn-snooze-question');
+  if (btnSnooze) btnSnooze.style.display = 'none';
+
+  if (snoozedCount > 0) {
+    document.getElementById('arena-question-text').innerHTML = `
+      <div style="text-align:center;padding:30px 10px;">
+        <div style="font-size:3rem;margin-bottom:12px;">🌙</div>
+        <h2 style="font-family:var(--font-heading);font-size:1.8rem;color:#c084fc;margin-bottom:8px;">
+          File active terminée pour aujourd'hui !
+        </h2>
+        <p style="color:var(--text-muted);font-size:1rem;max-width:520px;margin:0 auto 20px;">
+          Toutes les questions actives ont été travaillées. Vous avez <strong>${snoozedCount} question${snoozedCount > 1 ? 's' : ''} reportée${snoozedCount > 1 ? 's' : ''} à demain</strong>.
+        </p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <button class="btn-primary-large" id="btn-victory-unsnooze" style="margin:0;">
+            <span>Réintégrer les questions reportées</span>
+          </button>
+          <button class="btn-secondary" id="btn-victory-home" style="margin:0;">
+            <span>Retour au Dashboard</span>
+          </button>
+        </div>
+      </div>
+    `;
+    const btnUnsnooze = document.getElementById('btn-victory-unsnooze');
+    if (btnUnsnooze) btnUnsnooze.onclick = () => window.unsnoozeAllSnoozedQuestions();
+  } else {
+    document.getElementById('arena-question-text').innerHTML = `
+      <div style="text-align:center;padding:30px 10px;">
+        <div style="font-size:3rem;margin-bottom:12px;">🏆</div>
+        <h2 style="font-family:var(--font-heading);font-size:1.8rem;color:var(--emerald);margin-bottom:8px;">
+          Félicitations Majeur de Promo !
+        </h2>
+        <p style="color:var(--text-muted);font-size:1rem;max-width:500px;margin:0 auto 20px;">
+          Toutes les questions sélectionnées ont été nettoyées et validées jusqu'à leur seuil de maîtrise.
+        </p>
+        <button class="btn-primary-large" id="btn-victory-home" style="margin:0 auto;">
+          Retour au Dashboard
+        </button>
+      </div>
+    `;
+    triggerMasteryConfetti();
+  }
   document.getElementById('arena-options-container').innerHTML = '';
   document.getElementById('arena-croq-container').style.display = 'none';
   document.getElementById('arena-default-actions').style.display = 'none';
 
-  document.getElementById('btn-victory-home').onclick = () => switchView('dashboard');
-  triggerMasteryConfetti();
+  const btnHome = document.getElementById('btn-victory-home');
+  if (btnHome) btnHome.onclick = () => switchView('dashboard');
 }
 
 // ============================================================================
@@ -4614,6 +4794,11 @@ function setupKeyboardShortcuts() {
         e.preventDefault();
         const idx = e.key.toLowerCase().charCodeAt(0) - 97;
         selectOptionByIndex(idx);
+      } else if (e.key === 's' || e.key === 'S') {
+        if (!isCurrentQuestionAnswered) {
+          e.preventDefault();
+          window.snoozeCurrentQuestionForToday();
+        }
       } else if (e.key === 'Enter') {
         e.preventDefault();
         // If success banner is showing, enter continues
