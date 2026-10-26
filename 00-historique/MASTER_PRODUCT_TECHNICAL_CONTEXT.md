@@ -247,8 +247,8 @@ L'application intègre un sous-système complet de vérification, d'alerte et de
   - **Modale Complète de Mise à Jour (`#modal-app-update`)** : Présentation soignée avec icône émeraude, comparatif `vActuelle ➔ vNouvelle`, date de publication, notes de mise à jour / changelog défilant et bouton d'action principal « Télécharger l'APK ».
 - **Pipeline CI/CD Automatisé (`.github/workflows/build-and-release.yml`)** :
   - **Déclencheurs** : Push d'un tag git `v*` (ex: `v1.3.1`) ou déclenchement manuel en 1 clic via `workflow_dispatch`.
-  - **Environnement de build** : Ubuntu Latest avec Node 20, Java 17 Temurin et Android SDK officiel.
-  - **Compilation & Publication** : Exécute `build-bundle.cjs`, synchronise Capacitor, compile `:app:assembleDebug`, renomme l'APK en `PediaDrill.apk` et crée automatiquement une Release GitHub complète avec notes de version générées et l'APK attaché en téléchargement direct.
+  - **Environnement de build** : Ubuntu Latest avec Node.js 22, Java JDK 21 Temurin, Android SDK Platform 36 (build-tools 36.0.0 via `android-actions/setup-android@v4`) et Gradle Wrapper 9.2.0 (compatible Android Gradle Plugin 8.13.0).
+  - **Compilation & Publication** : Exécute `build-bundle.cjs`, synchronise Capacitor (`npx @capacitor/cli sync android`), compile `:app:assembleDebug`, copie et renomme l'APK produit en `PediaDrill.apk` et publie automatiquement une Release GitHub complète (`v1.3.0`) avec notes de version générées et l'APK attaché en téléchargement direct pour les mises à jour in-app Android.
 
 ### 3.10. Moteur de Formatage Médical Intelligent (`formatMedicalContent`)
 Pour résoudre les problèmes de textes compacts ou collés sans sauts de lignes issus de l'extraction de cours :
