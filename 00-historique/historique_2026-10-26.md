@@ -291,3 +291,23 @@
       - Sécurisation du fallback de plage sur `'today'` (`btn.dataset.range || 'today'`).
   - **Recompilation complète** :
     - Exécution de `build-bundle.cjs` régénérant `src/app.bundle.js`, `index.html` et `dist/index.html`.
+
+### 20:15 - Publication de la Release v1.4.2 (GitHub & Android APK)
+
+- **Incrémentation de version vers v1.4.2 (versionCode 11)** :
+  - `package.json` : `"version": "1.4.2"`
+  - `src/services/updateService.js` : `CURRENT_APP_VERSION = '1.4.2'`
+  - `android/app/build.gradle` : `versionCode 11`, `versionName "1.4.2"`
+  - `template.html` : badges de version synchronisés sur `v1.4.2`
+  - `00-historique/MASTER_PRODUCT_TECHNICAL_CONTEXT.md` : synchronisé avec `v1.4.2` / `versionCode 11`.
+- **Fonctionnalités intégrées dans la release v1.4.2** :
+  - Sélection par défaut de l'onglet « Aujourd'hui » (`#btn-range-day`) dans le tableau de bord de statistiques.
+  - Synchronisation dynamique et fluide des classes `.active` sur l'ensemble des boutons de période temporelle.
+- **Recompilation & Assemblage** :
+  - Exécution de `build-bundle.cjs` générant `src/app.bundle.js` et les bundles autonomes `index.html` et `dist/index.html`.
+  - Exécution de `build-apk.bat` avec synchronisation Capacitor Android et compilation Gradle native (`:app:assembleDebug`) produisant le package officiel `PediaDrill.apk` (~7.8 Mo).
+- **Déploiement GitHub** :
+  - Enregistrement du commit git conventionnel `feat(release): v1.4.2 - default stats range to today and package updates`.
+  - Création du tag Git annoté `v1.4.2`.
+  - Push vers GitHub (`main` et tag `v1.4.2`) déclenchant le workflow CI/CD `.github/workflows/build-and-release.yml` pour publier automatiquement la Release officielle et l'APK sur GitHub Releases.
+
