@@ -1,15 +1,8 @@
-// PédiaDrill Service Worker - Offline Cache
-const CACHE_NAME = 'pedia-drill-v1';
+// PédiaDrill Service Worker - Offline Cache & Fast Launch
+const CACHE_NAME = 'pedia-drill-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
-  './src/style.css',
-  './src/app.js',
-  './src/services/gemini.js',
-  './src/services/queueEngine.js',
-  './src/services/syncService.js',
-  './src/data/chapters.js',
-  './src/data/questions.js',
   './manifest.json',
   './icon-192.svg',
   './icon-512.svg'
@@ -39,18 +32,32 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
-  // Network first, then cache fallback
-  event.respondWith(
-    fetch(event.request)
-      .then((networkResponse) => {
-        if (networkResponse && networkResponse.status === 200) {
-          const responseClone = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseClone);
-          });
-        }
-        return networkResponse;
+  const url = new URL(event.request.url);
+
+  // Same-origin static assets: stale-while-revalidate for instantaneous 0ms launch
+  if (url.origin === self.location.origin) {
+    event.respondWith(
+      caches.match(event.request).then((cachedResponse) => {
+        const fetchPromise = fetch(event.request)
+          .then((networkResponse) => {
+            if (networkResponse && networkResponse.status === 200) {
+              const responseClone = networkResponse.clone();
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(event.request, responseClone);
+              });
+            }
+            return networkResponse;
+          })
+          .catch(() => cachedResponse);
+
+        return cachedResponse || fetchPromise;
       })
-      .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // External network requests (Firebase, Gemini API, fonts)
+  event.respondWith(
+    fetch(event.request).catch(() => caches.match(event.request))
   );
 });

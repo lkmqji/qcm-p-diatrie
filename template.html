@@ -11,6 +11,9 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Firebase SDK (v10.8.0 compat for browser & PWA) -->
@@ -75,6 +78,22 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+/* Mobile Touch & Tap Latency Optimization */
+button,
+a,
+input,
+select,
+textarea,
+.option-item,
+.nav-tab-btn,
+.chapter-select-item,
+.notebook-chapter-header,
+.medical-media-inner,
+[role="button"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -7630,9 +7649,9 @@ body {
 
       <div class="update-version-banner">
         <div class="update-version-chips">
-          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.4.3</strong></span>
+          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.4.4</strong></span>
           <i data-lucide="arrow-right" style="width:14px;height:14px;color:var(--text-dim);"></i>
-          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.4.3</strong></span>
+          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.4.4</strong></span>
         </div>
         <div class="update-release-date" id="update-modal-date">Publiée sur GitHub Releases</div>
       </div>

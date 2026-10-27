@@ -26,12 +26,25 @@ export function slimNote(note) {
   };
 }
 
+let cachedQuestionsMap = null;
+let lastQuestionsListRef = null;
+
+export function getQuestionsMap(questionsList = []) {
+  if (questionsList instanceof Map) return questionsList;
+  if (!cachedQuestionsMap || lastQuestionsListRef !== questionsList) {
+    lastQuestionsListRef = questionsList;
+    cachedQuestionsMap = new Map((Array.isArray(questionsList) ? questionsList : []).map(q => [q.uid, q]));
+  }
+  return cachedQuestionsMap;
+}
+
 /**
  * Re-hydrates a slim note with full question metadata from the question bank.
  */
 export function hydrateNote(note, questionsList = []) {
   if (!note || typeof note !== 'object') return note;
-  const q = Array.isArray(questionsList) ? questionsList.find(item => item.uid === note.questionUid) : null;
+  const qMap = getQuestionsMap(questionsList);
+  const q = qMap.get(note.questionUid) || null;
   if (!q) {
     return {
       ...note,
@@ -58,6 +71,8 @@ export class QueueEngine {
   constructor(allQuestions = [], chapters = []) {
     this.allQuestions = allQuestions;
     this.chapters = chapters;
+    this.questionsMap = getQuestionsMap(allQuestions);
+    this._cachedMetrics = null;
     this.selectedChapterIds = []; // Empty = all chapters (Grand Mix)
     this.selectedChaptersUpdatedAt = 0; // Timestamp of last chapter selection change
     
@@ -83,6 +98,8 @@ export class QueueEngine {
   setQuestions(allQuestions, chapters) {
     this.allQuestions = allQuestions;
     this.chapters = chapters;
+    this.questionsMap = getQuestionsMap(allQuestions);
+    this._cachedMetrics = null;
     if (this.queue.length === 0) {
       this.initSession();
     }
@@ -138,6 +155,7 @@ export class QueueEngine {
   }
 
   saveState() {
+    this._cachedMetrics = null;
     try {
       const data = {
         stats: this.stats,
@@ -220,7 +238,7 @@ export class QueueEngine {
       if (isSnoozed || isDone) {
         this.queue.splice(this.cursor, 1);
       } else {
-        return this.allQuestions.find(q => q.uid === uid) || null;
+        return (this.questionsMap ? this.questionsMap.get(uid) : this.allQuestions.find(q => q.uid === uid)) || null;
       }
       iterations++;
     }
@@ -461,12 +479,16 @@ export class QueueEngine {
    * et ne diffèrent jamais lorsqu'un cours spécifique est sélectionné pour l'entraînement.
    */
   getDashboardMetrics() {
+    if (this._cachedMetrics) {
+      return this._cachedMetrics;
+    }
     const totalPoolCount = this.allQuestions.length;
     let remainingDistinctQuestions = 0;
     let totalIterationsRequired = 0;
     let masteredCount = 0;
 
-    for (const q of this.allQuestions) {
+    for (let i = 0; i < totalPoolCount; i++) {
+      const q = this.allQuestions[i];
       const st = this.stats[q.uid] || { target: 3, current: 0, mistakes: 0, done: false };
       if (st.done) {
         masteredCount++;
@@ -481,7 +503,7 @@ export class QueueEngine {
       ? Math.round((masteredCount / totalPoolCount) * 100) 
       : 0;
 
-    return {
+    this._cachedMetrics = {
       totalPoolCount,
       remainingDistinctQuestions,
       totalIterationsRequired,
@@ -491,6 +513,7 @@ export class QueueEngine {
       totalMistakes: this.totalMistakesCount,
       selectedChaptersCount: this.selectedChapterIds ? this.selectedChapterIds.length : 0
     };
+    return this._cachedMetrics;
   }
 
   /**
@@ -521,7 +544,8 @@ export class QueueEngine {
   getReasoningNotes() {
     try {
       const rawNotes = this.getRawReasoningNotes();
-      return rawNotes.map(n => hydrateNote(n, this.allQuestions));
+      const qMap = this.questionsMap || getQuestionsMap(this.allQuestions);
+      return rawNotes.map(n => hydrateNote(n, qMap));
     } catch {
       return [];
     }

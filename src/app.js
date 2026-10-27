@@ -1,14 +1,16 @@
 // PédiaDrill - Application Controller & Orchestration
 import { geminiService, cleanLatexMath } from './services/gemini.js';
-import { QueueEngine } from './services/queueEngine.js';
+import { QueueEngine, hydrateNote } from './services/queueEngine.js';
 import { FirebaseSyncService } from './services/firebaseSyncService.js';
 import { studyTracker } from './services/studyTracker.js';
 import { lessonTracker } from './services/lessonTracker.js';
 import { updateService, CURRENT_APP_VERSION } from './services/updateService.js';
 
-// Global Data Access
+// Global Data Access & O(1) Fast Lookup Maps
 const allQuestions = window.PEDIA_QUESTIONS || [];
 const allChapters = window.PEDIA_CHAPTERS || [];
+const questionsMap = new Map(allQuestions.map(q => [q.uid, q]));
+const chaptersMap = new Map(allChapters.map(c => [c.id, c]));
 
 // Services
 const queueEngine = new QueueEngine(allQuestions, allChapters);
@@ -101,7 +103,7 @@ function updateModalLocalSummary() {
   const summaryEl = document.getElementById('sync-local-summary');
   if (!summaryEl) return;
   const metrics = queueEngine.getDashboardMetrics();
-  const notesCount = queueEngine.getReasoningNotes().length;
+  const notesCount = queueEngine.getRawReasoningNotes().length;
   summaryEl.textContent = `${metrics.masteredCount} maîtrisées • ${notesCount} note${notesCount > 1 ? 's' : ''} IA`;
 }
 
@@ -169,9 +171,13 @@ function setupFirebaseService() {
   }
 }
 
-function refreshLucide() {
+function refreshLucide(container = null) {
   if (window.lucide && typeof window.lucide.createIcons === 'function') {
-    window.lucide.createIcons();
+    if (container && (container instanceof Element || container instanceof DocumentFragment)) {
+      window.lucide.createIcons({ root: container });
+    } else {
+      window.lucide.createIcons();
+    }
   }
 }
 
@@ -237,7 +243,7 @@ function updateArenaDailyBadge() {
   const countdown = getExamCountdownMetrics(metrics.totalIterationsRequired);
   const todayTracker = queueEngine.getTodayTracker();
   dailyBadge.innerHTML = `<i data-lucide="target" style="width:12px;height:12px;display:inline;"></i> <span>${todayTracker.count}/${countdown.dailyIterationsRequired} auj. (J-${countdown.daysLeft})</span>`;
-  refreshLucide();
+  refreshLucide(dailyBadge);
 }
 
 // ============================================================================
@@ -311,7 +317,7 @@ function updateDashboardUI() {
   }
 
   // Notebook badge
-  const notesCount = queueEngine.getReasoningNotes().length;
+  const notesCount = queueEngine.getRawReasoningNotes().length;
   document.getElementById('notebook-count-badge').textContent = notesCount;
 }
 
@@ -1238,7 +1244,7 @@ function scrubCorruptedAiExplanations() {
     let purgedCacheCount = 0;
     for (const [uid, item] of Object.entries(aiExplanationsCache)) {
       if (!item || !item.note) continue;
-      const q = allQuestions.find(it => it.uid === uid);
+      const q = questionsMap.get(uid);
       if (!q || !isExplanationMatchingQuestion(item.note, q)) {
         delete aiExplanationsCache[uid];
         purgedCacheCount++;
@@ -1254,7 +1260,7 @@ function scrubCorruptedAiExplanations() {
     let purgedNotesCount = 0;
     const cleanedNotes = rawNotes.filter(n => {
       if (!n || !n.questionUid || !n.reasoningNote) return true;
-      const q = allQuestions.find(it => it.uid === n.questionUid);
+      const q = questionsMap.get(n.questionUid);
       if (q && !isExplanationMatchingQuestion(n.reasoningNote, q)) {
         purgedNotesCount++;
         return false;
@@ -1275,7 +1281,7 @@ function scrubCorruptedAiExplanations() {
 function getSavedAiExplanation(questionUid, question = null) {
   if (!questionUid) return null;
 
-  const targetQ = question || (allQuestions.find(q => q.uid === questionUid) || null);
+  const targetQ = question || (questionsMap.get(questionUid) || null);
 
   const checkAndClean = (entry, source) => {
     if (!entry || !entry.note) return null;
@@ -1307,9 +1313,11 @@ function getSavedAiExplanation(questionUid, question = null) {
     histItem.modelUsed = null;
   }
   // 3. QueueEngine reasoning notes (from notebook or synced from Firestore)
-  const notes = queueEngine.getReasoningNotes();
-  const note = notes.find(n => n.questionUid === questionUid && n.reasoningNote);
-  if (note) {
+  // Optimize: query raw notes first to avoid hydrating hundreds of notes
+  const rawNotes = queueEngine.getRawReasoningNotes();
+  const rawNote = rawNotes.find(n => n.questionUid === questionUid && n.reasoningNote);
+  if (rawNote) {
+    const note = hydrateNote(rawNote, questionsMap);
     const entry = { note: note.reasoningNote, modelUsed: note.modelUsed || 'Gemini 3.8 Flash' };
     const valid = checkAndClean(entry, 'notebook');
     if (valid) return valid;
@@ -1323,7 +1331,7 @@ function getSavedAiExplanation(questionUid, question = null) {
 function saveAiExplanationForQuestion(questionUid, noteText, modelUsed = 'Gemini 3.8 Flash', question = null) {
   if (!questionUid || !noteText) return;
 
-  const targetQ = question || (allQuestions.find(q => q.uid === questionUid) || null);
+  const targetQ = question || (questionsMap.get(questionUid) || null);
   if (targetQ && !isExplanationMatchingQuestion(noteText, targetQ)) {
     console.warn(`[AI Explanation] Refusing to save mismatched note for ${questionUid}`);
     return;
@@ -1413,7 +1421,7 @@ function renderArenaAiExplanation(question) {
       </div>
     `;
   }
-  refreshLucide();
+  refreshLucide(box);
 }
 
 window.regenerateArenaAiExplanation = async function() {
@@ -1456,7 +1464,7 @@ window.requestArenaAiExplanation = async function(forceRegen = false) {
       <div style="font-size:0.75rem;color:var(--text-dim);margin-top:4px;">Justification détaillée proposition par proposition et mémo concours.</div>
     </div>
   `;
-  refreshLucide();
+  refreshLucide(box);
 
   try {
     const isCroq = !!effQ.is_croq;
@@ -1475,7 +1483,7 @@ window.requestArenaAiExplanation = async function(forceRegen = false) {
       textEl.innerHTML = formatReasoningNote(reasoningObj.note);
       if (modelTag) modelTag.textContent = reasoningObj.modelUsed;
       if (regenBtn) regenBtn.style.display = 'inline-flex';
-      refreshLucide();
+      refreshLucide(box);
     }
   } catch (err) {
     const currentEffQ = getEffectiveArenaQuestion();
@@ -1488,7 +1496,7 @@ window.requestArenaAiExplanation = async function(forceRegen = false) {
           </div>
         </div>
       `;
-      refreshLucide();
+      refreshLucide(box);
     }
   }
 };
@@ -1500,7 +1508,7 @@ function pushToAnsweredHistory(question, userAnswerLetters, isCorrect, score = n
   if (!question) return;
   const savedAi = getSavedAiExplanation(question.uid, question);
   const snapshot = {
-    question: JSON.parse(JSON.stringify(question)),
+    question: { ...question },
     userAnswerLetters: Array.isArray(userAnswerLetters) ? [...userAnswerLetters] : (userAnswerLetters ? [userAnswerLetters] : []),
     isCorrect: !!isCorrect,
     score: score,
@@ -2191,7 +2199,7 @@ function handleAnswerSuccess(score = null, feedback = null, customLetters = null
 
   isCurrentQuestionAnswered = true;
   window.toggleArenaChapterTitle(true);
-  refreshLucide();
+  refreshLucide(views.arena);
 }
 
 function triggerMasteryConfetti() {
@@ -2282,7 +2290,7 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
       <span>Consultation de l'IA Flash et formulation de la démarche clinique complète...</span>
     </div>
   `;
-  refreshLucide();
+  refreshLucide(modals.error);
 
   // Request AI reasoning note asynchronously using targetQuestion
   const reasoningObj = await geminiService.generateReasoningNote(
@@ -2298,7 +2306,7 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
   if (modals.error.style.display === 'flex' && modals.error.dataset.questionUid === targetUid) {
     aiNoteContainer.innerHTML = formatReasoningNote(reasoningObj.note);
     document.getElementById('error-modal-model-tag').textContent = reasoningObj.modelUsed;
-    refreshLucide();
+    refreshLucide(modals.error);
   }
 
   // Save to Notebook with targetQuestion metadata
@@ -2324,11 +2332,11 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
   firebaseSyncService.triggerAutoPush();
 
   // Update notebook badge in dashboard
-  const notesCount = queueEngine.getReasoningNotes().length;
+  const notesCount = queueEngine.getRawReasoningNotes().length;
   const badgeEl = document.getElementById('notebook-count-badge');
   if (badgeEl) badgeEl.textContent = notesCount;
 
-  refreshLucide();
+  refreshLucide(modals.error);
 }
 
 function closeErrorModalAndContinue() {
@@ -2492,7 +2500,7 @@ function renderQuestionCard(q, gIdx, qIdx, rankNumber = null) {
 
   // Pre-rendered panels for each attempt with complete fiches
   const panelsHtml = q.attempts.map((att, attIdx) => {
-    const fullQ = allQuestions.find(item => item.uid === att.questionUid) || {
+    const fullQ = questionsMap.get(att.questionUid) || {
       uid: att.questionUid,
       question: att.questionText,
       clinical_case: att.clinicalCase || null,
@@ -2580,7 +2588,7 @@ function groupNotesByChapterAndQuestion(notes) {
   const chapterMap = new Map();
 
   notes.forEach(note => {
-    const fullQ = allQuestions.find(item => item.uid === note.questionUid);
+    const fullQ = questionsMap.get(note.questionUid);
     const chap = (fullQ && fullQ.chapterTitle) || (note.chapterTitle && note.chapterTitle.trim()) || "Pédiatrie Générale";
     const qKey = note.questionUid || (fullQ && fullQ.question) || note.questionText || note.id;
 
@@ -2758,7 +2766,7 @@ function renderNotebookUI(filterText = '') {
     }
     if (!filterText) return true;
     const q = filterText.toLowerCase();
-    const fullQ = allQuestions.find(item => item.uid === n.questionUid);
+    const fullQ = questionsMap.get(n.questionUid);
     const optionsText = fullQ && fullQ.options ? fullQ.options.map(o => o.text).join(' ').toLowerCase() : '';
     const explanationText = (fullQ && fullQ.explanation ? fullQ.explanation.toLowerCase() : '') || (n.officialExplanation ? n.officialExplanation.toLowerCase() : '');
 
@@ -2785,7 +2793,7 @@ function renderNotebookUI(filterText = '') {
           : 'Aucune note de raisonnement pour le moment. Vos futures erreurs seront automatiquement analysées et regroupées ici par cours !'}
       </div>
     `;
-    refreshLucide();
+    refreshLucide(views.notebook);
     return;
   }
 
@@ -2863,7 +2871,7 @@ function renderNotebookUI(filterText = '') {
     });
   }
 
-  refreshLucide();
+  refreshLucide(views.notebook);
 }
 
 // ============================================================================
@@ -3651,7 +3659,7 @@ function renderStatsChapters(chapterTotals = {}, periodLabel = '') {
     const entries = Object.entries(chapterTotals).filter(([_, st]) => (st.correct + st.wrong) > 0);
 
     let list = entries.map(([chId, st]) => {
-      const ch = allChapters.find(c => c.id === chId) || { title: chId, count: 0 };
+      const ch = chaptersMap.get(chId) || { title: chId, count: 0 };
       const chQuestions = allQuestions.filter(q => q.chapterId === chId);
       const totalInChapter = chQuestions.length > 0 ? chQuestions.length : (ch.count || 0);
       const totalDone = (st.correct || 0) + (st.wrong || 0);

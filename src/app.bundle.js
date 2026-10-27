@@ -686,12 +686,25 @@ function slimNote(note) {
   };
 }
 
+let cachedQuestionsMap = null;
+let lastQuestionsListRef = null;
+
+function getQuestionsMap(questionsList = []) {
+  if (questionsList instanceof Map) return questionsList;
+  if (!cachedQuestionsMap || lastQuestionsListRef !== questionsList) {
+    lastQuestionsListRef = questionsList;
+    cachedQuestionsMap = new Map((Array.isArray(questionsList) ? questionsList : []).map(q => [q.uid, q]));
+  }
+  return cachedQuestionsMap;
+}
+
 /**
  * Re-hydrates a slim note with full question metadata from the question bank.
  */
 function hydrateNote(note, questionsList = []) {
   if (!note || typeof note !== 'object') return note;
-  const q = Array.isArray(questionsList) ? questionsList.find(item => item.uid === note.questionUid) : null;
+  const qMap = getQuestionsMap(questionsList);
+  const q = qMap.get(note.questionUid) || null;
   if (!q) {
     return {
       ...note,
@@ -718,6 +731,8 @@ class QueueEngine {
   constructor(allQuestions = [], chapters = []) {
     this.allQuestions = allQuestions;
     this.chapters = chapters;
+    this.questionsMap = getQuestionsMap(allQuestions);
+    this._cachedMetrics = null;
     this.selectedChapterIds = []; // Empty = all chapters (Grand Mix)
     this.selectedChaptersUpdatedAt = 0; // Timestamp of last chapter selection change
     
@@ -743,6 +758,8 @@ class QueueEngine {
   setQuestions(allQuestions, chapters) {
     this.allQuestions = allQuestions;
     this.chapters = chapters;
+    this.questionsMap = getQuestionsMap(allQuestions);
+    this._cachedMetrics = null;
     if (this.queue.length === 0) {
       this.initSession();
     }
@@ -798,6 +815,7 @@ class QueueEngine {
   }
 
   saveState() {
+    this._cachedMetrics = null;
     try {
       const data = {
         stats: this.stats,
@@ -880,7 +898,7 @@ class QueueEngine {
       if (isSnoozed || isDone) {
         this.queue.splice(this.cursor, 1);
       } else {
-        return this.allQuestions.find(q => q.uid === uid) || null;
+        return (this.questionsMap ? this.questionsMap.get(uid) : this.allQuestions.find(q => q.uid === uid)) || null;
       }
       iterations++;
     }
@@ -1121,12 +1139,16 @@ class QueueEngine {
    * et ne diffèrent jamais lorsqu'un cours spécifique est sélectionné pour l'entraînement.
    */
   getDashboardMetrics() {
+    if (this._cachedMetrics) {
+      return this._cachedMetrics;
+    }
     const totalPoolCount = this.allQuestions.length;
     let remainingDistinctQuestions = 0;
     let totalIterationsRequired = 0;
     let masteredCount = 0;
 
-    for (const q of this.allQuestions) {
+    for (let i = 0; i < totalPoolCount; i++) {
+      const q = this.allQuestions[i];
       const st = this.stats[q.uid] || { target: 3, current: 0, mistakes: 0, done: false };
       if (st.done) {
         masteredCount++;
@@ -1141,7 +1163,7 @@ class QueueEngine {
       ? Math.round((masteredCount / totalPoolCount) * 100) 
       : 0;
 
-    return {
+    this._cachedMetrics = {
       totalPoolCount,
       remainingDistinctQuestions,
       totalIterationsRequired,
@@ -1151,6 +1173,7 @@ class QueueEngine {
       totalMistakes: this.totalMistakesCount,
       selectedChaptersCount: this.selectedChapterIds ? this.selectedChapterIds.length : 0
     };
+    return this._cachedMetrics;
   }
 
   /**
@@ -1181,7 +1204,8 @@ class QueueEngine {
   getReasoningNotes() {
     try {
       const rawNotes = this.getRawReasoningNotes();
-      return rawNotes.map(n => hydrateNote(n, this.allQuestions));
+      const qMap = this.questionsMap || getQuestionsMap(this.allQuestions);
+      return rawNotes.map(n => hydrateNote(n, qMap));
     } catch {
       return [];
     }
@@ -2968,7 +2992,7 @@ class FirebaseSyncService {
 // Update Management Service for PédiaDrill
 // Checks GitHub Releases for new APK versions, notifies the user, and triggers direct download.
 
-const CURRENT_APP_VERSION = '1.4.3';
+const CURRENT_APP_VERSION = '1.4.4';
 const GITHUB_REPO = 'lkmqji/qcm-p-diatrie';
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
 const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours auto-check cooldown
@@ -3209,9 +3233,11 @@ const updateService = new UpdateService();
 
 // PédiaDrill - Application Controller & Orchestration
 
-// Global Data Access
+// Global Data Access & O(1) Fast Lookup Maps
 const allQuestions = window.PEDIA_QUESTIONS || [];
 const allChapters = window.PEDIA_CHAPTERS || [];
+const questionsMap = new Map(allQuestions.map(q => [q.uid, q]));
+const chaptersMap = new Map(allChapters.map(c => [c.id, c]));
 
 // Services
 const queueEngine = new QueueEngine(allQuestions, allChapters);
@@ -3304,7 +3330,7 @@ function updateModalLocalSummary() {
   const summaryEl = document.getElementById('sync-local-summary');
   if (!summaryEl) return;
   const metrics = queueEngine.getDashboardMetrics();
-  const notesCount = queueEngine.getReasoningNotes().length;
+  const notesCount = queueEngine.getRawReasoningNotes().length;
   summaryEl.textContent = `${metrics.masteredCount} maîtrisées • ${notesCount} note${notesCount > 1 ? 's' : ''} IA`;
 }
 
@@ -3372,9 +3398,13 @@ function setupFirebaseService() {
   }
 }
 
-function refreshLucide() {
+function refreshLucide(container = null) {
   if (window.lucide && typeof window.lucide.createIcons === 'function') {
-    window.lucide.createIcons();
+    if (container && (container instanceof Element || container instanceof DocumentFragment)) {
+      window.lucide.createIcons({ root: container });
+    } else {
+      window.lucide.createIcons();
+    }
   }
 }
 
@@ -3440,7 +3470,7 @@ function updateArenaDailyBadge() {
   const countdown = getExamCountdownMetrics(metrics.totalIterationsRequired);
   const todayTracker = queueEngine.getTodayTracker();
   dailyBadge.innerHTML = `<i data-lucide="target" style="width:12px;height:12px;display:inline;"></i> <span>${todayTracker.count}/${countdown.dailyIterationsRequired} auj. (J-${countdown.daysLeft})</span>`;
-  refreshLucide();
+  refreshLucide(dailyBadge);
 }
 
 // ============================================================================
@@ -3514,7 +3544,7 @@ function updateDashboardUI() {
   }
 
   // Notebook badge
-  const notesCount = queueEngine.getReasoningNotes().length;
+  const notesCount = queueEngine.getRawReasoningNotes().length;
   document.getElementById('notebook-count-badge').textContent = notesCount;
 }
 
@@ -4441,7 +4471,7 @@ function scrubCorruptedAiExplanations() {
     let purgedCacheCount = 0;
     for (const [uid, item] of Object.entries(aiExplanationsCache)) {
       if (!item || !item.note) continue;
-      const q = allQuestions.find(it => it.uid === uid);
+      const q = questionsMap.get(uid);
       if (!q || !isExplanationMatchingQuestion(item.note, q)) {
         delete aiExplanationsCache[uid];
         purgedCacheCount++;
@@ -4457,7 +4487,7 @@ function scrubCorruptedAiExplanations() {
     let purgedNotesCount = 0;
     const cleanedNotes = rawNotes.filter(n => {
       if (!n || !n.questionUid || !n.reasoningNote) return true;
-      const q = allQuestions.find(it => it.uid === n.questionUid);
+      const q = questionsMap.get(n.questionUid);
       if (q && !isExplanationMatchingQuestion(n.reasoningNote, q)) {
         purgedNotesCount++;
         return false;
@@ -4478,7 +4508,7 @@ function scrubCorruptedAiExplanations() {
 function getSavedAiExplanation(questionUid, question = null) {
   if (!questionUid) return null;
 
-  const targetQ = question || (allQuestions.find(q => q.uid === questionUid) || null);
+  const targetQ = question || (questionsMap.get(questionUid) || null);
 
   const checkAndClean = (entry, source) => {
     if (!entry || !entry.note) return null;
@@ -4510,9 +4540,11 @@ function getSavedAiExplanation(questionUid, question = null) {
     histItem.modelUsed = null;
   }
   // 3. QueueEngine reasoning notes (from notebook or synced from Firestore)
-  const notes = queueEngine.getReasoningNotes();
-  const note = notes.find(n => n.questionUid === questionUid && n.reasoningNote);
-  if (note) {
+  // Optimize: query raw notes first to avoid hydrating hundreds of notes
+  const rawNotes = queueEngine.getRawReasoningNotes();
+  const rawNote = rawNotes.find(n => n.questionUid === questionUid && n.reasoningNote);
+  if (rawNote) {
+    const note = hydrateNote(rawNote, questionsMap);
     const entry = { note: note.reasoningNote, modelUsed: note.modelUsed || 'Gemini 3.8 Flash' };
     const valid = checkAndClean(entry, 'notebook');
     if (valid) return valid;
@@ -4526,7 +4558,7 @@ function getSavedAiExplanation(questionUid, question = null) {
 function saveAiExplanationForQuestion(questionUid, noteText, modelUsed = 'Gemini 3.8 Flash', question = null) {
   if (!questionUid || !noteText) return;
 
-  const targetQ = question || (allQuestions.find(q => q.uid === questionUid) || null);
+  const targetQ = question || (questionsMap.get(questionUid) || null);
   if (targetQ && !isExplanationMatchingQuestion(noteText, targetQ)) {
     console.warn(`[AI Explanation] Refusing to save mismatched note for ${questionUid}`);
     return;
@@ -4616,7 +4648,7 @@ function renderArenaAiExplanation(question) {
       </div>
     `;
   }
-  refreshLucide();
+  refreshLucide(box);
 }
 
 window.regenerateArenaAiExplanation = async function() {
@@ -4659,7 +4691,7 @@ window.requestArenaAiExplanation = async function(forceRegen = false) {
       <div style="font-size:0.75rem;color:var(--text-dim);margin-top:4px;">Justification détaillée proposition par proposition et mémo concours.</div>
     </div>
   `;
-  refreshLucide();
+  refreshLucide(box);
 
   try {
     const isCroq = !!effQ.is_croq;
@@ -4678,7 +4710,7 @@ window.requestArenaAiExplanation = async function(forceRegen = false) {
       textEl.innerHTML = formatReasoningNote(reasoningObj.note);
       if (modelTag) modelTag.textContent = reasoningObj.modelUsed;
       if (regenBtn) regenBtn.style.display = 'inline-flex';
-      refreshLucide();
+      refreshLucide(box);
     }
   } catch (err) {
     const currentEffQ = getEffectiveArenaQuestion();
@@ -4691,7 +4723,7 @@ window.requestArenaAiExplanation = async function(forceRegen = false) {
           </div>
         </div>
       `;
-      refreshLucide();
+      refreshLucide(box);
     }
   }
 };
@@ -4703,7 +4735,7 @@ function pushToAnsweredHistory(question, userAnswerLetters, isCorrect, score = n
   if (!question) return;
   const savedAi = getSavedAiExplanation(question.uid, question);
   const snapshot = {
-    question: JSON.parse(JSON.stringify(question)),
+    question: { ...question },
     userAnswerLetters: Array.isArray(userAnswerLetters) ? [...userAnswerLetters] : (userAnswerLetters ? [userAnswerLetters] : []),
     isCorrect: !!isCorrect,
     score: score,
@@ -5394,7 +5426,7 @@ function handleAnswerSuccess(score = null, feedback = null, customLetters = null
 
   isCurrentQuestionAnswered = true;
   window.toggleArenaChapterTitle(true);
-  refreshLucide();
+  refreshLucide(views.arena);
 }
 
 function triggerMasteryConfetti() {
@@ -5485,7 +5517,7 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
       <span>Consultation de l'IA Flash et formulation de la démarche clinique complète...</span>
     </div>
   `;
-  refreshLucide();
+  refreshLucide(modals.error);
 
   // Request AI reasoning note asynchronously using targetQuestion
   const reasoningObj = await geminiService.generateReasoningNote(
@@ -5501,7 +5533,7 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
   if (modals.error.style.display === 'flex' && modals.error.dataset.questionUid === targetUid) {
     aiNoteContainer.innerHTML = formatReasoningNote(reasoningObj.note);
     document.getElementById('error-modal-model-tag').textContent = reasoningObj.modelUsed;
-    refreshLucide();
+    refreshLucide(modals.error);
   }
 
   // Save to Notebook with targetQuestion metadata
@@ -5527,11 +5559,11 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
   firebaseSyncService.triggerAutoPush();
 
   // Update notebook badge in dashboard
-  const notesCount = queueEngine.getReasoningNotes().length;
+  const notesCount = queueEngine.getRawReasoningNotes().length;
   const badgeEl = document.getElementById('notebook-count-badge');
   if (badgeEl) badgeEl.textContent = notesCount;
 
-  refreshLucide();
+  refreshLucide(modals.error);
 }
 
 function closeErrorModalAndContinue() {
@@ -5695,7 +5727,7 @@ function renderQuestionCard(q, gIdx, qIdx, rankNumber = null) {
 
   // Pre-rendered panels for each attempt with complete fiches
   const panelsHtml = q.attempts.map((att, attIdx) => {
-    const fullQ = allQuestions.find(item => item.uid === att.questionUid) || {
+    const fullQ = questionsMap.get(att.questionUid) || {
       uid: att.questionUid,
       question: att.questionText,
       clinical_case: att.clinicalCase || null,
@@ -5783,7 +5815,7 @@ function groupNotesByChapterAndQuestion(notes) {
   const chapterMap = new Map();
 
   notes.forEach(note => {
-    const fullQ = allQuestions.find(item => item.uid === note.questionUid);
+    const fullQ = questionsMap.get(note.questionUid);
     const chap = (fullQ && fullQ.chapterTitle) || (note.chapterTitle && note.chapterTitle.trim()) || "Pédiatrie Générale";
     const qKey = note.questionUid || (fullQ && fullQ.question) || note.questionText || note.id;
 
@@ -5961,7 +5993,7 @@ function renderNotebookUI(filterText = '') {
     }
     if (!filterText) return true;
     const q = filterText.toLowerCase();
-    const fullQ = allQuestions.find(item => item.uid === n.questionUid);
+    const fullQ = questionsMap.get(n.questionUid);
     const optionsText = fullQ && fullQ.options ? fullQ.options.map(o => o.text).join(' ').toLowerCase() : '';
     const explanationText = (fullQ && fullQ.explanation ? fullQ.explanation.toLowerCase() : '') || (n.officialExplanation ? n.officialExplanation.toLowerCase() : '');
 
@@ -5988,7 +6020,7 @@ function renderNotebookUI(filterText = '') {
           : 'Aucune note de raisonnement pour le moment. Vos futures erreurs seront automatiquement analysées et regroupées ici par cours !'}
       </div>
     `;
-    refreshLucide();
+    refreshLucide(views.notebook);
     return;
   }
 
@@ -6066,7 +6098,7 @@ function renderNotebookUI(filterText = '') {
     });
   }
 
-  refreshLucide();
+  refreshLucide(views.notebook);
 }
 
 // ============================================================================
@@ -6854,7 +6886,7 @@ function renderStatsChapters(chapterTotals = {}, periodLabel = '') {
     const entries = Object.entries(chapterTotals).filter(([_, st]) => (st.correct + st.wrong) > 0);
 
     let list = entries.map(([chId, st]) => {
-      const ch = allChapters.find(c => c.id === chId) || { title: chId, count: 0 };
+      const ch = chaptersMap.get(chId) || { title: chId, count: 0 };
       const chQuestions = allQuestions.filter(q => q.chapterId === chId);
       const totalInChapter = chQuestions.length > 0 ? chQuestions.length : (ch.count || 0);
       const totalDone = (st.correct || 0) + (st.wrong || 0);

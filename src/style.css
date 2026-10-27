@@ -52,6 +52,22 @@
   padding: 0;
 }
 
+/* Mobile Touch & Tap Latency Optimization */
+button,
+a,
+input,
+select,
+textarea,
+.option-item,
+.nav-tab-btn,
+.chapter-select-item,
+.notebook-chapter-header,
+.medical-media-inner,
+[role="button"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
   font-family: var(--font-body);
   background-color: var(--bg-deep);
