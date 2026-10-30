@@ -67,3 +67,14 @@
   - Synchronisation Capacitor Android : `npx cap sync android`.
   - Recompilation locale de l'APK natif Android : `build-apk.bat` (mise à jour de `PediaDrill.apk`).
   - Commit et Tag Git `v1.4.4` avec push vers `origin/main` et `origin v1.4.4` pour déclencher les builds et déploiements Vercel et GitHub Releases.
+
+### 18:49 - Enregistrement du Guide des Optimisations de « Catégorie 2 » (Performance & UX)
+
+- **Création du document de référence** : [`optimisations_categorie_2.txt`](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/optimisations_categorie_2.txt) à la racine du projet.
+- **Contenu répertorié pour consultation future** :
+  1. Micro-feedback tactile mécanique au clic (`:active` micro-scale sur boutons et cartes).
+  2. Transition instantanée lors du changement de vue (`window.scrollTo({ top: 0, behavior: 'auto' })`).
+  3. Temporisation (Debounce de 200 ms) sur la barre de recherche du Carnet pour éliminer tout freeze clavier.
+  4. Exclusion du bundle de débogage `agentation.bundle.js` en production (allègement de ~600 Ko).
+  5. Pagination / affichage progressif des fiches du Carnet de révision.
+  6. Raccourcissement des durées de transitions CSS dans l'Arène (0.15s) pour un retour visuel ultra-vif.

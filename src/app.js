@@ -26,6 +26,8 @@ const firebaseSyncService = new FirebaseSyncService(
     if (currentView === 'stats') renderStatsUI();
     updateArenaDailyBadge();
     updateModalLocalSummary();
+    renderLessonTrackerUI();
+    updateLessonTimerTick();
     refreshLucide();
   }
 );
@@ -2929,7 +2931,7 @@ function applyChapterSelection() {
 // ============================================================================
 // STUDY PROGRESS & ANALYTICS INFOGRAPHIC ENGINE
 // ============================================================================
-let currentStatsRange = 'today'; // 'today' | '7' | '30' | 'all' | 'custom' (Aujourd'hui par défaut)
+let currentStatsRange = 'today'; // 'today' | '7' | '14' | '21' | '28' | '30' | 'all' | 'custom' (Aujourd'hui par défaut)
 let customStatsStart = '';
 let customStatsEnd = '';
 let selectedDayOffset = 0; // 0 = Aujourd'hui, -1 = Hier, -2 = Avant-hier, etc.
@@ -2997,12 +2999,9 @@ function renderStatsUI() {
   } else if (currentStatsRange === 'all') {
     rangeDays = studyTracker.getDaysByRange('all');
     rangeLabel = "Tout l'historique";
-  } else if (currentStatsRange === '30') {
-    rangeDays = studyTracker.getDaysByRange('30');
-    rangeLabel = '30 jours';
-  } else if (currentStatsRange === '7') {
-    rangeDays = studyTracker.getDaysByRange('7');
-    rangeLabel = '7 jours';
+  } else if (['7', '14', '21', '28', '30'].includes(currentStatsRange)) {
+    rangeDays = studyTracker.getDaysByRange(currentStatsRange);
+    rangeLabel = `${currentStatsRange} jours`;
   } else {
     // Par défaut : Aujourd'hui (ou décalage sélectionné)
     const targetDateStr = getDateStrWithOffset(selectedDayOffset);
@@ -3271,7 +3270,6 @@ function renderStatsHeatmap(history) {
   if (!container) return;
 
   const now = new Date();
-  const daysCount = 63; // 9 full weeks of 7 days
   const cellWidth = 14;
   const cellHeight = 14;
   const gap = 4;
@@ -3281,22 +3279,17 @@ function renderStatsHeatmap(history) {
   const width = leftMargin + (9 * (cellWidth + gap)) + 10;
   const height = topMargin + (7 * (cellHeight + gap)) + 6;
 
-  // Build 63 days list ending today
-  const daysList = [];
-  for (let i = daysCount - 1; i >= 0; i--) {
-    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    const dateStr = `${year}-${month}-${day}`;
-    const dayData = history[dateStr] || null;
-    const dayOfWeek = (d.getDay() + 6) % 7; // 0 = Mon, 6 = Sun
-    daysList.push({ dateStr, dayData, dateObj: d, dayOfWeek });
-  }
+  // Strict Calendar Week Alignment:
+  // Day of week: 0 = Mon, 1 = Tue, 2 = Wed, 3 = Thu, 4 = Fri, 5 = Sat, 6 = Sun
+  const todayDayOfWeek = (now.getDay() + 6) % 7;
+
+  // The grid spans 9 full columns (weeks 0 to 8), with column 8 ending at today (row = todayDayOfWeek)
+  // The start date is strictly the Monday of 8 weeks ago:
+  const startMonday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - (8 * 7 + todayDayOfWeek));
 
   let svgContent = `<svg class="heatmap-svg" viewBox="0 0 ${width} ${height}" style="max-width:100%;height:auto;">`;
 
-  // Day of week labels on left
+  // Day of week labels on left strictly aligned with row indices: 0 = Lun, 2 = Mer, 4 = Ven, 6 = Dim
   const dayNames = ['Lun', '', 'Mer', '', 'Ven', '', 'Dim'];
   dayNames.forEach((name, idx) => {
     if (name) {
@@ -3305,20 +3298,32 @@ function renderStatsHeatmap(history) {
     }
   });
 
-  // Cells grouped by weeks
+  const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+
+  // Cells strictly grouped by columns (weeks 0 to 8) and rows (days of week Mon=0 to Sun=6)
   for (let col = 0; col < 9; col++) {
     for (let row = 0; row < 7; row++) {
-      const itemIndex = col * 7 + row;
-      const item = daysList[itemIndex];
-      if (!item) continue;
+      const cellDate = new Date(startMonday.getFullYear(), startMonday.getMonth(), startMonday.getDate() + (col * 7 + row));
+      const cellMidnight = new Date(cellDate.getFullYear(), cellDate.getMonth(), cellDate.getDate()).getTime();
 
       const x = leftMargin + col * (cellWidth + gap);
       const y = topMargin + row * (cellHeight + gap);
 
-      const total = item.dayData ? (item.dayData.totalQuestions || 0) : 0;
-      const correct = item.dayData ? (item.dayData.correctAnswers || 0) : 0;
-      const wrong = item.dayData ? (item.dayData.wrongAnswers || 0) : 0;
-      const timeSec = item.dayData ? (item.dayData.totalTimeSeconds || 0) : 0;
+      // If future day in current week, do not draw active cell
+      if (cellMidnight > todayMidnight) {
+        continue;
+      }
+
+      const year = cellDate.getFullYear();
+      const month = String(cellDate.getMonth() + 1).padStart(2, '0');
+      const day = String(cellDate.getDate()).padStart(2, '0');
+      const dateStr = `${year}-${month}-${day}`;
+      const dayData = history[dateStr] || null;
+
+      const total = dayData ? (dayData.totalQuestions || 0) : 0;
+      const correct = dayData ? (dayData.correctAnswers || 0) : 0;
+      const wrong = dayData ? (dayData.wrongAnswers || 0) : 0;
+      const timeSec = dayData ? (dayData.totalTimeSeconds || 0) : 0;
 
       let color = '#121d33';
       let stroke = 'rgba(255,255,255,0.06)';
@@ -3327,7 +3332,7 @@ function renderStatsHeatmap(history) {
       else if (total >= 15) { color = '#047857'; stroke = 'none'; }
       else if (total >= 1) { color = '#064e3b'; stroke = 'none'; }
 
-      const dateLabel = item.dateObj.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
+      const dateLabel = cellDate.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
       const tooltipText = total > 0
         ? `${dateLabel} : ${total} QCM (${correct} justes, ${wrong} fautes, ${formatDuration(timeSec)})`
         : `${dateLabel} : Aucun entraînement`;
@@ -3361,10 +3366,10 @@ function renderStatsActivityChart(rangeDays) {
       const firstStr = rangeDays[0]?.dateStr ? formatDateFr(rangeDays[0].dateStr) : '';
       const lastStr = rangeDays[rangeDays.length - 1]?.dateStr ? formatDateFr(rangeDays[rangeDays.length - 1].dateStr) : '';
       chartTitleEl.textContent = `Activité Personnalisée (${firstStr} ➔ ${lastStr})`;
-    } else if (totalRange <= 7) {
-      chartTitleEl.textContent = 'Activité des 7 derniers jours (Volume, Justes vs Fautes & Vélocité)';
+    } else if (['7', '14', '21', '28', '30'].includes(currentStatsRange)) {
+      chartTitleEl.textContent = `Activité des ${currentStatsRange} derniers jours (Volume, Justes vs Fautes & Vélocité)`;
     } else if (totalRange <= 30) {
-      chartTitleEl.textContent = 'Activité des 30 derniers jours';
+      chartTitleEl.textContent = `Activité des ${totalRange} derniers jours`;
     } else {
       chartTitleEl.textContent = "Historique complet d'activité";
     }
@@ -3876,6 +3881,9 @@ function formatDigitalClockTime(totalSeconds) {
   return `${pad(hrs)}:${pad(mins)}:${pad(s)}`;
 }
 
+let currentLessonChartRange = '7'; // '7' | '14' | '30'
+let currentLessonOffsetSeconds = 0; // offset in seconds
+
 function updateLessonTimerTick() {
   const active = (typeof lessonTracker !== 'undefined' && lessonTracker) ? lessonTracker.activeTimer : null;
   const headerBadge = document.getElementById('active-lesson-header-badge');
@@ -3924,15 +3932,306 @@ function updateLessonTimerTick() {
       subnavTimerPill.style.display = 'none';
     }
     if (digitalClock) {
-      digitalClock.textContent = '00:00:00';
+      digitalClock.textContent = currentLessonOffsetSeconds > 0
+        ? formatDigitalClockTime(currentLessonOffsetSeconds)
+        : '00:00:00';
     }
     if (clockDot) {
       clockDot.className = 'clock-status-dot status-idle';
     }
     if (statusText) {
-      statusText.textContent = 'Prêt à démarrer';
+      statusText.textContent = currentLessonOffsetSeconds > 0
+        ? `Prêt (Départ : ${formatDigitalClockTime(currentLessonOffsetSeconds)})`
+        : 'Prêt à démarrer';
     }
   }
+}
+
+/**
+ * Renders lesson analytics: 4 KPI Cards, Daily SVG Bar Chart, Top 10 Distribution, and 35 Chapters Matrix
+ */
+function renderLessonAnalytics(rangeStr = currentLessonChartRange) {
+  currentLessonChartRange = rangeStr;
+  const sessions = lessonTracker.getSessions();
+  const summaries = lessonTracker.getLessonSummaries();
+
+  // 1. KPI Cards
+  const kpiTotalTime = document.getElementById('kpi-lesson-total-time');
+  const kpiTotalSub = document.getElementById('kpi-lesson-total-sub');
+  const kpiTodayTime = document.getElementById('kpi-lesson-today-time');
+  const kpi7dSub = document.getElementById('kpi-lesson-7d-sub');
+  const kpiAvgTime = document.getElementById('kpi-lesson-avg-time');
+  const kpiAvgSub = document.getElementById('kpi-lesson-avg-sub');
+  const kpiCoverageVal = document.getElementById('kpi-lesson-coverage-val');
+  const kpiCoverageSub = document.getElementById('kpi-lesson-coverage-sub');
+
+  const totalSeconds = sessions.reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
+  const totalHrs = Math.floor(totalSeconds / 3600);
+  const totalMins = Math.floor((totalSeconds % 3600) / 60);
+
+  if (kpiTotalTime) {
+    kpiTotalTime.textContent = totalSeconds > 0 ? `${totalHrs}h ${String(totalMins).padStart(2, '0')}` : '0h 00';
+  }
+  if (kpiTotalSub) {
+    kpiTotalSub.textContent = `${sessions.length} session${sessions.length > 1 ? 's' : ''} enregistrée${sessions.length > 1 ? 's' : ''}`;
+  }
+
+  // Today & 7 days
+  const todayDateStr = lessonTracker.getTodayDateStr();
+  const todaySeconds = sessions
+    .filter(s => s.dateStr === todayDateStr)
+    .reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
+
+  const nowMs = Date.now();
+  const sevenDaysAgoMs = nowMs - (7 * 86400000);
+  const sevenDaysSeconds = sessions
+    .filter(s => (s.endTime || 0) >= sevenDaysAgoMs)
+    .reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
+
+  if (kpiTodayTime) {
+    const todayHrs = Math.floor(todaySeconds / 3600);
+    const todayMins = Math.floor((todaySeconds % 3600) / 60);
+    kpiTodayTime.textContent = todaySeconds > 0 ? `${todayHrs}h ${String(todayMins).padStart(2, '0')}` : '0h 00';
+  }
+  if (kpi7dSub) {
+    const s7Hrs = Math.floor(sevenDaysSeconds / 3600);
+    const s7Mins = Math.floor((sevenDaysSeconds % 3600) / 60);
+    kpi7dSub.textContent = `7 derniers jours : ${s7Hrs}h ${String(s7Mins).padStart(2, '0')}`;
+  }
+
+  // Average per session
+  if (kpiAvgTime) {
+    if (sessions.length === 0) {
+      kpiAvgTime.textContent = '--';
+    } else {
+      const avgSec = Math.round(totalSeconds / sessions.length);
+      const avgH = Math.floor(avgSec / 3600);
+      const avgM = Math.floor((avgSec % 3600) / 60);
+      kpiAvgTime.textContent = avgH > 0 ? `${avgH}h ${String(avgM).padStart(2, '0')}` : `${avgM} min`;
+    }
+  }
+
+  // Coverage of 35 chapters
+  const allChs = window.PEDIA_CHAPTERS || [];
+  const studiedChCount = allChs.filter(ch => {
+    return summaries.some(s => (s.chapterId && s.chapterId === ch.id) || (s.lessonName && s.lessonName.trim().toLowerCase() === ch.title.trim().toLowerCase()));
+  }).length;
+
+  const coveragePct = allChs.length > 0 ? Math.round((studiedChCount / allChs.length) * 100) : 0;
+  if (kpiCoverageVal) {
+    kpiCoverageVal.textContent = `${studiedChCount} / ${allChs.length || 35}`;
+  }
+  if (kpiCoverageSub) {
+    kpiCoverageSub.textContent = `${coveragePct}% des cours travaillés`;
+  }
+
+  // 2. Daily SVG Bar Chart
+  renderLessonDailyChart(rangeStr, sessions);
+
+  // 3. Lesson Distribution (Top 10)
+  renderLessonDistribution(summaries);
+
+  // 4. 35 Chapters Matrix
+  renderLessonChaptersMatrix(allChs, summaries);
+}
+
+function renderLessonDailyChart(rangeStr, sessions) {
+  const container = document.getElementById('lesson-daily-chart-container');
+  if (!container) return;
+
+  const daysCount = parseInt(rangeStr, 10) || 7;
+  const now = new Date();
+  const dailyData = [];
+
+  for (let i = daysCount - 1; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const dateStr = `${year}-${month}-${day}`;
+
+    const daySeconds = sessions
+      .filter(s => s.dateStr === dateStr)
+      .reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
+
+    const isToday = (i === 0);
+    const dayNameShort = d.toLocaleDateString('fr-FR', { weekday: 'short' });
+    const dayNum = d.getDate();
+
+    dailyData.push({
+      dateStr,
+      daySeconds,
+      dayLabel: isToday ? 'Auj.' : `${dayNameShort} ${dayNum}`,
+      dateObj: d
+    });
+  }
+
+  const maxSeconds = Math.max(...dailyData.map(d => d.daySeconds), 3600); // at least 1h scale
+  const svgWidth = 800;
+  const svgHeight = 220;
+  const padLeft = 45;
+  const padRight = 20;
+  const padTop = 25;
+  const padBottom = 40;
+  const chartW = svgWidth - padLeft - padRight;
+  const chartH = svgHeight - padTop - padBottom;
+
+  const barWidth = Math.min(36, Math.max(14, Math.floor((chartW / daysCount) * 0.65)));
+  const colStep = chartW / daysCount;
+
+  let svgHtml = `<svg class="activity-chart-svg" viewBox="0 0 ${svgWidth} ${svgHeight}" style="max-width:100%;height:auto;display:block;">`;
+
+  // Grid lines
+  const maxHrs = Math.max(1, Math.ceil(maxSeconds / 3600));
+  const gridSteps = [0, maxHrs / 2, maxHrs];
+  gridSteps.forEach(hVal => {
+    const yRatio = maxHrs > 0 ? (hVal / maxHrs) : 0;
+    const yPos = padTop + chartH - (yRatio * chartH);
+    svgHtml += `
+      <line x1="${padLeft}" y1="${yPos}" x2="${svgWidth - padRight}" y2="${yPos}" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3" />
+      <text x="${padLeft - 8}" y="${yPos + 4}" fill="#64748b" font-size="10" text-anchor="end" font-family="var(--font-body)">${hVal % 1 === 0 ? hVal : hVal.toFixed(1)}h</text>
+    `;
+  });
+
+  // Bars
+  dailyData.forEach((item, idx) => {
+    const xCenter = padLeft + idx * colStep + (colStep / 2);
+    const x = xCenter - (barWidth / 2);
+    const barHeight = (item.daySeconds / (maxHrs * 3600)) * chartH;
+    const y = padTop + chartH - barHeight;
+
+    const formattedTime = formatDuration(item.daySeconds);
+    const dateLabel = item.dateObj.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+    const tooltip = item.daySeconds > 0
+      ? `${dateLabel} : ${formattedTime} d'étude`
+      : `${dateLabel} : Aucun temps de cours enregistré`;
+
+    const barColor = item.daySeconds > 0 ? 'url(#lessonBarGrad)' : 'rgba(255,255,255,0.04)';
+    const barStroke = item.daySeconds > 0 ? '#10b981' : 'rgba(255,255,255,0.08)';
+
+    svgHtml += `
+      <rect class="lesson-bar-rect" x="${x}" y="${y}" width="${barWidth}" height="${Math.max(barHeight, 3)}" rx="4"
+            fill="${barColor}" stroke="${barStroke}" stroke-width="1">
+        <title>${escapeHtml(tooltip)}</title>
+      </rect>
+    `;
+
+    // Duration text above bar if duration > 0
+    if (item.daySeconds > 0) {
+      const hrs = Math.floor(item.daySeconds / 3600);
+      const mins = Math.floor((item.daySeconds % 3600) / 60);
+      const label = hrs > 0 ? `${hrs}h${mins > 0 ? mins : ''}` : `${mins}m`;
+      svgHtml += `
+        <text x="${xCenter}" y="${y - 6}" fill="#00d4ff" font-size="10" font-weight="700" text-anchor="middle" font-family="'Outfit', sans-serif">${label}</text>
+      `;
+    }
+
+    // Day label underneath
+    svgHtml += `
+      <text x="${xCenter}" y="${padTop + chartH + 18}" fill="#94a3b8" font-size="11" font-weight="500" text-anchor="middle" font-family="var(--font-body)">${item.dayLabel}</text>
+    `;
+  });
+
+  // Gradient Definition
+  svgHtml += `
+    <defs>
+      <linearGradient id="lessonBarGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#00d4ff" />
+        <stop offset="100%" stop-color="#059669" />
+      </linearGradient>
+    </defs>
+  `;
+
+  svgHtml += '</svg>';
+  container.innerHTML = svgHtml;
+}
+
+function renderLessonDistribution(summaries) {
+  const container = document.getElementById('lesson-distribution-container');
+  if (!container) return;
+
+  const top10 = summaries.slice(0, 10);
+  if (top10.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:24px 16px;color:var(--text-dim);font-size:0.85rem;">
+        Aucune donnée de cours enregistrée pour le moment.
+      </div>
+    `;
+    return;
+  }
+
+  const maxSec = Math.max(...top10.map(s => s.totalDurationSeconds || 0), 1);
+  let html = '';
+
+  top10.forEach(s => {
+    const pct = Math.round((s.totalDurationSeconds / maxSec) * 100);
+    html += `
+      <div class="lesson-dist-item">
+        <div class="lesson-dist-header">
+          <span class="lesson-dist-name" title="${escapeHtml(s.lessonName)}">
+            <i data-lucide="book-open" style="width:13px;height:13px;color:var(--cyan);display:inline;margin-right:4px;"></i>
+            ${escapeHtml(s.lessonName)}
+          </span>
+          <span class="lesson-dist-time">${formatDuration(s.totalDurationSeconds)}</span>
+        </div>
+        <div class="lesson-dist-bar-wrap">
+          <div class="lesson-dist-bar-fill" style="width: ${pct}%;"></div>
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+function renderLessonChaptersMatrix(allChapters, summaries) {
+  const container = document.getElementById('lesson-chapters-matrix');
+  if (!container) return;
+
+  if (!allChapters || allChapters.length === 0) {
+    container.innerHTML = `<div style="color:var(--text-dim);font-size:0.8rem;padding:12px;">Chapitres indisponibles</div>`;
+    return;
+  }
+
+  let html = '';
+  allChapters.forEach((ch, idx) => {
+    const chSum = summaries.find(s => (s.chapterId && s.chapterId === ch.id) || (s.lessonName && s.lessonName.trim().toLowerCase() === ch.title.trim().toLowerCase()));
+    const durationSec = chSum ? chSum.totalDurationSeconds : 0;
+
+    let levelClass = 'level-0';
+    if (durationSec >= 14400) levelClass = 'level-4'; // > 4h
+    else if (durationSec >= 7200) levelClass = 'level-3'; // 2h - 4h
+    else if (durationSec >= 3600) levelClass = 'level-2'; // 1h - 2h
+    else if (durationSec > 0) levelClass = 'level-1'; // < 1h
+
+    const durationText = durationSec > 0 ? formatDuration(durationSec) : '0 min';
+
+    html += `
+      <div class="chapter-matrix-badge ${levelClass}" data-chapter-id="${escapeHtml(ch.id)}" data-chapter-title="${escapeHtml(ch.title)}" title="${escapeHtml(ch.title)} (${durationText})">
+        <span class="matrix-badge-num">#${idx + 1}</span>
+        <span class="matrix-badge-title">${escapeHtml(ch.title)}</span>
+        <span class="matrix-badge-duration">${durationText}</span>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+
+  // On clicking a chapter badge: set as selected lesson in timer!
+  container.querySelectorAll('.chapter-matrix-badge').forEach(badge => {
+    badge.onclick = () => {
+      const chTitle = badge.dataset.chapterTitle;
+      const chId = badge.dataset.chapterId;
+      currentLessonSelected.name = chTitle;
+      currentLessonSelected.chapterId = chId;
+      const searchInput = document.getElementById('lesson-search-input');
+      if (searchInput) searchInput.value = chTitle;
+      const activeNameEl = document.getElementById('active-lesson-name');
+      if (activeNameEl) activeNameEl.textContent = chTitle;
+      const timerCard = document.querySelector('.lesson-timer-card');
+      if (timerCard) timerCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+  });
 }
 
 function initLessonTracker() {
@@ -4106,12 +4405,15 @@ function renderLessonTrackerUI() {
           if (confirm('Voulez-vous supprimer cette session de travail ?')) {
             lessonTracker.deleteSession(sessId);
             renderLessonTrackerUI();
-            firebaseSyncService.pushState();
+            firebaseSyncService.triggerAutoPush(true);
           }
         };
       });
     }
   }
+
+  // 3. Render Lesson Analytics, KPIs, Chart & Matrix
+  renderLessonAnalytics(currentLessonChartRange);
 
   updateLessonTimerTick();
   refreshLucide();
@@ -4215,6 +4517,190 @@ function setupLessonTrackerEventListeners() {
     }
   });
 
+  // Offset Pills & Custom Offset Listeners
+  const offsetPills = document.querySelectorAll('#lesson-offset-pills .offset-pill');
+  offsetPills.forEach(pill => {
+    pill.onclick = () => {
+      offsetPills.forEach(p => p.classList.remove('active'));
+      const btnCustom = document.getElementById('btn-custom-offset');
+      if (btnCustom) btnCustom.classList.remove('active');
+      const customWrap = document.getElementById('custom-offset-input-wrap');
+      if (customWrap) customWrap.style.display = 'none';
+
+      pill.classList.add('active');
+      currentLessonOffsetSeconds = parseInt(pill.dataset.offset, 10) || 0;
+      updateLessonTimerTick();
+    };
+  });
+
+  const btnCustomOffset = document.getElementById('btn-custom-offset');
+  const customOffsetWrap = document.getElementById('custom-offset-input-wrap');
+  if (btnCustomOffset && customOffsetWrap) {
+    btnCustomOffset.onclick = () => {
+      const isVisible = customOffsetWrap.style.display === 'flex';
+      customOffsetWrap.style.display = isVisible ? 'none' : 'flex';
+      if (!isVisible) {
+        offsetPills.forEach(p => p.classList.remove('active'));
+        btnCustomOffset.classList.add('active');
+      }
+    };
+  }
+
+  const btnApplyOffset = document.getElementById('btn-offset-apply');
+  if (btnApplyOffset) {
+    btnApplyOffset.onclick = () => {
+      const hrs = parseInt(document.getElementById('custom-offset-hours')?.value, 10) || 0;
+      const mins = parseInt(document.getElementById('custom-offset-mins')?.value, 10) || 0;
+      currentLessonOffsetSeconds = Math.max(0, (hrs * 3600) + (mins * 60));
+      updateLessonTimerTick();
+    };
+  }
+
+  // Chart range tabs
+  const chartRangeBtns = document.querySelectorAll('#lesson-chart-range-tabs .range-tab-btn');
+  chartRangeBtns.forEach(btn => {
+    btn.onclick = () => {
+      chartRangeBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const range = btn.dataset.lessonRange || '7';
+      renderLessonAnalytics(range);
+      refreshLucide();
+    };
+  });
+
+  // Manual Session Modal Handlers
+  const btnOpenManual = document.getElementById('btn-open-manual-session');
+  const modalManual = document.getElementById('modal-manual-lesson-session');
+  const btnCloseManual = document.getElementById('btn-close-manual-session-modal');
+  const btnCancelManual = document.getElementById('btn-cancel-manual-session');
+  const btnSaveManual = document.getElementById('btn-save-manual-session');
+  const manualDateInput = document.getElementById('manual-session-date');
+  const manualLessonInput = document.getElementById('manual-lesson-input');
+  const manualClearBtn = document.getElementById('btn-clear-manual-input');
+  const manualDropdown = document.getElementById('manual-lesson-dropdown');
+  const manualDropdownItems = document.getElementById('manual-dropdown-items');
+
+  function openManualSessionModal() {
+    if (!modalManual) return;
+    if (manualDateInput) manualDateInput.value = lessonTracker.getTodayDateStr();
+    if (manualLessonInput) {
+      manualLessonInput.value = currentLessonSelected.name || '';
+      if (manualClearBtn) manualClearBtn.style.display = manualLessonInput.value ? 'block' : 'none';
+    }
+    modalManual.style.display = 'flex';
+    refreshLucide();
+  }
+
+  function closeManualSessionModal() {
+    if (!modalManual) return;
+    modalManual.style.display = 'none';
+    if (manualDropdown) manualDropdown.style.display = 'none';
+  }
+
+  if (btnOpenManual) btnOpenManual.onclick = openManualSessionModal;
+  if (btnCloseManual) btnCloseManual.onclick = closeManualSessionModal;
+  if (btnCancelManual) btnCancelManual.onclick = closeManualSessionModal;
+
+  if (modalManual) {
+    modalManual.onclick = (e) => {
+      if (e.target === modalManual) closeManualSessionModal();
+    };
+  }
+
+  // Preset pills
+  const presetPills = document.querySelectorAll('#manual-presets-row .btn-preset-pill');
+  presetPills.forEach(pill => {
+    pill.onclick = () => {
+      presetPills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      const hInput = document.getElementById('manual-duration-hours');
+      const mInput = document.getElementById('manual-duration-minutes');
+      if (hInput) hInput.value = pill.dataset.hours;
+      if (mInput) mInput.value = pill.dataset.mins;
+    };
+  });
+
+  // Manual session dropdown suggestions
+  if (manualLessonInput && manualDropdown && manualDropdownItems) {
+    function renderManualDropdown(filter = '') {
+      const clean = (filter || '').trim().toLowerCase();
+      const matches = allChapters.filter(ch => !clean || ch.title.toLowerCase().includes(clean));
+      let itemsHtml = '';
+      matches.slice(0, 15).forEach(ch => {
+        itemsHtml += `
+          <div class="lesson-dropdown-item manual-item" data-chapter-title="${escapeHtml(ch.title)}" data-chapter-id="${escapeHtml(ch.id)}">
+            <span>${escapeHtml(ch.title)}</span>
+          </div>
+        `;
+      });
+      manualDropdownItems.innerHTML = itemsHtml;
+      manualDropdown.style.display = matches.length > 0 ? 'flex' : 'none';
+
+      manualDropdownItems.querySelectorAll('.manual-item').forEach(it => {
+        it.onclick = (e) => {
+          e.stopPropagation();
+          manualLessonInput.value = it.dataset.chapterTitle;
+          if (manualClearBtn) manualClearBtn.style.display = 'block';
+          manualDropdown.style.display = 'none';
+        };
+      });
+    }
+
+    manualLessonInput.oninput = () => {
+      const val = manualLessonInput.value;
+      if (manualClearBtn) manualClearBtn.style.display = val ? 'block' : 'none';
+      renderManualDropdown(val);
+    };
+    manualLessonInput.onfocus = () => renderManualDropdown(manualLessonInput.value);
+
+    if (manualClearBtn) {
+      manualClearBtn.onclick = () => {
+        manualLessonInput.value = '';
+        manualClearBtn.style.display = 'none';
+        manualDropdown.style.display = 'none';
+      };
+    }
+  }
+
+  // Save manual session
+  if (btnSaveManual) {
+    btnSaveManual.onclick = () => {
+      const lessonName = manualLessonInput?.value?.trim();
+      if (!lessonName) {
+        alert('Veuillez renseigner le nom ou choisir une leçon.');
+        if (manualLessonInput) manualLessonInput.focus();
+        return;
+      }
+
+      const hrs = parseInt(document.getElementById('manual-duration-hours')?.value, 10) || 0;
+      const mins = parseInt(document.getElementById('manual-duration-minutes')?.value, 10) || 0;
+      const durationSeconds = (hrs * 3600) + (mins * 60);
+
+      if (durationSeconds < 60) {
+        alert('Veuillez entrer une durée d\'au moins 1 minute pour enregistrer la session.');
+        return;
+      }
+
+      const dateStr = manualDateInput?.value || lessonTracker.getTodayDateStr();
+      const matchedCh = allChapters.find(c => c.title.toLowerCase() === lessonName.toLowerCase());
+
+      const session = lessonTracker.addManualSession({
+        lessonName,
+        chapterId: matchedCh ? matchedCh.id : null,
+        durationSeconds,
+        dateStr
+      });
+
+      if (session) {
+        closeManualSessionModal();
+        renderLessonTrackerUI();
+        updateLessonTimerTick();
+        firebaseSyncService.triggerAutoPush(true);
+        showNotificationToast(`✅ Session de cours enregistrée : ${formatDuration(durationSeconds)} sur « ${lessonName} » !`);
+      }
+    };
+  }
+
   // Action Buttons
   const btnStart = document.getElementById('btn-timer-start');
   if (btnStart) {
@@ -4226,10 +4712,18 @@ function setupLessonTrackerEventListeners() {
         return;
       }
       currentLessonSelected.name = name;
-      lessonTracker.startTimer(currentLessonSelected.name, currentLessonSelected.chapterId);
+      lessonTracker.startTimer(currentLessonSelected.name, currentLessonSelected.chapterId, currentLessonOffsetSeconds);
+      
+      // Reset offset controls after starting
+      currentLessonOffsetSeconds = 0;
+      const pills = document.querySelectorAll('#lesson-offset-pills .offset-pill');
+      pills.forEach((p, idx) => p.classList.toggle('active', idx === 0));
+      const customWrap = document.getElementById('custom-offset-input-wrap');
+      if (customWrap) customWrap.style.display = 'none';
+
       renderLessonTrackerUI();
       updateLessonTimerTick();
-      firebaseSyncService.pushState();
+      firebaseSyncService.triggerAutoPush(true);
     };
   }
 
@@ -4239,6 +4733,7 @@ function setupLessonTrackerEventListeners() {
       lessonTracker.pauseTimer();
       renderLessonTrackerUI();
       updateLessonTimerTick();
+      firebaseSyncService.triggerAutoPush(true);
     };
   }
 
@@ -4248,6 +4743,7 @@ function setupLessonTrackerEventListeners() {
       lessonTracker.resumeTimer();
       renderLessonTrackerUI();
       updateLessonTimerTick();
+      firebaseSyncService.triggerAutoPush(true);
     };
   }
 
@@ -4258,7 +4754,7 @@ function setupLessonTrackerEventListeners() {
       if (session) {
         renderLessonTrackerUI();
         updateLessonTimerTick();
-        firebaseSyncService.pushState();
+        firebaseSyncService.triggerAutoPush(true);
       } else {
         alert('Session trop courte (moins de 1 seconde) : non enregistrée.');
         renderLessonTrackerUI();
@@ -4274,6 +4770,7 @@ function setupLessonTrackerEventListeners() {
         lessonTracker.cancelTimer();
         renderLessonTrackerUI();
         updateLessonTimerTick();
+        firebaseSyncService.triggerAutoPush(true);
       }
     };
   }
@@ -4399,6 +4896,23 @@ function setupEventListeners() {
       };
     });
   }
+
+  // Mini-calendriers interactifs pour le sélecteur personnalisé
+  ['box-custom-date-start', 'box-custom-date-end'].forEach(boxId => {
+    const box = document.getElementById(boxId);
+    if (box) {
+      box.addEventListener('click', (e) => {
+        const inp = box.querySelector('input[type="date"]');
+        if (inp && e.target !== inp) {
+          if (typeof inp.showPicker === 'function') {
+            try { inp.showPicker(); } catch (_) { inp.focus(); }
+          } else {
+            inp.focus();
+          }
+        }
+      });
+    }
+  });
 
   if (btnApplyCustom) {
     btnApplyCustom.onclick = () => {

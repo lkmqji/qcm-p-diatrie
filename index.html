@@ -3482,6 +3482,25 @@ body {
     align-items: flex-end;
   }
 
+  .date-field-wrap {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .date-input-box {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .date-input {
+    width: 100%;
+    min-width: 0;
+  }
+
   .btn-apply-range {
     grid-column: 1 / -1;
     width: 100%;
@@ -4917,6 +4936,14 @@ body {
   border-radius: var(--radius-full);
   padding: 3px;
   gap: 4px;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.stats-range-toggle::-webkit-scrollbar {
+  display: none;
 }
 
 .range-btn {
@@ -4926,11 +4953,12 @@ body {
   font-family: var(--font-body);
   font-size: 0.78rem;
   font-weight: 600;
-  padding: 6px 14px;
+  padding: 6px 12px;
   border-radius: var(--radius-full);
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .range-btn:hover {
@@ -5011,37 +5039,79 @@ body {
 .custom-range-inputs {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .date-field-wrap {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-size: 0.78rem;
   color: var(--text-muted);
 }
 
 .date-field-label {
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--text-main);
+  font-size: 0.8rem;
 }
 
-.date-input {
+.date-input-box {
+  display: inline-flex;
+  align-items: center;
   background: var(--bg-deep);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  color: var(--text-main);
-  padding: 5px 8px;
-  font-size: 0.78rem;
-  font-family: var(--font-body);
-  outline: none;
+  padding: 4px 10px;
+  gap: 8px;
+  cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.date-input:focus {
+.date-input-box:hover {
+  border-color: rgba(0, 212, 255, 0.5);
+  background: rgba(0, 212, 255, 0.04);
+}
+
+.date-input-box:focus-within {
   border-color: var(--cyan);
   box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+}
+
+.date-calendar-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--cyan);
+  flex-shrink: 0;
+  pointer-events: none;
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+}
+
+.date-input {
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  padding: 2px 0;
+  font-size: 0.78rem;
+  font-family: var(--font-body);
+  outline: none;
+  cursor: pointer;
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(0.8) sepia(100%) saturate(300%) hue-rotate(150deg);
+  opacity: 0.75;
+  transition: opacity 0.2s, transform 0.2s;
+  padding: 2px;
+}
+
+.date-input::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  transform: scale(1.15);
 }
 
 .btn-apply-range {
@@ -6389,6 +6459,293 @@ body {
 }
 
 /* ==========================================================================
+   LESSON ANALYTICS, OFFSET SELECTOR & MANUAL SESSIONS UI
+   ========================================================================== */
+
+/* Lesson KPI Grid */
+.lesson-kpi-grid {
+  margin-bottom: 24px;
+}
+
+/* Offset Selector inside Timer Card */
+.lesson-offset-wrap {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(10, 17, 32, 0.6);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+}
+
+.lesson-offset-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.lesson-offset-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.offset-pill, .offset-pill-custom {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.offset-pill:hover, .offset-pill-custom:hover {
+  color: var(--text-main);
+  border-color: var(--cyan);
+  background: rgba(0, 212, 255, 0.08);
+}
+
+.offset-pill.active {
+  background: rgba(0, 212, 255, 0.16);
+  color: var(--cyan);
+  border-color: var(--cyan);
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+}
+
+.custom-offset-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--border-subtle);
+}
+
+.custom-offset-input-wrap input {
+  width: 60px;
+  padding: 4px 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  font-weight: 600;
+  text-align: center;
+}
+
+.custom-offset-input-wrap span {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+.btn-offset-apply {
+  padding: 4px 12px;
+  background: var(--cyan-dim);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+/* Lesson Daily SVG Chart */
+.lesson-chart-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+
+.lesson-bar-rect {
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.lesson-bar-rect:hover {
+  filter: brightness(1.25);
+}
+
+/* Lesson Distribution List */
+.lesson-distribution-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.lesson-dist-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  transition: var(--transition);
+}
+
+.lesson-dist-item:hover {
+  border-color: rgba(0, 212, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.lesson-dist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lesson-dist-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70%;
+}
+
+.lesson-dist-time {
+  font-size: 0.82rem;
+  font-family: 'Outfit', monospace;
+  font-weight: 700;
+  color: var(--cyan);
+}
+
+.lesson-dist-bar-wrap {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.lesson-dist-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--cyan-dim), var(--cyan));
+  transition: width 0.4s ease;
+}
+
+/* Lesson 35 Chapters Matrix */
+.lesson-chapters-matrix {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.chapter-matrix-badge {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+}
+
+.chapter-matrix-badge:hover {
+  border-color: var(--purple);
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+}
+
+.matrix-badge-num {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.matrix-badge-title {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-main);
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.matrix-badge-duration {
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: 'Outfit', monospace;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.chapter-matrix-badge.level-0 {
+  border-color: rgba(255, 255, 255, 0.04);
+  opacity: 0.65;
+}
+
+.chapter-matrix-badge.level-1 {
+  border-color: rgba(16, 185, 129, 0.25);
+  background: rgba(16, 185, 129, 0.04);
+}
+.chapter-matrix-badge.level-1 .matrix-badge-duration { color: var(--emerald); }
+
+.chapter-matrix-badge.level-2 {
+  border-color: rgba(0, 212, 255, 0.3);
+  background: rgba(0, 212, 255, 0.06);
+}
+.chapter-matrix-badge.level-2 .matrix-badge-duration { color: var(--cyan); }
+
+.chapter-matrix-badge.level-3 {
+  border-color: rgba(139, 92, 246, 0.35);
+  background: rgba(139, 92, 246, 0.08);
+}
+.chapter-matrix-badge.level-3 .matrix-badge-duration { color: var(--purple); }
+
+.chapter-matrix-badge.level-4 {
+  border-color: rgba(245, 158, 11, 0.4);
+  background: rgba(245, 158, 11, 0.08);
+}
+.chapter-matrix-badge.level-4 .matrix-badge-duration { color: var(--amber); }
+
+/* Manual Session Modal Controls */
+.btn-preset-pill {
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-preset-pill:hover {
+  color: var(--text-main);
+  border-color: var(--emerald);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.btn-preset-pill.active {
+  background: rgba(16, 185, 129, 0.16);
+  color: var(--emerald);
+  border-color: var(--emerald);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+}
+
+/* ==========================================================================
    APP UPDATE MODAL & GITHUB RELEASES UI
    ========================================================================== */
 .update-modal-card {
@@ -7005,6 +7362,9 @@ body {
                 </button>
               </div>
               <button class="range-btn" data-range="7">7 jours</button>
+              <button class="range-btn" data-range="14">14 jours</button>
+              <button class="range-btn" data-range="21">21 jours</button>
+              <button class="range-btn" data-range="28">28 jours</button>
               <button class="range-btn" data-range="30">30 jours</button>
               <button class="range-btn" data-range="all">Tout</button>
               <button class="range-btn" data-range="custom" id="btn-range-custom">Personnalisé 📅</button>
@@ -7015,11 +7375,17 @@ body {
               <div class="custom-range-inputs">
                 <div class="date-field-wrap">
                   <span class="date-field-label">Du</span>
-                  <input type="date" id="custom-date-start" class="date-input">
+                  <div class="date-input-box" id="box-custom-date-start" title="Sélectionner la date de début">
+                    <i data-lucide="calendar" class="date-calendar-icon"></i>
+                    <input type="date" id="custom-date-start" class="date-input">
+                  </div>
                 </div>
                 <div class="date-field-wrap">
                   <span class="date-field-label">Au</span>
-                  <input type="date" id="custom-date-end" class="date-input">
+                  <div class="date-input-box" id="box-custom-date-end" title="Sélectionner la date de fin">
+                    <i data-lucide="calendar" class="date-calendar-icon"></i>
+                    <input type="date" id="custom-date-end" class="date-input">
+                  </div>
                 </div>
                 <button type="button" id="btn-apply-custom-range" class="btn-apply-range">
                   <i data-lucide="check" style="width:13px;height:13px;"></i>
@@ -7238,6 +7604,49 @@ body {
         <!-- Sub-page 2: Chronomètre Cours & Leçons -->
         <div class="stats-subpage stats-subpage-lessons" id="stats-subpage-lessons" style="display:none;">
 
+          <!-- KPI Cards: Bilan Global des Cours -->
+          <div class="stats-kpi-grid lesson-kpi-grid">
+            <!-- Card 1: Temps Total Cours -->
+            <div class="stat-kpi-card accent-cyan">
+              <div class="kpi-icon-wrap"><i data-lucide="clock"></i></div>
+              <div class="kpi-content">
+                <div class="kpi-label">Temps Total Cours</div>
+                <div class="kpi-value" id="kpi-lesson-total-time">0h 00</div>
+                <div class="kpi-subtext" id="kpi-lesson-total-sub">0 session enregistrée</div>
+              </div>
+            </div>
+
+            <!-- Card 2: Temps Aujourd'hui & 7j -->
+            <div class="stat-kpi-card accent-emerald">
+              <div class="kpi-icon-wrap"><i data-lucide="calendar"></i></div>
+              <div class="kpi-content">
+                <div class="kpi-label">Aujourd'hui &amp; 7j</div>
+                <div class="kpi-value" id="kpi-lesson-today-time">0h 00</div>
+                <div class="kpi-subtext" id="kpi-lesson-7d-sub">7 derniers jours : 0h 00</div>
+              </div>
+            </div>
+
+            <!-- Card 3: Durée Moyenne par Session -->
+            <div class="stat-kpi-card accent-purple">
+              <div class="kpi-icon-wrap"><i data-lucide="hourglass"></i></div>
+              <div class="kpi-content">
+                <div class="kpi-label">Moyenne / Session</div>
+                <div class="kpi-value" id="kpi-lesson-avg-time">--</div>
+                <div class="kpi-subtext" id="kpi-lesson-avg-sub">Focus régulier</div>
+              </div>
+            </div>
+
+            <!-- Card 4: Couverture du Programme -->
+            <div class="stat-kpi-card accent-amber">
+              <div class="kpi-icon-wrap"><i data-lucide="book-marked"></i></div>
+              <div class="kpi-content">
+                <div class="kpi-label">Couverture Programme</div>
+                <div class="kpi-value" id="kpi-lesson-coverage-val">0 / 35</div>
+                <div class="kpi-subtext" id="kpi-lesson-coverage-sub">0% des cours travaillés</div>
+              </div>
+            </div>
+          </div>
+
         <!-- Section: Chronomètre & Suivi du Temps par Leçon -->
         <div class="stats-panel-box lesson-tracker-panel" id="lesson-tracker-section">
           <div class="panel-box-header">
@@ -7245,7 +7654,13 @@ body {
               <i data-lucide="timer" style="color:var(--cyan);"></i>
               <span>Chronomètre d'Étude &amp; Temps Passé par Leçon</span>
             </div>
-            <div class="panel-box-count" id="lesson-stats-count-badge">0 leçon enregistrée</div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <button type="button" class="btn-action-ghost" id="btn-open-manual-session" title="Enregistrer une session effectuée hors ligne" style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;font-size:0.82rem;border-radius:var(--radius-sm);background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);color:var(--emerald);cursor:pointer;font-weight:600;">
+                <i data-lucide="plus-circle" style="width:14px;height:14px;"></i>
+                <span>+ Session directe</span>
+              </button>
+              <div class="panel-box-count" id="lesson-stats-count-badge">0 leçon enregistrée</div>
+            </div>
           </div>
 
           <!-- Zone Interactive du Minuteur / Chronomètre -->
@@ -7275,6 +7690,29 @@ body {
               <div class="active-lesson-display-badge" id="active-lesson-display-badge">
                 <span class="active-badge-label">Leçon sélectionnée :</span>
                 <span class="active-badge-name" id="active-lesson-name">Aucune leçon choisie</span>
+              </div>
+            </div>
+
+            <!-- Offset / Décalage initial pour démarrer à partir d'un temps -->
+            <div class="lesson-offset-wrap" id="lesson-offset-wrap">
+              <span class="lesson-offset-label">
+                <i data-lucide="fast-forward" style="width:13px;height:13px;color:var(--cyan);"></i>
+                <span>Démarrer à partir de :</span>
+              </span>
+              <div class="lesson-offset-pills" id="lesson-offset-pills">
+                <button type="button" class="offset-pill active" data-offset="0">00:00 (Zéro)</button>
+                <button type="button" class="offset-pill" data-offset="900">+15 min</button>
+                <button type="button" class="offset-pill" data-offset="1800">+30 min</button>
+                <button type="button" class="offset-pill" data-offset="3600">+1 heure</button>
+                <button type="button" class="offset-pill" data-offset="7200">+2 heures</button>
+                <button type="button" class="offset-pill-custom" id="btn-custom-offset" title="Saisir un temps initial précis">Personnalisé...</button>
+              </div>
+              <div class="custom-offset-input-wrap" id="custom-offset-input-wrap" style="display:none;">
+                <input type="number" id="custom-offset-hours" min="0" max="24" value="1" placeholder="H" />
+                <span>h</span>
+                <input type="number" id="custom-offset-mins" min="0" max="59" value="0" placeholder="M" />
+                <span>min</span>
+                <button type="button" class="btn-offset-apply" id="btn-offset-apply">OK</button>
               </div>
             </div>
 
@@ -7312,6 +7750,61 @@ body {
             </div>
           </div>
 
+          <!-- Section: Évolution & Heures d'Étude par Jour (SVG) -->
+          <div class="stats-panel-box lesson-chart-box">
+            <div class="panel-box-header">
+              <div class="panel-box-title">
+                <i data-lucide="bar-chart-2" style="color:var(--emerald);"></i>
+                <span id="lesson-daily-chart-title">Historique Quotidien d'Étude des Cours</span>
+              </div>
+              <div class="stats-range-tabs" id="lesson-chart-range-tabs">
+                <button type="button" class="range-tab-btn active" data-lesson-range="7">7 jours</button>
+                <button type="button" class="range-tab-btn" data-lesson-range="14">14 jours</button>
+                <button type="button" class="range-tab-btn" data-lesson-range="30">30 jours</button>
+              </div>
+            </div>
+            <div class="chart-svg-container" id="lesson-daily-chart-container">
+              <!-- SVG Bar Chart injecté dynamiquement -->
+            </div>
+          </div>
+
+          <!-- Section 2 Colonnes: Répartition par Cours + Matrice des 35 Chapitres -->
+          <div class="stats-two-col-grid lesson-analytics-grid">
+            <!-- Col 1: Top 10 des Cours les plus travaillés -->
+            <div class="stats-panel-box">
+              <div class="panel-box-header">
+                <div class="panel-box-title">
+                  <i data-lucide="pie-chart" style="color:var(--cyan);"></i>
+                  <span>Répartition du Temps par Cours (Top 10)</span>
+                </div>
+              </div>
+              <div class="lesson-distribution-list" id="lesson-distribution-container">
+                <!-- Injected dynamically -->
+              </div>
+            </div>
+
+            <!-- Col 2: Matrice de Couverture des 35 Chapitres -->
+            <div class="stats-panel-box">
+              <div class="panel-box-header">
+                <div class="panel-box-title">
+                  <i data-lucide="layers" style="color:var(--purple);"></i>
+                  <span>Couverture du Programme (35 Chapitres)</span>
+                </div>
+                <div class="heatmap-legend">
+                  <span class="legend-label">0h</span>
+                  <span class="legend-cell level-0" title="Non débuté (0h)"></span>
+                  <span class="legend-cell level-1" title="< 1h d'étude"></span>
+                  <span class="legend-cell level-2" title="1h - 2h"></span>
+                  <span class="legend-cell level-3" title="2h - 4h"></span>
+                  <span class="legend-cell level-4" title="> 4h"></span>
+                </div>
+              </div>
+              <div class="lesson-chapters-matrix" id="lesson-chapters-matrix">
+                <!-- Injected dynamically -->
+              </div>
+            </div>
+          </div>
+
           <!-- Tableau Récapitulatif par Leçon -->
           <div class="lesson-summary-table-wrap">
             <div class="lesson-subtable-title">
@@ -7341,6 +7834,88 @@ body {
       </section>
 
     </main>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODALE: AJOUTER UNE SESSION DIRECTE DE COURS
+       ───────────────────────────────────────────────────────────── -->
+  <div class="modal-overlay" id="modal-manual-lesson-session" style="display:none;">
+    <div class="modal-content" style="max-width:520px;">
+      <div class="modal-header">
+        <div class="modal-title" style="color:var(--emerald);">
+          <i data-lucide="plus-circle"></i>
+          <span>Ajouter une Session de Cours Directe</span>
+        </div>
+        <button type="button" class="close-btn" id="btn-close-manual-session-modal">&times;</button>
+      </div>
+
+      <div class="manual-session-modal-body" style="padding:16px 0;display:flex;flex-direction:column;gap:16px;">
+        <!-- Choix du Cours -->
+        <div class="manual-field-group">
+          <label class="lesson-field-label" for="manual-lesson-input">
+            <i data-lucide="book-open" style="width:14px;height:14px;color:var(--cyan);"></i>
+            <span>Cours / Leçon de pédiatrie :</span>
+          </label>
+          <div class="lesson-input-combobox">
+            <div class="lesson-input-wrap">
+              <input type="text" id="manual-lesson-input" class="lesson-text-input" placeholder="Taper ou sélectionner un chapitre..." autocomplete="off" />
+              <button type="button" id="btn-clear-manual-input" class="btn-input-clear" style="display:none;" title="Effacer">&times;</button>
+            </div>
+            <!-- Quick dropdown suggestions -->
+            <div class="lesson-dropdown" id="manual-lesson-dropdown" style="display:none;">
+              <div class="lesson-dropdown-header">Chapitres de pédiatrie (35) :</div>
+              <div class="lesson-dropdown-list" id="manual-dropdown-items"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Durée -->
+        <div class="manual-field-group">
+          <label class="lesson-field-label">
+            <i data-lucide="clock" style="width:14px;height:14px;color:var(--emerald);"></i>
+            <span>Durée de la session :</span>
+          </label>
+          <div class="manual-duration-inputs" style="display:flex;gap:12px;align-items:center;">
+            <div style="flex:1;display:flex;align-items:center;background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:8px 12px;">
+              <input type="number" id="manual-duration-hours" min="0" max="24" value="1" style="width:100%;background:transparent;border:none;color:var(--text-main);font-size:1.1rem;font-weight:700;text-align:center;outline:none;" />
+              <span style="color:var(--text-muted);font-size:0.9rem;font-weight:600;margin-left:4px;">heure(s)</span>
+            </div>
+            <div style="flex:1;display:flex;align-items:center;background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:8px 12px;">
+              <input type="number" id="manual-duration-minutes" min="0" max="59" step="5" value="0" style="width:100%;background:transparent;border:none;color:var(--text-main);font-size:1.1rem;font-weight:700;text-align:center;outline:none;" />
+              <span style="color:var(--text-muted);font-size:0.9rem;font-weight:600;margin-left:4px;">min</span>
+            </div>
+          </div>
+
+          <!-- Quick Duration Presets -->
+          <div class="manual-presets-row" id="manual-presets-row" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+            <button type="button" class="btn-preset-pill" data-hours="0" data-mins="30">30 min</button>
+            <button type="button" class="btn-preset-pill active" data-hours="1" data-mins="0">1 h 00</button>
+            <button type="button" class="btn-preset-pill" data-hours="1" data-mins="30">1 h 30</button>
+            <button type="button" class="btn-preset-pill" data-hours="2" data-mins="0">2 h 00</button>
+            <button type="button" class="btn-preset-pill" data-hours="3" data-mins="0">3 h 00</button>
+          </div>
+        </div>
+
+        <!-- Date de la Session -->
+        <div class="manual-field-group">
+          <label class="lesson-field-label" for="manual-session-date">
+            <i data-lucide="calendar" style="width:14px;height:14px;color:var(--purple);"></i>
+            <span>Date de la session :</span>
+          </label>
+          <input type="date" id="manual-session-date" class="lesson-text-input" style="background:var(--bg-input);" />
+        </div>
+      </div>
+
+      <div class="modal-actions" style="display:flex;justify-content:flex-end;gap:10px;margin-top:16px;">
+        <button type="button" class="btn-secondary" id="btn-cancel-manual-session" style="padding:10px 18px;border-radius:var(--radius-sm);background:transparent;border:1px solid var(--border-subtle);color:var(--text-muted);cursor:pointer;font-weight:600;">
+          Annuler
+        </button>
+        <button type="button" class="btn-primary" id="btn-save-manual-session" style="padding:10px 20px;border-radius:var(--radius-sm);background:var(--emerald);color:#fff;border:none;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+          <i data-lucide="check" style="width:16px;height:16px;"></i>
+          <span>Enregistrer la session</span>
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- ─────────────────────────────────────────────────────────────
@@ -7649,9 +8224,9 @@ body {
 
       <div class="update-version-banner">
         <div class="update-version-chips">
-          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.4.4</strong></span>
+          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.4.7</strong></span>
           <i data-lucide="arrow-right" style="width:14px;height:14px;color:var(--text-dim);"></i>
-          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.4.4</strong></span>
+          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.4.7</strong></span>
         </div>
         <div class="update-release-date" id="update-modal-date">Publiée sur GitHub Releases</div>
       </div>
@@ -9957,6 +10532,7 @@ class LessonTracker {
   constructor() {
     this.activeTimer = this.loadActiveTimer();
     this.sessions = this.loadSessions();
+    this.lastTimerClearedAt = Number(localStorage.getItem('pedia_lesson_timer_cleared_at') || 0);
   }
 
   loadActiveTimer() {
@@ -9982,6 +10558,7 @@ class LessonTracker {
         localStorage.setItem(LESSON_TRACKER_STATE_KEY, JSON.stringify(this.activeTimer));
       } else {
         localStorage.removeItem(LESSON_TRACKER_STATE_KEY);
+        localStorage.setItem('pedia_lesson_timer_cleared_at', String(this.lastTimerClearedAt || Date.now()));
       }
     } catch (e) {
       console.warn('Failed to save active lesson timer:', e);
@@ -10018,12 +10595,21 @@ class LessonTracker {
     return `${year}-${month}-${day}`;
   }
 
+  getActiveTimer() {
+    return this.activeTimer ? { ...this.activeTimer } : null;
+  }
+
+  getLastTimerUpdatedAt() {
+    return this.activeTimer ? (this.activeTimer.updatedAt || 0) : (this.lastTimerClearedAt || 0);
+  }
+
   /**
-   * Start a new lesson stopwatch timer
+   * Start a new lesson stopwatch timer with optional initial offset in seconds
    */
-  startTimer(lessonName, chapterId = null) {
+  startTimer(lessonName, chapterId = null, offsetSeconds = 0) {
     const cleanName = (lessonName || '').trim() || 'Leçon sans titre';
     const now = Date.now();
+    const offsetMs = Math.max(0, Math.floor((Number(offsetSeconds) || 0) * 1000));
 
     this.activeTimer = {
       lessonName: cleanName,
@@ -10031,8 +10617,9 @@ class LessonTracker {
       isRunning: true,
       isPaused: false,
       startTimestamp: now,
-      accumulatedMs: 0,
-      initialStartTimestamp: now
+      accumulatedMs: offsetMs,
+      initialStartTimestamp: now - offsetMs,
+      updatedAt: now
     };
 
     this.saveActiveTimer();
@@ -10053,6 +10640,7 @@ class LessonTracker {
     }
     this.activeTimer.startTimestamp = null;
     this.activeTimer.isPaused = true;
+    this.activeTimer.updatedAt = now;
     this.saveActiveTimer();
     return this.activeTimer;
   }
@@ -10065,10 +10653,41 @@ class LessonTracker {
       return this.activeTimer;
     }
 
-    this.activeTimer.startTimestamp = Date.now();
+    const now = Date.now();
+    this.activeTimer.startTimestamp = now;
     this.activeTimer.isPaused = false;
+    this.activeTimer.updatedAt = now;
     this.saveActiveTimer();
     return this.activeTimer;
+  }
+
+  /**
+   * Merge remote active timer from multi-device Firestore synchronization
+   */
+  mergeActiveTimer(remoteTimer, remoteUpdatedAt = null) {
+    const localUpdatedAt = this.getLastTimerUpdatedAt();
+    const rUpdatedAt = (remoteTimer && remoteTimer.updatedAt) || Number(remoteUpdatedAt) || 0;
+
+    // If remote explicitly cleared the timer more recently than local update
+    if (!remoteTimer) {
+      if (rUpdatedAt > localUpdatedAt && this.activeTimer) {
+        this.activeTimer = null;
+        this.lastTimerClearedAt = rUpdatedAt;
+        this.saveActiveTimer();
+        return true;
+      }
+      return false;
+    }
+
+    // Remote has an active timer:
+    // If local has no active timer, or remote is strictly newer
+    if (!this.activeTimer || rUpdatedAt > localUpdatedAt) {
+      this.activeTimer = { ...remoteTimer };
+      this.saveActiveTimer();
+      return true;
+    }
+
+    return false;
   }
 
   /**
@@ -10088,6 +10707,32 @@ class LessonTracker {
    */
   getElapsedTimeSeconds() {
     return Math.floor(this.getElapsedTimeMs() / 1000);
+  }
+
+  /**
+   * Record a completed session directly (e.g. studied offline without starting timer)
+   */
+  addManualSession(sessionData) {
+    if (!sessionData) return null;
+    const cleanName = (sessionData.lessonName || '').trim() || 'Leçon sans titre';
+    const durationSeconds = Math.max(1, Math.floor(Number(sessionData.durationSeconds) || 0));
+    const now = Date.now();
+    const dateStr = sessionData.dateStr || this.getTodayDateStr();
+
+    const session = {
+      id: `sess_manual_${now}_${Math.random().toString(36).substring(2, 7)}`,
+      lessonName: cleanName,
+      chapterId: sessionData.chapterId || null,
+      startTime: now - (durationSeconds * 1000),
+      endTime: now,
+      durationSeconds,
+      dateStr,
+      isManual: true
+    };
+
+    this.sessions.unshift(session);
+    this.saveSessions();
+    return session;
   }
 
   /**
@@ -10118,6 +10763,7 @@ class LessonTracker {
     this.saveSessions();
 
     this.activeTimer = null;
+    this.lastTimerClearedAt = now;
     this.saveActiveTimer();
 
     return session;
@@ -10128,6 +10774,7 @@ class LessonTracker {
    */
   cancelTimer() {
     this.activeTimer = null;
+    this.lastTimerClearedAt = Date.now();
     this.saveActiveTimer();
   }
 
@@ -10370,6 +11017,13 @@ function mergeStates(local, remote) {
     if (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.mergeSessions === 'function') {
       lessonTracker.mergeSessions(remote.lessonSessions);
     }
+  }
+
+  // Merge active lesson stopwatch across devices in real-time
+  if (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.mergeActiveTimer === 'function') {
+    const remoteTimer = remote.activeLessonTimer || null;
+    const remoteTimerUpdatedAt = remote.activeLessonTimerUpdatedAt || (remoteTimer ? remoteTimer.updatedAt : null);
+    lessonTracker.mergeActiveTimer(remoteTimer, remoteTimerUpdatedAt);
   }
 
   return merged;
@@ -10864,6 +11518,12 @@ class FirebaseSyncService {
         lessonSessions: (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.getRawSessions === 'function')
           ? lessonTracker.getRawSessions()
           : (state.lessonSessions || []),
+        activeLessonTimer: (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.getActiveTimer === 'function')
+          ? lessonTracker.getActiveTimer()
+          : null,
+        activeLessonTimerUpdatedAt: (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.getLastTimerUpdatedAt === 'function')
+          ? lessonTracker.getLastTimerUpdatedAt()
+          : Date.now(),
         userEmail: this.user.email || '',
         userDisplayName: this.user.displayName || '',
         lastClientTimestamp: Date.now(),
@@ -10917,17 +11577,31 @@ class FirebaseSyncService {
   }
 
   /**
-   * Debounced automatic push: triggered automatically after each answered question
+   * Debounced automatic push: triggered automatically after each answered question or timer change
    */
-  triggerAutoPush() {
+  triggerAutoPush(immediate = false) {
     if (!this.user || !this.isInitialized) return;
 
     if (this.autoPushTimer) {
       clearTimeout(this.autoPushTimer);
+      this.autoPushTimer = null;
     }
+
+    if (immediate) {
+      this.pushToFirestore();
+      return;
+    }
+
     this.autoPushTimer = setTimeout(() => {
       this.pushToFirestore();
-    }, 1500);
+    }, 1200);
+  }
+
+  /**
+   * Push current state to Firestore immediately or debounced
+   */
+  pushState(immediate = true) {
+    return this.triggerAutoPush(immediate);
   }
 
   getFriendlyFirestoreError(err) {
@@ -10981,7 +11655,7 @@ class FirebaseSyncService {
 // Update Management Service for PédiaDrill
 // Checks GitHub Releases for new APK versions, notifies the user, and triggers direct download.
 
-const CURRENT_APP_VERSION = '1.4.4';
+const CURRENT_APP_VERSION = '1.4.7';
 const GITHUB_REPO = 'lkmqji/qcm-p-diatrie';
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
 const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours auto-check cooldown
@@ -11242,6 +11916,8 @@ const firebaseSyncService = new FirebaseSyncService(
     if (currentView === 'stats') renderStatsUI();
     updateArenaDailyBadge();
     updateModalLocalSummary();
+    renderLessonTrackerUI();
+    updateLessonTimerTick();
     refreshLucide();
   }
 );
@@ -14145,7 +14821,7 @@ function applyChapterSelection() {
 // ============================================================================
 // STUDY PROGRESS & ANALYTICS INFOGRAPHIC ENGINE
 // ============================================================================
-let currentStatsRange = 'today'; // 'today' | '7' | '30' | 'all' | 'custom' (Aujourd'hui par défaut)
+let currentStatsRange = 'today'; // 'today' | '7' | '14' | '21' | '28' | '30' | 'all' | 'custom' (Aujourd'hui par défaut)
 let customStatsStart = '';
 let customStatsEnd = '';
 let selectedDayOffset = 0; // 0 = Aujourd'hui, -1 = Hier, -2 = Avant-hier, etc.
@@ -14213,12 +14889,9 @@ function renderStatsUI() {
   } else if (currentStatsRange === 'all') {
     rangeDays = studyTracker.getDaysByRange('all');
     rangeLabel = "Tout l'historique";
-  } else if (currentStatsRange === '30') {
-    rangeDays = studyTracker.getDaysByRange('30');
-    rangeLabel = '30 jours';
-  } else if (currentStatsRange === '7') {
-    rangeDays = studyTracker.getDaysByRange('7');
-    rangeLabel = '7 jours';
+  } else if (['7', '14', '21', '28', '30'].includes(currentStatsRange)) {
+    rangeDays = studyTracker.getDaysByRange(currentStatsRange);
+    rangeLabel = `${currentStatsRange} jours`;
   } else {
     // Par défaut : Aujourd'hui (ou décalage sélectionné)
     const targetDateStr = getDateStrWithOffset(selectedDayOffset);
@@ -14487,7 +15160,6 @@ function renderStatsHeatmap(history) {
   if (!container) return;
 
   const now = new Date();
-  const daysCount = 63; // 9 full weeks of 7 days
   const cellWidth = 14;
   const cellHeight = 14;
   const gap = 4;
@@ -14497,22 +15169,17 @@ function renderStatsHeatmap(history) {
   const width = leftMargin + (9 * (cellWidth + gap)) + 10;
   const height = topMargin + (7 * (cellHeight + gap)) + 6;
 
-  // Build 63 days list ending today
-  const daysList = [];
-  for (let i = daysCount - 1; i >= 0; i--) {
-    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    const dateStr = `${year}-${month}-${day}`;
-    const dayData = history[dateStr] || null;
-    const dayOfWeek = (d.getDay() + 6) % 7; // 0 = Mon, 6 = Sun
-    daysList.push({ dateStr, dayData, dateObj: d, dayOfWeek });
-  }
+  // Strict Calendar Week Alignment:
+  // Day of week: 0 = Mon, 1 = Tue, 2 = Wed, 3 = Thu, 4 = Fri, 5 = Sat, 6 = Sun
+  const todayDayOfWeek = (now.getDay() + 6) % 7;
+
+  // The grid spans 9 full columns (weeks 0 to 8), with column 8 ending at today (row = todayDayOfWeek)
+  // The start date is strictly the Monday of 8 weeks ago:
+  const startMonday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - (8 * 7 + todayDayOfWeek));
 
   let svgContent = `<svg class="heatmap-svg" viewBox="0 0 ${width} ${height}" style="max-width:100%;height:auto;">`;
 
-  // Day of week labels on left
+  // Day of week labels on left strictly aligned with row indices: 0 = Lun, 2 = Mer, 4 = Ven, 6 = Dim
   const dayNames = ['Lun', '', 'Mer', '', 'Ven', '', 'Dim'];
   dayNames.forEach((name, idx) => {
     if (name) {
@@ -14521,20 +15188,32 @@ function renderStatsHeatmap(history) {
     }
   });
 
-  // Cells grouped by weeks
+  const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+
+  // Cells strictly grouped by columns (weeks 0 to 8) and rows (days of week Mon=0 to Sun=6)
   for (let col = 0; col < 9; col++) {
     for (let row = 0; row < 7; row++) {
-      const itemIndex = col * 7 + row;
-      const item = daysList[itemIndex];
-      if (!item) continue;
+      const cellDate = new Date(startMonday.getFullYear(), startMonday.getMonth(), startMonday.getDate() + (col * 7 + row));
+      const cellMidnight = new Date(cellDate.getFullYear(), cellDate.getMonth(), cellDate.getDate()).getTime();
 
       const x = leftMargin + col * (cellWidth + gap);
       const y = topMargin + row * (cellHeight + gap);
 
-      const total = item.dayData ? (item.dayData.totalQuestions || 0) : 0;
-      const correct = item.dayData ? (item.dayData.correctAnswers || 0) : 0;
-      const wrong = item.dayData ? (item.dayData.wrongAnswers || 0) : 0;
-      const timeSec = item.dayData ? (item.dayData.totalTimeSeconds || 0) : 0;
+      // If future day in current week, do not draw active cell
+      if (cellMidnight > todayMidnight) {
+        continue;
+      }
+
+      const year = cellDate.getFullYear();
+      const month = String(cellDate.getMonth() + 1).padStart(2, '0');
+      const day = String(cellDate.getDate()).padStart(2, '0');
+      const dateStr = `${year}-${month}-${day}`;
+      const dayData = history[dateStr] || null;
+
+      const total = dayData ? (dayData.totalQuestions || 0) : 0;
+      const correct = dayData ? (dayData.correctAnswers || 0) : 0;
+      const wrong = dayData ? (dayData.wrongAnswers || 0) : 0;
+      const timeSec = dayData ? (dayData.totalTimeSeconds || 0) : 0;
 
       let color = '#121d33';
       let stroke = 'rgba(255,255,255,0.06)';
@@ -14543,7 +15222,7 @@ function renderStatsHeatmap(history) {
       else if (total >= 15) { color = '#047857'; stroke = 'none'; }
       else if (total >= 1) { color = '#064e3b'; stroke = 'none'; }
 
-      const dateLabel = item.dateObj.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
+      const dateLabel = cellDate.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' });
       const tooltipText = total > 0
         ? `${dateLabel} : ${total} QCM (${correct} justes, ${wrong} fautes, ${formatDuration(timeSec)})`
         : `${dateLabel} : Aucun entraînement`;
@@ -14577,10 +15256,10 @@ function renderStatsActivityChart(rangeDays) {
       const firstStr = rangeDays[0]?.dateStr ? formatDateFr(rangeDays[0].dateStr) : '';
       const lastStr = rangeDays[rangeDays.length - 1]?.dateStr ? formatDateFr(rangeDays[rangeDays.length - 1].dateStr) : '';
       chartTitleEl.textContent = `Activité Personnalisée (${firstStr} ➔ ${lastStr})`;
-    } else if (totalRange <= 7) {
-      chartTitleEl.textContent = 'Activité des 7 derniers jours (Volume, Justes vs Fautes & Vélocité)';
+    } else if (['7', '14', '21', '28', '30'].includes(currentStatsRange)) {
+      chartTitleEl.textContent = `Activité des ${currentStatsRange} derniers jours (Volume, Justes vs Fautes & Vélocité)`;
     } else if (totalRange <= 30) {
-      chartTitleEl.textContent = 'Activité des 30 derniers jours';
+      chartTitleEl.textContent = `Activité des ${totalRange} derniers jours`;
     } else {
       chartTitleEl.textContent = "Historique complet d'activité";
     }
@@ -15092,6 +15771,9 @@ function formatDigitalClockTime(totalSeconds) {
   return `${pad(hrs)}:${pad(mins)}:${pad(s)}`;
 }
 
+let currentLessonChartRange = '7'; // '7' | '14' | '30'
+let currentLessonOffsetSeconds = 0; // offset in seconds
+
 function updateLessonTimerTick() {
   const active = (typeof lessonTracker !== 'undefined' && lessonTracker) ? lessonTracker.activeTimer : null;
   const headerBadge = document.getElementById('active-lesson-header-badge');
@@ -15140,15 +15822,306 @@ function updateLessonTimerTick() {
       subnavTimerPill.style.display = 'none';
     }
     if (digitalClock) {
-      digitalClock.textContent = '00:00:00';
+      digitalClock.textContent = currentLessonOffsetSeconds > 0
+        ? formatDigitalClockTime(currentLessonOffsetSeconds)
+        : '00:00:00';
     }
     if (clockDot) {
       clockDot.className = 'clock-status-dot status-idle';
     }
     if (statusText) {
-      statusText.textContent = 'Prêt à démarrer';
+      statusText.textContent = currentLessonOffsetSeconds > 0
+        ? `Prêt (Départ : ${formatDigitalClockTime(currentLessonOffsetSeconds)})`
+        : 'Prêt à démarrer';
     }
   }
+}
+
+/**
+ * Renders lesson analytics: 4 KPI Cards, Daily SVG Bar Chart, Top 10 Distribution, and 35 Chapters Matrix
+ */
+function renderLessonAnalytics(rangeStr = currentLessonChartRange) {
+  currentLessonChartRange = rangeStr;
+  const sessions = lessonTracker.getSessions();
+  const summaries = lessonTracker.getLessonSummaries();
+
+  // 1. KPI Cards
+  const kpiTotalTime = document.getElementById('kpi-lesson-total-time');
+  const kpiTotalSub = document.getElementById('kpi-lesson-total-sub');
+  const kpiTodayTime = document.getElementById('kpi-lesson-today-time');
+  const kpi7dSub = document.getElementById('kpi-lesson-7d-sub');
+  const kpiAvgTime = document.getElementById('kpi-lesson-avg-time');
+  const kpiAvgSub = document.getElementById('kpi-lesson-avg-sub');
+  const kpiCoverageVal = document.getElementById('kpi-lesson-coverage-val');
+  const kpiCoverageSub = document.getElementById('kpi-lesson-coverage-sub');
+
+  const totalSeconds = sessions.reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
+  const totalHrs = Math.floor(totalSeconds / 3600);
+  const totalMins = Math.floor((totalSeconds % 3600) / 60);
+
+  if (kpiTotalTime) {
+    kpiTotalTime.textContent = totalSeconds > 0 ? `${totalHrs}h ${String(totalMins).padStart(2, '0')}` : '0h 00';
+  }
+  if (kpiTotalSub) {
+    kpiTotalSub.textContent = `${sessions.length} session${sessions.length > 1 ? 's' : ''} enregistrée${sessions.length > 1 ? 's' : ''}`;
+  }
+
+  // Today & 7 days
+  const todayDateStr = lessonTracker.getTodayDateStr();
+  const todaySeconds = sessions
+    .filter(s => s.dateStr === todayDateStr)
+    .reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
+
+  const nowMs = Date.now();
+  const sevenDaysAgoMs = nowMs - (7 * 86400000);
+  const sevenDaysSeconds = sessions
+    .filter(s => (s.endTime || 0) >= sevenDaysAgoMs)
+    .reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
+
+  if (kpiTodayTime) {
+    const todayHrs = Math.floor(todaySeconds / 3600);
+    const todayMins = Math.floor((todaySeconds % 3600) / 60);
+    kpiTodayTime.textContent = todaySeconds > 0 ? `${todayHrs}h ${String(todayMins).padStart(2, '0')}` : '0h 00';
+  }
+  if (kpi7dSub) {
+    const s7Hrs = Math.floor(sevenDaysSeconds / 3600);
+    const s7Mins = Math.floor((sevenDaysSeconds % 3600) / 60);
+    kpi7dSub.textContent = `7 derniers jours : ${s7Hrs}h ${String(s7Mins).padStart(2, '0')}`;
+  }
+
+  // Average per session
+  if (kpiAvgTime) {
+    if (sessions.length === 0) {
+      kpiAvgTime.textContent = '--';
+    } else {
+      const avgSec = Math.round(totalSeconds / sessions.length);
+      const avgH = Math.floor(avgSec / 3600);
+      const avgM = Math.floor((avgSec % 3600) / 60);
+      kpiAvgTime.textContent = avgH > 0 ? `${avgH}h ${String(avgM).padStart(2, '0')}` : `${avgM} min`;
+    }
+  }
+
+  // Coverage of 35 chapters
+  const allChs = window.PEDIA_CHAPTERS || [];
+  const studiedChCount = allChs.filter(ch => {
+    return summaries.some(s => (s.chapterId && s.chapterId === ch.id) || (s.lessonName && s.lessonName.trim().toLowerCase() === ch.title.trim().toLowerCase()));
+  }).length;
+
+  const coveragePct = allChs.length > 0 ? Math.round((studiedChCount / allChs.length) * 100) : 0;
+  if (kpiCoverageVal) {
+    kpiCoverageVal.textContent = `${studiedChCount} / ${allChs.length || 35}`;
+  }
+  if (kpiCoverageSub) {
+    kpiCoverageSub.textContent = `${coveragePct}% des cours travaillés`;
+  }
+
+  // 2. Daily SVG Bar Chart
+  renderLessonDailyChart(rangeStr, sessions);
+
+  // 3. Lesson Distribution (Top 10)
+  renderLessonDistribution(summaries);
+
+  // 4. 35 Chapters Matrix
+  renderLessonChaptersMatrix(allChs, summaries);
+}
+
+function renderLessonDailyChart(rangeStr, sessions) {
+  const container = document.getElementById('lesson-daily-chart-container');
+  if (!container) return;
+
+  const daysCount = parseInt(rangeStr, 10) || 7;
+  const now = new Date();
+  const dailyData = [];
+
+  for (let i = daysCount - 1; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const dateStr = `${year}-${month}-${day}`;
+
+    const daySeconds = sessions
+      .filter(s => s.dateStr === dateStr)
+      .reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
+
+    const isToday = (i === 0);
+    const dayNameShort = d.toLocaleDateString('fr-FR', { weekday: 'short' });
+    const dayNum = d.getDate();
+
+    dailyData.push({
+      dateStr,
+      daySeconds,
+      dayLabel: isToday ? 'Auj.' : `${dayNameShort} ${dayNum}`,
+      dateObj: d
+    });
+  }
+
+  const maxSeconds = Math.max(...dailyData.map(d => d.daySeconds), 3600); // at least 1h scale
+  const svgWidth = 800;
+  const svgHeight = 220;
+  const padLeft = 45;
+  const padRight = 20;
+  const padTop = 25;
+  const padBottom = 40;
+  const chartW = svgWidth - padLeft - padRight;
+  const chartH = svgHeight - padTop - padBottom;
+
+  const barWidth = Math.min(36, Math.max(14, Math.floor((chartW / daysCount) * 0.65)));
+  const colStep = chartW / daysCount;
+
+  let svgHtml = `<svg class="activity-chart-svg" viewBox="0 0 ${svgWidth} ${svgHeight}" style="max-width:100%;height:auto;display:block;">`;
+
+  // Grid lines
+  const maxHrs = Math.max(1, Math.ceil(maxSeconds / 3600));
+  const gridSteps = [0, maxHrs / 2, maxHrs];
+  gridSteps.forEach(hVal => {
+    const yRatio = maxHrs > 0 ? (hVal / maxHrs) : 0;
+    const yPos = padTop + chartH - (yRatio * chartH);
+    svgHtml += `
+      <line x1="${padLeft}" y1="${yPos}" x2="${svgWidth - padRight}" y2="${yPos}" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3" />
+      <text x="${padLeft - 8}" y="${yPos + 4}" fill="#64748b" font-size="10" text-anchor="end" font-family="var(--font-body)">${hVal % 1 === 0 ? hVal : hVal.toFixed(1)}h</text>
+    `;
+  });
+
+  // Bars
+  dailyData.forEach((item, idx) => {
+    const xCenter = padLeft + idx * colStep + (colStep / 2);
+    const x = xCenter - (barWidth / 2);
+    const barHeight = (item.daySeconds / (maxHrs * 3600)) * chartH;
+    const y = padTop + chartH - barHeight;
+
+    const formattedTime = formatDuration(item.daySeconds);
+    const dateLabel = item.dateObj.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+    const tooltip = item.daySeconds > 0
+      ? `${dateLabel} : ${formattedTime} d'étude`
+      : `${dateLabel} : Aucun temps de cours enregistré`;
+
+    const barColor = item.daySeconds > 0 ? 'url(#lessonBarGrad)' : 'rgba(255,255,255,0.04)';
+    const barStroke = item.daySeconds > 0 ? '#10b981' : 'rgba(255,255,255,0.08)';
+
+    svgHtml += `
+      <rect class="lesson-bar-rect" x="${x}" y="${y}" width="${barWidth}" height="${Math.max(barHeight, 3)}" rx="4"
+            fill="${barColor}" stroke="${barStroke}" stroke-width="1">
+        <title>${escapeHtml(tooltip)}</title>
+      </rect>
+    `;
+
+    // Duration text above bar if duration > 0
+    if (item.daySeconds > 0) {
+      const hrs = Math.floor(item.daySeconds / 3600);
+      const mins = Math.floor((item.daySeconds % 3600) / 60);
+      const label = hrs > 0 ? `${hrs}h${mins > 0 ? mins : ''}` : `${mins}m`;
+      svgHtml += `
+        <text x="${xCenter}" y="${y - 6}" fill="#00d4ff" font-size="10" font-weight="700" text-anchor="middle" font-family="'Outfit', sans-serif">${label}</text>
+      `;
+    }
+
+    // Day label underneath
+    svgHtml += `
+      <text x="${xCenter}" y="${padTop + chartH + 18}" fill="#94a3b8" font-size="11" font-weight="500" text-anchor="middle" font-family="var(--font-body)">${item.dayLabel}</text>
+    `;
+  });
+
+  // Gradient Definition
+  svgHtml += `
+    <defs>
+      <linearGradient id="lessonBarGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#00d4ff" />
+        <stop offset="100%" stop-color="#059669" />
+      </linearGradient>
+    </defs>
+  `;
+
+  svgHtml += '</svg>';
+  container.innerHTML = svgHtml;
+}
+
+function renderLessonDistribution(summaries) {
+  const container = document.getElementById('lesson-distribution-container');
+  if (!container) return;
+
+  const top10 = summaries.slice(0, 10);
+  if (top10.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:24px 16px;color:var(--text-dim);font-size:0.85rem;">
+        Aucune donnée de cours enregistrée pour le moment.
+      </div>
+    `;
+    return;
+  }
+
+  const maxSec = Math.max(...top10.map(s => s.totalDurationSeconds || 0), 1);
+  let html = '';
+
+  top10.forEach(s => {
+    const pct = Math.round((s.totalDurationSeconds / maxSec) * 100);
+    html += `
+      <div class="lesson-dist-item">
+        <div class="lesson-dist-header">
+          <span class="lesson-dist-name" title="${escapeHtml(s.lessonName)}">
+            <i data-lucide="book-open" style="width:13px;height:13px;color:var(--cyan);display:inline;margin-right:4px;"></i>
+            ${escapeHtml(s.lessonName)}
+          </span>
+          <span class="lesson-dist-time">${formatDuration(s.totalDurationSeconds)}</span>
+        </div>
+        <div class="lesson-dist-bar-wrap">
+          <div class="lesson-dist-bar-fill" style="width: ${pct}%;"></div>
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+function renderLessonChaptersMatrix(allChapters, summaries) {
+  const container = document.getElementById('lesson-chapters-matrix');
+  if (!container) return;
+
+  if (!allChapters || allChapters.length === 0) {
+    container.innerHTML = `<div style="color:var(--text-dim);font-size:0.8rem;padding:12px;">Chapitres indisponibles</div>`;
+    return;
+  }
+
+  let html = '';
+  allChapters.forEach((ch, idx) => {
+    const chSum = summaries.find(s => (s.chapterId && s.chapterId === ch.id) || (s.lessonName && s.lessonName.trim().toLowerCase() === ch.title.trim().toLowerCase()));
+    const durationSec = chSum ? chSum.totalDurationSeconds : 0;
+
+    let levelClass = 'level-0';
+    if (durationSec >= 14400) levelClass = 'level-4'; // > 4h
+    else if (durationSec >= 7200) levelClass = 'level-3'; // 2h - 4h
+    else if (durationSec >= 3600) levelClass = 'level-2'; // 1h - 2h
+    else if (durationSec > 0) levelClass = 'level-1'; // < 1h
+
+    const durationText = durationSec > 0 ? formatDuration(durationSec) : '0 min';
+
+    html += `
+      <div class="chapter-matrix-badge ${levelClass}" data-chapter-id="${escapeHtml(ch.id)}" data-chapter-title="${escapeHtml(ch.title)}" title="${escapeHtml(ch.title)} (${durationText})">
+        <span class="matrix-badge-num">#${idx + 1}</span>
+        <span class="matrix-badge-title">${escapeHtml(ch.title)}</span>
+        <span class="matrix-badge-duration">${durationText}</span>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+
+  // On clicking a chapter badge: set as selected lesson in timer!
+  container.querySelectorAll('.chapter-matrix-badge').forEach(badge => {
+    badge.onclick = () => {
+      const chTitle = badge.dataset.chapterTitle;
+      const chId = badge.dataset.chapterId;
+      currentLessonSelected.name = chTitle;
+      currentLessonSelected.chapterId = chId;
+      const searchInput = document.getElementById('lesson-search-input');
+      if (searchInput) searchInput.value = chTitle;
+      const activeNameEl = document.getElementById('active-lesson-name');
+      if (activeNameEl) activeNameEl.textContent = chTitle;
+      const timerCard = document.querySelector('.lesson-timer-card');
+      if (timerCard) timerCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+  });
 }
 
 function initLessonTracker() {
@@ -15322,12 +16295,15 @@ function renderLessonTrackerUI() {
           if (confirm('Voulez-vous supprimer cette session de travail ?')) {
             lessonTracker.deleteSession(sessId);
             renderLessonTrackerUI();
-            firebaseSyncService.pushState();
+            firebaseSyncService.triggerAutoPush(true);
           }
         };
       });
     }
   }
+
+  // 3. Render Lesson Analytics, KPIs, Chart & Matrix
+  renderLessonAnalytics(currentLessonChartRange);
 
   updateLessonTimerTick();
   refreshLucide();
@@ -15431,6 +16407,190 @@ function setupLessonTrackerEventListeners() {
     }
   });
 
+  // Offset Pills & Custom Offset Listeners
+  const offsetPills = document.querySelectorAll('#lesson-offset-pills .offset-pill');
+  offsetPills.forEach(pill => {
+    pill.onclick = () => {
+      offsetPills.forEach(p => p.classList.remove('active'));
+      const btnCustom = document.getElementById('btn-custom-offset');
+      if (btnCustom) btnCustom.classList.remove('active');
+      const customWrap = document.getElementById('custom-offset-input-wrap');
+      if (customWrap) customWrap.style.display = 'none';
+
+      pill.classList.add('active');
+      currentLessonOffsetSeconds = parseInt(pill.dataset.offset, 10) || 0;
+      updateLessonTimerTick();
+    };
+  });
+
+  const btnCustomOffset = document.getElementById('btn-custom-offset');
+  const customOffsetWrap = document.getElementById('custom-offset-input-wrap');
+  if (btnCustomOffset && customOffsetWrap) {
+    btnCustomOffset.onclick = () => {
+      const isVisible = customOffsetWrap.style.display === 'flex';
+      customOffsetWrap.style.display = isVisible ? 'none' : 'flex';
+      if (!isVisible) {
+        offsetPills.forEach(p => p.classList.remove('active'));
+        btnCustomOffset.classList.add('active');
+      }
+    };
+  }
+
+  const btnApplyOffset = document.getElementById('btn-offset-apply');
+  if (btnApplyOffset) {
+    btnApplyOffset.onclick = () => {
+      const hrs = parseInt(document.getElementById('custom-offset-hours')?.value, 10) || 0;
+      const mins = parseInt(document.getElementById('custom-offset-mins')?.value, 10) || 0;
+      currentLessonOffsetSeconds = Math.max(0, (hrs * 3600) + (mins * 60));
+      updateLessonTimerTick();
+    };
+  }
+
+  // Chart range tabs
+  const chartRangeBtns = document.querySelectorAll('#lesson-chart-range-tabs .range-tab-btn');
+  chartRangeBtns.forEach(btn => {
+    btn.onclick = () => {
+      chartRangeBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const range = btn.dataset.lessonRange || '7';
+      renderLessonAnalytics(range);
+      refreshLucide();
+    };
+  });
+
+  // Manual Session Modal Handlers
+  const btnOpenManual = document.getElementById('btn-open-manual-session');
+  const modalManual = document.getElementById('modal-manual-lesson-session');
+  const btnCloseManual = document.getElementById('btn-close-manual-session-modal');
+  const btnCancelManual = document.getElementById('btn-cancel-manual-session');
+  const btnSaveManual = document.getElementById('btn-save-manual-session');
+  const manualDateInput = document.getElementById('manual-session-date');
+  const manualLessonInput = document.getElementById('manual-lesson-input');
+  const manualClearBtn = document.getElementById('btn-clear-manual-input');
+  const manualDropdown = document.getElementById('manual-lesson-dropdown');
+  const manualDropdownItems = document.getElementById('manual-dropdown-items');
+
+  function openManualSessionModal() {
+    if (!modalManual) return;
+    if (manualDateInput) manualDateInput.value = lessonTracker.getTodayDateStr();
+    if (manualLessonInput) {
+      manualLessonInput.value = currentLessonSelected.name || '';
+      if (manualClearBtn) manualClearBtn.style.display = manualLessonInput.value ? 'block' : 'none';
+    }
+    modalManual.style.display = 'flex';
+    refreshLucide();
+  }
+
+  function closeManualSessionModal() {
+    if (!modalManual) return;
+    modalManual.style.display = 'none';
+    if (manualDropdown) manualDropdown.style.display = 'none';
+  }
+
+  if (btnOpenManual) btnOpenManual.onclick = openManualSessionModal;
+  if (btnCloseManual) btnCloseManual.onclick = closeManualSessionModal;
+  if (btnCancelManual) btnCancelManual.onclick = closeManualSessionModal;
+
+  if (modalManual) {
+    modalManual.onclick = (e) => {
+      if (e.target === modalManual) closeManualSessionModal();
+    };
+  }
+
+  // Preset pills
+  const presetPills = document.querySelectorAll('#manual-presets-row .btn-preset-pill');
+  presetPills.forEach(pill => {
+    pill.onclick = () => {
+      presetPills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      const hInput = document.getElementById('manual-duration-hours');
+      const mInput = document.getElementById('manual-duration-minutes');
+      if (hInput) hInput.value = pill.dataset.hours;
+      if (mInput) mInput.value = pill.dataset.mins;
+    };
+  });
+
+  // Manual session dropdown suggestions
+  if (manualLessonInput && manualDropdown && manualDropdownItems) {
+    function renderManualDropdown(filter = '') {
+      const clean = (filter || '').trim().toLowerCase();
+      const matches = allChapters.filter(ch => !clean || ch.title.toLowerCase().includes(clean));
+      let itemsHtml = '';
+      matches.slice(0, 15).forEach(ch => {
+        itemsHtml += `
+          <div class="lesson-dropdown-item manual-item" data-chapter-title="${escapeHtml(ch.title)}" data-chapter-id="${escapeHtml(ch.id)}">
+            <span>${escapeHtml(ch.title)}</span>
+          </div>
+        `;
+      });
+      manualDropdownItems.innerHTML = itemsHtml;
+      manualDropdown.style.display = matches.length > 0 ? 'flex' : 'none';
+
+      manualDropdownItems.querySelectorAll('.manual-item').forEach(it => {
+        it.onclick = (e) => {
+          e.stopPropagation();
+          manualLessonInput.value = it.dataset.chapterTitle;
+          if (manualClearBtn) manualClearBtn.style.display = 'block';
+          manualDropdown.style.display = 'none';
+        };
+      });
+    }
+
+    manualLessonInput.oninput = () => {
+      const val = manualLessonInput.value;
+      if (manualClearBtn) manualClearBtn.style.display = val ? 'block' : 'none';
+      renderManualDropdown(val);
+    };
+    manualLessonInput.onfocus = () => renderManualDropdown(manualLessonInput.value);
+
+    if (manualClearBtn) {
+      manualClearBtn.onclick = () => {
+        manualLessonInput.value = '';
+        manualClearBtn.style.display = 'none';
+        manualDropdown.style.display = 'none';
+      };
+    }
+  }
+
+  // Save manual session
+  if (btnSaveManual) {
+    btnSaveManual.onclick = () => {
+      const lessonName = manualLessonInput?.value?.trim();
+      if (!lessonName) {
+        alert('Veuillez renseigner le nom ou choisir une leçon.');
+        if (manualLessonInput) manualLessonInput.focus();
+        return;
+      }
+
+      const hrs = parseInt(document.getElementById('manual-duration-hours')?.value, 10) || 0;
+      const mins = parseInt(document.getElementById('manual-duration-minutes')?.value, 10) || 0;
+      const durationSeconds = (hrs * 3600) + (mins * 60);
+
+      if (durationSeconds < 60) {
+        alert('Veuillez entrer une durée d\'au moins 1 minute pour enregistrer la session.');
+        return;
+      }
+
+      const dateStr = manualDateInput?.value || lessonTracker.getTodayDateStr();
+      const matchedCh = allChapters.find(c => c.title.toLowerCase() === lessonName.toLowerCase());
+
+      const session = lessonTracker.addManualSession({
+        lessonName,
+        chapterId: matchedCh ? matchedCh.id : null,
+        durationSeconds,
+        dateStr
+      });
+
+      if (session) {
+        closeManualSessionModal();
+        renderLessonTrackerUI();
+        updateLessonTimerTick();
+        firebaseSyncService.triggerAutoPush(true);
+        showNotificationToast(`✅ Session de cours enregistrée : ${formatDuration(durationSeconds)} sur « ${lessonName} » !`);
+      }
+    };
+  }
+
   // Action Buttons
   const btnStart = document.getElementById('btn-timer-start');
   if (btnStart) {
@@ -15442,10 +16602,18 @@ function setupLessonTrackerEventListeners() {
         return;
       }
       currentLessonSelected.name = name;
-      lessonTracker.startTimer(currentLessonSelected.name, currentLessonSelected.chapterId);
+      lessonTracker.startTimer(currentLessonSelected.name, currentLessonSelected.chapterId, currentLessonOffsetSeconds);
+      
+      // Reset offset controls after starting
+      currentLessonOffsetSeconds = 0;
+      const pills = document.querySelectorAll('#lesson-offset-pills .offset-pill');
+      pills.forEach((p, idx) => p.classList.toggle('active', idx === 0));
+      const customWrap = document.getElementById('custom-offset-input-wrap');
+      if (customWrap) customWrap.style.display = 'none';
+
       renderLessonTrackerUI();
       updateLessonTimerTick();
-      firebaseSyncService.pushState();
+      firebaseSyncService.triggerAutoPush(true);
     };
   }
 
@@ -15455,6 +16623,7 @@ function setupLessonTrackerEventListeners() {
       lessonTracker.pauseTimer();
       renderLessonTrackerUI();
       updateLessonTimerTick();
+      firebaseSyncService.triggerAutoPush(true);
     };
   }
 
@@ -15464,6 +16633,7 @@ function setupLessonTrackerEventListeners() {
       lessonTracker.resumeTimer();
       renderLessonTrackerUI();
       updateLessonTimerTick();
+      firebaseSyncService.triggerAutoPush(true);
     };
   }
 
@@ -15474,7 +16644,7 @@ function setupLessonTrackerEventListeners() {
       if (session) {
         renderLessonTrackerUI();
         updateLessonTimerTick();
-        firebaseSyncService.pushState();
+        firebaseSyncService.triggerAutoPush(true);
       } else {
         alert('Session trop courte (moins de 1 seconde) : non enregistrée.');
         renderLessonTrackerUI();
@@ -15490,6 +16660,7 @@ function setupLessonTrackerEventListeners() {
         lessonTracker.cancelTimer();
         renderLessonTrackerUI();
         updateLessonTimerTick();
+        firebaseSyncService.triggerAutoPush(true);
       }
     };
   }
@@ -15615,6 +16786,23 @@ function setupEventListeners() {
       };
     });
   }
+
+  // Mini-calendriers interactifs pour le sélecteur personnalisé
+  ['box-custom-date-start', 'box-custom-date-end'].forEach(boxId => {
+    const box = document.getElementById(boxId);
+    if (box) {
+      box.addEventListener('click', (e) => {
+        const inp = box.querySelector('input[type="date"]');
+        if (inp && e.target !== inp) {
+          if (typeof inp.showPicker === 'function') {
+            try { inp.showPicker(); } catch (_) { inp.focus(); }
+          } else {
+            inp.focus();
+          }
+        }
+      });
+    }
+  });
 
   if (btnApplyCustom) {
     btnApplyCustom.onclick = () => {

@@ -138,6 +138,13 @@ export function mergeStates(local, remote) {
     }
   }
 
+  // Merge active lesson stopwatch across devices in real-time
+  if (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.mergeActiveTimer === 'function') {
+    const remoteTimer = remote.activeLessonTimer || null;
+    const remoteTimerUpdatedAt = remote.activeLessonTimerUpdatedAt || (remoteTimer ? remoteTimer.updatedAt : null);
+    lessonTracker.mergeActiveTimer(remoteTimer, remoteTimerUpdatedAt);
+  }
+
   return merged;
 }
 
@@ -630,6 +637,12 @@ export class FirebaseSyncService {
         lessonSessions: (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.getRawSessions === 'function')
           ? lessonTracker.getRawSessions()
           : (state.lessonSessions || []),
+        activeLessonTimer: (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.getActiveTimer === 'function')
+          ? lessonTracker.getActiveTimer()
+          : null,
+        activeLessonTimerUpdatedAt: (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.getLastTimerUpdatedAt === 'function')
+          ? lessonTracker.getLastTimerUpdatedAt()
+          : Date.now(),
         userEmail: this.user.email || '',
         userDisplayName: this.user.displayName || '',
         lastClientTimestamp: Date.now(),
@@ -683,17 +696,31 @@ export class FirebaseSyncService {
   }
 
   /**
-   * Debounced automatic push: triggered automatically after each answered question
+   * Debounced automatic push: triggered automatically after each answered question or timer change
    */
-  triggerAutoPush() {
+  triggerAutoPush(immediate = false) {
     if (!this.user || !this.isInitialized) return;
 
     if (this.autoPushTimer) {
       clearTimeout(this.autoPushTimer);
+      this.autoPushTimer = null;
     }
+
+    if (immediate) {
+      this.pushToFirestore();
+      return;
+    }
+
     this.autoPushTimer = setTimeout(() => {
       this.pushToFirestore();
-    }, 1500);
+    }, 1200);
+  }
+
+  /**
+   * Push current state to Firestore immediately or debounced
+   */
+  pushState(immediate = true) {
+    return this.triggerAutoPush(immediate);
   }
 
   getFriendlyFirestoreError(err) {

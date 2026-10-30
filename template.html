@@ -3482,6 +3482,25 @@ body {
     align-items: flex-end;
   }
 
+  .date-field-wrap {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .date-input-box {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .date-input {
+    width: 100%;
+    min-width: 0;
+  }
+
   .btn-apply-range {
     grid-column: 1 / -1;
     width: 100%;
@@ -4917,6 +4936,14 @@ body {
   border-radius: var(--radius-full);
   padding: 3px;
   gap: 4px;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.stats-range-toggle::-webkit-scrollbar {
+  display: none;
 }
 
 .range-btn {
@@ -4926,11 +4953,12 @@ body {
   font-family: var(--font-body);
   font-size: 0.78rem;
   font-weight: 600;
-  padding: 6px 14px;
+  padding: 6px 12px;
   border-radius: var(--radius-full);
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .range-btn:hover {
@@ -5011,37 +5039,79 @@ body {
 .custom-range-inputs {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .date-field-wrap {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-size: 0.78rem;
   color: var(--text-muted);
 }
 
 .date-field-label {
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--text-main);
+  font-size: 0.8rem;
 }
 
-.date-input {
+.date-input-box {
+  display: inline-flex;
+  align-items: center;
   background: var(--bg-deep);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  color: var(--text-main);
-  padding: 5px 8px;
-  font-size: 0.78rem;
-  font-family: var(--font-body);
-  outline: none;
+  padding: 4px 10px;
+  gap: 8px;
+  cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.date-input:focus {
+.date-input-box:hover {
+  border-color: rgba(0, 212, 255, 0.5);
+  background: rgba(0, 212, 255, 0.04);
+}
+
+.date-input-box:focus-within {
   border-color: var(--cyan);
   box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+}
+
+.date-calendar-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--cyan);
+  flex-shrink: 0;
+  pointer-events: none;
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+}
+
+.date-input {
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  padding: 2px 0;
+  font-size: 0.78rem;
+  font-family: var(--font-body);
+  outline: none;
+  cursor: pointer;
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(0.8) sepia(100%) saturate(300%) hue-rotate(150deg);
+  opacity: 0.75;
+  transition: opacity 0.2s, transform 0.2s;
+  padding: 2px;
+}
+
+.date-input::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  transform: scale(1.15);
 }
 
 .btn-apply-range {
@@ -6389,6 +6459,293 @@ body {
 }
 
 /* ==========================================================================
+   LESSON ANALYTICS, OFFSET SELECTOR & MANUAL SESSIONS UI
+   ========================================================================== */
+
+/* Lesson KPI Grid */
+.lesson-kpi-grid {
+  margin-bottom: 24px;
+}
+
+/* Offset Selector inside Timer Card */
+.lesson-offset-wrap {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(10, 17, 32, 0.6);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+}
+
+.lesson-offset-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.lesson-offset-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.offset-pill, .offset-pill-custom {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.offset-pill:hover, .offset-pill-custom:hover {
+  color: var(--text-main);
+  border-color: var(--cyan);
+  background: rgba(0, 212, 255, 0.08);
+}
+
+.offset-pill.active {
+  background: rgba(0, 212, 255, 0.16);
+  color: var(--cyan);
+  border-color: var(--cyan);
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+}
+
+.custom-offset-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--border-subtle);
+}
+
+.custom-offset-input-wrap input {
+  width: 60px;
+  padding: 4px 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  font-weight: 600;
+  text-align: center;
+}
+
+.custom-offset-input-wrap span {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+.btn-offset-apply {
+  padding: 4px 12px;
+  background: var(--cyan-dim);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+/* Lesson Daily SVG Chart */
+.lesson-chart-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+
+.lesson-bar-rect {
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.lesson-bar-rect:hover {
+  filter: brightness(1.25);
+}
+
+/* Lesson Distribution List */
+.lesson-distribution-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.lesson-dist-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  transition: var(--transition);
+}
+
+.lesson-dist-item:hover {
+  border-color: rgba(0, 212, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.lesson-dist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lesson-dist-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70%;
+}
+
+.lesson-dist-time {
+  font-size: 0.82rem;
+  font-family: 'Outfit', monospace;
+  font-weight: 700;
+  color: var(--cyan);
+}
+
+.lesson-dist-bar-wrap {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.lesson-dist-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--cyan-dim), var(--cyan));
+  transition: width 0.4s ease;
+}
+
+/* Lesson 35 Chapters Matrix */
+.lesson-chapters-matrix {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.chapter-matrix-badge {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+}
+
+.chapter-matrix-badge:hover {
+  border-color: var(--purple);
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+}
+
+.matrix-badge-num {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.matrix-badge-title {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-main);
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.matrix-badge-duration {
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: 'Outfit', monospace;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.chapter-matrix-badge.level-0 {
+  border-color: rgba(255, 255, 255, 0.04);
+  opacity: 0.65;
+}
+
+.chapter-matrix-badge.level-1 {
+  border-color: rgba(16, 185, 129, 0.25);
+  background: rgba(16, 185, 129, 0.04);
+}
+.chapter-matrix-badge.level-1 .matrix-badge-duration { color: var(--emerald); }
+
+.chapter-matrix-badge.level-2 {
+  border-color: rgba(0, 212, 255, 0.3);
+  background: rgba(0, 212, 255, 0.06);
+}
+.chapter-matrix-badge.level-2 .matrix-badge-duration { color: var(--cyan); }
+
+.chapter-matrix-badge.level-3 {
+  border-color: rgba(139, 92, 246, 0.35);
+  background: rgba(139, 92, 246, 0.08);
+}
+.chapter-matrix-badge.level-3 .matrix-badge-duration { color: var(--purple); }
+
+.chapter-matrix-badge.level-4 {
+  border-color: rgba(245, 158, 11, 0.4);
+  background: rgba(245, 158, 11, 0.08);
+}
+.chapter-matrix-badge.level-4 .matrix-badge-duration { color: var(--amber); }
+
+/* Manual Session Modal Controls */
+.btn-preset-pill {
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-preset-pill:hover {
+  color: var(--text-main);
+  border-color: var(--emerald);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.btn-preset-pill.active {
+  background: rgba(16, 185, 129, 0.16);
+  color: var(--emerald);
+  border-color: var(--emerald);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+}
+
+/* ==========================================================================
    APP UPDATE MODAL & GITHUB RELEASES UI
    ========================================================================== */
 .update-modal-card {
@@ -7005,6 +7362,9 @@ body {
                 </button>
               </div>
               <button class="range-btn" data-range="7">7 jours</button>
+              <button class="range-btn" data-range="14">14 jours</button>
+              <button class="range-btn" data-range="21">21 jours</button>
+              <button class="range-btn" data-range="28">28 jours</button>
               <button class="range-btn" data-range="30">30 jours</button>
               <button class="range-btn" data-range="all">Tout</button>
               <button class="range-btn" data-range="custom" id="btn-range-custom">Personnalisé 📅</button>
@@ -7015,11 +7375,17 @@ body {
               <div class="custom-range-inputs">
                 <div class="date-field-wrap">
                   <span class="date-field-label">Du</span>
-                  <input type="date" id="custom-date-start" class="date-input">
+                  <div class="date-input-box" id="box-custom-date-start" title="Sélectionner la date de début">
+                    <i data-lucide="calendar" class="date-calendar-icon"></i>
+                    <input type="date" id="custom-date-start" class="date-input">
+                  </div>
                 </div>
                 <div class="date-field-wrap">
                   <span class="date-field-label">Au</span>
-                  <input type="date" id="custom-date-end" class="date-input">
+                  <div class="date-input-box" id="box-custom-date-end" title="Sélectionner la date de fin">
+                    <i data-lucide="calendar" class="date-calendar-icon"></i>
+                    <input type="date" id="custom-date-end" class="date-input">
+                  </div>
                 </div>
                 <button type="button" id="btn-apply-custom-range" class="btn-apply-range">
                   <i data-lucide="check" style="width:13px;height:13px;"></i>
@@ -7238,6 +7604,49 @@ body {
         <!-- Sub-page 2: Chronomètre Cours & Leçons -->
         <div class="stats-subpage stats-subpage-lessons" id="stats-subpage-lessons" style="display:none;">
 
+          <!-- KPI Cards: Bilan Global des Cours -->
+          <div class="stats-kpi-grid lesson-kpi-grid">
+            <!-- Card 1: Temps Total Cours -->
+            <div class="stat-kpi-card accent-cyan">
+              <div class="kpi-icon-wrap"><i data-lucide="clock"></i></div>
+              <div class="kpi-content">
+                <div class="kpi-label">Temps Total Cours</div>
+                <div class="kpi-value" id="kpi-lesson-total-time">0h 00</div>
+                <div class="kpi-subtext" id="kpi-lesson-total-sub">0 session enregistrée</div>
+              </div>
+            </div>
+
+            <!-- Card 2: Temps Aujourd'hui & 7j -->
+            <div class="stat-kpi-card accent-emerald">
+              <div class="kpi-icon-wrap"><i data-lucide="calendar"></i></div>
+              <div class="kpi-content">
+                <div class="kpi-label">Aujourd'hui &amp; 7j</div>
+                <div class="kpi-value" id="kpi-lesson-today-time">0h 00</div>
+                <div class="kpi-subtext" id="kpi-lesson-7d-sub">7 derniers jours : 0h 00</div>
+              </div>
+            </div>
+
+            <!-- Card 3: Durée Moyenne par Session -->
+            <div class="stat-kpi-card accent-purple">
+              <div class="kpi-icon-wrap"><i data-lucide="hourglass"></i></div>
+              <div class="kpi-content">
+                <div class="kpi-label">Moyenne / Session</div>
+                <div class="kpi-value" id="kpi-lesson-avg-time">--</div>
+                <div class="kpi-subtext" id="kpi-lesson-avg-sub">Focus régulier</div>
+              </div>
+            </div>
+
+            <!-- Card 4: Couverture du Programme -->
+            <div class="stat-kpi-card accent-amber">
+              <div class="kpi-icon-wrap"><i data-lucide="book-marked"></i></div>
+              <div class="kpi-content">
+                <div class="kpi-label">Couverture Programme</div>
+                <div class="kpi-value" id="kpi-lesson-coverage-val">0 / 35</div>
+                <div class="kpi-subtext" id="kpi-lesson-coverage-sub">0% des cours travaillés</div>
+              </div>
+            </div>
+          </div>
+
         <!-- Section: Chronomètre & Suivi du Temps par Leçon -->
         <div class="stats-panel-box lesson-tracker-panel" id="lesson-tracker-section">
           <div class="panel-box-header">
@@ -7245,7 +7654,13 @@ body {
               <i data-lucide="timer" style="color:var(--cyan);"></i>
               <span>Chronomètre d'Étude &amp; Temps Passé par Leçon</span>
             </div>
-            <div class="panel-box-count" id="lesson-stats-count-badge">0 leçon enregistrée</div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <button type="button" class="btn-action-ghost" id="btn-open-manual-session" title="Enregistrer une session effectuée hors ligne" style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;font-size:0.82rem;border-radius:var(--radius-sm);background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);color:var(--emerald);cursor:pointer;font-weight:600;">
+                <i data-lucide="plus-circle" style="width:14px;height:14px;"></i>
+                <span>+ Session directe</span>
+              </button>
+              <div class="panel-box-count" id="lesson-stats-count-badge">0 leçon enregistrée</div>
+            </div>
           </div>
 
           <!-- Zone Interactive du Minuteur / Chronomètre -->
@@ -7275,6 +7690,29 @@ body {
               <div class="active-lesson-display-badge" id="active-lesson-display-badge">
                 <span class="active-badge-label">Leçon sélectionnée :</span>
                 <span class="active-badge-name" id="active-lesson-name">Aucune leçon choisie</span>
+              </div>
+            </div>
+
+            <!-- Offset / Décalage initial pour démarrer à partir d'un temps -->
+            <div class="lesson-offset-wrap" id="lesson-offset-wrap">
+              <span class="lesson-offset-label">
+                <i data-lucide="fast-forward" style="width:13px;height:13px;color:var(--cyan);"></i>
+                <span>Démarrer à partir de :</span>
+              </span>
+              <div class="lesson-offset-pills" id="lesson-offset-pills">
+                <button type="button" class="offset-pill active" data-offset="0">00:00 (Zéro)</button>
+                <button type="button" class="offset-pill" data-offset="900">+15 min</button>
+                <button type="button" class="offset-pill" data-offset="1800">+30 min</button>
+                <button type="button" class="offset-pill" data-offset="3600">+1 heure</button>
+                <button type="button" class="offset-pill" data-offset="7200">+2 heures</button>
+                <button type="button" class="offset-pill-custom" id="btn-custom-offset" title="Saisir un temps initial précis">Personnalisé...</button>
+              </div>
+              <div class="custom-offset-input-wrap" id="custom-offset-input-wrap" style="display:none;">
+                <input type="number" id="custom-offset-hours" min="0" max="24" value="1" placeholder="H" />
+                <span>h</span>
+                <input type="number" id="custom-offset-mins" min="0" max="59" value="0" placeholder="M" />
+                <span>min</span>
+                <button type="button" class="btn-offset-apply" id="btn-offset-apply">OK</button>
               </div>
             </div>
 
@@ -7312,6 +7750,61 @@ body {
             </div>
           </div>
 
+          <!-- Section: Évolution & Heures d'Étude par Jour (SVG) -->
+          <div class="stats-panel-box lesson-chart-box">
+            <div class="panel-box-header">
+              <div class="panel-box-title">
+                <i data-lucide="bar-chart-2" style="color:var(--emerald);"></i>
+                <span id="lesson-daily-chart-title">Historique Quotidien d'Étude des Cours</span>
+              </div>
+              <div class="stats-range-tabs" id="lesson-chart-range-tabs">
+                <button type="button" class="range-tab-btn active" data-lesson-range="7">7 jours</button>
+                <button type="button" class="range-tab-btn" data-lesson-range="14">14 jours</button>
+                <button type="button" class="range-tab-btn" data-lesson-range="30">30 jours</button>
+              </div>
+            </div>
+            <div class="chart-svg-container" id="lesson-daily-chart-container">
+              <!-- SVG Bar Chart injecté dynamiquement -->
+            </div>
+          </div>
+
+          <!-- Section 2 Colonnes: Répartition par Cours + Matrice des 35 Chapitres -->
+          <div class="stats-two-col-grid lesson-analytics-grid">
+            <!-- Col 1: Top 10 des Cours les plus travaillés -->
+            <div class="stats-panel-box">
+              <div class="panel-box-header">
+                <div class="panel-box-title">
+                  <i data-lucide="pie-chart" style="color:var(--cyan);"></i>
+                  <span>Répartition du Temps par Cours (Top 10)</span>
+                </div>
+              </div>
+              <div class="lesson-distribution-list" id="lesson-distribution-container">
+                <!-- Injected dynamically -->
+              </div>
+            </div>
+
+            <!-- Col 2: Matrice de Couverture des 35 Chapitres -->
+            <div class="stats-panel-box">
+              <div class="panel-box-header">
+                <div class="panel-box-title">
+                  <i data-lucide="layers" style="color:var(--purple);"></i>
+                  <span>Couverture du Programme (35 Chapitres)</span>
+                </div>
+                <div class="heatmap-legend">
+                  <span class="legend-label">0h</span>
+                  <span class="legend-cell level-0" title="Non débuté (0h)"></span>
+                  <span class="legend-cell level-1" title="< 1h d'étude"></span>
+                  <span class="legend-cell level-2" title="1h - 2h"></span>
+                  <span class="legend-cell level-3" title="2h - 4h"></span>
+                  <span class="legend-cell level-4" title="> 4h"></span>
+                </div>
+              </div>
+              <div class="lesson-chapters-matrix" id="lesson-chapters-matrix">
+                <!-- Injected dynamically -->
+              </div>
+            </div>
+          </div>
+
           <!-- Tableau Récapitulatif par Leçon -->
           <div class="lesson-summary-table-wrap">
             <div class="lesson-subtable-title">
@@ -7341,6 +7834,88 @@ body {
       </section>
 
     </main>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────────────────
+       MODALE: AJOUTER UNE SESSION DIRECTE DE COURS
+       ───────────────────────────────────────────────────────────── -->
+  <div class="modal-overlay" id="modal-manual-lesson-session" style="display:none;">
+    <div class="modal-content" style="max-width:520px;">
+      <div class="modal-header">
+        <div class="modal-title" style="color:var(--emerald);">
+          <i data-lucide="plus-circle"></i>
+          <span>Ajouter une Session de Cours Directe</span>
+        </div>
+        <button type="button" class="close-btn" id="btn-close-manual-session-modal">&times;</button>
+      </div>
+
+      <div class="manual-session-modal-body" style="padding:16px 0;display:flex;flex-direction:column;gap:16px;">
+        <!-- Choix du Cours -->
+        <div class="manual-field-group">
+          <label class="lesson-field-label" for="manual-lesson-input">
+            <i data-lucide="book-open" style="width:14px;height:14px;color:var(--cyan);"></i>
+            <span>Cours / Leçon de pédiatrie :</span>
+          </label>
+          <div class="lesson-input-combobox">
+            <div class="lesson-input-wrap">
+              <input type="text" id="manual-lesson-input" class="lesson-text-input" placeholder="Taper ou sélectionner un chapitre..." autocomplete="off" />
+              <button type="button" id="btn-clear-manual-input" class="btn-input-clear" style="display:none;" title="Effacer">&times;</button>
+            </div>
+            <!-- Quick dropdown suggestions -->
+            <div class="lesson-dropdown" id="manual-lesson-dropdown" style="display:none;">
+              <div class="lesson-dropdown-header">Chapitres de pédiatrie (35) :</div>
+              <div class="lesson-dropdown-list" id="manual-dropdown-items"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Durée -->
+        <div class="manual-field-group">
+          <label class="lesson-field-label">
+            <i data-lucide="clock" style="width:14px;height:14px;color:var(--emerald);"></i>
+            <span>Durée de la session :</span>
+          </label>
+          <div class="manual-duration-inputs" style="display:flex;gap:12px;align-items:center;">
+            <div style="flex:1;display:flex;align-items:center;background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:8px 12px;">
+              <input type="number" id="manual-duration-hours" min="0" max="24" value="1" style="width:100%;background:transparent;border:none;color:var(--text-main);font-size:1.1rem;font-weight:700;text-align:center;outline:none;" />
+              <span style="color:var(--text-muted);font-size:0.9rem;font-weight:600;margin-left:4px;">heure(s)</span>
+            </div>
+            <div style="flex:1;display:flex;align-items:center;background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:8px 12px;">
+              <input type="number" id="manual-duration-minutes" min="0" max="59" step="5" value="0" style="width:100%;background:transparent;border:none;color:var(--text-main);font-size:1.1rem;font-weight:700;text-align:center;outline:none;" />
+              <span style="color:var(--text-muted);font-size:0.9rem;font-weight:600;margin-left:4px;">min</span>
+            </div>
+          </div>
+
+          <!-- Quick Duration Presets -->
+          <div class="manual-presets-row" id="manual-presets-row" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+            <button type="button" class="btn-preset-pill" data-hours="0" data-mins="30">30 min</button>
+            <button type="button" class="btn-preset-pill active" data-hours="1" data-mins="0">1 h 00</button>
+            <button type="button" class="btn-preset-pill" data-hours="1" data-mins="30">1 h 30</button>
+            <button type="button" class="btn-preset-pill" data-hours="2" data-mins="0">2 h 00</button>
+            <button type="button" class="btn-preset-pill" data-hours="3" data-mins="0">3 h 00</button>
+          </div>
+        </div>
+
+        <!-- Date de la Session -->
+        <div class="manual-field-group">
+          <label class="lesson-field-label" for="manual-session-date">
+            <i data-lucide="calendar" style="width:14px;height:14px;color:var(--purple);"></i>
+            <span>Date de la session :</span>
+          </label>
+          <input type="date" id="manual-session-date" class="lesson-text-input" style="background:var(--bg-input);" />
+        </div>
+      </div>
+
+      <div class="modal-actions" style="display:flex;justify-content:flex-end;gap:10px;margin-top:16px;">
+        <button type="button" class="btn-secondary" id="btn-cancel-manual-session" style="padding:10px 18px;border-radius:var(--radius-sm);background:transparent;border:1px solid var(--border-subtle);color:var(--text-muted);cursor:pointer;font-weight:600;">
+          Annuler
+        </button>
+        <button type="button" class="btn-primary" id="btn-save-manual-session" style="padding:10px 20px;border-radius:var(--radius-sm);background:var(--emerald);color:#fff;border:none;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+          <i data-lucide="check" style="width:16px;height:16px;"></i>
+          <span>Enregistrer la session</span>
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- ─────────────────────────────────────────────────────────────
@@ -7649,9 +8224,9 @@ body {
 
       <div class="update-version-banner">
         <div class="update-version-chips">
-          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.4.4</strong></span>
+          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.4.7</strong></span>
           <i data-lucide="arrow-right" style="width:14px;height:14px;color:var(--text-dim);"></i>
-          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.4.4</strong></span>
+          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.4.7</strong></span>
         </div>
         <div class="update-release-date" id="update-modal-date">Publiée sur GitHub Releases</div>
       </div>

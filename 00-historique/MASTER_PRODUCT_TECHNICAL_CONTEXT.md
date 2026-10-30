@@ -1,5 +1,5 @@
 # PédiaDrill — Master Product & Technical Context
-*Dernière mise à jour : 2026-10-27 18:25:00 CET*
+*Dernière mise à jour : 2026-10-30 17:50:00 CET*
 *Source unique de vérité technique et fonctionnelle du projet PédiaDrill.*
 
 ---
@@ -12,8 +12,10 @@
 4. **Une navigation rétrospective dans les 5 derniers QCM** permettant de revoir instantanément les questions précédentes, leurs choix de réponse et leurs explications sans altérer la file de répétition espacée, avec persistance des explications IA générées et du fil de discussion du Tuteur IA par question.
 5. **Un tuteur IA interactif en direct** accessible en Arène via un bouton néon flottant, avec puces cliniques rapides, protection anti-spoiler du diagnostic et mémoire de conversation isolée par question.
 6. **Un carnet de raisonnement clinique interactif** regroupé par chapitres ou en liste plate continue, avec tri multi-critères (date, erreurs, cours, score), accordéons repliables multi-niveaux et fiches d'erreur exhaustives.
-7. **Un tableau de bord analytique complet** articulé en deux sous-pages (Statistiques QCM et Chronomètre de cours), avec 7 cartes KPI dynamiques (dont l'estimation du temps nécessaire pour terminer), navigation jour par jour dans l'historique, heatmap GitHub d'activité, graphique combiné SVG et colonne de suivi de complétion des 35 cours du programme.
-8. **Une synchronisation multi-appareils (PWA / Mobile / Desktop)** adossée à Google Auth et Firebase Firestore, immunisée contre la limite de 1 Mo par document grâce à un partitionnement intelligent des notes par paquets de 50 (Chunked Firestore Storage) et à un horodatage précis de la sélection des cours.
+7. **Un tableau de bord analytique complet** articulé en deux sous-pages :
+   - **Statistiques QCM** : 7 cartes KPI dynamiques (dont l'estimation du temps pour terminer), navigation jour par jour, heatmap GitHub d'activité calibrée sur 63 jours, graphique combiné SVG et colonne de complétion des 35 cours.
+   - **Chronomètre & Suivi de cours** : chronomètre persistant avec démarrage décalé (offset), saisie directe de sessions a posteriori, 4 cartes KPI cours, histogramme SVG quotidien d'heures par jour, répartition par cours (Top 10) et matrice de complétion des 35 chapitres.
+8. **Une synchronisation multi-appareils temps réel (PWA / Mobile / Desktop)** adossée à Google Auth et Firebase Firestore, synchronisant la progression SRS, le chronomètre actif de cours en direct (`onSnapshot`), les sessions de travail et les notes partitionnées par paquets de 50 (Chunked Firestore Storage).
 9. **Une distribution native Android (APK)** propulsée par Capacitor 8 et automatisée par un pipeline CI/CD GitHub Actions avec vérification et téléchargement in-app autonome des mises à jour.
 
 ---
@@ -30,7 +32,7 @@ qcm-p-diatrie/
 │   └── MASTER_PRODUCT_TECHNICAL_CONTEXT.md # Contexte technique global (source unique de vérité)
 ├── android/                              # Projet natif Android Capacitor 8
 │   ├── app/
-│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 13, versionName 1.4.4)
+│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 14, versionName 1.4.7)
 │   │   ├── debug.keystore                # Keystore de signature unifié (local & CI/CD)
 │   │   ├── google-services.json          # Configuration Firebase Android (qcm-pediatr, com.pediadrill.app)
 │   │   └── src/main/
@@ -240,9 +242,11 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 - **Sélecteur Temporel Multi-Périodes avec Navigation Rétroactive (`stats-range-toggle` & `stats-day-stepper-wrap`)** :
   - **Onglet actif par défaut (« Aujourd'hui », `currentStatsRange = 'today'`)** : L'onglet journalier `#btn-range-day` est sélectionné et illuminé par défaut à l'ouverture des statistiques, centrant l'analyse sur le travail du jour (ou du jour sélectionné dans le passé).
   - **Navigation jour par jour (`stats-day-stepper-wrap`)** : Boutons précédent/suivant et bouton central pour naviguer dans l'historique (« Hier », « Avant-hier », dates calendaires) et réinitialiser à « Aujourd'hui » en 1 clic.
-  - **7 jours / 30 jours / Tout / Personnalisé 📅** : Filtres temporels glissants ou intervalle libre avec panneau rétractable `[Du] [Au]`. Synchronisation dynamique de la classe `.active` sur l'ensemble des boutons.
-- **Heatmap d'Activité Style GitHub (60 à 90 jours)** :
-  - Grille SVG responsive de 7 lignes x 9 colonnes avec 5 paliers d'intensité de couleur (`#121d33` neutre, `#064e3b`, `#047857`, `#10b981`, `#00d4ff` intensif).
+  - **7 jours / 14 jours / 21 jours / 28 jours / 30 jours / Tout / Personnalisé 📅** : Filtres temporels multi-périodes avec boutons dédiés et panneau rétractable `[Du] [Au]` enrichi de mini-calendriers interactifs (`.date-input-box`, `.date-calendar-icon`, déclenchement de `showPicker()`). Synchronisation dynamique de la classe `.active` sur l'ensemble des boutons et mise à jour automatique des métriques et du graphique d'activité.
+- **Heatmap d'Activité Style GitHub (Calibration Calendaire Exacte)** :
+  - **Alignement strict calendrier GitHub** : Grille SVG de 9 colonnes (semaines) x 7 lignes (jours de la semaine). La date de départ est strictement calée sur le lundi de la 9ème semaine passée (`startMonday = now - 8*7 + todayDayOfWeek`), et la dernière colonne (colonne 8) s'achève sur le jour d'aujourd'hui (`row = (now.getDay() + 6) % 7`).
+  - **Correspondance stricte des libellés de jours** : La ligne 0 correspond strictement au Lundi (« Lun »), la ligne 2 au Mercredi (« Mer »), la ligne 4 au Vendredi (« Ven ») et la ligne 6 au Dimanche (« Dim »), éliminant tout décalage entre les étiquettes et les cellules.
+  - **Paliers d'intensité de couleur** : 5 niveaux visuels (`#121d33` neutre, `#064e3b` 1-14 QCM, `#047857` 15-39 QCM, `#10b981` 40-79 QCM, `#00d4ff` 80+ QCM) avec infobulles détaillées au survol.
 - **Graphique Combiné SVG Interactif (Bilan Journalier)** :
   - Barres empilées par date : Émeraude pour les réponses justes, Rose pour les fautes, avec courbe ambre de vitesse de réponse (secondes/QCM).
 - **Projection Dynamique Concours J-28 (10/11)** :
@@ -255,15 +259,42 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ---
 
-### 3.8. Chronomètre & Suivi du Temps par Leçon (`src/services/lessonTracker.js` & `view-stats`)
+### 3.8. Chronomètre, Suivi du Temps de Cours & Suite Analytique (`src/services/lessonTracker.js` & `view-stats`)
 - **Navigation Horizontale par Sous-Pages (`stats-subnav-pills`)** :
   - Bascule instantanée entre **Statistiques QCM** (`#stats-subpage-qcm`) et **Chronomètre Cours** (`#stats-subpage-lessons`), éliminant tout défilement vertical excessif.
   - Transitions glissantes CSS (`slide-from-left` et `slide-from-right`).
   - Pill chrono live dans l'onglet affichant le décompte en direct (`#subnav-active-lesson-time`) lorsqu'un chronomètre tourne.
-- **Moteur de Chronométrage Persistant (`LessonTracker`)** :
-  - Calcul persistant par delta d'horodatage (`startTimestamp` & `accumulatedMs`) : le temps continue de tourner en tâche de fond même si l'étudiant quitte la page ou ferme l'application.
-  - Enregistrement des sessions sous `pedia_lesson_sessions_v1` et synchronisation Firestore.
-  - Sélecteur intelligent filtrable parmi les 35 chapitres ou saisie 100% libre.
+- **Moteur de Chronométrage Persistant & Synchronisation Multi-Appareils en Temps Réel (`LessonTracker`)** :
+  - **Calcul par delta d'horodatage (`startTimestamp` & `accumulatedMs`)** : le temps continue de tourner en tâche de fond même si l'étudiant quitte la page ou ferme l'application.
+  - **Synchronisation Firestore bidirectionnelle (`activeLessonTimer` & `activeLessonTimerUpdatedAt`)** :
+    - L'état complet du chronomètre actif (leçon, heure de départ, état pause/marche, décalage) est synchronisé dans le document Firestore `progress`.
+    - Le listener temps réel `onSnapshot` (`setupFirestoreListener`) et la fusion `mergeActiveTimer()` propagent instantanément l'état du chronomètre : un chronomètre lancé sur smartphone tourne en direct sur PC et vice-versa.
+    - Déclenchement automatique de `triggerAutoPush(true)` lors de chaque action (démarrer, pause, reprendre, enregistrer, annuler, supprimer).
+  - **Démarrage avec Décalage Initial (Offset Horaire)** :
+    - Prise en charge de `startTimer(lessonName, chapterId, offsetSeconds)` pour reprendre une séance déjà entamée.
+    - Bandeau interactif « Démarrer à partir de : » sur la carte chronomètre avec pastilles rapides (`00:00`, `+15 min`, `+30 min`, `+1 h`, `+2 h`) et champ personnalisé (Heures/Minutes). L'écran digital reflète immédiatement le temps de départ sélectionné.
+- **Saisie Directe de Sessions A Posteriori (`#modal-manual-lesson-session` & `addManualSession`)** :
+  - Bouton dédié **« + Session directe »** dans l'en-tête de la section cours.
+  - Modale épurée permettant d'enregistrer une session d'étude effectuée hors ligne :
+    - Recherche et sélection rapide parmi les 35 chapitres du programme ou nom libre.
+    - Durée avec sélecteurs Heures/Minutes et raccourcis tactiles (`30 min`, `1 h 00`, `1 h 30`, `2 h 00`, `3 h 00`).
+    - Date de la session (par défaut aujourd'hui).
+    - Sauvegarde locale sous `pedia_lesson_sessions_v1` et synchronisation cloud immédiate.
+- **Suite Analytique Complète du Suivi des Cours (`renderLessonAnalytics`)** :
+  - **4 Cartes KPI Cours (`.lesson-kpi-grid`)** :
+    1. ⏱️ **Temps Total Cours** : Heures cumulées sur toutes les séances et nombre total de sessions.
+    2. 📅 **Aujourd'hui & 7j** : Temps d'étude de la journée et volume des 7 derniers jours.
+    3. ⏳ **Moyenne / Session** : Durée moyenne de concentration par session.
+    4. 📚 **Couverture Programme** : Décompte et pourcentage des 35 chapitres travaillés au moins une fois.
+  - **Histogramme SVG d'Étude Journalière (`#lesson-daily-chart-container`)** :
+    - Graphique interactif à barres avec dégradé cyan/émeraude (`#lessonBarGrad`), étiquettes d'heures au-dessus des barres et lignes de repère horaires (`0h`, `Xh`).
+    - Onglets de filtrage temporel dynamiques : **7 jours**, **14 jours** et **30 jours**.
+    - Info-bulles complètes au survol avec date complète et durée formatée.
+  - **Répartition du Temps par Cours (`#lesson-distribution-container`)** :
+    - Classement des 10 cours les plus travaillés avec barres de progression proportionnelles animées et temps cumulé.
+  - **Matrice de Couverture des 35 Chapitres de Pédiatrie (`#lesson-chapters-matrix`)** :
+    - Grille visuelle des 35 cours du programme avec 5 paliers d'intensité de révision (`level-0` non débuté, `level-1` < 1h, `level-2` 1-2h, `level-3` 2-4h, `level-4` > 4h).
+    - Clic sur n'importe quel chapitre pour le charger automatiquement comme cours actif dans le chronomètre.
 - **Mini-Badge Flottant dans le Header (`#active-lesson-header-badge`)** :
   - Visible sur tous les écrans dès qu'un chronomètre est actif, avec voyant vert pulsant, libellé abrégé et décompte digital. Clic redirigeant vers la sous-page Chronomètre.
 
@@ -271,7 +302,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ### 3.9. Système de Mises à Jour Automatiques & GitHub Releases (`src/services/updateService.js` & CI/CD)
 - **Service d'Orchestration des Mises à Jour (`UpdateService`)** :
-  - Version déclarée : `CURRENT_APP_VERSION = '1.4.4'` synchronisée avec `package.json` et `build.gradle` (`versionCode 13`).
+  - Version déclarée : `CURRENT_APP_VERSION = '1.4.7'` synchronisée avec `package.json` et `build.gradle` (`versionCode 14`).
   - Comparaison sémantique universelle (`compareVersions`) ignorant les préfixes `v`.
   - Interrogation de l'API GitHub Releases (`https://api.github.com/repos/lkmqji/qcm-p-diatrie/releases/latest`) avec cooldown de 4 heures (`pedia_last_update_check_ts`).
   - Extraction de l'asset `.apk` direct (`PediaDrill.apk`). En environnement natif Android Capacitor, l'URL est ouverte via `_system` pour lancer le gestionnaire de téléchargement Android natif.
@@ -457,7 +488,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.4.4` (`versionCode 13`)
+- **Version native** : `versionName 1.4.7` (`versionCode 14`)
 - **Empreinte SHA-1 (Debug Keystore Gradle & GitHub Actions)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
 - **Empreinte SHA-256 (Debug Keystore Gradle & GitHub Actions)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
 - **Keystore unifié** : `android/app/debug.keystore` (Alias : `AndroidDebugKey`, mot de passe `android`, garantissant une empreinte cryptographique identique entre les compilations locales et la CI/CD GitHub Actions).

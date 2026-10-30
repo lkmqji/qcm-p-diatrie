@@ -1,0 +1,166 @@
+================================================================================
+PEDIA-DRILL — GUIDE DES OPTIMISATIONS DE CATÉGORIE 2 (PERFORMANCE & UX)
+================================================================================
+Date de rédaction : 27/10/2026
+Projet : PédiaDrill (Web & Application Mobile Android)
+Fichier de référence pour consultation future
+
+Ce document répertorie les optimisations de « Catégorie 2 ».
+Contrairement à la Catégorie 1 (100% invisible sous le capot), la Catégorie 2
+regroupe les améliorations qui changent légèrement la sensation utilisateur
+(micro-interactions, réactivité tactile, suppression de latences de transition,
+filtrage progressif) pour rendre l'application encore plus « snappy », fluide et vive.
+
+================================================================================
+1. MICRO-FEEDBACK TACTILE MÉCANIQUE AU CLIC (:active MICRO-SCALE)
+================================================================================
+
+• Problème actuel :
+  Lorsqu'on appuie sur un bouton ou une carte de réponse (A, B, C, D, E), la couleur
+  change mais il manque cette sensation « physique » d'enfoncement mécanique
+  que l'on retrouve sur les applications natives iOS ou Android haut de gamme.
+
+• Modification proposée (dans src/style.css) :
+  Ajouter un micro-écrasement tactile de 1.5% lors de l'appui (:active) :
+
+  /* Micro-feedback tactile instantané */
+  .btn-primary:active,
+  .btn-secondary:active,
+  .btn-action:active,
+  .option-item:active,
+  .nav-tab-btn:active,
+  .chapter-select-item:active {
+    transform: scale(0.985);
+    transition: transform 0.05s ease;
+  }
+
+• Bénéfice ressenti :
+  L'utilisateur ressent immédiatement sous son doigt ou sous sa souris que l'action
+  a été prise en compte en 0 ms. L'application paraît instantanément plus réactive
+  et vivante (« tactile & snappy »).
+
+================================================================================
+2. TRANSITION INSTANTANÉE LORS DU CHANGEMENT DE VUE (SCROLL AUTO VS SMOOTH)
+================================================================================
+
+• Problème actuel :
+  Dans src/app.js (fonction switchView), lors du passage d'un écran à un autre
+  (ex: du Dashboard à l'Arène ou vers le Carnet), le code appelle :
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  Ce défilement animé « smooth » dure entre 250 et 350 ms, ce qui donne une
+  impression de mollesse ou de lenteur avant que la nouvelle page ne soit utilisable.
+
+• Modification proposée (dans src/app.js) :
+  Remplacer le défilement animé par un repositionnement direct :
+  
+  // Avant :
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  
+  // Après :
+  window.scrollTo({ top: 0, behavior: 'auto' });
+
+• Bénéfice ressenti :
+  Le passage d'un onglet à l'autre est instantané (0 ms de délai perçu).
+  L'effet est identique à celui d'une vraie application native.
+
+================================================================================
+3. TEMPORISATION (DEBOUNCE) DE LA BARRE DE RECHERCHE DU CARNET
+================================================================================
+
+• Problème actuel :
+  Dans le Carnet de révision (Notebook), chaque touche tapée sur le clavier virtuel
+  du smartphone (#notebook-search-input) relance immédiatement le filtrage et le
+  re-rendu complet du DOM pour toutes les fiches d'erreurs.
+  Si l'étudiant tape vite, le clavier peut saccader ou figer temporairement.
+
+• Modification proposée (dans src/app.js) :
+  Ajouter un délai d'attente (debounce) de 200 ms avant de lancer la recherche :
+
+  function debounce(func, delay = 200) {
+    let timeoutId;
+    return (...args) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func.apply(this, args), delay);
+    };
+  }
+
+  // Appliquer le debounce sur l'événement input de recherche :
+  elements.notebookSearchInput.addEventListener('input', debounce(() => {
+    filterAndRenderNotebook();
+  }, 200));
+
+• Bénéfice ressenti :
+  La saisie au clavier reste parfaitement fluide sans aucune saccade. Le filtrage
+  s'exécute naturellement dès que l'utilisateur marque une micro-pause dans sa frappe.
+
+================================================================================
+4. EXCLUSION DU BUNDLE AGENTATION EN PRODUCTION (GAIN DE ~600 KO)
+================================================================================
+
+• Problème actuel :
+  Le fichier agentation.bundle.js (~600 Ko) est un outil d'inspection et d'annotation
+  visuelle de développement (pour l'agent IA). Il est actuellement inclus dans
+  template.html et copié dans dist/.
+  Sur mobile et sur le web en ligne, ces 600 Ko sont téléchargés sans être utilisés
+  par l'étudiant.
+
+• Modification proposée :
+  1. Conditionner le chargement d'Agentation au mode local/développement :
+     Par exemple, ne l'injecter que si l'URL contient ?dev=true ou si on tourne
+     sur localhost / 127.0.0.1.
+  2. Ou l'exclure du build de production dans build-bundle.cjs.
+
+• Bénéfice ressenti :
+  - Économie de 600 Ko sur le bundle total.
+  - Démarrage initial de la page plus rapide, particulièrement sur smartphone avec
+    une connexion 3G/4G modérée.
+
+================================================================================
+5. PAGINATION OU AFFICHAGE PROGRESSIF DU CARNET DE RÉVISION
+================================================================================
+
+• Problème actuel :
+  Quand un étudiant accumule plus de 100 à 200 fiches d'erreurs, le Carnet génère
+  plusieurs centaines de balises HTML d'un coup dans le DOM lors de son ouverture.
+  Cela peut causer une pause perceptible de 100 à 300 ms à l'ouverture de l'onglet.
+
+• Modification proposée (dans src/app.js) :
+  Afficher initialement les 30 premières fiches d'erreurs les plus récentes.
+  Ajouter un bouton en bas de liste : « Charger 30 notes suivantes... »
+  (ou chargement infini au défilement).
+
+• Bénéfice ressenti :
+  Ouverture instantanée du Carnet quel que soit le nombre d'erreurs enregistrées
+  (même avec 500+ questions dans le carnet).
+
+================================================================================
+6. ACCÉLÉRATION DES TRANSITIONS CSS DANS L'ARÈNE (SNAPPY FEEDBACK)
+================================================================================
+
+• Problème actuel :
+  Certaines animations de transitions de bordure ou de fond sur les cartes d'options
+  prennent 0.3s ou 0.4s pour se colorer en vert ou en rouge après validation.
+
+• Modification proposée (dans src/style.css) :
+  Raccourcir la durée des transitions à 0.12s ou 0.15s :
+
+  .option-item {
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.08s ease;
+  }
+
+• Bénéfice ressenti :
+  La coloration correcte / fausse apparaît quasiment instantanément, supprimant
+  l'impression de temporisation entre le clic et la réponse visuelle.
+
+================================================================================
+RÉSUMÉ POUR APPLICATION FUTURE
+================================================================================
+Pour appliquer ces corrections ultérieurement :
+- 1 et 6 touchent : src/style.css
+- 2, 3 et 5 touchent : src/app.js
+- 4 touche : template.html et build-bundle.cjs
+Puis exécuter :
+1. node build-bundle.cjs
+2. cmd /c npx cap sync android
+3. cmd /c build-apk.bat
+================================================================================

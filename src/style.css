@@ -3454,6 +3454,25 @@ body {
     align-items: flex-end;
   }
 
+  .date-field-wrap {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .date-input-box {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .date-input {
+    width: 100%;
+    min-width: 0;
+  }
+
   .btn-apply-range {
     grid-column: 1 / -1;
     width: 100%;
@@ -4889,6 +4908,14 @@ body {
   border-radius: var(--radius-full);
   padding: 3px;
   gap: 4px;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.stats-range-toggle::-webkit-scrollbar {
+  display: none;
 }
 
 .range-btn {
@@ -4898,11 +4925,12 @@ body {
   font-family: var(--font-body);
   font-size: 0.78rem;
   font-weight: 600;
-  padding: 6px 14px;
+  padding: 6px 12px;
   border-radius: var(--radius-full);
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .range-btn:hover {
@@ -4983,37 +5011,79 @@ body {
 .custom-range-inputs {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .date-field-wrap {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-size: 0.78rem;
   color: var(--text-muted);
 }
 
 .date-field-label {
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--text-main);
+  font-size: 0.8rem;
 }
 
-.date-input {
+.date-input-box {
+  display: inline-flex;
+  align-items: center;
   background: var(--bg-deep);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
-  color: var(--text-main);
-  padding: 5px 8px;
-  font-size: 0.78rem;
-  font-family: var(--font-body);
-  outline: none;
+  padding: 4px 10px;
+  gap: 8px;
+  cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.date-input:focus {
+.date-input-box:hover {
+  border-color: rgba(0, 212, 255, 0.5);
+  background: rgba(0, 212, 255, 0.04);
+}
+
+.date-input-box:focus-within {
   border-color: var(--cyan);
   box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+}
+
+.date-calendar-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--cyan);
+  flex-shrink: 0;
+  pointer-events: none;
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+}
+
+.date-input {
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  padding: 2px 0;
+  font-size: 0.78rem;
+  font-family: var(--font-body);
+  outline: none;
+  cursor: pointer;
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(0.8) sepia(100%) saturate(300%) hue-rotate(150deg);
+  opacity: 0.75;
+  transition: opacity 0.2s, transform 0.2s;
+  padding: 2px;
+}
+
+.date-input::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  transform: scale(1.15);
 }
 
 .btn-apply-range {
@@ -6358,6 +6428,293 @@ body {
   .table-progress-wrap {
     min-width: 80px;
   }
+}
+
+/* ==========================================================================
+   LESSON ANALYTICS, OFFSET SELECTOR & MANUAL SESSIONS UI
+   ========================================================================== */
+
+/* Lesson KPI Grid */
+.lesson-kpi-grid {
+  margin-bottom: 24px;
+}
+
+/* Offset Selector inside Timer Card */
+.lesson-offset-wrap {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(10, 17, 32, 0.6);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+}
+
+.lesson-offset-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.lesson-offset-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.offset-pill, .offset-pill-custom {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.offset-pill:hover, .offset-pill-custom:hover {
+  color: var(--text-main);
+  border-color: var(--cyan);
+  background: rgba(0, 212, 255, 0.08);
+}
+
+.offset-pill.active {
+  background: rgba(0, 212, 255, 0.16);
+  color: var(--cyan);
+  border-color: var(--cyan);
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+}
+
+.custom-offset-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--border-subtle);
+}
+
+.custom-offset-input-wrap input {
+  width: 60px;
+  padding: 4px 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  font-weight: 600;
+  text-align: center;
+}
+
+.custom-offset-input-wrap span {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+.btn-offset-apply {
+  padding: 4px 12px;
+  background: var(--cyan-dim);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+/* Lesson Daily SVG Chart */
+.lesson-chart-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+
+.lesson-bar-rect {
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+
+.lesson-bar-rect:hover {
+  filter: brightness(1.25);
+}
+
+/* Lesson Distribution List */
+.lesson-distribution-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.lesson-dist-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  transition: var(--transition);
+}
+
+.lesson-dist-item:hover {
+  border-color: rgba(0, 212, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.lesson-dist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lesson-dist-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70%;
+}
+
+.lesson-dist-time {
+  font-size: 0.82rem;
+  font-family: 'Outfit', monospace;
+  font-weight: 700;
+  color: var(--cyan);
+}
+
+.lesson-dist-bar-wrap {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.lesson-dist-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--cyan-dim), var(--cyan));
+  transition: width 0.4s ease;
+}
+
+/* Lesson 35 Chapters Matrix */
+.lesson-chapters-matrix {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+  max-height: 380px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.chapter-matrix-badge {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+}
+
+.chapter-matrix-badge:hover {
+  border-color: var(--purple);
+  background: var(--bg-card-hover);
+  transform: translateY(-1px);
+}
+
+.matrix-badge-num {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.matrix-badge-title {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-main);
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.matrix-badge-duration {
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: 'Outfit', monospace;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.chapter-matrix-badge.level-0 {
+  border-color: rgba(255, 255, 255, 0.04);
+  opacity: 0.65;
+}
+
+.chapter-matrix-badge.level-1 {
+  border-color: rgba(16, 185, 129, 0.25);
+  background: rgba(16, 185, 129, 0.04);
+}
+.chapter-matrix-badge.level-1 .matrix-badge-duration { color: var(--emerald); }
+
+.chapter-matrix-badge.level-2 {
+  border-color: rgba(0, 212, 255, 0.3);
+  background: rgba(0, 212, 255, 0.06);
+}
+.chapter-matrix-badge.level-2 .matrix-badge-duration { color: var(--cyan); }
+
+.chapter-matrix-badge.level-3 {
+  border-color: rgba(139, 92, 246, 0.35);
+  background: rgba(139, 92, 246, 0.08);
+}
+.chapter-matrix-badge.level-3 .matrix-badge-duration { color: var(--purple); }
+
+.chapter-matrix-badge.level-4 {
+  border-color: rgba(245, 158, 11, 0.4);
+  background: rgba(245, 158, 11, 0.08);
+}
+.chapter-matrix-badge.level-4 .matrix-badge-duration { color: var(--amber); }
+
+/* Manual Session Modal Controls */
+.btn-preset-pill {
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-preset-pill:hover {
+  color: var(--text-main);
+  border-color: var(--emerald);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.btn-preset-pill.active {
+  background: rgba(16, 185, 129, 0.16);
+  color: var(--emerald);
+  border-color: var(--emerald);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
 }
 
 /* ==========================================================================

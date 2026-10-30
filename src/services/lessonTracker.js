@@ -8,6 +8,7 @@ export class LessonTracker {
   constructor() {
     this.activeTimer = this.loadActiveTimer();
     this.sessions = this.loadSessions();
+    this.lastTimerClearedAt = Number(localStorage.getItem('pedia_lesson_timer_cleared_at') || 0);
   }
 
   loadActiveTimer() {
@@ -33,6 +34,7 @@ export class LessonTracker {
         localStorage.setItem(LESSON_TRACKER_STATE_KEY, JSON.stringify(this.activeTimer));
       } else {
         localStorage.removeItem(LESSON_TRACKER_STATE_KEY);
+        localStorage.setItem('pedia_lesson_timer_cleared_at', String(this.lastTimerClearedAt || Date.now()));
       }
     } catch (e) {
       console.warn('Failed to save active lesson timer:', e);
@@ -69,12 +71,21 @@ export class LessonTracker {
     return `${year}-${month}-${day}`;
   }
 
+  getActiveTimer() {
+    return this.activeTimer ? { ...this.activeTimer } : null;
+  }
+
+  getLastTimerUpdatedAt() {
+    return this.activeTimer ? (this.activeTimer.updatedAt || 0) : (this.lastTimerClearedAt || 0);
+  }
+
   /**
-   * Start a new lesson stopwatch timer
+   * Start a new lesson stopwatch timer with optional initial offset in seconds
    */
-  startTimer(lessonName, chapterId = null) {
+  startTimer(lessonName, chapterId = null, offsetSeconds = 0) {
     const cleanName = (lessonName || '').trim() || 'Leçon sans titre';
     const now = Date.now();
+    const offsetMs = Math.max(0, Math.floor((Number(offsetSeconds) || 0) * 1000));
 
     this.activeTimer = {
       lessonName: cleanName,
@@ -82,8 +93,9 @@ export class LessonTracker {
       isRunning: true,
       isPaused: false,
       startTimestamp: now,
-      accumulatedMs: 0,
-      initialStartTimestamp: now
+      accumulatedMs: offsetMs,
+      initialStartTimestamp: now - offsetMs,
+      updatedAt: now
     };
 
     this.saveActiveTimer();
@@ -104,6 +116,7 @@ export class LessonTracker {
     }
     this.activeTimer.startTimestamp = null;
     this.activeTimer.isPaused = true;
+    this.activeTimer.updatedAt = now;
     this.saveActiveTimer();
     return this.activeTimer;
   }
@@ -116,10 +129,41 @@ export class LessonTracker {
       return this.activeTimer;
     }
 
-    this.activeTimer.startTimestamp = Date.now();
+    const now = Date.now();
+    this.activeTimer.startTimestamp = now;
     this.activeTimer.isPaused = false;
+    this.activeTimer.updatedAt = now;
     this.saveActiveTimer();
     return this.activeTimer;
+  }
+
+  /**
+   * Merge remote active timer from multi-device Firestore synchronization
+   */
+  mergeActiveTimer(remoteTimer, remoteUpdatedAt = null) {
+    const localUpdatedAt = this.getLastTimerUpdatedAt();
+    const rUpdatedAt = (remoteTimer && remoteTimer.updatedAt) || Number(remoteUpdatedAt) || 0;
+
+    // If remote explicitly cleared the timer more recently than local update
+    if (!remoteTimer) {
+      if (rUpdatedAt > localUpdatedAt && this.activeTimer) {
+        this.activeTimer = null;
+        this.lastTimerClearedAt = rUpdatedAt;
+        this.saveActiveTimer();
+        return true;
+      }
+      return false;
+    }
+
+    // Remote has an active timer:
+    // If local has no active timer, or remote is strictly newer
+    if (!this.activeTimer || rUpdatedAt > localUpdatedAt) {
+      this.activeTimer = { ...remoteTimer };
+      this.saveActiveTimer();
+      return true;
+    }
+
+    return false;
   }
 
   /**
@@ -139,6 +183,32 @@ export class LessonTracker {
    */
   getElapsedTimeSeconds() {
     return Math.floor(this.getElapsedTimeMs() / 1000);
+  }
+
+  /**
+   * Record a completed session directly (e.g. studied offline without starting timer)
+   */
+  addManualSession(sessionData) {
+    if (!sessionData) return null;
+    const cleanName = (sessionData.lessonName || '').trim() || 'Leçon sans titre';
+    const durationSeconds = Math.max(1, Math.floor(Number(sessionData.durationSeconds) || 0));
+    const now = Date.now();
+    const dateStr = sessionData.dateStr || this.getTodayDateStr();
+
+    const session = {
+      id: `sess_manual_${now}_${Math.random().toString(36).substring(2, 7)}`,
+      lessonName: cleanName,
+      chapterId: sessionData.chapterId || null,
+      startTime: now - (durationSeconds * 1000),
+      endTime: now,
+      durationSeconds,
+      dateStr,
+      isManual: true
+    };
+
+    this.sessions.unshift(session);
+    this.saveSessions();
+    return session;
   }
 
   /**
@@ -169,6 +239,7 @@ export class LessonTracker {
     this.saveSessions();
 
     this.activeTimer = null;
+    this.lastTimerClearedAt = now;
     this.saveActiveTimer();
 
     return session;
@@ -179,6 +250,7 @@ export class LessonTracker {
    */
   cancelTimer() {
     this.activeTimer = null;
+    this.lastTimerClearedAt = Date.now();
     this.saveActiveTimer();
   }
 
