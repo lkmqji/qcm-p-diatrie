@@ -32,7 +32,7 @@ qcm-p-diatrie/
 │   └── MASTER_PRODUCT_TECHNICAL_CONTEXT.md # Contexte technique global (source unique de vérité)
 ├── android/                              # Projet natif Android Capacitor 8
 │   ├── app/
-│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 14, versionName 1.4.7)
+│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 15, versionName 1.4.8)
 │   │   ├── debug.keystore                # Keystore de signature unifié (local & CI/CD)
 │   │   ├── google-services.json          # Configuration Firebase Android (qcm-pediatr, com.pediadrill.app)
 │   │   └── src/main/
@@ -260,10 +260,17 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 ---
 
 ### 3.8. Chronomètre, Suivi du Temps de Cours & Suite Analytique (`src/services/lessonTracker.js` & `view-stats`)
-- **Navigation Horizontale par Sous-Pages (`stats-subnav-pills`)** :
-  - Bascule instantanée entre **Statistiques QCM** (`#stats-subpage-qcm`) et **Chronomètre Cours** (`#stats-subpage-lessons`), éliminant tout défilement vertical excessif.
+- **Navigation Horizontale par Sous-Pages (`stats-subnav-pills`) & Sélecteur Universel de Période** :
+  - Bascule instantanée entre **Statistiques QCM** (`#stats-subpage-qcm`) et **Statistiques Cours** (`#stats-subpage-lessons`), éliminant tout défilement vertical excessif.
   - Transitions glissantes CSS (`slide-from-left` et `slide-from-right`).
-  - Pill chrono live dans l'onglet affichant le décompte en direct (`#subnav-active-lesson-time`) lorsqu'un chronomètre tourne.
+  - Pastille chrono live dans l'onglet affichant le décompte en direct (`#subnav-active-lesson-time`) lorsqu'un chronomètre tourne.
+  - **Barre Universelle de Sélection de Période dans le Header (`.arena-top-bar.stats-top-bar`)** :
+    - Sur l'onglet QCM : `#stats-qcm-range-wrap` contrôle les statistiques d'entraînement.
+    - Sur l'onglet Cours : `#stats-lesson-range-wrap` s'affiche automatiquement avec la même ergonomie et les mêmes fonctionnalités :
+      - *Stepper journalier* (`#stats-lesson-day-stepper-wrap`) pour naviguer jour par jour (*Aujourd'hui*, *Hier*, *Avant-hier*...).
+      - *Boutons de plages prédéfinies* : 7 jours, 14 jours, 21 jours, 28 jours, 30 jours, Tout.
+      - *Sélecteur personnalisé* (`#custom-lesson-range-picker`) avec saisie de dates « Du » / « Au » et mini-calendriers interactifs.
+      - *Styles dédiés* avec accentuation émeraude sur le bouton actif (`#stats-lesson-range-toggle .range-btn.active`).
 - **Moteur de Chronométrage Persistant & Synchronisation Multi-Appareils en Temps Réel (`LessonTracker`)** :
   - **Calcul par delta d'horodatage (`startTimestamp` & `accumulatedMs`)** : le temps continue de tourner en tâche de fond même si l'étudiant quitte la page ou ferme l'application.
   - **Synchronisation Firestore bidirectionnelle (`activeLessonTimer` & `activeLessonTimerUpdatedAt`)** :
@@ -281,15 +288,18 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
     - Date de la session (par défaut aujourd'hui).
     - Sauvegarde locale sous `pedia_lesson_sessions_v1` et synchronisation cloud immédiate.
 - **Suite Analytique Complète du Suivi des Cours (`renderLessonAnalytics`)** :
-  - **4 Cartes KPI Cours (`.lesson-kpi-grid`)** :
-    1. ⏱️ **Temps Total Cours** : Heures cumulées sur toutes les séances et nombre total de sessions.
+  - **Réactivité totale à la période sélectionnée en haut** :
+    - Le titre (`#lesson-daily-chart-title`) et le badge de l'en-tête de panneau (`#lesson-chart-period-badge`) s'actualisent instantanément en fonction de la période choisie (Aujourd'hui, Hier, 7j, 14j, 21j, 28j, 30j, Tout, Personnalisé).
+  - **4 Cartes KPI Cours (`.lesson-kpi-grid`) synchronisées** :
+    1. ⏱️ **Temps Total Cours** : Heures cumulées sur la période choisie et décompte des sessions (avec total historique en sous-titre).
     2. 📅 **Aujourd'hui & 7j** : Temps d'étude de la journée et volume des 7 derniers jours.
-    3. ⏳ **Moyenne / Session** : Durée moyenne de concentration par session.
-    4. 📚 **Couverture Programme** : Décompte et pourcentage des 35 chapitres travaillés au moins une fois.
-  - **Histogramme SVG d'Étude Journalière (`#lesson-daily-chart-container`)** :
-    - Graphique interactif à barres avec dégradé cyan/émeraude (`#lessonBarGrad`), étiquettes d'heures au-dessus des barres et lignes de repère horaires (`0h`, `Xh`).
-    - Onglets de filtrage temporel dynamiques : **7 jours**, **14 jours** et **30 jours**.
-    - Info-bulles complètes au survol avec date complète et durée formatée.
+    3. ⏳ **Moyenne / Session** : Durée moyenne de concentration par session sur la période.
+    4. 📚 **Couverture Programme** : Décompte et pourcentage des 35 chapitres travaillés.
+  - **Histogramme SVG d'Étude Journalière Réactif (`#lesson-daily-chart-container`)** :
+    - Graphique interactif à barres SVG avec dégradé cyan/émeraude (`#lessonBarGrad`), étiquettes d'heures au-dessus des barres, info-bulles au survol et lignes de repère horaires.
+    - Génération dynamique des données :
+      - *Jour unique* (Aujourd'hui / Stepper Hier) : barre centrée proéminente (largeur 64px) avec durée exacte et mention du jour.
+      - *Plages multi-jours* (7, 14, 21, 28, 30 jours, Tout, Personnalisé) : barres proportionnelles, étiquetage intelligent de l'axe X pour éviter les chevauchements, et message d'état si aucune session n'est enregistrée.
   - **Répartition du Temps par Cours (`#lesson-distribution-container`)** :
     - Classement des 10 cours les plus travaillés avec barres de progression proportionnelles animées et temps cumulé.
   - **Matrice de Couverture des 35 Chapitres de Pédiatrie (`#lesson-chapters-matrix`)** :
@@ -302,7 +312,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ### 3.9. Système de Mises à Jour Automatiques & GitHub Releases (`src/services/updateService.js` & CI/CD)
 - **Service d'Orchestration des Mises à Jour (`UpdateService`)** :
-  - Version déclarée : `CURRENT_APP_VERSION = '1.4.7'` synchronisée avec `package.json` et `build.gradle` (`versionCode 14`).
+  - Version déclarée : `CURRENT_APP_VERSION = '1.4.8'` synchronisée avec `package.json` et `build.gradle` (`versionCode 15`).
   - Comparaison sémantique universelle (`compareVersions`) ignorant les préfixes `v`.
   - Interrogation de l'API GitHub Releases (`https://api.github.com/repos/lkmqji/qcm-p-diatrie/releases/latest`) avec cooldown de 4 heures (`pedia_last_update_check_ts`).
   - Extraction de l'asset `.apk` direct (`PediaDrill.apk`). En environnement natif Android Capacitor, l'URL est ouverte via `_system` pour lancer le gestionnaire de téléchargement Android natif.
@@ -314,6 +324,13 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
   - Déclencheurs : Push d'un tag git `v*` ou déclenchement manuel `workflow_dispatch`.
   - Environnement : Ubuntu Latest, Node.js 22, Java JDK 21 Temurin, Android SDK Platform 36 (build-tools 36.0.0 via `setup-android@v4`), Gradle Wrapper 9.2.0.
   - Compile le bundle web, synchronise Capacitor, compile `:app:assembleDebug`, copie sous `PediaDrill.apk` et publie une Release GitHub avec l'APK attaché.
+- **Règle d'Automatisation « update github » (`GEMINI.md`, `AGENTS.md`, `.agents/rules/update_github.md`)** :
+  - Déclenchée dès que l'utilisateur prononce la commande « update github » :
+    1. *Incrémentation de version* : `+0.0.1` sur la version sémantique (ex: `1.4.7` ➔ `1.4.8`) et `+1` sur `versionCode` Android dans `package.json`, `src/services/updateService.js`, `android/app/build.gradle` et `template.html`.
+    2. *Compilation & Bundling* : `node build-bundle.cjs` (génération de `index.html` pour Vercel, synchronisation CSS et copie dans `dist/`), puis `npx cap sync android` et compilation locale de l'APK via `build-apk.bat`.
+    3. *Traçabilité* : Journalisation horodatée dans `00-historique/historique_YYYY-MM-DD.md` et mise à jour du Master Context.
+    4. *Validation* : Contrôle de syntaxe Node (`node -c`).
+    5. *Push GitHub & Déploiement* : `git add -A`, `git commit`, `git tag vX.Y.Z`, `git push origin main` (mise à jour instantanée du site sur Vercel) et `git push origin vX.Y.Z` (déclenchement automatique de la compilation Android et publication de la GitHub Release avec l'APK).
 
 ---
 
@@ -488,7 +505,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.4.7` (`versionCode 14`)
+- **Version native** : `versionName 1.4.8` (`versionCode 15`)
 - **Empreinte SHA-1 (Debug Keystore Gradle & GitHub Actions)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
 - **Empreinte SHA-256 (Debug Keystore Gradle & GitHub Actions)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
 - **Keystore unifié** : `android/app/debug.keystore` (Alias : `AndroidDebugKey`, mot de passe `android`, garantissant une empreinte cryptographique identique entre les compilations locales et la CI/CD GitHub Actions).

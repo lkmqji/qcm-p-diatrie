@@ -4973,6 +4973,18 @@ body {
   box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
 }
 
+#stats-lesson-range-toggle .range-btn.active {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.32));
+  color: var(--emerald);
+  border: 1px solid rgba(16, 185, 129, 0.45);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
+}
+
+#stats-lesson-range-toggle .day-step-btn:hover:not(:disabled) {
+  color: var(--emerald);
+  background: rgba(16, 185, 129, 0.15);
+}
+
 /* Day Stepper (Hier / Avant-hier / Aujourd'hui) */
 .stats-day-stepper-wrap {
   display: inline-flex;
@@ -7394,6 +7406,54 @@ body {
               </div>
             </div>
           </div>
+
+          <!-- Lesson Range Selector (Statistiques Cours) -->
+          <div class="stats-range-wrap" id="stats-lesson-range-wrap" style="display:none;">
+            <div class="stats-range-toggle" id="stats-lesson-range-toggle">
+              <div class="stats-day-stepper-wrap" id="stats-lesson-day-stepper-wrap">
+                <button type="button" class="day-step-btn" id="btn-stats-lesson-prev-day" title="Jour précédent (Hier, avant-hier...)">
+                  <i data-lucide="chevron-left"></i>
+                </button>
+                <button type="button" class="range-btn range-btn-day active" data-range="today" id="btn-lesson-range-day">
+                  <span id="lesson-range-day-text">Aujourd'hui</span>
+                </button>
+                <button type="button" class="day-step-btn" id="btn-stats-lesson-next-day" title="Jour suivant" disabled>
+                  <i data-lucide="chevron-right"></i>
+                </button>
+              </div>
+              <button class="range-btn" data-range="7">7 jours</button>
+              <button class="range-btn" data-range="14">14 jours</button>
+              <button class="range-btn" data-range="21">21 jours</button>
+              <button class="range-btn" data-range="28">28 jours</button>
+              <button class="range-btn" data-range="30">30 jours</button>
+              <button class="range-btn" data-range="all">Tout</button>
+              <button class="range-btn" data-range="custom" id="btn-lesson-range-custom">Personnalisé 📅</button>
+            </div>
+
+            <!-- Custom date range selector panel for Lessons -->
+            <div class="custom-range-picker" id="custom-lesson-range-picker" style="display:none;">
+              <div class="custom-range-inputs">
+                <div class="date-field-wrap">
+                  <span class="date-field-label">Du</span>
+                  <div class="date-input-box" id="box-custom-lesson-date-start" title="Sélectionner la date de début">
+                    <i data-lucide="calendar" class="date-calendar-icon"></i>
+                    <input type="date" id="custom-lesson-date-start" class="date-input">
+                  </div>
+                </div>
+                <div class="date-field-wrap">
+                  <span class="date-field-label">Au</span>
+                  <div class="date-input-box" id="box-custom-lesson-date-end" title="Sélectionner la date de fin">
+                    <i data-lucide="calendar" class="date-calendar-icon"></i>
+                    <input type="date" id="custom-lesson-date-end" class="date-input">
+                  </div>
+                </div>
+                <button type="button" id="btn-apply-custom-lesson-range" class="btn-apply-range">
+                  <i data-lucide="check" style="width:13px;height:13px;"></i>
+                  <span>Filtrer</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Horizontal Sub-Page Navigation Tabs: QCM vs Cours -->
@@ -7405,7 +7465,7 @@ body {
             </button>
             <button type="button" class="stats-subnav-btn" id="btn-subnav-lessons" data-subtab="lessons">
               <i data-lucide="timer"></i>
-              <span>Chronomètre Cours</span>
+              <span>Statistiques Cours</span>
               <span class="subnav-timer-pill" id="subnav-active-lesson-time" style="display:none;">00:00:00</span>
             </button>
           </div>
@@ -7757,11 +7817,7 @@ body {
                 <i data-lucide="bar-chart-2" style="color:var(--emerald);"></i>
                 <span id="lesson-daily-chart-title">Historique Quotidien d'Étude des Cours</span>
               </div>
-              <div class="stats-range-tabs" id="lesson-chart-range-tabs">
-                <button type="button" class="range-tab-btn active" data-lesson-range="7">7 jours</button>
-                <button type="button" class="range-tab-btn" data-lesson-range="14">14 jours</button>
-                <button type="button" class="range-tab-btn" data-lesson-range="30">30 jours</button>
-              </div>
+              <div class="panel-box-count" id="lesson-chart-period-badge">Aujourd'hui</div>
             </div>
             <div class="chart-svg-container" id="lesson-daily-chart-container">
               <!-- SVG Bar Chart injecté dynamiquement -->
@@ -8224,9 +8280,9 @@ body {
 
       <div class="update-version-banner">
         <div class="update-version-chips">
-          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.4.7</strong></span>
+          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.4.8</strong></span>
           <i data-lucide="arrow-right" style="width:14px;height:14px;color:var(--text-dim);"></i>
-          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.4.7</strong></span>
+          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.4.8</strong></span>
         </div>
         <div class="update-release-date" id="update-modal-date">Publiée sur GitHub Releases</div>
       </div>

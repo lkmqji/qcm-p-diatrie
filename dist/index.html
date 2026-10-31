@@ -4973,6 +4973,18 @@ body {
   box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
 }
 
+#stats-lesson-range-toggle .range-btn.active {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.32));
+  color: var(--emerald);
+  border: 1px solid rgba(16, 185, 129, 0.45);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
+}
+
+#stats-lesson-range-toggle .day-step-btn:hover:not(:disabled) {
+  color: var(--emerald);
+  background: rgba(16, 185, 129, 0.15);
+}
+
 /* Day Stepper (Hier / Avant-hier / Aujourd'hui) */
 .stats-day-stepper-wrap {
   display: inline-flex;
@@ -7394,6 +7406,54 @@ body {
               </div>
             </div>
           </div>
+
+          <!-- Lesson Range Selector (Statistiques Cours) -->
+          <div class="stats-range-wrap" id="stats-lesson-range-wrap" style="display:none;">
+            <div class="stats-range-toggle" id="stats-lesson-range-toggle">
+              <div class="stats-day-stepper-wrap" id="stats-lesson-day-stepper-wrap">
+                <button type="button" class="day-step-btn" id="btn-stats-lesson-prev-day" title="Jour précédent (Hier, avant-hier...)">
+                  <i data-lucide="chevron-left"></i>
+                </button>
+                <button type="button" class="range-btn range-btn-day active" data-range="today" id="btn-lesson-range-day">
+                  <span id="lesson-range-day-text">Aujourd'hui</span>
+                </button>
+                <button type="button" class="day-step-btn" id="btn-stats-lesson-next-day" title="Jour suivant" disabled>
+                  <i data-lucide="chevron-right"></i>
+                </button>
+              </div>
+              <button class="range-btn" data-range="7">7 jours</button>
+              <button class="range-btn" data-range="14">14 jours</button>
+              <button class="range-btn" data-range="21">21 jours</button>
+              <button class="range-btn" data-range="28">28 jours</button>
+              <button class="range-btn" data-range="30">30 jours</button>
+              <button class="range-btn" data-range="all">Tout</button>
+              <button class="range-btn" data-range="custom" id="btn-lesson-range-custom">Personnalisé 📅</button>
+            </div>
+
+            <!-- Custom date range selector panel for Lessons -->
+            <div class="custom-range-picker" id="custom-lesson-range-picker" style="display:none;">
+              <div class="custom-range-inputs">
+                <div class="date-field-wrap">
+                  <span class="date-field-label">Du</span>
+                  <div class="date-input-box" id="box-custom-lesson-date-start" title="Sélectionner la date de début">
+                    <i data-lucide="calendar" class="date-calendar-icon"></i>
+                    <input type="date" id="custom-lesson-date-start" class="date-input">
+                  </div>
+                </div>
+                <div class="date-field-wrap">
+                  <span class="date-field-label">Au</span>
+                  <div class="date-input-box" id="box-custom-lesson-date-end" title="Sélectionner la date de fin">
+                    <i data-lucide="calendar" class="date-calendar-icon"></i>
+                    <input type="date" id="custom-lesson-date-end" class="date-input">
+                  </div>
+                </div>
+                <button type="button" id="btn-apply-custom-lesson-range" class="btn-apply-range">
+                  <i data-lucide="check" style="width:13px;height:13px;"></i>
+                  <span>Filtrer</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Horizontal Sub-Page Navigation Tabs: QCM vs Cours -->
@@ -7405,7 +7465,7 @@ body {
             </button>
             <button type="button" class="stats-subnav-btn" id="btn-subnav-lessons" data-subtab="lessons">
               <i data-lucide="timer"></i>
-              <span>Chronomètre Cours</span>
+              <span>Statistiques Cours</span>
               <span class="subnav-timer-pill" id="subnav-active-lesson-time" style="display:none;">00:00:00</span>
             </button>
           </div>
@@ -7757,11 +7817,7 @@ body {
                 <i data-lucide="bar-chart-2" style="color:var(--emerald);"></i>
                 <span id="lesson-daily-chart-title">Historique Quotidien d'Étude des Cours</span>
               </div>
-              <div class="stats-range-tabs" id="lesson-chart-range-tabs">
-                <button type="button" class="range-tab-btn active" data-lesson-range="7">7 jours</button>
-                <button type="button" class="range-tab-btn" data-lesson-range="14">14 jours</button>
-                <button type="button" class="range-tab-btn" data-lesson-range="30">30 jours</button>
-              </div>
+              <div class="panel-box-count" id="lesson-chart-period-badge">Aujourd'hui</div>
             </div>
             <div class="chart-svg-container" id="lesson-daily-chart-container">
               <!-- SVG Bar Chart injecté dynamiquement -->
@@ -8224,9 +8280,9 @@ body {
 
       <div class="update-version-banner">
         <div class="update-version-chips">
-          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.4.7</strong></span>
+          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.4.8</strong></span>
           <i data-lucide="arrow-right" style="width:14px;height:14px;color:var(--text-dim);"></i>
-          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.4.7</strong></span>
+          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.4.8</strong></span>
         </div>
         <div class="update-release-date" id="update-modal-date">Publiée sur GitHub Releases</div>
       </div>
@@ -11655,7 +11711,7 @@ class FirebaseSyncService {
 // Update Management Service for PédiaDrill
 // Checks GitHub Releases for new APK versions, notifies the user, and triggers direct download.
 
-const CURRENT_APP_VERSION = '1.4.7';
+const CURRENT_APP_VERSION = '1.4.8';
 const GITHUB_REPO = 'lkmqji/qcm-p-diatrie';
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
 const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours auto-check cooldown
@@ -15725,7 +15781,8 @@ function switchStatsSubpage(subtab, animate = true) {
   const btnLessons = document.getElementById('btn-subnav-lessons');
   const pageQcm = document.getElementById('stats-subpage-qcm');
   const pageLessons = document.getElementById('stats-subpage-lessons');
-  const rangeWrap = document.getElementById('stats-qcm-range-wrap');
+  const rangeWrapQcm = document.getElementById('stats-qcm-range-wrap');
+  const rangeWrapLessons = document.getElementById('stats-lesson-range-wrap');
 
   if (!pageQcm || !pageLessons) return;
 
@@ -15742,7 +15799,8 @@ function switchStatsSubpage(subtab, animate = true) {
       pageQcm.classList.add('slide-from-left');
     }
 
-    if (rangeWrap) rangeWrap.style.display = 'flex';
+    if (rangeWrapQcm) rangeWrapQcm.style.display = 'flex';
+    if (rangeWrapLessons) rangeWrapLessons.style.display = 'none';
   } else {
     if (btnLessons) btnLessons.classList.add('active');
     if (btnQcm) btnQcm.classList.remove('active');
@@ -15756,7 +15814,8 @@ function switchStatsSubpage(subtab, animate = true) {
       pageLessons.classList.add('slide-from-right');
     }
 
-    if (rangeWrap) rangeWrap.style.display = 'none';
+    if (rangeWrapQcm) rangeWrapQcm.style.display = 'none';
+    if (rangeWrapLessons) rangeWrapLessons.style.display = 'flex';
     renderLessonTrackerUI();
   }
   refreshLucide();
@@ -15771,8 +15830,145 @@ function formatDigitalClockTime(totalSeconds) {
   return `${pad(hrs)}:${pad(mins)}:${pad(s)}`;
 }
 
-let currentLessonChartRange = '7'; // '7' | '14' | '30'
+let currentLessonStatsRange = 'today'; // 'today' | '7' | '14' | '21' | '28' | '30' | 'all' | 'custom'
+let selectedLessonDayOffset = 0;
+let customLessonStatsStart = '';
+let customLessonStatsEnd = '';
+let currentLessonChartRange = 'today';
 let currentLessonOffsetSeconds = 0; // offset in seconds
+
+function getLessonFilteredSessions(range = currentLessonStatsRange, offset = selectedLessonDayOffset, customStart = customLessonStatsStart, customEnd = customLessonStatsEnd) {
+  const sessions = (typeof lessonTracker !== 'undefined' && lessonTracker) ? lessonTracker.getSessions() : [];
+  if (range === 'today') {
+    const targetDateStr = getDateStrWithOffset(offset);
+    return sessions.filter(s => s.dateStr === targetDateStr);
+  }
+  if (range === 'all') {
+    return [...sessions];
+  }
+  if (range === 'custom') {
+    let start = customStart || getDateStrWithOffset(-7);
+    let end = customEnd || getDateStrWithOffset(0);
+    if (start > end) [start, end] = [end, start];
+    return sessions.filter(s => s.dateStr >= start && s.dateStr <= end);
+  }
+  const numDays = parseInt(range, 10) || 7;
+  const cutoff = getDateStrWithOffset(-(numDays - 1));
+  const today = getDateStrWithOffset(0);
+  return sessions.filter(s => s.dateStr >= cutoff && s.dateStr <= today);
+}
+
+function getLessonRangeDailyData(range = currentLessonStatsRange, offset = selectedLessonDayOffset, customStart = customLessonStatsStart, customEnd = customLessonStatsEnd) {
+  const sessions = (typeof lessonTracker !== 'undefined' && lessonTracker) ? lessonTracker.getSessions() : [];
+  const now = new Date();
+  const dailyData = [];
+
+  if (range === 'today') {
+    const targetDateStr = getDateStrWithOffset(offset);
+    const parts = targetDateStr.split('-').map(Number);
+    const d = new Date(parts[0], parts[1] - 1, parts[2]);
+    const daySessions = sessions.filter(s => s.dateStr === targetDateStr);
+    const daySeconds = daySessions.reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
+    const dayLabel = getDayLabelForOffset(offset);
+    dailyData.push({
+      dateStr: targetDateStr,
+      daySeconds,
+      dayLabel,
+      dateObj: d,
+      sessionsCount: daySessions.length
+    });
+  } else if (range === 'custom') {
+    const todayStr = getDateStrWithOffset(0);
+    let start = customStart || getDateStrWithOffset(-7);
+    let end = customEnd || todayStr;
+    if (start > end) [start, end] = [end, start];
+
+    const partsStart = start.split('-').map(Number);
+    const partsEnd = end.split('-').map(Number);
+    const dStart = new Date(partsStart[0], partsStart[1] - 1, partsStart[2]);
+    const dEnd = new Date(partsEnd[0], partsEnd[1] - 1, partsEnd[2]);
+
+    const cur = new Date(dStart);
+    while (cur <= dEnd) {
+      const year = cur.getFullYear();
+      const month = String(cur.getMonth() + 1).padStart(2, '0');
+      const day = String(cur.getDate()).padStart(2, '0');
+      const dateStr = `${year}-${month}-${day}`;
+
+      const daySessions = sessions.filter(s => s.dateStr === dateStr);
+      const daySeconds = daySessions.reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
+      const dayNameShort = cur.toLocaleDateString('fr-FR', { weekday: 'short' });
+      const dayNum = cur.getDate();
+
+      dailyData.push({
+        dateStr,
+        daySeconds,
+        dayLabel: `${dayNameShort} ${dayNum}`,
+        dateObj: new Date(cur),
+        sessionsCount: daySessions.length
+      });
+      cur.setDate(cur.getDate() + 1);
+    }
+  } else if (range === 'all') {
+    const validDates = sessions.map(s => s.dateStr).filter(Boolean).sort();
+    let start = validDates[0] || getDateStrWithOffset(-13);
+    let end = getDateStrWithOffset(0);
+    if (start > end) start = end;
+
+    const partsStart = start.split('-').map(Number);
+    const partsEnd = end.split('-').map(Number);
+    const dStart = new Date(partsStart[0], partsStart[1] - 1, partsStart[2]);
+    const dEnd = new Date(partsEnd[0], partsEnd[1] - 1, partsEnd[2]);
+
+    const cur = new Date(dStart);
+    while (cur <= dEnd) {
+      const year = cur.getFullYear();
+      const month = String(cur.getMonth() + 1).padStart(2, '0');
+      const day = String(cur.getDate()).padStart(2, '0');
+      const dateStr = `${year}-${month}-${day}`;
+
+      const daySessions = sessions.filter(s => s.dateStr === dateStr);
+      const daySeconds = daySessions.reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
+      const dayNameShort = cur.toLocaleDateString('fr-FR', { weekday: 'short' });
+      const dayNum = cur.getDate();
+
+      dailyData.push({
+        dateStr,
+        daySeconds,
+        dayLabel: `${dayNameShort} ${dayNum}`,
+        dateObj: new Date(cur),
+        sessionsCount: daySessions.length
+      });
+      cur.setDate(cur.getDate() + 1);
+    }
+  } else {
+    // 7, 14, 21, 28, 30 days
+    const numDays = parseInt(range, 10) || 7;
+    for (let i = numDays - 1; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      const dateStr = `${year}-${month}-${day}`;
+
+      const daySessions = sessions.filter(s => s.dateStr === dateStr);
+      const daySeconds = daySessions.reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
+      const isToday = (i === 0);
+      const dayNameShort = d.toLocaleDateString('fr-FR', { weekday: 'short' });
+      const dayNum = d.getDate();
+
+      dailyData.push({
+        dateStr,
+        daySeconds,
+        dayLabel: isToday ? 'Auj.' : `${dayNameShort} ${dayNum}`,
+        dateObj: d,
+        sessionsCount: daySessions.length
+      });
+    }
+  }
+
+  return dailyData;
+}
 
 function updateLessonTimerTick() {
   const active = (typeof lessonTracker !== 'undefined' && lessonTracker) ? lessonTracker.activeTimer : null;
@@ -15840,10 +16036,40 @@ function updateLessonTimerTick() {
 /**
  * Renders lesson analytics: 4 KPI Cards, Daily SVG Bar Chart, Top 10 Distribution, and 35 Chapters Matrix
  */
-function renderLessonAnalytics(rangeStr = currentLessonChartRange) {
+function renderLessonAnalytics(rangeStr = currentLessonStatsRange) {
+  currentLessonStatsRange = rangeStr;
   currentLessonChartRange = rangeStr;
-  const sessions = lessonTracker.getSessions();
-  const summaries = lessonTracker.getLessonSummaries();
+  const sessions = (typeof lessonTracker !== 'undefined' && lessonTracker) ? lessonTracker.getSessions() : [];
+  const periodSessions = getLessonFilteredSessions(currentLessonStatsRange, selectedLessonDayOffset, customLessonStatsStart, customLessonStatsEnd);
+  const dailyData = getLessonRangeDailyData(currentLessonStatsRange, selectedLessonDayOffset, customLessonStatsStart, customLessonStatsEnd);
+  const summaries = (typeof lessonTracker !== 'undefined' && lessonTracker) ? lessonTracker.getLessonSummaries() : [];
+
+  // Period label & Badge in Panel Header
+  const chartTitleEl = document.getElementById('lesson-daily-chart-title');
+  const periodBadgeEl = document.getElementById('lesson-chart-period-badge');
+
+  let periodTitleText = "Historique Quotidien d'Étude des Cours";
+  let periodBadgeText = "Aujourd'hui";
+
+  if (currentLessonStatsRange === 'today') {
+    const label = getDayLabelForOffset(selectedLessonDayOffset);
+    periodTitleText = `Temps d'Étude des Cours — ${label}`;
+    periodBadgeText = label;
+  } else if (currentLessonStatsRange === 'custom') {
+    const sStr = customLessonStatsStart ? formatDateFr(customLessonStatsStart) : '';
+    const eStr = customLessonStatsEnd ? formatDateFr(customLessonStatsEnd) : '';
+    periodTitleText = `Temps d'Étude des Cours — Personnalisé (${sStr} ➔ ${eStr})`;
+    periodBadgeText = `${sStr} ➔ ${eStr}`;
+  } else if (currentLessonStatsRange === 'all') {
+    periodTitleText = "Historique Complet d'Étude des Cours";
+    periodBadgeText = "Tout l'historique";
+  } else {
+    periodTitleText = `Temps d'Étude des Cours — ${currentLessonStatsRange} derniers jours`;
+    periodBadgeText = `${currentLessonStatsRange} jours`;
+  }
+
+  if (chartTitleEl) chartTitleEl.textContent = periodTitleText;
+  if (periodBadgeEl) periodBadgeEl.textContent = periodBadgeText;
 
   // 1. KPI Cards
   const kpiTotalTime = document.getElementById('kpi-lesson-total-time');
@@ -15855,15 +16081,22 @@ function renderLessonAnalytics(rangeStr = currentLessonChartRange) {
   const kpiCoverageVal = document.getElementById('kpi-lesson-coverage-val');
   const kpiCoverageSub = document.getElementById('kpi-lesson-coverage-sub');
 
-  const totalSeconds = sessions.reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
-  const totalHrs = Math.floor(totalSeconds / 3600);
-  const totalMins = Math.floor((totalSeconds % 3600) / 60);
+  const periodSeconds = periodSessions.reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
+  const totalSecondsAll = sessions.reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
+
+  const pHrs = Math.floor(periodSeconds / 3600);
+  const pMins = Math.floor((periodSeconds % 3600) / 60);
 
   if (kpiTotalTime) {
-    kpiTotalTime.textContent = totalSeconds > 0 ? `${totalHrs}h ${String(totalMins).padStart(2, '0')}` : '0h 00';
+    kpiTotalTime.textContent = periodSeconds > 0 ? `${pHrs}h ${String(pMins).padStart(2, '0')}` : '0h 00';
   }
   if (kpiTotalSub) {
-    kpiTotalSub.textContent = `${sessions.length} session${sessions.length > 1 ? 's' : ''} enregistrée${sessions.length > 1 ? 's' : ''}`;
+    if (currentLessonStatsRange === 'all') {
+      kpiTotalSub.textContent = `${sessions.length} session${sessions.length > 1 ? 's' : ''} enregistrée${sessions.length > 1 ? 's' : ''}`;
+    } else {
+      const allHrs = Math.floor(totalSecondsAll / 3600);
+      kpiTotalSub.textContent = `${periodSessions.length} session${periodSessions.length > 1 ? 's' : ''} sur la période • Total : ${allHrs}h`;
+    }
   }
 
   // Today & 7 days
@@ -15889,16 +16122,19 @@ function renderLessonAnalytics(rangeStr = currentLessonChartRange) {
     kpi7dSub.textContent = `7 derniers jours : ${s7Hrs}h ${String(s7Mins).padStart(2, '0')}`;
   }
 
-  // Average per session
+  // Average per session (period)
   if (kpiAvgTime) {
-    if (sessions.length === 0) {
+    if (periodSessions.length === 0) {
       kpiAvgTime.textContent = '--';
     } else {
-      const avgSec = Math.round(totalSeconds / sessions.length);
+      const avgSec = Math.round(periodSeconds / periodSessions.length);
       const avgH = Math.floor(avgSec / 3600);
       const avgM = Math.floor((avgSec % 3600) / 60);
       kpiAvgTime.textContent = avgH > 0 ? `${avgH}h ${String(avgM).padStart(2, '0')}` : `${avgM} min`;
     }
+  }
+  if (kpiAvgSub) {
+    kpiAvgSub.textContent = periodSessions.length > 0 ? `${periodSessions.length} session${periodSessions.length > 1 ? 's' : ''} analysée${periodSessions.length > 1 ? 's' : ''}` : 'Focus régulier';
   }
 
   // Coverage of 35 chapters
@@ -15916,7 +16152,7 @@ function renderLessonAnalytics(rangeStr = currentLessonChartRange) {
   }
 
   // 2. Daily SVG Bar Chart
-  renderLessonDailyChart(rangeStr, sessions);
+  renderLessonDailyChart(currentLessonStatsRange, dailyData);
 
   // 3. Lesson Distribution (Top 10)
   renderLessonDistribution(summaries);
@@ -15925,38 +16161,17 @@ function renderLessonAnalytics(rangeStr = currentLessonChartRange) {
   renderLessonChaptersMatrix(allChs, summaries);
 }
 
-function renderLessonDailyChart(rangeStr, sessions) {
+function renderLessonDailyChart(rangeStr, dailyData) {
   const container = document.getElementById('lesson-daily-chart-container');
   if (!container) return;
 
-  const daysCount = parseInt(rangeStr, 10) || 7;
-  const now = new Date();
-  const dailyData = [];
-
-  for (let i = daysCount - 1; i >= 0; i--) {
-    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    const dateStr = `${year}-${month}-${day}`;
-
-    const daySeconds = sessions
-      .filter(s => s.dateStr === dateStr)
-      .reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
-
-    const isToday = (i === 0);
-    const dayNameShort = d.toLocaleDateString('fr-FR', { weekday: 'short' });
-    const dayNum = d.getDate();
-
-    dailyData.push({
-      dateStr,
-      daySeconds,
-      dayLabel: isToday ? 'Auj.' : `${dayNameShort} ${dayNum}`,
-      dateObj: d
-    });
+  if (!dailyData || dailyData.length === 0) {
+    container.innerHTML = '<div class="stats-empty-state"><p>Aucune donnée disponible pour cette période.</p></div>';
+    return;
   }
 
-  const maxSeconds = Math.max(...dailyData.map(d => d.daySeconds), 3600); // at least 1h scale
+  const daysCount = dailyData.length;
+  const maxSeconds = Math.max(...dailyData.map(d => d.daySeconds || 0), 3600); // at least 1h scale
   const svgWidth = 800;
   const svgHeight = 220;
   const padLeft = 45;
@@ -15966,13 +16181,11 @@ function renderLessonDailyChart(rangeStr, sessions) {
   const chartW = svgWidth - padLeft - padRight;
   const chartH = svgHeight - padTop - padBottom;
 
-  const barWidth = Math.min(36, Math.max(14, Math.floor((chartW / daysCount) * 0.65)));
-  const colStep = chartW / daysCount;
+  const maxHrs = Math.max(1, Math.ceil(maxSeconds / 3600));
 
   let svgHtml = `<svg class="activity-chart-svg" viewBox="0 0 ${svgWidth} ${svgHeight}" style="max-width:100%;height:auto;display:block;">`;
 
   // Grid lines
-  const maxHrs = Math.max(1, Math.ceil(maxSeconds / 3600));
   const gridSteps = [0, maxHrs / 2, maxHrs];
   gridSteps.forEach(hVal => {
     const yRatio = maxHrs > 0 ? (hVal / maxHrs) : 0;
@@ -15983,44 +16196,101 @@ function renderLessonDailyChart(rangeStr, sessions) {
     `;
   });
 
-  // Bars
-  dailyData.forEach((item, idx) => {
-    const xCenter = padLeft + idx * colStep + (colStep / 2);
+  const totalPeriodSeconds = dailyData.reduce((acc, d) => acc + (d.daySeconds || 0), 0);
+
+  if (daysCount === 1) {
+    // Single Day Display (Today / Hier stepper)
+    const item = dailyData[0];
+    const barWidth = 64;
+    const xCenter = padLeft + (chartW / 2);
     const x = xCenter - (barWidth / 2);
     const barHeight = (item.daySeconds / (maxHrs * 3600)) * chartH;
     const y = padTop + chartH - barHeight;
 
     const formattedTime = formatDuration(item.daySeconds);
-    const dateLabel = item.dateObj.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+    const dateLabel = item.dateObj ? item.dateObj.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : item.dateStr;
     const tooltip = item.daySeconds > 0
-      ? `${dateLabel} : ${formattedTime} d'étude`
+      ? `${dateLabel} : ${formattedTime} d'étude (${item.sessionsCount || 0} session${(item.sessionsCount || 0) > 1 ? 's' : ''})`
       : `${dateLabel} : Aucun temps de cours enregistré`;
 
     const barColor = item.daySeconds > 0 ? 'url(#lessonBarGrad)' : 'rgba(255,255,255,0.04)';
     const barStroke = item.daySeconds > 0 ? '#10b981' : 'rgba(255,255,255,0.08)';
 
     svgHtml += `
-      <rect class="lesson-bar-rect" x="${x}" y="${y}" width="${barWidth}" height="${Math.max(barHeight, 3)}" rx="4"
-            fill="${barColor}" stroke="${barStroke}" stroke-width="1">
+      <rect class="lesson-bar-rect" x="${x}" y="${item.daySeconds > 0 ? y : (padTop + chartH - 4)}" width="${barWidth}" height="${Math.max(barHeight, 4)}" rx="6"
+            fill="${barColor}" stroke="${barStroke}" stroke-width="1.5">
         <title>${escapeHtml(tooltip)}</title>
       </rect>
     `;
 
-    // Duration text above bar if duration > 0
     if (item.daySeconds > 0) {
       const hrs = Math.floor(item.daySeconds / 3600);
       const mins = Math.floor((item.daySeconds % 3600) / 60);
-      const label = hrs > 0 ? `${hrs}h${mins > 0 ? mins : ''}` : `${mins}m`;
+      const label = hrs > 0 ? `${hrs}h ${String(mins).padStart(2, '0')}` : `${mins} min`;
       svgHtml += `
-        <text x="${xCenter}" y="${y - 6}" fill="#00d4ff" font-size="10" font-weight="700" text-anchor="middle" font-family="'Outfit', sans-serif">${label}</text>
+        <text x="${xCenter}" y="${y - 8}" fill="#00d4ff" font-size="12" font-weight="700" text-anchor="middle" font-family="'Outfit', sans-serif">${label}</text>
+      `;
+    } else {
+      svgHtml += `
+        <text x="${xCenter}" y="${padTop + chartH / 2}" fill="#64748b" font-size="12" text-anchor="middle" font-family="var(--font-body)">Aucune session enregistrée ce jour-là</text>
       `;
     }
 
-    // Day label underneath
     svgHtml += `
-      <text x="${xCenter}" y="${padTop + chartH + 18}" fill="#94a3b8" font-size="11" font-weight="500" text-anchor="middle" font-family="var(--font-body)">${item.dayLabel}</text>
+      <text x="${xCenter}" y="${padTop + chartH + 20}" fill="#94a3b8" font-size="12" font-weight="600" text-anchor="middle" font-family="var(--font-body)">${escapeHtml(item.dayLabel)} (${formatDateFr(item.dateStr)})</text>
     `;
-  });
+  } else {
+    // Multi-day display (7, 14, 21, 28, 30, all, custom)
+    const colStep = chartW / daysCount;
+    const barWidth = Math.min(36, Math.max(6, Math.floor(colStep * 0.65)));
+
+    dailyData.forEach((item, idx) => {
+      const xCenter = padLeft + idx * colStep + (colStep / 2);
+      const x = xCenter - (barWidth / 2);
+      const barHeight = (item.daySeconds / (maxHrs * 3600)) * chartH;
+      const y = padTop + chartH - barHeight;
+
+      const formattedTime = formatDuration(item.daySeconds);
+      const dateLabel = item.dateObj ? item.dateObj.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' }) : item.dateStr;
+      const tooltip = item.daySeconds > 0
+        ? `${dateLabel} : ${formattedTime} d'étude (${item.sessionsCount || 0} session${(item.sessionsCount || 0) > 1 ? 's' : ''})`
+        : `${dateLabel} : Aucun temps de cours enregistré`;
+
+      const barColor = item.daySeconds > 0 ? 'url(#lessonBarGrad)' : 'rgba(255,255,255,0.04)';
+      const barStroke = item.daySeconds > 0 ? '#10b981' : 'rgba(255,255,255,0.08)';
+
+      svgHtml += `
+        <rect class="lesson-bar-rect" x="${x}" y="${item.daySeconds > 0 ? y : (padTop + chartH - 3)}" width="${barWidth}" height="${Math.max(barHeight, 3)}" rx="3"
+              fill="${barColor}" stroke="${barStroke}" stroke-width="1">
+          <title>${escapeHtml(tooltip)}</title>
+        </rect>
+      `;
+
+      // Duration label above bar if duration > 0 and enough space
+      if (item.daySeconds > 0 && (barWidth >= 16 || daysCount <= 14)) {
+        const hrs = Math.floor(item.daySeconds / 3600);
+        const mins = Math.floor((item.daySeconds % 3600) / 60);
+        const label = hrs > 0 ? `${hrs}h${mins > 0 ? mins : ''}` : `${mins}m`;
+        svgHtml += `
+          <text x="${xCenter}" y="${y - 6}" fill="#00d4ff" font-size="${barWidth < 20 ? 9 : 10}" font-weight="700" text-anchor="middle" font-family="'Outfit', sans-serif">${label}</text>
+        `;
+      }
+
+      // X Axis label with smart spacing
+      const shouldShowLabel = (daysCount <= 10) || (daysCount <= 21 && idx % 2 === 0) || (daysCount <= 35 && idx % 3 === 0) || (daysCount > 35 && idx % 5 === 0) || (idx === daysCount - 1);
+      if (shouldShowLabel) {
+        svgHtml += `
+          <text x="${xCenter}" y="${padTop + chartH + 18}" fill="#94a3b8" font-size="${daysCount > 25 ? 9 : 11}" font-weight="500" text-anchor="middle" font-family="var(--font-body)">${item.dayLabel}</text>
+        `;
+      }
+    });
+
+    if (totalPeriodSeconds === 0) {
+      svgHtml += `
+        <text x="${padLeft + chartW / 2}" y="${padTop + chartH / 2}" fill="#64748b" font-size="12" text-anchor="middle" font-family="var(--font-body)">Aucune session de cours chronométrée sur cette période</text>
+      `;
+    }
+  }
 
   // Gradient Definition
   svgHtml += `
@@ -16302,8 +16572,31 @@ function renderLessonTrackerUI() {
     }
   }
 
-  // 3. Render Lesson Analytics, KPIs, Chart & Matrix
-  renderLessonAnalytics(currentLessonChartRange);
+  // 3. Synchroniser la classe active sur tous les boutons du sélecteur de période des cours
+  const rangeToggleEl = document.getElementById('stats-lesson-range-toggle');
+  if (rangeToggleEl) {
+    rangeToggleEl.querySelectorAll('.range-btn').forEach(btn => {
+      const r = btn.dataset.range;
+      if (r === currentLessonStatsRange) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+  }
+
+  // Update Day Stepper for lessons
+  const dayTextEl = document.getElementById('lesson-range-day-text');
+  if (dayTextEl) {
+    dayTextEl.textContent = (currentLessonStatsRange === 'today') ? getDayLabelForOffset(selectedLessonDayOffset) : "Aujourd'hui";
+  }
+  const nextDayBtn = document.getElementById('btn-stats-lesson-next-day');
+  if (nextDayBtn) {
+    nextDayBtn.disabled = (selectedLessonDayOffset >= 0);
+  }
+
+  // 4. Render Lesson Analytics, KPIs, Chart & Matrix
+  renderLessonAnalytics(currentLessonStatsRange);
 
   updateLessonTimerTick();
   refreshLucide();
@@ -16446,17 +16739,115 @@ function setupLessonTrackerEventListeners() {
     };
   }
 
-  // Chart range tabs
-  const chartRangeBtns = document.querySelectorAll('#lesson-chart-range-tabs .range-tab-btn');
-  chartRangeBtns.forEach(btn => {
-    btn.onclick = () => {
-      chartRangeBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const range = btn.dataset.lessonRange || '7';
-      renderLessonAnalytics(range);
+  // Lesson Stats Range Toggle buttons & Day Stepper
+  const lessonRangeToggle = document.getElementById('stats-lesson-range-toggle');
+  const lessonCustomPicker = document.getElementById('custom-lesson-range-picker');
+  const lessonCustomStartInput = document.getElementById('custom-lesson-date-start');
+  const lessonCustomEndInput = document.getElementById('custom-lesson-date-end');
+  const btnLessonApplyCustom = document.getElementById('btn-apply-custom-lesson-range');
+
+  const btnLessonPrevDay = document.getElementById('btn-stats-lesson-prev-day');
+  if (btnLessonPrevDay) {
+    btnLessonPrevDay.onclick = (e) => {
+      e.stopPropagation();
+      selectedLessonDayOffset--;
+      currentLessonStatsRange = 'today';
+      lessonRangeToggle?.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('btn-lesson-range-day')?.classList.add('active');
+      if (lessonCustomPicker) lessonCustomPicker.style.display = 'none';
+      renderLessonTrackerUI();
       refreshLucide();
     };
+  }
+
+  const btnLessonNextDay = document.getElementById('btn-stats-lesson-next-day');
+  if (btnLessonNextDay) {
+    btnLessonNextDay.onclick = (e) => {
+      e.stopPropagation();
+      if (selectedLessonDayOffset < 0) {
+        selectedLessonDayOffset++;
+        currentLessonStatsRange = 'today';
+        lessonRangeToggle?.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-lesson-range-day')?.classList.add('active');
+        if (lessonCustomPicker) lessonCustomPicker.style.display = 'none';
+        renderLessonTrackerUI();
+        refreshLucide();
+      }
+    };
+  }
+
+  if (lessonRangeToggle) {
+    lessonRangeToggle.querySelectorAll('.range-btn').forEach(btn => {
+      btn.onclick = () => {
+        lessonRangeToggle.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const r = btn.dataset.range || 'today';
+
+        if (r === 'today') {
+          if (currentLessonStatsRange === 'today' && selectedLessonDayOffset !== 0) {
+            selectedLessonDayOffset = 0;
+          }
+          currentLessonStatsRange = 'today';
+        } else {
+          selectedLessonDayOffset = 0;
+          currentLessonStatsRange = r;
+        }
+
+        if (r === 'custom') {
+          if (lessonCustomPicker) {
+            lessonCustomPicker.style.display = 'flex';
+            const today = lessonTracker.getTodayDateStr();
+            if (lessonCustomEndInput && !lessonCustomEndInput.value) lessonCustomEndInput.value = today;
+            if (lessonCustomStartInput && !lessonCustomStartInput.value) {
+              const d = new Date();
+              d.setDate(d.getDate() - 7);
+              const y = d.getFullYear();
+              const m = String(d.getMonth() + 1).padStart(2, '0');
+              const day = String(d.getDate()).padStart(2, '0');
+              lessonCustomStartInput.value = `${y}-${m}-${day}`;
+            }
+            customLessonStatsStart = lessonCustomStartInput.value;
+            customLessonStatsEnd = lessonCustomEndInput.value;
+            renderLessonTrackerUI();
+          }
+        } else {
+          if (lessonCustomPicker) lessonCustomPicker.style.display = 'none';
+          renderLessonTrackerUI();
+        }
+        refreshLucide();
+      };
+    });
+  }
+
+  // Mini-calendriers interactifs pour le sélecteur personnalisé de cours
+  ['box-custom-lesson-date-start', 'box-custom-lesson-date-end'].forEach(boxId => {
+    const box = document.getElementById(boxId);
+    if (box) {
+      box.addEventListener('click', (e) => {
+        const inp = box.querySelector('input[type="date"]');
+        if (inp && e.target !== inp) {
+          if (typeof inp.showPicker === 'function') {
+            try { inp.showPicker(); } catch (_) { inp.focus(); }
+          } else {
+            inp.focus();
+          }
+        }
+      });
+    }
   });
+
+  if (btnLessonApplyCustom) {
+    btnLessonApplyCustom.onclick = () => {
+      customLessonStatsStart = lessonCustomStartInput?.value || '';
+      customLessonStatsEnd = lessonCustomEndInput?.value || '';
+      if (!customLessonStatsStart || !customLessonStatsEnd) {
+        alert('Veuillez sélectionner une date de début et une date de fin.');
+        return;
+      }
+      renderLessonTrackerUI();
+      refreshLucide();
+    };
+  }
 
   // Manual Session Modal Handlers
   const btnOpenManual = document.getElementById('btn-open-manual-session');
