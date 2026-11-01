@@ -1117,12 +1117,174 @@ body {
   color: #e2e8f0;
 }
 
+.clinical-case-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
 .clinical-case-title {
-  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
   font-weight: 700;
   color: var(--purple);
   text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0;
+}
+
+.btn-toggle-clinical-accordion {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  background: rgba(168, 85, 247, 0.12);
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  border-radius: var(--radius-sm);
+  color: #d8b4fe;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.btn-toggle-clinical-accordion:hover {
+  background: rgba(168, 85, 247, 0.22);
+  border-color: rgba(168, 85, 247, 0.6);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.25);
+}
+
+.btn-toggle-clinical-accordion.is-open {
+  background: rgba(168, 85, 247, 0.25);
+  border-color: var(--purple);
+  color: #ffffff;
+}
+
+.btn-toggle-clinical-accordion.is-open #clinical-accordion-icon {
+  transform: rotate(180deg);
+}
+
+.clinical-case-accordion {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(168, 85, 247, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: fadeInAccordion 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeInAccordion {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.clinical-accordion-item {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.clinical-accordion-item.is-current {
+  border-color: rgba(168, 85, 247, 0.65);
+  background: rgba(168, 85, 247, 0.09);
+  box-shadow: 0 0 14px rgba(168, 85, 247, 0.15);
+}
+
+.clinical-accordion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  gap: 8px;
+}
+
+.clinical-accordion-qnum {
+  color: var(--cyan);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.clinical-accordion-item.is-current .clinical-accordion-qnum {
+  color: var(--purple);
+}
+
+.clinical-accordion-tag-current {
+  font-size: 0.68rem;
+  padding: 2px 8px;
+  background: rgba(168, 85, 247, 0.25);
+  border: 1px solid rgba(168, 85, 247, 0.45);
+  border-radius: 999px;
+  color: #e9d5ff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.clinical-accordion-text {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #f1f5f9;
+  font-weight: 600;
+}
+
+.clinical-accordion-options {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+  padding-left: 2px;
+}
+
+.clinical-accordion-opt {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: #cbd5e1;
+  line-height: 1.4;
+}
+
+.clinical-accordion-opt-letter {
+  font-weight: 700;
+  color: #94a3b8;
+  min-width: 18px;
+}
+
+.subquestion-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  align-self: flex-start;
+  padding: 5px 12px;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(0, 212, 255, 0.12));
+  border: 1px solid rgba(168, 85, 247, 0.45);
+  border-radius: var(--radius-sm);
+  color: #f3e8ff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
   margin-bottom: 6px;
+  box-shadow: 0 2px 8px rgba(168, 85, 247, 0.15);
+}
+
+.subquestion-badge i {
+  color: var(--cyan);
 }
 
 .question-text {

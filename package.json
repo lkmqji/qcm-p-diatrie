@@ -1,11 +1,12 @@
 {
   "name": "pedia-drill",
   "private": true,
-  "version": "1.4.8",
+  "version": "1.4.9",
   "type": "module",
   "scripts": {
     "build": "node build.cjs",
-    "start": "npx serve dist",
+    "dev": "node server.cjs",
+    "start": "node server.cjs",
     "build:apk": "cmd /c build-apk.bat",
     "open:android": "npx cap open android"
   },

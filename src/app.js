@@ -1582,6 +1582,176 @@ function updateHistoryNavUI() {
   }
 }
 
+// ============================================================================
+// GESTION DES CAS CLINIQUES & SOUS-QUESTIONS
+// ============================================================================
+function getClinicalCaseSubQuestions(question) {
+  if (!question || !question.clinical_case || !question.clinical_case.trim()) {
+    return [];
+  }
+  const idStr = String(question.id || '');
+  const idParts = idStr.split('.');
+  const casePrefix = idParts.length > 1 ? idParts[0] : null;
+
+  return allQuestions.filter(item => {
+    if (!item.clinical_case || !item.clinical_case.trim()) return false;
+    if (question.chapterId && item.chapterId !== question.chapterId) return false;
+    if (casePrefix) {
+      const parts = String(item.id || '').split('.');
+      if (parts[0] === casePrefix) return true;
+    }
+    return item.clinical_case.trim() === question.clinical_case.trim();
+  }).sort((a, b) => {
+    const aParts = String(a.id || '').split('.');
+    const bParts = String(b.id || '').split('.');
+    const aIdx = parseInt(aParts[1] || a.id, 10) || 0;
+    const bIdx = parseInt(bParts[1] || b.id, 10) || 0;
+    return aIdx - bIdx;
+  });
+}
+
+let isClinicalAccordionOpen = false;
+
+function updateClinicalCaseUI(q) {
+  const clinicalBox = document.getElementById('arena-clinical-case');
+  const clinicalText = document.getElementById('arena-clinical-case-text');
+  const subBadge = document.getElementById('arena-subquestion-badge');
+  const subBadgeText = document.getElementById('arena-subquestion-badge-text');
+  const btnAccordion = document.getElementById('btn-toggle-clinical-questions');
+  const btnAccordionText = document.getElementById('btn-toggle-clinical-text');
+  const accordionContainer = document.getElementById('arena-clinical-questions-accordion');
+
+  // Toujours fermer l'accordéon par défaut lors de l'arrivée sur une question
+  isClinicalAccordionOpen = false;
+  if (btnAccordion) btnAccordion.classList.remove('is-open');
+  if (accordionContainer) {
+    accordionContainer.style.display = 'none';
+    accordionContainer.innerHTML = '';
+  }
+
+  if (q && q.clinical_case && q.clinical_case.trim()) {
+    if (clinicalText) clinicalText.innerHTML = formatMedicalContent(q.clinical_case.trim());
+    if (clinicalBox) clinicalBox.style.display = 'block';
+
+    const subQuestions = getClinicalCaseSubQuestions(q);
+    const totalCount = subQuestions.length;
+
+    // Calcul de la numérotation (ex: Cas Clinique 2 • Question 4/5)
+    const idParts = String(q.id || '').split('.');
+    let caseNum = idParts.length > 1 ? idParts[0] : null;
+    let subIdx = idParts.length > 1 ? parseInt(idParts[1], 10) : null;
+
+    if ((subIdx === null || isNaN(subIdx)) && totalCount > 0) {
+      const foundIdx = subQuestions.findIndex(sq => sq.uid === q.uid || sq.id === q.id);
+      if (foundIdx !== -1) subIdx = foundIdx + 1;
+    }
+
+    if (subBadge && subBadgeText) {
+      if (subIdx !== null && totalCount > 0) {
+        const caseLabel = caseNum ? `Cas Clinique ${caseNum}` : 'Cas Clinique';
+        subBadgeText.textContent = `${caseLabel} • Question ${subIdx}/${totalCount}`;
+        subBadge.style.display = 'inline-flex';
+      } else if (caseNum) {
+        subBadgeText.textContent = `Cas Clinique ${caseNum}`;
+        subBadge.style.display = 'inline-flex';
+      } else {
+        subBadge.style.display = 'none';
+      }
+    }
+
+    // Bouton de consultation de toutes les questions du cas
+    if (btnAccordion && btnAccordionText) {
+      if (totalCount > 1) {
+        btnAccordion.style.display = 'inline-flex';
+        btnAccordionText.textContent = `Voir les ${totalCount} questions du cas`;
+      } else {
+        btnAccordion.style.display = 'none';
+      }
+    }
+  } else {
+    if (clinicalBox) clinicalBox.style.display = 'none';
+    if (subBadge) subBadge.style.display = 'none';
+    if (btnAccordion) btnAccordion.style.display = 'none';
+  }
+}
+
+window.toggleClinicalQuestionsAccordion = function() {
+  const currentQ = getEffectiveArenaQuestion();
+  if (!currentQ || !currentQ.clinical_case) return;
+
+  const accordionContainer = document.getElementById('arena-clinical-questions-accordion');
+  const btnAccordion = document.getElementById('btn-toggle-clinical-questions');
+  const btnAccordionText = document.getElementById('btn-toggle-clinical-text');
+  if (!accordionContainer) return;
+
+  isClinicalAccordionOpen = !isClinicalAccordionOpen;
+
+  if (isClinicalAccordionOpen) {
+    const subQuestions = getClinicalCaseSubQuestions(currentQ);
+    const totalCount = subQuestions.length;
+
+    if (btnAccordion) btnAccordion.classList.add('is-open');
+    if (btnAccordionText) btnAccordionText.textContent = `Masquer les questions (${totalCount})`;
+
+    let html = '';
+    subQuestions.forEach((sq, idx) => {
+      const isCurrent = (sq.uid === currentQ.uid || sq.id === currentQ.id);
+      const qNum = idx + 1;
+      const opts = sq.options || [];
+
+      let optionsHtml = '';
+      if (sq.is_croq) {
+        optionsHtml = `
+          <div class="clinical-accordion-opt">
+            <span class="clinical-accordion-opt-letter">📝</span>
+            <span style="font-style:italic;color:var(--cyan);">Question à Réponse Ouverte et Courte (CROQ)</span>
+          </div>
+        `;
+      } else if (opts.length > 0) {
+        optionsHtml = `
+          <div class="clinical-accordion-options">
+            ${opts.map((opt, oIdx) => {
+              const letter = opt.letter || String.fromCharCode(65 + oIdx);
+              return `
+                <div class="clinical-accordion-opt">
+                  <span class="clinical-accordion-opt-letter">${escapeHtml(letter)}.</span>
+                  <span class="clinical-accordion-opt-text">${escapeHtml(opt.text || '')}</span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+      }
+
+      html += `
+        <div class="clinical-accordion-item ${isCurrent ? 'is-current' : ''}">
+          <div class="clinical-accordion-header">
+            <span class="clinical-accordion-qnum">
+              <i data-lucide="help-circle" style="width:13px;height:13px;"></i>
+              Question ${qNum} / ${totalCount}
+            </span>
+            ${isCurrent ? '<span class="clinical-accordion-tag-current">Question en cours</span>' : ''}
+          </div>
+          <div class="clinical-accordion-text">
+            ${formatMedicalContent(sq.question || sq.statement)}
+          </div>
+          ${optionsHtml}
+        </div>
+      `;
+    });
+
+    accordionContainer.innerHTML = html;
+    accordionContainer.style.display = 'flex';
+    refreshLucide();
+  } else {
+    const subQuestions = getClinicalCaseSubQuestions(currentQ);
+    if (btnAccordion) btnAccordion.classList.remove('is-open');
+    if (btnAccordionText) btnAccordionText.textContent = `Voir les ${subQuestions.length} questions du cas`;
+    accordionContainer.style.display = 'none';
+    accordionContainer.innerHTML = '';
+  }
+};
+
 function renderHistoryQuestion(historyEntry) {
   if (!historyEntry || !historyEntry.question) return;
   const q = historyEntry.question;
@@ -1628,15 +1798,8 @@ function renderHistoryQuestion(historyEntry) {
     progressPill.className = historyEntry.isCorrect ? 'tag-pill progress-pill' : 'tag-pill progress-penalized';
   }
 
-  // Cas Clinique
-  const clinicalBox = document.getElementById('arena-clinical-case');
-  const clinicalText = document.getElementById('arena-clinical-case-text');
-  if (q.clinical_case && q.clinical_case.trim()) {
-    clinicalText.innerHTML = formatMedicalContent(q.clinical_case.trim());
-    clinicalBox.style.display = 'block';
-  } else {
-    clinicalBox.style.display = 'none';
-  }
+  // Cas Clinique & Sous-questions
+  updateClinicalCaseUI(q);
 
   // Énoncé de la question
   document.getElementById('arena-question-text').innerHTML = formatMedicalContent(q.question || q.statement);
@@ -1947,15 +2110,8 @@ function loadNextArenaQuestion() {
 
   updateArenaDailyBadge();
 
-  // Clinical Case
-  const clinicalBox = document.getElementById('arena-clinical-case');
-  const clinicalText = document.getElementById('arena-clinical-case-text');
-  if (currentQuestion.clinical_case && currentQuestion.clinical_case.trim()) {
-    clinicalText.innerHTML = formatMedicalContent(currentQuestion.clinical_case.trim());
-    clinicalBox.style.display = 'block';
-  } else {
-    clinicalBox.style.display = 'none';
-  }
+  // Clinical Case & Sous-questions
+  updateClinicalCaseUI(currentQuestion);
 
   // Question Statement
   document.getElementById('arena-question-text').innerHTML = formatMedicalContent(currentQuestion.question || currentQuestion.statement);

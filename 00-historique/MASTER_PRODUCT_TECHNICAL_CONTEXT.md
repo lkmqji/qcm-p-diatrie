@@ -1,5 +1,5 @@
 # PédiaDrill — Master Product & Technical Context
-*Dernière mise à jour : 2026-10-30 17:50:00 CET*
+*Dernière mise à jour : 2026-11-01 20:15:00 CET*
 *Source unique de vérité technique et fonctionnelle du projet PédiaDrill.*
 
 ---
@@ -32,7 +32,7 @@ qcm-p-diatrie/
 │   └── MASTER_PRODUCT_TECHNICAL_CONTEXT.md # Contexte technique global (source unique de vérité)
 ├── android/                              # Projet natif Android Capacitor 8
 │   ├── app/
-│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 15, versionName 1.4.8)
+│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 16, versionName 1.4.9)
 │   │   ├── debug.keystore                # Keystore de signature unifié (local & CI/CD)
 │   │   ├── google-services.json          # Configuration Firebase Android (qcm-pediatr, com.pediadrill.app)
 │   │   └── src/main/
@@ -77,6 +77,9 @@ qcm-p-diatrie/
 ├── agentation.bundle.js                  # Outil d'annotation d'interface Agentation
 ├── build.cjs                             # Script de copie vers le dossier dist/
 ├── build-bundle.cjs                      # Script d'assemblage automatique (CSS, bundle JS, index.html)
+├── server.cjs                            # Serveur HTTP statique autonome pour le développement local
+├── lancer-app.bat                        # Script batch de compilation et lancement local en 1 clic
+├── start-local.bat                       # Alias pour lancer-app.bat
 ├── build-apk.bat                         # Script d'automatisation de build natif Android (:app:assembleDebug)
 ├── capacitor.config.json                 # Configuration Capacitor (appId, appName, plugins auth)
 ├── google-services.json                  # Fichier Firebase Google Services racine
@@ -193,12 +196,25 @@ Lorsqu'une réponse est incorrecte (dans la modale d'erreur ou dans le carnet) :
 
 ---
 
-### 3.5. Explication Directe en Arène (`#arena-explanation-box`)
+### 3.5. Cas Cliniques : Numérotation des Sous-Questions & Accordéon de Consultation Intégrale (`#view-arena`)
+- **Numérotation Contextuelle des Sous-Questions (`#arena-subquestion-badge`)** :
+  - Pour toute question issue d'un cas clinique (`q.clinical_case` présent, `q.id` au format `CaseNumber.QuestionNumber` comme `37.4`), un badge néon stylisé violet/cyan est injecté au-dessus de l'énoncé.
+  - Libellé automatique : `Cas Clinique {X} • Question {Y}/{Total}` (ex: « Cas Clinique 37 • Question 4/10 »).
+  - Masquage automatique pour les QCM autonomes isolés.
+- **Volet Accordéon de Consultation Complète (`.clinical-case-box` / `#arena-clinical-questions-accordion`)** :
+  - **En-tête enrichi** : La boîte du cas clinique intègre un en-tête flex (`.clinical-case-header`) avec titre stéthoscope et un bouton interactif `#btn-toggle-clinical-questions` affichant dynamiquement le nombre de sous-questions (ex: *« Voir les 10 questions du cas »*).
+  - **Consultation sans quitter le drill** : Le clic sur le bouton déplie un volet accordéon animé sous le texte du cas sans recharger la page ni altérer la position dans la file SRS.
+  - **Rendu en lecture seule** : Chaque sous-question est présentée avec son numéro, son énoncé médical formaté (`formatMedicalContent`), ses propositions de réponse (A à E) ou sa pastille CROQ, et un badge distinctif `Question en cours` sur la question active.
+  - **Prise en charge universelle** : Fonctionnel en mode drill actif (`renderQuestion`) ainsi qu'en mode consultation d'historique des QCM précédents (`renderHistoryQuestion`).
+
+---
+
+### 3.6. Explication Directe en Arène (`#arena-explanation-box`)
 - Dès qu'une réponse est validée avec succès, l'explication officielle issue de la base de données s'affiche directement dans l'arène sous la bannière de succès, permettant un rappel immédiat avant de passer à la question suivante.
 
 ---
 
-### 3.6. Carnet de Raisonnement IA : Tri Multi-Critères & Modes de Vue (`view-notebook`)
+### 3.7. Carnet de Raisonnement IA : Tri Multi-Critères & Modes de Vue (`view-notebook`)
 - **Tri Multi-Critères Complet (Croissant & Décroissant)** :
   - **Critères disponibles (`notebookSortBy`)** :
     - 📅 **Date de la faute (`date`)** : Tri par horodatage de la dernière tentative (`latestTimestamp`).
@@ -312,7 +328,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ### 3.9. Système de Mises à Jour Automatiques & GitHub Releases (`src/services/updateService.js` & CI/CD)
 - **Service d'Orchestration des Mises à Jour (`UpdateService`)** :
-  - Version déclarée : `CURRENT_APP_VERSION = '1.4.8'` synchronisée avec `package.json` et `build.gradle` (`versionCode 15`).
+  - Version déclarée : `CURRENT_APP_VERSION = '1.4.9'` synchronisée avec `package.json` et `build.gradle` (`versionCode 16`).
   - Comparaison sémantique universelle (`compareVersions`) ignorant les préfixes `v`.
   - Interrogation de l'API GitHub Releases (`https://api.github.com/repos/lkmqji/qcm-p-diatrie/releases/latest`) avec cooldown de 4 heures (`pedia_last_update_check_ts`).
   - Extraction de l'asset `.apk` direct (`PediaDrill.apk`). En environnement natif Android Capacitor, l'URL est ouverte via `_system` pour lancer le gestionnaire de téléchargement Android natif.
@@ -505,7 +521,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.4.8` (`versionCode 15`)
+- **Version native** : `versionName 1.4.9` (`versionCode 16`)
 - **Empreinte SHA-1 (Debug Keystore Gradle & GitHub Actions)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
 - **Empreinte SHA-256 (Debug Keystore Gradle & GitHub Actions)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
 - **Keystore unifié** : `android/app/debug.keystore` (Alias : `AndroidDebugKey`, mot de passe `android`, garantissant une empreinte cryptographique identique entre les compilations locales et la CI/CD GitHub Actions).
