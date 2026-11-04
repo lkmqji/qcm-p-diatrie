@@ -1,5 +1,5 @@
 // PédiaDrill Service Worker - Offline Cache & Fast Launch
-const CACHE_NAME = 'pedia-drill-v2';
+const CACHE_NAME = 'pedia-drill-v1.5.1';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -34,7 +34,31 @@ self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
 
-  // Same-origin static assets: stale-while-revalidate for instantaneous 0ms launch
+  // 1. Navigation / HTML Document requests: ALWAYS Network-First with cache fallback
+  const isHtml = event.request.mode === 'navigate' ||
+                 event.request.destination === 'document' ||
+                 (event.request.headers.get('accept') && event.request.headers.get('accept').includes('text/html'));
+
+  if (isHtml && url.origin === self.location.origin) {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseClone);
+            });
+          }
+          return networkResponse;
+        })
+        .catch(() => {
+          return caches.match(event.request).then((cached) => cached || caches.match('./index.html'));
+        })
+    );
+    return;
+  }
+
+  // 2. Same-origin static assets: Stale-while-revalidate for instantaneous 0ms launch
   if (url.origin === self.location.origin) {
     event.respondWith(
       caches.match(event.request).then((cachedResponse) => {
@@ -56,7 +80,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // External network requests (Firebase, Gemini API, fonts)
+  // 3. External network requests (Firebase, Gemini API, fonts)
   event.respondWith(
     fetch(event.request).catch(() => caches.match(event.request))
   );

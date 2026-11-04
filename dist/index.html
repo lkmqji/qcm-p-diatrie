@@ -8456,9 +8456,9 @@ body {
 
       <div class="update-version-banner">
         <div class="update-version-chips">
-          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.5.0</strong></span>
+          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.5.1</strong></span>
           <i data-lucide="arrow-right" style="width:14px;height:14px;color:var(--text-dim);"></i>
-          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.5.0</strong></span>
+          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.5.1</strong></span>
         </div>
         <div class="update-release-date" id="update-modal-date">Publiée sur GitHub Releases</div>
       </div>
@@ -11887,7 +11887,7 @@ class FirebaseSyncService {
 // Update Management Service for PédiaDrill
 // Checks GitHub Releases for new APK versions, notifies the user, and triggers direct download.
 
-const CURRENT_APP_VERSION = '1.5.0';
+const CURRENT_APP_VERSION = '1.5.1';
 const GITHUB_REPO = 'lkmqji/qcm-p-diatrie';
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
 const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours auto-check cooldown
@@ -12208,10 +12208,30 @@ function initApp() {
   initLessonTracker();
   refreshLucide();
 
-  // Register Service Worker for offline PWA
+  // Register Service Worker for offline PWA & handle automatic update reload
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').catch(err => {
+    navigator.serviceWorker.register('./sw.js').then((reg) => {
+      reg.addEventListener('updatefound', () => {
+        const installingWorker = reg.installing;
+        if (installingWorker) {
+          installingWorker.addEventListener('statechange', () => {
+            if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              console.log('[PediaDrill] Nouvelle mise à jour SW prête, rechargement...');
+              window.location.reload();
+            }
+          });
+        }
+      });
+    }).catch(err => {
       console.warn('SW registration:', err);
+    });
+
+    let swRefreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!swRefreshing) {
+        swRefreshing = true;
+        window.location.reload();
+      }
     });
   }
 
@@ -15520,14 +15540,19 @@ function renderStatsUI() {
   // Determine days for the activity chart: 7 days by default when on 'today', or the selected range otherwise
   let chartDays;
   if (currentStatsRange === 'today') {
-    if (selectedDayOffset === 0) {
-      chartDays = studyTracker.getDaysByRange('7');
-    } else {
-      chartDays = [];
-      for (let i = 6; i >= 0; i--) {
-        const dStr = getDateStrWithOffset(selectedDayOffset - i);
-        chartDays.push(studyTracker.getOrCreateDayRecord(dStr));
-      }
+    chartDays = [];
+    for (let i = 6; i >= 0; i--) {
+      const dStr = getDateStrWithOffset(selectedDayOffset - i);
+      const rec = (studyTracker.history && studyTracker.history[dStr]) ? studyTracker.history[dStr] : {
+        dateStr: dStr,
+        totalQuestions: 0,
+        correctAnswers: 0,
+        wrongAnswers: 0,
+        totalTimeSeconds: 0,
+        sessionsCount: 0,
+        avgTimePerQuestion: 0
+      };
+      chartDays.push(rec);
     }
   } else {
     chartDays = rangeDays;
@@ -15731,6 +15756,9 @@ function renderStatsActivityChart(rangeDays) {
 
     const tooltip = `${formatDateFr(d.dateStr)} : ${total} QCM (${cor} justes, ${wr} fautes) • Vitesse : ${speed || '--'}s/QCM`;
 
+    // Subtle vertical column guide track for clear visibility of all columns
+    svg += `<rect class="chart-col-bg" x="${xBar - 2}" y="${padTop}" width="${barWidth + 4}" height="${plotH}" rx="4" fill="rgba(255,255,255,0.02)" />`;
+
     if (total > 0) {
       // Correct bar (bottom emerald)
       if (cor > 0) {
@@ -15748,13 +15776,23 @@ function renderStatsActivityChart(rangeDays) {
           </rect>
         `;
       }
+      // Volume number label above bar when space permits
+      if (barWidth >= 16 || N <= 10) {
+        const yTopBar = (cor > 0 && wr > 0) ? yWr : (cor > 0 ? yCor : yWr);
+        svg += `
+          <text x="${xCenter}" y="${yTopBar - 6}" fill="#00d4ff" font-size="${barWidth < 20 ? 9 : 10}" font-weight="700" text-anchor="middle" font-family="'Outfit', sans-serif">${total}</text>
+        `;
+      }
     } else {
-      // Empty day placeholder bar
+      // Empty day visible baseline slot pill with border and indicator
       svg += `
-        <rect x="${xBar}" y="${padTop + plotH - 3}" width="${barWidth}" height="3" rx="1" fill="rgba(255,255,255,0.06)">
-          <title>${escapeHtml(formatDateFr(d.dateStr))} : Aucun entraînement</title>
+        <rect class="chart-bar-rect" x="${xBar}" y="${padTop + plotH - 5}" width="${barWidth}" height="5" rx="2.5" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.18)" stroke-width="1">
+          <title>${escapeHtml(formatDateFr(d.dateStr))} : Aucun entraînement (0 QCM)</title>
         </rect>
       `;
+      if (N <= 10) {
+        svg += `<text x="${xCenter}" y="${padTop + plotH - 9}" fill="#64748b" font-size="9" text-anchor="middle" font-family="var(--font-body)">0</text>`;
+      }
     }
 
     // Velocity point calculation
@@ -15766,8 +15804,32 @@ function renderStatsActivityChart(rangeDays) {
     // X-axis date labels (show filtered according to range size)
     const shouldShowLabel = (N <= 10) || (N <= 31 && i % 3 === 0) || (i === N - 1);
     if (shouldShowLabel) {
-      const labelText = d.dateStr ? d.dateStr.slice(5).replace('-', '/') : '';
-      svg += `<text x="${xCenter}" y="${svgHeight - padBottom + 16}" fill="#8ca2c4" font-size="9" text-anchor="middle" font-family="var(--font-body)">${labelText}</text>`;
+      let labelText = '';
+      let isSelectedDay = false;
+      if (d.dateStr) {
+        const todayStr = getDateStrWithOffset(0);
+        const hierStr = getDateStrWithOffset(-1);
+        const activeOffsetStr = getDateStrWithOffset(selectedDayOffset);
+        isSelectedDay = (d.dateStr === activeOffsetStr);
+
+        if (N <= 10) {
+          if (d.dateStr === todayStr) {
+            labelText = 'Auj.';
+          } else if (d.dateStr === hierStr) {
+            labelText = 'Hier';
+          } else {
+            const parts = d.dateStr.split('-').map(Number);
+            const dt = new Date(parts[0], parts[1] - 1, parts[2]);
+            const dayName = dt.toLocaleDateString('fr-FR', { weekday: 'short' });
+            labelText = `${dayName} ${parts[2]}`;
+          }
+        } else {
+          labelText = d.dateStr.slice(5).replace('-', '/');
+        }
+      }
+      const labelColor = isSelectedDay ? '#00d4ff' : '#94a3b8';
+      const labelWeight = isSelectedDay ? '700' : '500';
+      svg += `<text x="${xCenter}" y="${svgHeight - padBottom + 16}" fill="${labelColor}" font-size="${N > 25 ? 9 : 10}" font-weight="${labelWeight}" text-anchor="middle" font-family="var(--font-body)">${labelText}</text>`;
     }
   });
 
@@ -16624,31 +16686,47 @@ function renderLessonDailyChart(rangeStr, dailyData) {
         ? `${dateLabel} : ${formattedTime} d'étude (${item.sessionsCount || 0} session${(item.sessionsCount || 0) > 1 ? 's' : ''})`
         : `${dateLabel} : Aucun temps de cours enregistré`;
 
-      const barColor = item.daySeconds > 0 ? 'url(#lessonBarGrad)' : 'rgba(255,255,255,0.04)';
-      const barStroke = item.daySeconds > 0 ? '#10b981' : 'rgba(255,255,255,0.08)';
+      // Subtle vertical column guide track for clear visibility of all columns
+      svgHtml += `<rect class="chart-col-bg" x="${x - 2}" y="${padTop}" width="${barWidth + 4}" height="${chartH}" rx="4" fill="rgba(255,255,255,0.02)" />`;
 
-      svgHtml += `
-        <rect class="lesson-bar-rect" x="${x}" y="${item.daySeconds > 0 ? y : (padTop + chartH - 3)}" width="${barWidth}" height="${Math.max(barHeight, 3)}" rx="3"
-              fill="${barColor}" stroke="${barStroke}" stroke-width="1">
-          <title>${escapeHtml(tooltip)}</title>
-        </rect>
-      `;
-
-      // Duration label above bar if duration > 0 and enough space
-      if (item.daySeconds > 0 && (barWidth >= 16 || daysCount <= 14)) {
-        const hrs = Math.floor(item.daySeconds / 3600);
-        const mins = Math.floor((item.daySeconds % 3600) / 60);
-        const label = hrs > 0 ? `${hrs}h${mins > 0 ? mins : ''}` : `${mins}m`;
+      if (item.daySeconds > 0) {
         svgHtml += `
-          <text x="${xCenter}" y="${y - 6}" fill="#00d4ff" font-size="${barWidth < 20 ? 9 : 10}" font-weight="700" text-anchor="middle" font-family="'Outfit', sans-serif">${label}</text>
+          <rect class="lesson-bar-rect" x="${x}" y="${y}" width="${barWidth}" height="${Math.max(barHeight, 4)}" rx="3"
+                fill="url(#lessonBarGrad)" stroke="#10b981" stroke-width="1">
+            <title>${escapeHtml(tooltip)}</title>
+          </rect>
         `;
+
+        // Duration label above bar if duration > 0 and enough space
+        if (barWidth >= 16 || daysCount <= 14) {
+          const hrs = Math.floor(item.daySeconds / 3600);
+          const mins = Math.floor((item.daySeconds % 3600) / 60);
+          const label = hrs > 0 ? `${hrs}h${mins > 0 ? mins : ''}` : `${mins}m`;
+          svgHtml += `
+            <text x="${xCenter}" y="${y - 6}" fill="#00d4ff" font-size="${barWidth < 20 ? 9 : 10}" font-weight="700" text-anchor="middle" font-family="'Outfit', sans-serif">${label}</text>
+          `;
+        }
+      } else {
+        // Visible empty slot baseline pill with border
+        svgHtml += `
+          <rect class="lesson-bar-rect" x="${x}" y="${padTop + chartH - 5}" width="${barWidth}" height="5" rx="2.5"
+                fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.18)" stroke-width="1">
+            <title>${escapeHtml(tooltip)}</title>
+          </rect>
+        `;
+        if (daysCount <= 10) {
+          svgHtml += `<text x="${xCenter}" y="${padTop + chartH - 9}" fill="#64748b" font-size="9" text-anchor="middle" font-family="var(--font-body)">—</text>`;
+        }
       }
 
       // X Axis label with smart spacing
       const shouldShowLabel = (daysCount <= 10) || (daysCount <= 21 && idx % 2 === 0) || (daysCount <= 35 && idx % 3 === 0) || (daysCount > 35 && idx % 5 === 0) || (idx === daysCount - 1);
       if (shouldShowLabel) {
+        const isCurrentDay = (item.dayLabel === 'Auj.' || (selectedLessonDayOffset === 0 && idx === daysCount - 1));
+        const labelColor = isCurrentDay ? '#00d4ff' : '#94a3b8';
+        const labelWeight = isCurrentDay ? '700' : '500';
         svgHtml += `
-          <text x="${xCenter}" y="${padTop + chartH + 18}" fill="#94a3b8" font-size="${daysCount > 25 ? 9 : 11}" font-weight="500" text-anchor="middle" font-family="var(--font-body)">${item.dayLabel}</text>
+          <text x="${xCenter}" y="${padTop + chartH + 18}" fill="${labelColor}" font-size="${daysCount > 25 ? 9 : 11}" font-weight="${labelWeight}" text-anchor="middle" font-family="var(--font-body)">${item.dayLabel}</text>
         `;
       }
     });

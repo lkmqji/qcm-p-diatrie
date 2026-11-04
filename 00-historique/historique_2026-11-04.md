@@ -34,22 +34,33 @@ L'utilisateur a demandé :
 
 ---
 
-## 11:08:00 CET — Release v1.5.0 (versionCode 17) — Déploiement Vercel & Release Android
+## 13:35:00 CET — Release v1.5.1 (versionCode 18) — Correctif Cache Service Worker & Rendu Visuel 7 Jours
 
 ### Numéros de version
-- **Version sémantique** : `v1.5.0` (incrémentée depuis `v1.4.9`)
-- **Android versionCode** : `17` (incrémenté depuis `16`)
+- **Version sémantique** : `v1.5.1` (incrémentée depuis `v1.5.0`)
+- **Android versionCode** : `18` (incrémenté depuis `17`)
 
-### Résumé des changements intégrés
-1. **Graphiques de statistiques (QCM & Cours)** :
-   - Affichage par défaut de l'historique sur 7 jours dans les graphiques SVG (`#stats-activity-chart` et `#lesson-daily-chart-container`) lorsque la vue est sur « Aujourd'hui ».
-   - Préservation stricte du bilan journalier sur les cartes KPI et sections analytiques associées.
-   - Synchronisation complète de l'ensemble de la page dès qu'une période différente est sélectionnée en haut (14j, 28j/30j, Tout, Personnalisé).
-2. **Synchronisation Capacitor & Build Android** :
-   - Compilation locale `PediaDrill.apk` avec Gradle Wrapper 9.2.0 et Android SDK 36.
-   - Synchronisation des assets web dans `android/app/src/main/assets/public/`.
-3. **Déploiement Vercel & GitHub Actions** :
-   - Push sur la branche `main` pour mise à jour automatique sur Vercel.
-   - Création et push du tag `v1.5.0` pour déclencher le workflow GitHub Actions (`.github/workflows/build-and-release.yml`) et publier la release avec l'APK téléchargeable.
+### Cause racine identifiée & Correctifs apportés
+1. **Invalidation du cache PWA / Service Worker (`sw.js`)** :
+   - Le Service Worker (`sw.js`) utilisait auparavant une stratégie stale-while-revalidate aveugle sur toutes les requêtes du même domaine, y compris le document racine `/` et `index.html`.
+   - Lors d'une navigation ou d'un rechargement en ligne, le navigateur servait systématiquement le document HTML mis en cache de l'ancienne version (`v1.4.9`), ce qui empêchait l'utilisateur de recevoir le nouveau code des graphiques 7 jours.
+   - **Correctif** : Migration vers une stratégie stricte **Network-First** pour les requêtes HTML/navigation (`event.request.mode === 'navigate'` ou `destination === 'document'`). En ligne, le navigateur charge instantanément la dernière version déployée sur Vercel et met à jour le cache. En hors-ligne, le cache local prend le relais de façon transparente.
+   - Incrémentation du nom de cache en `pedia-drill-v1.5.1` et purge automatique de tous les anciens caches lors de l'activation.
+   - Ajout d'écouteurs d'événements dans `src/app.js` (`controllerchange` et `updatefound`) pour recharger automatiquement le client dès qu'un nouveau Service Worker prend le contrôle.
+
+2. **Rendu visuel et lisibilité des 7 jours dans les graphiques SVG (`src/app.js`)** :
+   - Dans les graphiques QCM (`#stats-activity-chart`) et Cours (`#lesson-daily-chart-container`), les jours sans activité (`total === 0` ou `daySeconds === 0`) étaient dessinés avec une barre de 3px à 4% d'opacité, ce qui les rendait presque invisibles à l'œil nu sur fond sombre lorsque l'utilisateur n'avait d'activité qu'aujourd'hui.
+   - **Correctif** :
+     - Ajout d'une colonne guide d'arrière-plan (`chart-col-bg`) sur chaque colonne pour structurer visuellement les 7 jours de la période.
+     - Affichage d'un socle de base visible avec bordure (`rgba(255,255,255,0.18)`) et indicateur textuel explicite (`0` pour les QCM, `—` pour les cours) sur chaque jour vide.
+     - Affichage direct du volume de questions ou de la durée au-dessus des barres actives.
+     - Libellés d'axes X harmonisés en français (`dim. 29`, `lun. 30`, ..., `Hier`, `Auj.`) avec mise en valeur du jour actif en cyan (`#00d4ff`) et en gras.
+     - Sécurisation de la constitution de l'échantillon des 7 jours sans mutation indésirable de `studyTracker.history`.
+
+3. **Déploiements Vercel & GitHub Actions Release Android** :
+   - Compilation locale `PediaDrill.apk` (`versionCode 18`, `versionName 1.5.1`).
+   - Push sur la branche `main` pour publication Vercel.
+   - Tag git `v1.5.1` poussé pour déclencher la release GitHub Actions.
+
 
 
