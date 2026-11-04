@@ -62,5 +62,35 @@ L'utilisateur a demandé :
    - Push sur la branche `main` pour publication Vercel.
    - Tag git `v1.5.1` poussé pour déclencher la release GitHub Actions.
 
+---
+
+## 13:50:00 CET — Release v1.5.2 (versionCode 19) — Déploiement Vercel & Release Android
+
+### Numéros de version
+- **Version sémantique** : `v1.5.2` (incrémentée depuis `v1.5.1`)
+- **Android versionCode** : `19` (incrémenté depuis `18`)
+
+### Actions & Déploiements réalisés
+1. **Incrémentation des versions de référence** :
+   - `package.json` : `"version": "1.5.2"`
+   - `src/services/updateService.js` : `CURRENT_APP_VERSION = '1.5.2'`
+   - `android/app/build.gradle` : `versionCode 19`, `versionName "1.5.2"`
+   - `template.html` : `#update-modal-curr-version` et `#update-modal-new-version` mis à jour en `v1.5.2`
+   - `sw.js` : Invalidation du cache PWA (`CACHE_NAME = 'pedia-drill-v1.5.2'`)
+   - `00-historique/MASTER_PRODUCT_TECHNICAL_CONTEXT.md` : Synchronisation des versions et du versionCode
+
+2. **Compilation et Assemblage de Production** :
+   - Exécution de `node build-bundle.cjs` : synchronisation du CSS, assemblage de `src/app.bundle.js`, compilation de `index.html` et mise à jour de `dist/`.
+   - Synchronisation des assets natifs Capacitor (`npx cap sync android`).
+   - Compilation locale de l'APK Android (`PediaDrill.apk`).
+
+3. **Validation & Intégrité** :
+   - Vérification de la syntaxe Node.js sur `src/app.js`, `src/app.bundle.js` et `src/services/updateService.js`.
+
+4. **Déploiements Vercel & GitHub Actions Release Android** :
+   - Push sur la branche `main` pour publication immédiate sur Vercel.
+   - Tag git `v1.5.2` créé et poussé pour déclencher le workflow GitHub Actions de compilation et release APK.
+
+
 
 
