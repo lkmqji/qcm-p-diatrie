@@ -32,7 +32,7 @@ qcm-p-diatrie/
 │   └── MASTER_PRODUCT_TECHNICAL_CONTEXT.md # Contexte technique global (source unique de vérité)
 ├── android/                              # Projet natif Android Capacitor 8
 │   ├── app/
-│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 16, versionName 1.4.9)
+│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 17, versionName 1.5.0)
 │   │   ├── debug.keystore                # Keystore de signature unifié (local & CI/CD)
 │   │   ├── google-services.json          # Configuration Firebase Android (qcm-pediatr, com.pediadrill.app)
 │   │   └── src/main/
@@ -263,7 +263,9 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
   - **Alignement strict calendrier GitHub** : Grille SVG de 9 colonnes (semaines) x 7 lignes (jours de la semaine). La date de départ est strictement calée sur le lundi de la 9ème semaine passée (`startMonday = now - 8*7 + todayDayOfWeek`), et la dernière colonne (colonne 8) s'achève sur le jour d'aujourd'hui (`row = (now.getDay() + 6) % 7`).
   - **Correspondance stricte des libellés de jours** : La ligne 0 correspond strictement au Lundi (« Lun »), la ligne 2 au Mercredi (« Mer »), la ligne 4 au Vendredi (« Ven ») et la ligne 6 au Dimanche (« Dim »), éliminant tout décalage entre les étiquettes et les cellules.
   - **Paliers d'intensité de couleur** : 5 niveaux visuels (`#121d33` neutre, `#064e3b` 1-14 QCM, `#047857` 15-39 QCM, `#10b981` 40-79 QCM, `#00d4ff` 80+ QCM) avec infobulles détaillées au survol.
-- **Graphique Combiné SVG Interactif (Bilan Journalier)** :
+- **Graphique Combiné SVG Interactif (Bilan Journalier & Tendance Hebdomadaire)** :
+  - **Affichage de 7 jours par défaut** : Par défaut (quand le sélecteur est sur « Aujourd'hui »), le graphique présente automatiquement les 7 derniers jours d'activité (`studyTracker.getDaysByRange('7')` ou 7 jours glissants selon l'offset), tandis que les cartes KPI, la projection et la timeline restent centrées sur la journée active.
+  - **Synchronisation dynamique multi-périodes** : Si l'utilisateur sélectionne une période en haut (14j, 21j, 28j, 30j, Tout, Personnalisé), l'intégralité de la vue (KPIs, chapitres, timeline et graphique) bascule sur cette période.
   - Barres empilées par date : Émeraude pour les réponses justes, Rose pour les fautes, avec courbe ambre de vitesse de réponse (secondes/QCM).
 - **Projection Dynamique Concours J-28 (10/11)** :
   - Cadence observée (QCM/jour actif) et estimation de la date d'achèvement de l'ensemble du programme.
@@ -313,8 +315,10 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
     4. 📚 **Couverture Programme** : Décompte et pourcentage des 35 chapitres travaillés.
   - **Histogramme SVG d'Étude Journalière Réactif (`#lesson-daily-chart-container`)** :
     - Graphique interactif à barres SVG avec dégradé cyan/émeraude (`#lessonBarGrad`), étiquettes d'heures au-dessus des barres, info-bulles au survol et lignes de repère horaires.
+    - **Affichage de 7 jours par défaut** : Par défaut (sélecteur sur « Aujourd'hui »), le graphique affiche les 7 derniers jours d'étude des cours (`getLessonRangeDailyData('7', offset)`), tandis que les 4 KPI cards restent basées sur le jour sélectionné.
+    - **Synchronisation dynamique** : Si l'utilisateur clique sur une autre période en haut (14 jours, 28 jours, tout, personnalisé), toutes les statistiques et l'histogramme basculent sur la période demandée.
     - Génération dynamique des données :
-      - *Jour unique* (Aujourd'hui / Stepper Hier) : barre centrée proéminente (largeur 64px) avec durée exacte et mention du jour.
+      - *Jour unique* (si filtré spécifiquement) : barre centrée proéminente (largeur 64px) avec durée exacte et mention du jour.
       - *Plages multi-jours* (7, 14, 21, 28, 30 jours, Tout, Personnalisé) : barres proportionnelles, étiquetage intelligent de l'axe X pour éviter les chevauchements, et message d'état si aucune session n'est enregistrée.
   - **Répartition du Temps par Cours (`#lesson-distribution-container`)** :
     - Classement des 10 cours les plus travaillés avec barres de progression proportionnelles animées et temps cumulé.
@@ -328,7 +332,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ### 3.9. Système de Mises à Jour Automatiques & GitHub Releases (`src/services/updateService.js` & CI/CD)
 - **Service d'Orchestration des Mises à Jour (`UpdateService`)** :
-  - Version déclarée : `CURRENT_APP_VERSION = '1.4.9'` synchronisée avec `package.json` et `build.gradle` (`versionCode 16`).
+  - Version déclarée : `CURRENT_APP_VERSION = '1.5.0'` synchronisée avec `package.json` et `build.gradle` (`versionCode 17`).
   - Comparaison sémantique universelle (`compareVersions`) ignorant les préfixes `v`.
   - Interrogation de l'API GitHub Releases (`https://api.github.com/repos/lkmqji/qcm-p-diatrie/releases/latest`) avec cooldown de 4 heures (`pedia_last_update_check_ts`).
   - Extraction de l'asset `.apk` direct (`PediaDrill.apk`). En environnement natif Android Capacitor, l'URL est ouverte via `_system` pour lancer le gestionnaire de téléchargement Android natif.
@@ -521,7 +525,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.4.9` (`versionCode 16`)
+- **Version native** : `versionName 1.5.0` (`versionCode 17`)
 - **Empreinte SHA-1 (Debug Keystore Gradle & GitHub Actions)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
 - **Empreinte SHA-256 (Debug Keystore Gradle & GitHub Actions)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
 - **Keystore unifié** : `android/app/debug.keystore` (Alias : `AndroidDebugKey`, mot de passe `android`, garantissant une empreinte cryptographique identique entre les compilations locales et la CI/CD GitHub Actions).

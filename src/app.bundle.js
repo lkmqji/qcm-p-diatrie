@@ -3091,7 +3091,7 @@ class FirebaseSyncService {
 // Update Management Service for PédiaDrill
 // Checks GitHub Releases for new APK versions, notifies the user, and triggers direct download.
 
-const CURRENT_APP_VERSION = '1.4.9';
+const CURRENT_APP_VERSION = '1.5.0';
 const GITHUB_REPO = 'lkmqji/qcm-p-diatrie';
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
 const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours auto-check cooldown
@@ -6721,8 +6721,24 @@ function renderStatsUI() {
   // 2. Heatmap
   renderStatsHeatmap(studyTracker.getRawHistory());
 
+  // Determine days for the activity chart: 7 days by default when on 'today', or the selected range otherwise
+  let chartDays;
+  if (currentStatsRange === 'today') {
+    if (selectedDayOffset === 0) {
+      chartDays = studyTracker.getDaysByRange('7');
+    } else {
+      chartDays = [];
+      for (let i = 6; i >= 0; i--) {
+        const dStr = getDateStrWithOffset(selectedDayOffset - i);
+        chartDays.push(studyTracker.getOrCreateDayRecord(dStr));
+      }
+    }
+  } else {
+    chartDays = rangeDays;
+  }
+
   // 3. Activity Chart (Stacked Bars & Velocity curve)
-  renderStatsActivityChart(rangeDays);
+  renderStatsActivityChart(chartDays);
 
   // 4. Velocity breakdown & Exam projection
   renderStatsVelocityAndProjection(periodAnalytics, rangeLabel);
@@ -6843,7 +6859,9 @@ function renderStatsActivityChart(rangeDays) {
   const chartTitleEl = document.getElementById('activity-chart-title');
   if (chartTitleEl) {
     if (currentStatsRange === 'today') {
-      chartTitleEl.textContent = "Activité d'Aujourd'hui (Bilan de la journée)";
+      chartTitleEl.textContent = (selectedDayOffset === 0)
+        ? "Activité des 7 derniers jours (Volume, Justes vs Fautes & Vélocité)"
+        : `Activité sur 7 jours jusqu'à ${getDayLabelForOffset(selectedDayOffset)} (Volume, Justes vs Fautes & Vélocité)`;
     } else if (currentStatsRange === 'custom') {
       const firstStr = rangeDays[0]?.dateStr ? formatDateFr(rangeDays[0].dateStr) : '';
       const lastStr = rangeDays[rangeDays.length - 1]?.dateStr ? formatDateFr(rangeDays[rangeDays.length - 1].dateStr) : '';
@@ -7481,7 +7499,7 @@ function getLessonRangeDailyData(range = currentLessonStatsRange, offset = selec
     // 7, 14, 21, 28, 30 days
     const numDays = parseInt(range, 10) || 7;
     for (let i = numDays - 1; i >= 0; i--) {
-      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + (offset || 0) - i);
       const year = d.getFullYear();
       const month = String(d.getMonth() + 1).padStart(2, '0');
       const day = String(d.getDate()).padStart(2, '0');
@@ -7489,14 +7507,19 @@ function getLessonRangeDailyData(range = currentLessonStatsRange, offset = selec
 
       const daySessions = sessions.filter(s => s.dateStr === dateStr);
       const daySeconds = daySessions.reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
-      const isToday = (i === 0);
+      const isToday = ((offset || 0) === 0 && i === 0);
+      const isHier = ((offset || 0) === -1 && i === 0);
       const dayNameShort = d.toLocaleDateString('fr-FR', { weekday: 'short' });
       const dayNum = d.getDate();
+
+      let dayLabel = `${dayNameShort} ${dayNum}`;
+      if (isToday) dayLabel = 'Auj.';
+      else if (isHier) dayLabel = 'Hier';
 
       dailyData.push({
         dateStr,
         daySeconds,
-        dayLabel: isToday ? 'Auj.' : `${dayNameShort} ${dayNum}`,
+        dayLabel,
         dateObj: d,
         sessionsCount: daySessions.length
       });
@@ -7580,6 +7603,17 @@ function renderLessonAnalytics(rangeStr = currentLessonStatsRange) {
   const dailyData = getLessonRangeDailyData(currentLessonStatsRange, selectedLessonDayOffset, customLessonStatsStart, customLessonStatsEnd);
   const summaries = (typeof lessonTracker !== 'undefined' && lessonTracker) ? lessonTracker.getLessonSummaries() : [];
 
+  // Determine chart data: 7 days by default when on 'today', or the selected range otherwise
+  let chartDailyData;
+  let chartRangeToRender;
+  if (currentLessonStatsRange === 'today') {
+    chartRangeToRender = '7';
+    chartDailyData = getLessonRangeDailyData('7', selectedLessonDayOffset, customLessonStatsStart, customLessonStatsEnd);
+  } else {
+    chartRangeToRender = currentLessonStatsRange;
+    chartDailyData = dailyData;
+  }
+
   // Period label & Badge in Panel Header
   const chartTitleEl = document.getElementById('lesson-daily-chart-title');
   const periodBadgeEl = document.getElementById('lesson-chart-period-badge');
@@ -7589,8 +7623,10 @@ function renderLessonAnalytics(rangeStr = currentLessonStatsRange) {
 
   if (currentLessonStatsRange === 'today') {
     const label = getDayLabelForOffset(selectedLessonDayOffset);
-    periodTitleText = `Temps d'Étude des Cours — ${label}`;
-    periodBadgeText = label;
+    periodTitleText = (selectedLessonDayOffset === 0)
+      ? "Historique Quotidien d'Étude des Cours (7 derniers jours)"
+      : `Historique Quotidien d'Étude des Cours (7 jours jusqu'à ${label})`;
+    periodBadgeText = "7 jours";
   } else if (currentLessonStatsRange === 'custom') {
     const sStr = customLessonStatsStart ? formatDateFr(customLessonStatsStart) : '';
     const eStr = customLessonStatsEnd ? formatDateFr(customLessonStatsEnd) : '';
@@ -7688,7 +7724,7 @@ function renderLessonAnalytics(rangeStr = currentLessonStatsRange) {
   }
 
   // 2. Daily SVG Bar Chart
-  renderLessonDailyChart(currentLessonStatsRange, dailyData);
+  renderLessonDailyChart(chartRangeToRender, chartDailyData);
 
   // 3. Lesson Distribution (Top 10)
   renderLessonDistribution(summaries);
