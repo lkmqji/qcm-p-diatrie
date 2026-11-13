@@ -1,5 +1,5 @@
 # PédiaDrill — Master Product & Technical Context
-*Dernière mise à jour : 2026-11-01 20:15:00 CET*
+*Dernière mise à jour : 2026-11-13 11:45:00 CET*
 *Source unique de vérité technique et fonctionnelle du projet PédiaDrill.*
 
 ---
@@ -15,8 +15,10 @@
 7. **Un tableau de bord analytique complet** articulé en deux sous-pages :
    - **Statistiques QCM** : 7 cartes KPI dynamiques (dont l'estimation du temps pour terminer), navigation jour par jour, heatmap GitHub d'activité calibrée sur 63 jours, graphique combiné SVG et colonne de complétion des 35 cours.
    - **Chronomètre & Suivi de cours** : chronomètre persistant avec démarrage décalé (offset), saisie directe de sessions a posteriori, 4 cartes KPI cours, histogramme SVG quotidien d'heures par jour, répartition par cours (Top 10) et matrice de complétion des 35 chapitres.
-8. **Une synchronisation multi-appareils temps réel (PWA / Mobile / Desktop)** adossée à Google Auth et Firebase Firestore, synchronisant la progression SRS, le chronomètre actif de cours en direct (`onSnapshot`), les sessions de travail et les notes partitionnées par paquets de 50 (Chunked Firestore Storage).
-9. **Une distribution native Android (APK)** propulsée par Capacitor 8 et automatisée par un pipeline CI/CD GitHub Actions avec vérification et téléchargement in-app autonome des mises à jour.
+8. **Un sélecteur modulaire & cursus médical complet** : catalogue exhaustif de 6 années et 46 modules (fondé sur la base de données Mystidia Exams), avec la Pédiatrie comme module actif et les 45 autres modules présentés sous forme de squelettes grisés élégants.
+9. **Une gestion dynamique de la date d'examen et du compte à rebours** : calcul en direct des jours restants (J-XX) et de la cadence requise (QCM/jour) avec affichage d'une bannière interactive sur le Dashboard.
+10. **Une synchronisation multi-appareils temps réel (PWA / Mobile / Desktop)** adossée à Google Auth et Firebase Firestore, synchronisant la progression SRS, le chronomètre actif de cours en direct (`onSnapshot`), les sessions de travail et les notes partitionnées par paquets de 50 (Chunked Firestore Storage).
+11. **Une distribution native Android (APK)** propulsée par Capacitor 8 et automatisée par un pipeline CI/CD GitHub Actions avec vérification et téléchargement in-app autonome des mises à jour.
 
 ---
 
@@ -32,7 +34,7 @@ qcm-p-diatrie/
 │   └── MASTER_PRODUCT_TECHNICAL_CONTEXT.md # Contexte technique global (source unique de vérité)
 ├── android/                              # Projet natif Android Capacitor 8
 │   ├── app/
-│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 19, versionName 1.5.2)
+│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 20, versionName 1.5.3)
 │   │   ├── debug.keystore                # Keystore de signature unifié (local & CI/CD)
 │   │   ├── google-services.json          # Configuration Firebase Android (qcm-pediatr, com.pediadrill.app)
 │   │   └── src/main/
@@ -61,6 +63,8 @@ qcm-p-diatrie/
 │   │   ├── questions.js                  # Déclaration ES module de la base de données (1905 questions)
 │   │   └── questions.json                # Format JSON brut des 1905 questions
 │   ├── services/
+│   │   ├── moduleCatalog.js              # Référentiel du cursus (6 années, 46 modules, squelettes et dates)
+│   │   ├── storageScope.js               # Partitionnement transparent des données d'étude par module
 │   │   ├── gemini.js                     # Service IA Gemini Flash (cascade, circuit-breaker, CROQ & tuteur)
 │   │   ├── queueEngine.js                # Algorithme de répétition espacée (SRS), file active et persistance
 │   │   ├── studyTracker.js               # Suivi du progrès journalier, chronométrage & sessions QCM
@@ -332,7 +336,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ### 3.9. Système de Mises à Jour Automatiques & GitHub Releases (`src/services/updateService.js` & CI/CD)
 - **Service d'Orchestration des Mises à Jour (`UpdateService`)** :
-  - Version déclarée : `CURRENT_APP_VERSION = '1.5.2'` synchronisée avec `package.json` et `build.gradle` (`versionCode 19`).
+  - Version déclarée : `CURRENT_APP_VERSION = '1.5.3'` synchronisée avec `package.json` et `build.gradle` (`versionCode 20`).
   - Comparaison sémantique universelle (`compareVersions`) ignorant les préfixes `v`.
   - Interrogation de l'API GitHub Releases (`https://api.github.com/repos/lkmqji/qcm-p-diatrie/releases/latest`) avec cooldown de 4 heures (`pedia_last_update_check_ts`).
   - Extraction de l'asset `.apk` direct (`PediaDrill.apk`). En environnement natif Android Capacitor, l'URL est ouverte via `_system` pour lancer le gestionnaire de téléchargement Android natif.
@@ -453,6 +457,25 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ---
 
+### 3.17. Cursus Médical Complet (Arbre 6 Années / 46 Modules), Squelettes Grisés & Date d'Examen Dynamique
+- **Référentiel Cursus Médical (`src/services/moduleCatalog.js`)** :
+  - Cartographie exhaustive issue de l'extraction certifiée de **Mystidia Exams** couvrant 6 années de médecine (PCEM 1 à DCEM 4), 46 modules/unités d'enseignement et 1 161 cours.
+  - **Statut de Disponibilité** :
+    - **Pédiatrie (5ème Année)** : `available: true`, `active: true` avec la banque complète de 35 cours et 1 905 questions.
+    - **45 Autres Modules** : `available: false`, rendus visuellement sous forme de cartes squelettes grisées (`.skeleton-disabled`) avec badge sombre *"Bientôt"*, curseur interdit (`not-allowed`) et micro-animation de secousse (*shake*) en cas de tentative d'accès avec infobulle pédagogique.
+- **Modale Paramètres Reworkée (`#modal-settings`)** :
+  - Section 1 : Accordéon hiérarchique par année d'études avec compteurs de cours et de QCM. La 5ème année est dépliée par défaut.
+  - Section 2 : Datepicker natif stylisé avec prévisualisation en temps réel du badge dynamique (`J-XX`, `Jour J !`, ou `Examen passé`).
+  - Section 3 : Clé API Google Gemini & cascade Flash automatique.
+  - Section 4 : Gestion des versions et vérification GitHub Releases.
+- **Bannière Compte à Rebours sur le Dashboard (`#dashboard-exam-banner-container`)** :
+  - Affiche en tête du Dashboard le module d'étude actif, le badge `J-XX` néon violet/cyan et la cadence quotidienne requise (QCM/jour) calculée automatiquement en fonction des questions restantes et du nombre de jours avant l'épreuve.
+  - Bouton d'accès direct pour ajuster la date ou explorer le cursus.
+- **Partitionnement Sécurisé des Données (`src/services/storageScope.js`)** :
+  - Prévient tout conflit entre modules futurs (`mod_${moduleId}_...`) tout en assurant une rétrocompatibilité à 100% avec les clés existantes de la Pédiatrie (`pedia_today_tracker`, `pedia_first_pass_records_v1`, etc.) garantissant zéro perte de données.
+
+---
+
 ## 4. Spécificités UI, Responsive & Optimisation Mode Portrait (Smartphones & Tablettes)
 
 - **Design System Cyber-Médical** : Palette sombre (`#070b14` fond, `#121d33` cartes, `#00d4ff` cyan, `#10b981` émeraude, `#ef4444` rose, `#f59e0b` ambre, `#8b5cf6` violet).
@@ -525,7 +548,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.5.2` (`versionCode 19`)
+- **Version native** : `versionName 1.5.3` (`versionCode 20`)
 - **Empreinte SHA-1 (Debug Keystore Gradle & GitHub Actions)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
 - **Empreinte SHA-256 (Debug Keystore Gradle & GitHub Actions)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
 - **Keystore unifié** : `android/app/debug.keystore` (Alias : `AndroidDebugKey`, mot de passe `android`, garantissant une empreinte cryptographique identique entre les compilations locales et la CI/CD GitHub Actions).

@@ -5,6 +5,17 @@ import { FirebaseSyncService } from './services/firebaseSyncService.js';
 import { studyTracker } from './services/studyTracker.js';
 import { lessonTracker } from './services/lessonTracker.js';
 import { updateService, CURRENT_APP_VERSION } from './services/updateService.js';
+import {
+  MEDICAL_YEARS,
+  getActiveModuleId,
+  setActiveModuleId,
+  getActiveModule,
+  getAllYearsWithModules,
+  getExamDate,
+  setExamDate,
+  getExamCountdown,
+  findModuleById
+} from './services/moduleCatalog.js';
 
 // Global Data Access & O(1) Fast Lookup Maps
 const allQuestions = window.PEDIA_QUESTIONS || [];
@@ -240,21 +251,36 @@ function switchView(viewName) {
 }
 
 // ============================================================================
-// EXAM COUNTDOWN & DAILY CADENCE CALCULATOR (Examen le 10/11/2026)
+// EXAM COUNTDOWN & DAILY CADENCE CALCULATOR
 // ============================================================================
 function getExamCountdownMetrics(totalIterationsRequired) {
-  const now = new Date();
-  const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const examDate = new Date(2026, 10, 10); // 10 Novembre 2026 (Mois 10 = Novembre)
+  const cd = getExamCountdown();
+  let daysLeft = 28;
+  let examDateStr = 'Non définie';
 
-  const diffMs = examDate.getTime() - todayMidnight.getTime();
-  const daysLeft = Math.max(1, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+  if (cd.hasDate) {
+    examDateStr = cd.dateString ? cd.dateString.split('-').reverse().slice(0, 2).join('/') : cd.formattedDate;
+    if (cd.isToday) {
+      daysLeft = 1;
+    } else if (cd.isExpired) {
+      daysLeft = 1;
+    } else {
+      daysLeft = Math.max(1, cd.daysRemaining);
+    }
+  }
+
   const dailyIterationsRequired = Math.ceil(Math.max(0, totalIterationsRequired) / daysLeft);
 
   return {
-    examDateStr: '10/11',
-    daysLeft,
-    dailyIterationsRequired
+    examDateStr,
+    fullFormattedDate: cd.formattedDate || examDateStr,
+    daysLeft: cd.hasDate ? (cd.isToday ? 0 : cd.daysRemaining) : null,
+    effectiveDaysLeft: daysLeft,
+    dailyIterationsRequired,
+    isToday: cd.isToday,
+    isExpired: cd.isExpired,
+    hasDate: cd.hasDate,
+    rawCountdown: cd
   };
 }
 
@@ -264,8 +290,276 @@ function updateArenaDailyBadge() {
   const metrics = queueEngine.getDashboardMetrics();
   const countdown = getExamCountdownMetrics(metrics.totalIterationsRequired);
   const todayTracker = queueEngine.getTodayTracker();
-  dailyBadge.innerHTML = `<i data-lucide="target" style="width:12px;height:12px;display:inline;"></i> <span>${todayTracker.count}/${countdown.dailyIterationsRequired} auj. (J-${countdown.daysLeft})</span>`;
+  const jText = countdown.hasDate ? (countdown.isToday ? 'Jour J' : `J-${countdown.daysLeft}`) : 'Obj.';
+  dailyBadge.innerHTML = `<i data-lucide="target" style="width:12px;height:12px;display:inline;"></i> <span>${todayTracker.count}/${countdown.dailyIterationsRequired} auj. (${jText})</span>`;
   refreshLucide(dailyBadge);
+}
+
+// ============================================================================
+// MODULE SELECTOR & SKELETON TREE LOGIC
+// ============================================================================
+function updateActiveModuleBadge() {
+  const activePill = document.getElementById('settings-active-module-pill');
+  const mod = getActiveModule();
+  if (activePill && mod) {
+    activePill.textContent = `${mod.title} (${mod.yearNumber || 5}ème Année)`;
+  }
+}
+
+function updateSettingsCountdownPreview(dateStr) {
+  const previewBadge = document.getElementById('settings-countdown-preview');
+  const previewText = document.getElementById('settings-countdown-preview-text');
+  if (!previewBadge || !previewText) return;
+
+  if (!dateStr) {
+    previewBadge.className = 'exam-countdown-preview-badge';
+    previewText.textContent = 'Date non définie';
+    return;
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const parts = dateStr.split('-');
+  const exam = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+  exam.setHours(0, 0, 0, 0);
+
+  const diffTime = exam.getTime() - today.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) {
+    previewBadge.className = 'exam-countdown-preview-badge today';
+    previewText.textContent = "Jour J ! (Aujourd'hui)";
+  } else if (diffDays < 0) {
+    previewBadge.className = 'exam-countdown-preview-badge expired';
+    previewText.textContent = `Examen passé (+${Math.abs(diffDays)} j)`;
+  } else {
+    previewBadge.className = 'exam-countdown-preview-badge';
+    previewText.textContent = `⏳ J-${diffDays} jours restants`;
+  }
+}
+
+function renderModuleSelectorUI() {
+  const container = document.getElementById('settings-years-accordion');
+  if (!container) return;
+
+  const yearsData = getAllYearsWithModules();
+  const activeModuleId = getActiveModuleId();
+
+  let html = '';
+  yearsData.forEach(y => {
+    const hasActive = y.modules.some(m => m.id === activeModuleId);
+    const isOpen = hasActive || y.year === 5;
+
+    html += `
+      <div class="year-accordion-item ${isOpen ? 'open' : ''} ${hasActive ? 'has-active' : ''}" data-year-id="${y.id}">
+        <button type="button" class="year-accordion-trigger" data-year-toggle="${y.id}">
+          <div class="year-trigger-left">
+            <div class="year-number-badge">${y.year}</div>
+            <div>
+              <div class="year-title-text">${escapeHtml(y.title)}</div>
+              <div class="year-meta-text">${y.modules.length} modules • ${y.coursesCount} cours • ${formatNumber(y.qcmCount)} QCM</div>
+            </div>
+          </div>
+          <div class="year-trigger-right">
+            ${hasActive ? '<span class="module-card-badge available active-badge" style="font-size:0.65rem;">Actif</span>' : ''}
+            <i data-lucide="chevron-down" class="year-chevron-icon"></i>
+          </div>
+        </button>
+        
+        <div class="year-accordion-content">
+          <div class="modules-grid-container">
+    `;
+
+    y.modules.forEach(m => {
+      const isAvailable = m.available;
+      const isActive = m.id === activeModuleId;
+
+      if (isAvailable) {
+        html += `
+          <div class="module-card available ${isActive ? 'active' : ''}" data-module-select="${m.id}" title="Module actif et disponible">
+            <div class="module-card-header">
+              <span class="module-card-badge available ${isActive ? 'active-badge' : ''}">
+                ${isActive ? '✓ Actif' : 'Disponible'}
+              </span>
+              <i data-lucide="${isActive ? 'check-circle' : 'book-open'}" style="width:14px;height:14px;color:${isActive ? 'var(--emerald)' : 'var(--cyan)'};"></i>
+            </div>
+            <div class="module-card-title">${escapeHtml(m.title)}</div>
+            <div class="module-card-stats">
+              <span><i data-lucide="file-text" style="width:11px;height:11px;"></i> ${m.courses} cours</span>
+              <span>•</span>
+              <span><i data-lucide="help-circle" style="width:11px;height:11px;"></i> ${formatNumber(m.qcm)} QCM</span>
+            </div>
+          </div>
+        `;
+      } else {
+        html += `
+          <div class="module-card skeleton-disabled" data-module-locked="${m.id}" data-module-title="${escapeHtml(m.title)}" title="Module en cours de numérisation (QCM à venir)">
+            <div class="module-card-header">
+              <span class="module-card-badge soon">Bientôt</span>
+              <i data-lucide="lock" style="width:12px;height:12px;color:var(--text-dim);"></i>
+            </div>
+            <div class="module-card-title">${escapeHtml(m.title)}</div>
+            <div class="module-card-stats">
+              <span><i data-lucide="file-text" style="width:11px;height:11px;"></i> ${m.courses} cours</span>
+              <span>•</span>
+              <span><i data-lucide="help-circle" style="width:11px;height:11px;"></i> ${formatNumber(m.qcm)} QCM</span>
+            </div>
+          </div>
+        `;
+      }
+    });
+
+    html += `
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+
+  // Accordeon click handlers
+  container.querySelectorAll('[data-year-toggle]').forEach(trigger => {
+    trigger.onclick = (e) => {
+      e.preventDefault();
+      const item = trigger.closest('.year-accordion-item');
+      if (item) item.classList.toggle('open');
+      refreshLucide(item);
+    };
+  });
+
+  // Selectable module click
+  container.querySelectorAll('[data-module-select]').forEach(card => {
+    card.onclick = (e) => {
+      e.preventDefault();
+      const modId = card.getAttribute('data-module-select');
+      try {
+        setActiveModuleId(modId);
+        showAppToast(`✅ Module Pédiatrie actif !`);
+        updateActiveModuleBadge();
+        renderModuleSelectorUI();
+        updateDashboardUI();
+      } catch (err) {
+        showAppToast(err.message);
+      }
+    };
+  });
+
+  // Skeleton locked module click -> shake animation + informative toast
+  container.querySelectorAll('[data-module-locked]').forEach(card => {
+    card.onclick = (e) => {
+      e.preventDefault();
+      const modTitle = card.getAttribute('data-module-title') || 'Ce module';
+      card.classList.remove('module-shake');
+      void card.offsetWidth;
+      card.classList.add('module-shake');
+      showAppToast(`🔒 ${modTitle} : questions en cours de numérisation. Seule la Pédiatrie est active pour l'instant.`);
+    };
+  });
+
+  refreshLucide(container);
+}
+
+function renderDashboardExamBanner(countdown, metrics) {
+  const container = document.getElementById('dashboard-exam-banner-container');
+  if (!container) return;
+
+  const activeMod = getActiveModule();
+  const modTitle = activeMod ? activeMod.title : 'Pédiatrie';
+  const yearTitle = activeMod ? ` (${activeMod.yearNumber || 5}ème Année)` : '';
+
+  if (!countdown.hasDate) {
+    container.innerHTML = `
+      <div class="dashboard-exam-banner">
+        <div class="exam-banner-left">
+          <div class="exam-banner-days-pill" style="border-color:rgba(0,212,255,0.4);background:rgba(0,212,255,0.15);box-shadow:0 0 14px rgba(0,212,255,0.2);">
+            <i data-lucide="calendar" style="width:20px;height:20px;color:var(--cyan);"></i>
+            <span class="exam-banner-days-label" style="color:var(--cyan);">OBJECTIF</span>
+          </div>
+          <div class="exam-banner-info">
+            <div class="exam-banner-title">
+              <span>${escapeHtml(modTitle)}${escapeHtml(yearTitle)}</span>
+              <span class="exam-banner-module-tag">Module Actif</span>
+            </div>
+            <div class="exam-banner-desc">
+              Définissez votre date d'examen dans les paramètres pour activer le compte à rebours dynamique (J-XX) et le calcul en temps réel de votre cadence quotidienne.
+            </div>
+          </div>
+        </div>
+        <div class="exam-banner-right">
+          <button type="button" class="btn-banner-action" id="btn-banner-open-settings">
+            <i data-lucide="calendar-plus" style="width:14px;height:14px;"></i>
+            <span>Fixer la date</span>
+          </button>
+        </div>
+      </div>
+    `;
+  } else {
+    let pillText = `J-${countdown.daysLeft}`;
+    let pillSub = 'RESTANTS';
+    let pillStyle = '';
+
+    if (countdown.isToday) {
+      pillText = 'JOUR J';
+      pillSub = 'EXAMEN';
+      pillStyle = 'border-color:rgba(16,185,129,0.5);background:rgba(16,185,129,0.2);color:var(--emerald);';
+    } else if (countdown.isExpired) {
+      pillText = `+${Math.abs(countdown.daysLeft)} j`;
+      pillSub = 'PASSÉ';
+      pillStyle = 'border-color:rgba(239,68,68,0.5);background:rgba(239,68,68,0.2);color:#fca5a5;';
+    }
+
+    container.innerHTML = `
+      <div class="dashboard-exam-banner">
+        <div class="exam-banner-left">
+          <div class="exam-banner-days-pill" style="${pillStyle}">
+            <span class="exam-banner-days-number">${pillText}</span>
+            <span class="exam-banner-days-label">${pillSub}</span>
+          </div>
+          <div class="exam-banner-info">
+            <div class="exam-banner-title">
+              <span>${escapeHtml(modTitle)}${escapeHtml(yearTitle)}</span>
+              <span class="exam-banner-module-tag">Module Actif</span>
+            </div>
+            <div class="exam-banner-desc">
+              Épreuve fixée au <strong>${escapeHtml(countdown.fullFormattedDate)}</strong>. Cadence cible : <strong>${formatNumber(countdown.dailyIterationsRequired)} QCM / jour</strong> pour éliminer les ${formatNumber(metrics.remainingDistinctQuestions)} questions restantes.
+            </div>
+          </div>
+        </div>
+        <div class="exam-banner-right">
+          <button type="button" class="btn-banner-action" id="btn-banner-open-settings">
+            <i data-lucide="edit-3" style="width:14px;height:14px;"></i>
+            <span>Changer date / module</span>
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  const btnOpen = document.getElementById('btn-banner-open-settings');
+  if (btnOpen) {
+    btnOpen.onclick = () => {
+      openSettingsModal();
+    };
+  }
+
+  refreshLucide(container);
+}
+
+function openSettingsModal() {
+  document.getElementById('settings-gemini-key').value = geminiService.getApiKey();
+  
+  const examDateInput = document.getElementById('settings-exam-date');
+  const savedDate = getExamDate();
+  if (examDateInput) {
+    examDateInput.value = savedDate;
+    updateSettingsCountdownPreview(savedDate);
+  }
+
+  updateActiveModuleBadge();
+  renderModuleSelectorUI();
+  modals.settings.style.display = 'flex';
+  refreshLucide(modals.settings);
 }
 
 // ============================================================================
@@ -281,11 +575,24 @@ function updateDashboardUI() {
   document.getElementById('stat-mistakes-count').textContent = formatNumber(metrics.totalMistakes);
   document.getElementById('stat-progress-pct').textContent = `${metrics.progressPct}%`;
   
-  // Daily Target & Exam Countdown
+  // Daily Target & Exam Countdown Badge
   const badgeCountdown = document.getElementById('badge-exam-countdown');
   if (badgeCountdown) {
-    badgeCountdown.textContent = `⏳ J-${countdown.daysLeft} • Examen 10/11`;
+    if (countdown.hasDate) {
+      if (countdown.isToday) {
+        badgeCountdown.textContent = '⏳ Jour J • Examen aujourd\'hui';
+      } else if (countdown.isExpired) {
+        badgeCountdown.textContent = `⏳ Examen passé (+${Math.abs(countdown.daysLeft)} j)`;
+      } else {
+        badgeCountdown.textContent = `⏳ J-${countdown.daysLeft} • Examen ${countdown.examDateStr}`;
+      }
+    } else {
+      badgeCountdown.textContent = '⏳ Date examen à fixer';
+    }
   }
+
+  // Render dynamic top countdown banner
+  renderDashboardExamBanner(countdown, metrics);
 
   const dailyTargetEl = document.getElementById('stat-daily-target');
   if (dailyTargetEl) {
@@ -5843,17 +6150,47 @@ function setupEventListeners() {
     versionBadgeEl.textContent = `v${CURRENT_APP_VERSION}`;
   }
 
-  document.getElementById('btn-open-settings').onclick = () => {
-    document.getElementById('settings-gemini-key').value = geminiService.getApiKey();
-    modals.settings.style.display = 'flex';
-  };
-  document.getElementById('btn-close-settings-modal').onclick = () => modals.settings.style.display = 'none';
-  document.getElementById('btn-save-settings').onclick = () => {
-    const key = document.getElementById('settings-gemini-key').value;
-    geminiService.setApiKey(key);
-    alert('Clé API Gemini enregistrée !');
-    modals.settings.style.display = 'none';
-  };
+  const btnOpenSettings = document.getElementById('btn-open-settings');
+  if (btnOpenSettings) {
+    btnOpenSettings.onclick = openSettingsModal;
+  }
+
+  const btnCloseSettings = document.getElementById('btn-close-settings-modal');
+  if (btnCloseSettings) {
+    btnCloseSettings.onclick = () => modals.settings.style.display = 'none';
+  }
+
+  const examDateInput = document.getElementById('settings-exam-date');
+  if (examDateInput) {
+    examDateInput.oninput = (e) => updateSettingsCountdownPreview(e.target.value);
+  }
+
+  const btnClearExamDate = document.getElementById('btn-clear-exam-date');
+  if (btnClearExamDate) {
+    btnClearExamDate.onclick = () => {
+      if (examDateInput) examDateInput.value = '';
+      updateSettingsCountdownPreview('');
+    };
+  }
+
+  const btnSaveSettings = document.getElementById('btn-save-settings');
+  if (btnSaveSettings) {
+    btnSaveSettings.onclick = () => {
+      const key = document.getElementById('settings-gemini-key').value.trim();
+      geminiService.setApiKey(key);
+
+      if (examDateInput) {
+        setExamDate(examDateInput.value);
+      }
+
+      showAppToast('✅ Paramètres et date d\'examen enregistrés !');
+      modals.settings.style.display = 'none';
+
+      updateDashboardUI();
+      updateArenaDailyBadge();
+      if (currentView === 'stats') renderStatsUI();
+    };
+  }
 
   // GitHub Releases Update Buttons
   const btnCheckUpdates = document.getElementById('btn-check-updates-manual');

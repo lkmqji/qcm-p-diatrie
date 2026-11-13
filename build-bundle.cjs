@@ -24,6 +24,8 @@ function cleanModuleCode(code) {
     .replace(/export\s*\{[^}]*\};?/g, '');
 }
 
+let moduleCatalog = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'services', 'moduleCatalog.js'), 'utf8'));
+let storageScope = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'services', 'storageScope.js'), 'utf8'));
 let gemini = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'services', 'gemini.js'), 'utf8'));
 let queue = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'services', 'queueEngine.js'), 'utf8'));
 let tracker = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'services', 'studyTracker.js'), 'utf8'));
@@ -36,6 +38,10 @@ const bundle = `// ==========================================
 // PédiaDrill Unified Client Bundle
 // ==========================================
 (function() {
+${moduleCatalog}
+
+${storageScope}
+
 ${gemini}
 
 ${queue}

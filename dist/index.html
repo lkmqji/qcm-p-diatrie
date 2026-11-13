@@ -7104,6 +7104,473 @@ body {
 }
 
 
+
+/* ============================================================
+   SETTINGS REWORK: MODULE SELECTOR, SKELETONS & EXAM DATE
+   ============================================================ */
+
+.settings-group {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.settings-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.settings-group-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.settings-group-desc {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+/* Accordéons des Années d'études */
+.years-accordion-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.year-accordion-item {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: rgba(15, 23, 42, 0.4);
+  overflow: hidden;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.year-accordion-item.open {
+  border-color: rgba(0, 212, 255, 0.35);
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.year-accordion-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: none;
+  border: none;
+  color: var(--text-main);
+  cursor: pointer;
+  text-align: left;
+  user-select: none;
+  transition: background 0.15s ease;
+}
+
+.year-accordion-trigger:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.year-trigger-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.year-number-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.year-accordion-item.has-active .year-number-badge {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--emerald);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+.year-title-text {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.year-meta-text {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+.year-trigger-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.year-chevron-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--text-dim);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.year-accordion-item.open .year-chevron-icon {
+  transform: rotate(180deg);
+  color: var(--cyan);
+}
+
+.year-accordion-content {
+  display: none;
+  padding: 12px;
+  border-top: 1px solid var(--border-subtle);
+  background: rgba(10, 15, 29, 0.5);
+}
+
+.year-accordion-item.open .year-accordion-content {
+  display: block;
+}
+
+/* Grille de cartes de modules */
+.modules-grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.module-card {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+/* Module actif (Pédiatrie) */
+.module-card.available {
+  cursor: pointer;
+  border-color: rgba(0, 212, 255, 0.3);
+}
+
+.module-card.available:hover {
+  transform: translateY(-2px);
+  border-color: var(--cyan);
+  box-shadow: 0 6px 16px rgba(0, 212, 255, 0.15);
+}
+
+.module-card.active {
+  border-color: var(--emerald) !important;
+  background: rgba(16, 185, 129, 0.08) !important;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.2) !important;
+}
+
+/* Modules Squelettes Grisés */
+.module-card.skeleton-disabled {
+  opacity: 0.55;
+  background: rgba(15, 23, 42, 0.3);
+  border-style: dashed;
+  border-color: rgba(148, 163, 184, 0.25);
+  cursor: not-allowed;
+  user-select: none;
+}
+
+.module-card.skeleton-disabled:hover {
+  opacity: 0.7;
+  border-color: rgba(148, 163, 184, 0.4);
+}
+
+.module-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.module-card-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.module-card-badge.available {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--emerald);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.module-card-badge.active-badge {
+  background: var(--emerald);
+  color: #022c22;
+  font-weight: 800;
+}
+
+.module-card-badge.soon {
+  background: rgba(148, 163, 184, 0.12);
+  color: var(--text-dim);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.module-card-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.35;
+}
+
+.module-card.skeleton-disabled .module-card-title {
+  color: var(--text-muted);
+}
+
+.module-card-stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin-top: auto;
+}
+
+.module-card-stats span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Animation Shake pour clic sur module bloqué */
+@keyframes shakeLock {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+
+.module-shake {
+  animation: shakeLock 0.4s ease-in-out !important;
+  border-color: rgba(239, 68, 68, 0.6) !important;
+}
+
+/* Sélecteur de Date d'Examen */
+.exam-date-field-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.exam-date-input-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.exam-date-input {
+  flex: 1;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.exam-date-input:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2);
+}
+
+.exam-countdown-preview-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  color: #d8b4fe;
+  font-size: 0.82rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.exam-countdown-preview-badge.expired {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+.exam-countdown-preview-badge.today {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: var(--emerald);
+}
+
+/* Bannière Compte à Rebours du Dashboard */
+.dashboard-exam-banner {
+  background: linear-gradient(135deg, rgba(30, 27, 75, 0.6) 0%, rgba(15, 23, 42, 0.85) 100%);
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-exam-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(to bottom, #c084fc, #00d4ff);
+}
+
+.exam-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.exam-banner-days-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 68px;
+  height: 58px;
+  background: rgba(168, 85, 247, 0.2);
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  border-radius: 12px;
+  padding: 4px 8px;
+  box-shadow: 0 0 14px rgba(168, 85, 247, 0.2);
+}
+
+.exam-banner-days-number {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #f3e8ff;
+  line-height: 1;
+}
+
+.exam-banner-days-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #c084fc;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+.exam-banner-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.exam-banner-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.exam-banner-module-tag {
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(0, 212, 255, 0.15);
+  color: var(--cyan);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  text-transform: uppercase;
+}
+
+.exam-banner-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.exam-banner-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-banner-action {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  padding: 8px 14px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-banner-action:hover {
+  background: rgba(0, 212, 255, 0.15);
+  border-color: rgba(0, 212, 255, 0.4);
+  color: var(--cyan);
+}
+
+@media (max-width: 640px) {
+  .dashboard-exam-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 14px;
+    gap: 12px;
+  }
+  .exam-banner-right {
+    width: 100%;
+  }
+  .btn-banner-action {
+    width: 100%;
+    justify-content: center;
+  }
+  .modules-grid-container {
+    grid-template-columns: 1fr;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -7173,6 +7640,9 @@ body {
            ───────────────────────────────────────────────────────────── -->
       <section id="view-dashboard" class="dashboard-view">
         
+        <!-- Bannière Dynamique Compte à Rebours Examen -->
+        <div id="dashboard-exam-banner-container"></div>
+
         <!-- Hero Metrics: 2 Grandes Métriques Demandées -->
         <div class="hero-metrics-grid">
           
@@ -8379,51 +8849,109 @@ body {
   </div>
 
   <!-- ─────────────────────────────────────────────────────────────
-       MODALE 4: PARAMÈTRES & CASCADE GEMINI
+       MODALE 4: PARAMÈTRES & CURSUS MÉDICAL
        ───────────────────────────────────────────────────────────── -->
   <div class="modal-overlay" id="modal-settings" style="display:none;">
-    <div class="modal-content">
+    <div class="modal-content" style="max-width: 820px;">
       
       <div class="modal-header">
         <div class="modal-title">
           <i data-lucide="settings"></i>
-          <span>Paramètres & Moteur IA</span>
+          <span>Paramètres & Cursus Médical</span>
         </div>
         <button class="close-btn" id="btn-close-settings-modal">&times;</button>
       </div>
 
-      <div style="display:flex;flex-direction:column;gap:8px;">
-        <label style="font-size:0.78rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;">
-          Clé API Google Gemini
-        </label>
-        <input type="password" class="search-input" id="settings-gemini-key" placeholder="AQ.Ab8RN6InNmt...">
-        <div style="font-size:0.72rem;color:var(--text-dim);">
-          Votre clé est stockée uniquement en local dans votre navigateur.
+      <!-- SECTION 1: SÉLECTION DU MODULE ACTIF & CURSUS SQUELETTE -->
+      <div class="settings-group">
+        <div class="settings-group-header">
+          <div class="settings-group-title">
+            <i data-lucide="book-open" style="width:16px;height:16px;"></i>
+            <span>Module Actif & Cursus Médical</span>
+          </div>
+          <span class="badge" id="settings-active-module-pill" style="background:rgba(16,185,129,0.15);color:var(--emerald);border:1px solid rgba(16,185,129,0.3);font-size:0.75rem;padding:3px 10px;border-radius:12px;font-weight:700;">
+            Pédiatrie (5ème Année)
+          </span>
+        </div>
+        <div class="settings-group-desc">
+          Sélectionnez le module d'étude actif. Le tableau de bord, les erreurs et le chronomètre se synchronisent automatiquement. Les modules en cours de numérisation sont affichés en squelette grisé.
+        </div>
+
+        <!-- Conteneur dynamique des accordéons d'années (1ère à 6ème) -->
+        <div class="years-accordion-container" id="settings-years-accordion">
+          <!-- Injecté par renderModuleSelector() -->
         </div>
       </div>
 
-      <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:14px;">
-        <div style="font-size:0.78rem;font-weight:700;color:var(--cyan);text-transform:uppercase;margin-bottom:6px;">
-          Cascade Automatique de Modèles IA
+      <!-- SECTION 2: DATE D'EXAMEN & COMPTE À REBOURS -->
+      <div class="settings-group">
+        <div class="settings-group-header">
+          <div class="settings-group-title">
+            <i data-lucide="calendar" style="width:16px;height:16px;"></i>
+            <span>Date d'Examen & Compte à Rebours</span>
+          </div>
+          <div id="settings-countdown-preview" class="exam-countdown-preview-badge">
+            <i data-lucide="clock" style="width:14px;height:14px;"></i>
+            <span id="settings-countdown-preview-text">Date non définie</span>
+          </div>
         </div>
-        <ol style="font-size:0.8rem;color:var(--text-muted);line-height:1.6;padding-left:18px;">
-          <li><strong>Gemini 3.8 Flash</strong> (Prioritaire)</li>
-          <li><strong>Gemini 3.7 Flash</strong> (Secours 1)</li>
-          <li><strong>Gemini 3.6 Flash</strong> (Secours 2)</li>
-          <li><strong>Gemini 3.5 Flash Lite</strong> (Secours 3)</li>
-          <li><strong>Gemini 3.1 Flash Lite</strong> (Secours 4)</li>
-          <li><strong>Moteur Sémantique Local</strong> (Hors-ligne)</li>
-        </ol>
+        <div class="settings-group-desc">
+          Fixez la date de votre épreuve pour activer le compte à rebours dynamique (J-XX) et le calcul en direct de la cadence quotidienne recommandée (QCM/jour et temps de révision).
+        </div>
+        <div class="exam-date-field-container">
+          <div class="exam-date-input-row">
+            <input type="date" class="exam-date-input" id="settings-exam-date">
+            <button type="button" class="btn-secondary" id="btn-clear-exam-date" style="padding:10px 14px;font-size:0.78rem;">
+              Effacer
+            </button>
+          </div>
+        </div>
       </div>
 
-      <!-- SECTION: Mises à Jour de l'Application via GitHub Releases -->
-      <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:14px;display:flex;flex-direction:column;gap:10px;">
+      <!-- SECTION 3: CLÉ API GEMINI & CASCADE FLASH -->
+      <div class="settings-group">
+        <div class="settings-group-header">
+          <div class="settings-group-title">
+            <i data-lucide="cpu" style="width:16px;height:16px;"></i>
+            <span>Moteur d'Intelligence Artificielle</span>
+          </div>
+          <span class="badge" style="background:rgba(0,212,255,0.12);color:var(--cyan);border:1px solid rgba(0,212,255,0.3);font-size:0.7rem;padding:2px 8px;border-radius:10px;font-weight:700;">
+            Cascade Flash
+          </span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <label style="font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;">
+            Clé API Google Gemini
+          </label>
+          <input type="password" class="search-input" id="settings-gemini-key" placeholder="AQ.Ab8RN6InNmt...">
+          <div style="font-size:0.72rem;color:var(--text-dim);">
+            Votre clé est stockée uniquement en local dans votre navigateur.
+          </div>
+        </div>
+
+        <div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);padding:12px;margin-top:4px;">
+          <div style="font-size:0.74rem;font-weight:700;color:var(--cyan);text-transform:uppercase;margin-bottom:6px;">
+            Cascade Automatique de Modèles IA
+          </div>
+          <ol style="font-size:0.78rem;color:var(--text-muted);line-height:1.6;padding-left:18px;">
+            <li><strong>Gemini 3.8 Flash</strong> (Prioritaire)</li>
+            <li><strong>Gemini 3.7 Flash</strong> (Secours 1)</li>
+            <li><strong>Gemini 3.6 Flash</strong> (Secours 2)</li>
+            <li><strong>Gemini 3.5 Flash Lite</strong> (Secours 3)</li>
+            <li><strong>Gemini 3.1 Flash Lite</strong> (Secours 4)</li>
+            <li><strong>Moteur Sémantique Local</strong> (Hors-ligne)</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- SECTION 4: Mises à Jour de l'Application via GitHub Releases -->
+      <div class="settings-group">
         <div style="display:flex;justify-content:space-between;align-items:center;">
           <div style="display:flex;align-items:center;gap:8px;">
             <i data-lucide="github" style="width:16px;height:16px;color:var(--cyan);"></i>
             <span style="font-size:0.78rem;font-weight:700;color:var(--text-main);text-transform:uppercase;">Mises à Jour Application</span>
           </div>
-          <span class="badge" id="settings-current-app-version" style="background:rgba(0,212,255,0.15);color:var(--cyan);font-size:0.72rem;padding:3px 8px;border-radius:10px;font-weight:700;">v1.3.1</span>
+          <span class="badge" id="settings-current-app-version" style="background:rgba(0,212,255,0.15);color:var(--cyan);font-size:0.72rem;padding:3px 8px;border-radius:10px;font-weight:700;">v1.5.3</span>
         </div>
         <div style="font-size:0.75rem;color:var(--text-muted);line-height:1.45;" id="settings-update-status">
           Vérifie automatiquement les nouvelles versions et correctifs disponibles sur GitHub Releases.
@@ -8435,6 +8963,7 @@ body {
       </div>
 
       <button class="btn-primary-large" id="btn-save-settings">
+        <i data-lucide="check" style="width:16px;height:16px;"></i>
         <span>Enregistrer les paramètres</span>
       </button>
 
@@ -8456,9 +8985,9 @@ body {
 
       <div class="update-version-banner">
         <div class="update-version-chips">
-          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.5.2</strong></span>
+          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.5.3</strong></span>
           <i data-lucide="arrow-right" style="width:14px;height:14px;color:var(--text-dim);"></i>
-          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.5.2</strong></span>
+          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.5.3</strong></span>
         </div>
         <div class="update-release-date" id="update-modal-date">Publiée sur GitHub Releases</div>
       </div>
@@ -8798,6 +9327,349 @@ window.PEDIA_QUESTIONS = [{"uid":"meningo-encephalites_1","chapterId":"meningo-e
 // PédiaDrill Unified Client Bundle
 // ==========================================
 (function() {
+// ============================================================
+// Service de Catalogue des Modules et Gestion du Cursus Médical
+// Cartographie intégrale des 6 années et 46 modules (Mystidia Exams)
+// ============================================================
+
+const MEDICAL_YEARS = [
+  {
+    year: 1,
+    id: "year_1",
+    title: "1ère Année de Médecine (PCEM 1)",
+    shortTitle: "1ère Année",
+    cycle: "Cycle Pré-clinique Fondamental",
+    modulesCount: 9,
+    coursesCount: 99,
+    qcmCount: 5189,
+    modules: [
+      { id: "anatomie_1", title: "Anatomie", courses: 22, qcm: 875, available: false },
+      { id: "biochimie_1", title: "Biochimie", courses: 18, qcm: 1113, available: false },
+      { id: "cytologie_1", title: "Cytologie", courses: 15, qcm: 915, available: false },
+      { id: "physiologie_1", title: "Physiologie", courses: 12, qcm: 597, available: false },
+      { id: "embryologie_1", title: "Embryologie", courses: 12, qcm: 574, available: false },
+      { id: "histologie_1", title: "Histologie", courses: 10, qcm: 563, available: false },
+      { id: "ssh_1", title: "Sciences Humaines & Sociales (SSH)", courses: 8, qcm: 477, available: false },
+      { id: "chimie_1", title: "Chimie", courses: 1, qcm: 42, available: false },
+      { id: "biophysique_1", title: "Biophysique", courses: 1, qcm: 33, available: false }
+    ]
+  },
+  {
+    year: 2,
+    id: "year_2",
+    title: "2ème Année de Médecine (PCEM 2)",
+    shortTitle: "2ème Année",
+    cycle: "Cycle Pré-clinique Intégré",
+    modulesCount: 7,
+    coursesCount: 186,
+    qcmCount: 8272,
+    modules: [
+      { id: "neurosensorielle_2", title: "Unité Neurosensorielle", courses: 52, qcm: 2342, available: false },
+      { id: "cardio_respi_2", title: "Unité Cardio-Respiratoire", courses: 37, qcm: 1762, available: false },
+      { id: "endocrinienne_2", title: "Unité Endocrinienne", courses: 35, qcm: 1547, available: false },
+      { id: "digestive_2", title: "Unité Digestive", courses: 19, qcm: 891, available: false },
+      { id: "genetique_2", title: "Unité Génétique", courses: 19, qcm: 764, available: false },
+      { id: "renale_2", title: "Unité Rénale", courses: 12, qcm: 477, available: false },
+      { id: "immunologique_2", title: "Unité Immunologique", courses: 12, qcm: 489, available: false }
+    ]
+  },
+  {
+    year: 3,
+    id: "year_3",
+    title: "3ème Année de Médecine (DCEM 1)",
+    shortTitle: "3ème Année",
+    cycle: "Sémiologie & Paraclinique",
+    modulesCount: 9,
+    coursesCount: 243,
+    qcmCount: 10364,
+    modules: [
+      { id: "semio_cardio_respi_3", title: "Sémiologie Cardio-Respiratoire & Psycho", courses: 48, qcm: 2245, available: false },
+      { id: "microbiologie_3", title: "Microbiologie Médicale", courses: 31, qcm: 1319, available: false },
+      { id: "parasitologie_3", title: "Parasitologie - Mycologie", courses: 29, qcm: 1202, available: false },
+      { id: "pharmacologie_3", title: "Pharmacologie Clinique", courses: 28, qcm: 1129, available: false },
+      { id: "acp_3", title: "Anatomie & Cytologie Pathologique (ACP)", courses: 24, qcm: 1027, available: false },
+      { id: "semio_neuro_loco_3", title: "Sémiologie Neuro, Locomoteur & Cutané", courses: 23, qcm: 915, available: false },
+      { id: "semio_endocrine_urinaire_3", title: "Sémiologie Endocrine, Repro & Urinaire", courses: 23, qcm: 897, available: false },
+      { id: "semio_digestive_hemato_3", title: "Sémiologie Digestive & Hématopoïèse", courses: 22, qcm: 887, available: false },
+      { id: "immunologie_3", title: "Immunologie Médicale", courses: 15, qcm: 743, available: false }
+    ]
+  },
+  {
+    year: 4,
+    id: "year_4",
+    title: "4ème Année de Médecine (DCEM 2)",
+    shortTitle: "4ème Année",
+    cycle: "Pathologie Médicale & Chirurgicale I",
+    modulesCount: 6,
+    coursesCount: 200,
+    qcmCount: 9704,
+    modules: [
+      { id: "gastro_enterologie_4", title: "Gastro-Entérologie & Chirurgie Digestive", courses: 52, qcm: 2342, available: false },
+      { id: "cardiologie_4", title: "Cardiologie & Chirurgie Vasculaire", courses: 33, qcm: 1733, available: false },
+      { id: "infectieuses_4", title: "Maladies Infectieuses", courses: 32, qcm: 1614, available: false },
+      { id: "neurologie_4", title: "Neurologie & Neurochirurgie", courses: 31, qcm: 1544, available: false },
+      { id: "onco_hematologie_4", title: "Onco-Hématologie", courses: 27, qcm: 1294, available: false },
+      { id: "pneumologie_4", title: "Pneumologie & Chirurgie Thoracique", courses: 25, qcm: 1177, available: false }
+    ]
+  },
+  {
+    year: 5,
+    id: "year_5",
+    title: "5ème Année de Médecine (DCEM 3)",
+    shortTitle: "5ème Année",
+    cycle: "Pathologie Médicale & Chirurgicale II",
+    modulesCount: 6,
+    coursesCount: 212,
+    qcmCount: 9035,
+    modules: [
+      { id: "pediatrie", title: "Pédiatrie & Chirurgie Pédiatrique", courses: 35, qcm: 1905, available: true, active: true },
+      { id: "locomoteur_5", title: "Appareil Locomoteur (Ortho & Rhumato)", courses: 47, qcm: 2089, available: false },
+      { id: "gynecologie_5", title: "Gynécologie - Obstétrique", courses: 44, qcm: 1977, available: false },
+      { id: "urologie_nephro_5", title: "Urologie & Néphrologie", courses: 42, qcm: 1789, available: false },
+      { id: "endocrinologie_5", title: "Endocrinologie - Diabétologie", courses: 23, qcm: 915, available: false },
+      { id: "psychiatrie_5", title: "Psychiatrie & Pédopsychiatrie", courses: 21, qcm: 702, available: false }
+    ]
+  },
+  {
+    year: 6,
+    id: "year_6",
+    title: "6ème Année de Médecine (DCEM 4)",
+    shortTitle: "6ème Année",
+    cycle: "Spécialités & Santé Publique",
+    modulesCount: 9,
+    coursesCount: 215,
+    qcmCount: 6631,
+    modules: [
+      { id: "epidemiologie_6", title: "Épidémiologie & Économie de la Santé", courses: 34, qcm: 1143, available: false },
+      { id: "orl_6", title: "ORL (Oto-Rhino-Laryngologie)", courses: 31, qcm: 978, available: false },
+      { id: "travail_6", title: "Santé au Travail & Environnement", courses: 27, qcm: 867, available: false },
+      { id: "geriatrie_6", title: "Gériatrie & Gérontologie", courses: 26, qcm: 742, available: false },
+      { id: "umc_6", title: "UMC (Urgences Médico-Chirurgicales)", courses: 22, qcm: 689, available: false },
+      { id: "systeme_6", title: "Maladies de Système & Médecine Interne", courses: 21, qcm: 615, available: false },
+      { id: "legale_6", title: "Médecine Légale & Droit Médical", courses: 20, qcm: 642, available: false },
+      { id: "ophtalmologie_6", title: "Ophtalmologie", courses: 17, qcm: 497, available: false },
+      { id: "dermatologie_6", title: "Dermatologie - Vénérologie", courses: 17, qcm: 458, available: false }
+    ]
+  }
+];
+
+// Module actif courant (persistance LocalStorage)
+const ACTIVE_MODULE_STORAGE_KEY = 'pediadrill_active_module_id';
+const EXAM_DATE_STORAGE_PREFIX = 'pediadrill_exam_date_';
+
+function getActiveModuleId() {
+  try {
+    return localStorage.getItem(ACTIVE_MODULE_STORAGE_KEY) || 'pediatrie';
+  } catch (e) {
+    return 'pediatrie';
+  }
+}
+
+function setActiveModuleId(moduleId) {
+  const mod = findModuleById(moduleId);
+  if (!mod || !mod.available) {
+    throw new Error(`Le module ${moduleId} n'est pas encore disponible.`);
+  }
+  try {
+    localStorage.setItem(ACTIVE_MODULE_STORAGE_KEY, moduleId);
+  } catch (e) {
+    console.error('[moduleCatalog] Erreur de sauvegarde du module actif', e);
+  }
+  return mod;
+}
+
+function findModuleById(moduleId) {
+  for (const y of MEDICAL_YEARS) {
+    for (const m of y.modules) {
+      if (m.id === moduleId) {
+        return { ...m, yearNumber: y.year, yearTitle: y.title, cycle: y.cycle };
+      }
+    }
+  }
+  return null;
+}
+
+function getActiveModule() {
+  const activeId = getActiveModuleId();
+  return findModuleById(activeId) || findModuleById('pediatrie');
+}
+
+function getAllYearsWithModules() {
+  const activeId = getActiveModuleId();
+  return MEDICAL_YEARS.map(y => ({
+    ...y,
+    modules: y.modules.map(m => ({
+      ...m,
+      isActive: m.id === activeId
+    }))
+  }));
+}
+
+// Gestion de la date d'examen
+function getExamDate(moduleId) {
+  const targetId = moduleId || getActiveModuleId();
+  try {
+    return localStorage.getItem(EXAM_DATE_STORAGE_PREFIX + targetId) || '';
+  } catch (e) {
+    return '';
+  }
+}
+
+function setExamDate(dateStr, moduleId) {
+  const targetId = moduleId || getActiveModuleId();
+  try {
+    if (!dateStr) {
+      localStorage.removeItem(EXAM_DATE_STORAGE_PREFIX + targetId);
+    } else {
+      localStorage.setItem(EXAM_DATE_STORAGE_PREFIX + targetId, dateStr);
+    }
+  } catch (e) {
+    console.error('[moduleCatalog] Erreur sauvegarde date examen', e);
+  }
+}
+
+function getExamCountdown(moduleId) {
+  const dateStr = getExamDate(moduleId);
+  if (!dateStr) {
+    return {
+      hasDate: false,
+      dateString: '',
+      daysRemaining: null,
+      isToday: false,
+      isExpired: false,
+      statusLabel: 'Date non définie'
+    };
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const parts = dateStr.split('-');
+  const exam = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+  exam.setHours(0, 0, 0, 0);
+
+  const diffTime = exam.getTime() - today.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  const formattedDate = exam.toLocaleDateString('fr-FR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+
+  if (diffDays === 0) {
+    return {
+      hasDate: true,
+      dateString: dateStr,
+      formattedDate,
+      daysRemaining: 0,
+      isToday: true,
+      isExpired: false,
+      statusLabel: "Jour J ! C'est le jour de l'examen"
+    };
+  } else if (diffDays < 0) {
+    return {
+      hasDate: true,
+      dateString: dateStr,
+      formattedDate,
+      daysRemaining: Math.abs(diffDays),
+      isToday: false,
+      isExpired: true,
+      statusLabel: `Examen passé il y a ${Math.abs(diffDays)} j`
+    };
+  } else {
+    return {
+      hasDate: true,
+      dateString: dateStr,
+      formattedDate,
+      daysRemaining: diffDays,
+      isToday: false,
+      isExpired: false,
+      statusLabel: `J-${diffDays}`
+    };
+  }
+}
+
+if (typeof window !== 'undefined') {
+  window.ModuleCatalog = {
+    MEDICAL_YEARS,
+    getActiveModuleId,
+    setActiveModuleId,
+    findModuleById,
+    getActiveModule,
+    getAllYearsWithModules,
+    getExamDate,
+    setExamDate,
+    getExamCountdown
+  };
+}
+
+
+// ============================================================
+// Service de Partitionnement du Stockage Local (Scoped Storage)
+// Isole les données par module médical sans aucune perte de données
+// ============================================================
+
+
+const LEGACY_PEDIA_KEY_MAP = {
+  today_tracker: 'pedia_today_tracker',
+  first_pass_records: 'pedia_first_pass_records_v1',
+  lesson_tracker: 'pedia_lesson_tracker_v1',
+  reasoning_notes: 'pedia_drill_reasoning_notes_v1',
+  ai_cache: 'pedia_ai_explanations_cache',
+  lesson_timer_cleared: 'pedia_lesson_timer_cleared_at'
+};
+
+function resolveStorageKey(baseKey, moduleId) {
+  const modId = moduleId || getActiveModuleId();
+  if (modId === 'pediatrie' && LEGACY_PEDIA_KEY_MAP[baseKey]) {
+    return LEGACY_PEDIA_KEY_MAP[baseKey];
+  }
+  return `mod_${modId}_${baseKey}`;
+}
+
+function getScopedItem(baseKey, moduleId) {
+  const key = resolveStorageKey(baseKey, moduleId);
+  try {
+    return localStorage.getItem(key);
+  } catch (e) {
+    console.error(`[storageScope] Erreur de lecture pour ${key}:`, e);
+    return null;
+  }
+}
+
+function setScopedItem(baseKey, value, moduleId) {
+  const key = resolveStorageKey(baseKey, moduleId);
+  try {
+    if (value === null || value === undefined) {
+      localStorage.removeItem(key);
+    } else {
+      localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+    }
+  } catch (e) {
+    console.error(`[storageScope] Erreur d'écriture pour ${key}:`, e);
+  }
+}
+
+function removeScopedItem(baseKey, moduleId) {
+  const key = resolveStorageKey(baseKey, moduleId);
+  try {
+    localStorage.removeItem(key);
+  } catch (e) {
+    console.error(`[storageScope] Erreur de suppression pour ${key}:`, e);
+  }
+}
+
+if (typeof window !== 'undefined') {
+  window.StorageScope = {
+    resolveStorageKey,
+    getScopedItem,
+    setScopedItem,
+    removeScopedItem
+  };
+}
+
+
 // Gemini API Service with Multi-Key Pool, Round-Robin Rotation, Resilience Cascade & Local Fallback (100% Modèles Flash)
 const _k = (b64) => typeof atob !== 'undefined' ? atob(b64) : Buffer.from(b64, 'base64').toString('utf-8');
 
@@ -11887,7 +12759,7 @@ class FirebaseSyncService {
 // Update Management Service for PédiaDrill
 // Checks GitHub Releases for new APK versions, notifies the user, and triggers direct download.
 
-const CURRENT_APP_VERSION = '1.5.2';
+const CURRENT_APP_VERSION = '1.5.3';
 const GITHUB_REPO = 'lkmqji/qcm-p-diatrie';
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
 const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours auto-check cooldown
@@ -12362,21 +13234,36 @@ function switchView(viewName) {
 }
 
 // ============================================================================
-// EXAM COUNTDOWN & DAILY CADENCE CALCULATOR (Examen le 10/11/2026)
+// EXAM COUNTDOWN & DAILY CADENCE CALCULATOR
 // ============================================================================
 function getExamCountdownMetrics(totalIterationsRequired) {
-  const now = new Date();
-  const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const examDate = new Date(2026, 10, 10); // 10 Novembre 2026 (Mois 10 = Novembre)
+  const cd = getExamCountdown();
+  let daysLeft = 28;
+  let examDateStr = 'Non définie';
 
-  const diffMs = examDate.getTime() - todayMidnight.getTime();
-  const daysLeft = Math.max(1, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+  if (cd.hasDate) {
+    examDateStr = cd.dateString ? cd.dateString.split('-').reverse().slice(0, 2).join('/') : cd.formattedDate;
+    if (cd.isToday) {
+      daysLeft = 1;
+    } else if (cd.isExpired) {
+      daysLeft = 1;
+    } else {
+      daysLeft = Math.max(1, cd.daysRemaining);
+    }
+  }
+
   const dailyIterationsRequired = Math.ceil(Math.max(0, totalIterationsRequired) / daysLeft);
 
   return {
-    examDateStr: '10/11',
-    daysLeft,
-    dailyIterationsRequired
+    examDateStr,
+    fullFormattedDate: cd.formattedDate || examDateStr,
+    daysLeft: cd.hasDate ? (cd.isToday ? 0 : cd.daysRemaining) : null,
+    effectiveDaysLeft: daysLeft,
+    dailyIterationsRequired,
+    isToday: cd.isToday,
+    isExpired: cd.isExpired,
+    hasDate: cd.hasDate,
+    rawCountdown: cd
   };
 }
 
@@ -12386,8 +13273,276 @@ function updateArenaDailyBadge() {
   const metrics = queueEngine.getDashboardMetrics();
   const countdown = getExamCountdownMetrics(metrics.totalIterationsRequired);
   const todayTracker = queueEngine.getTodayTracker();
-  dailyBadge.innerHTML = `<i data-lucide="target" style="width:12px;height:12px;display:inline;"></i> <span>${todayTracker.count}/${countdown.dailyIterationsRequired} auj. (J-${countdown.daysLeft})</span>`;
+  const jText = countdown.hasDate ? (countdown.isToday ? 'Jour J' : `J-${countdown.daysLeft}`) : 'Obj.';
+  dailyBadge.innerHTML = `<i data-lucide="target" style="width:12px;height:12px;display:inline;"></i> <span>${todayTracker.count}/${countdown.dailyIterationsRequired} auj. (${jText})</span>`;
   refreshLucide(dailyBadge);
+}
+
+// ============================================================================
+// MODULE SELECTOR & SKELETON TREE LOGIC
+// ============================================================================
+function updateActiveModuleBadge() {
+  const activePill = document.getElementById('settings-active-module-pill');
+  const mod = getActiveModule();
+  if (activePill && mod) {
+    activePill.textContent = `${mod.title} (${mod.yearNumber || 5}ème Année)`;
+  }
+}
+
+function updateSettingsCountdownPreview(dateStr) {
+  const previewBadge = document.getElementById('settings-countdown-preview');
+  const previewText = document.getElementById('settings-countdown-preview-text');
+  if (!previewBadge || !previewText) return;
+
+  if (!dateStr) {
+    previewBadge.className = 'exam-countdown-preview-badge';
+    previewText.textContent = 'Date non définie';
+    return;
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const parts = dateStr.split('-');
+  const exam = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+  exam.setHours(0, 0, 0, 0);
+
+  const diffTime = exam.getTime() - today.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) {
+    previewBadge.className = 'exam-countdown-preview-badge today';
+    previewText.textContent = "Jour J ! (Aujourd'hui)";
+  } else if (diffDays < 0) {
+    previewBadge.className = 'exam-countdown-preview-badge expired';
+    previewText.textContent = `Examen passé (+${Math.abs(diffDays)} j)`;
+  } else {
+    previewBadge.className = 'exam-countdown-preview-badge';
+    previewText.textContent = `⏳ J-${diffDays} jours restants`;
+  }
+}
+
+function renderModuleSelectorUI() {
+  const container = document.getElementById('settings-years-accordion');
+  if (!container) return;
+
+  const yearsData = getAllYearsWithModules();
+  const activeModuleId = getActiveModuleId();
+
+  let html = '';
+  yearsData.forEach(y => {
+    const hasActive = y.modules.some(m => m.id === activeModuleId);
+    const isOpen = hasActive || y.year === 5;
+
+    html += `
+      <div class="year-accordion-item ${isOpen ? 'open' : ''} ${hasActive ? 'has-active' : ''}" data-year-id="${y.id}">
+        <button type="button" class="year-accordion-trigger" data-year-toggle="${y.id}">
+          <div class="year-trigger-left">
+            <div class="year-number-badge">${y.year}</div>
+            <div>
+              <div class="year-title-text">${escapeHtml(y.title)}</div>
+              <div class="year-meta-text">${y.modules.length} modules • ${y.coursesCount} cours • ${formatNumber(y.qcmCount)} QCM</div>
+            </div>
+          </div>
+          <div class="year-trigger-right">
+            ${hasActive ? '<span class="module-card-badge available active-badge" style="font-size:0.65rem;">Actif</span>' : ''}
+            <i data-lucide="chevron-down" class="year-chevron-icon"></i>
+          </div>
+        </button>
+        
+        <div class="year-accordion-content">
+          <div class="modules-grid-container">
+    `;
+
+    y.modules.forEach(m => {
+      const isAvailable = m.available;
+      const isActive = m.id === activeModuleId;
+
+      if (isAvailable) {
+        html += `
+          <div class="module-card available ${isActive ? 'active' : ''}" data-module-select="${m.id}" title="Module actif et disponible">
+            <div class="module-card-header">
+              <span class="module-card-badge available ${isActive ? 'active-badge' : ''}">
+                ${isActive ? '✓ Actif' : 'Disponible'}
+              </span>
+              <i data-lucide="${isActive ? 'check-circle' : 'book-open'}" style="width:14px;height:14px;color:${isActive ? 'var(--emerald)' : 'var(--cyan)'};"></i>
+            </div>
+            <div class="module-card-title">${escapeHtml(m.title)}</div>
+            <div class="module-card-stats">
+              <span><i data-lucide="file-text" style="width:11px;height:11px;"></i> ${m.courses} cours</span>
+              <span>•</span>
+              <span><i data-lucide="help-circle" style="width:11px;height:11px;"></i> ${formatNumber(m.qcm)} QCM</span>
+            </div>
+          </div>
+        `;
+      } else {
+        html += `
+          <div class="module-card skeleton-disabled" data-module-locked="${m.id}" data-module-title="${escapeHtml(m.title)}" title="Module en cours de numérisation (QCM à venir)">
+            <div class="module-card-header">
+              <span class="module-card-badge soon">Bientôt</span>
+              <i data-lucide="lock" style="width:12px;height:12px;color:var(--text-dim);"></i>
+            </div>
+            <div class="module-card-title">${escapeHtml(m.title)}</div>
+            <div class="module-card-stats">
+              <span><i data-lucide="file-text" style="width:11px;height:11px;"></i> ${m.courses} cours</span>
+              <span>•</span>
+              <span><i data-lucide="help-circle" style="width:11px;height:11px;"></i> ${formatNumber(m.qcm)} QCM</span>
+            </div>
+          </div>
+        `;
+      }
+    });
+
+    html += `
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+
+  // Accordeon click handlers
+  container.querySelectorAll('[data-year-toggle]').forEach(trigger => {
+    trigger.onclick = (e) => {
+      e.preventDefault();
+      const item = trigger.closest('.year-accordion-item');
+      if (item) item.classList.toggle('open');
+      refreshLucide(item);
+    };
+  });
+
+  // Selectable module click
+  container.querySelectorAll('[data-module-select]').forEach(card => {
+    card.onclick = (e) => {
+      e.preventDefault();
+      const modId = card.getAttribute('data-module-select');
+      try {
+        setActiveModuleId(modId);
+        showAppToast(`✅ Module Pédiatrie actif !`);
+        updateActiveModuleBadge();
+        renderModuleSelectorUI();
+        updateDashboardUI();
+      } catch (err) {
+        showAppToast(err.message);
+      }
+    };
+  });
+
+  // Skeleton locked module click -> shake animation + informative toast
+  container.querySelectorAll('[data-module-locked]').forEach(card => {
+    card.onclick = (e) => {
+      e.preventDefault();
+      const modTitle = card.getAttribute('data-module-title') || 'Ce module';
+      card.classList.remove('module-shake');
+      void card.offsetWidth;
+      card.classList.add('module-shake');
+      showAppToast(`🔒 ${modTitle} : questions en cours de numérisation. Seule la Pédiatrie est active pour l'instant.`);
+    };
+  });
+
+  refreshLucide(container);
+}
+
+function renderDashboardExamBanner(countdown, metrics) {
+  const container = document.getElementById('dashboard-exam-banner-container');
+  if (!container) return;
+
+  const activeMod = getActiveModule();
+  const modTitle = activeMod ? activeMod.title : 'Pédiatrie';
+  const yearTitle = activeMod ? ` (${activeMod.yearNumber || 5}ème Année)` : '';
+
+  if (!countdown.hasDate) {
+    container.innerHTML = `
+      <div class="dashboard-exam-banner">
+        <div class="exam-banner-left">
+          <div class="exam-banner-days-pill" style="border-color:rgba(0,212,255,0.4);background:rgba(0,212,255,0.15);box-shadow:0 0 14px rgba(0,212,255,0.2);">
+            <i data-lucide="calendar" style="width:20px;height:20px;color:var(--cyan);"></i>
+            <span class="exam-banner-days-label" style="color:var(--cyan);">OBJECTIF</span>
+          </div>
+          <div class="exam-banner-info">
+            <div class="exam-banner-title">
+              <span>${escapeHtml(modTitle)}${escapeHtml(yearTitle)}</span>
+              <span class="exam-banner-module-tag">Module Actif</span>
+            </div>
+            <div class="exam-banner-desc">
+              Définissez votre date d'examen dans les paramètres pour activer le compte à rebours dynamique (J-XX) et le calcul en temps réel de votre cadence quotidienne.
+            </div>
+          </div>
+        </div>
+        <div class="exam-banner-right">
+          <button type="button" class="btn-banner-action" id="btn-banner-open-settings">
+            <i data-lucide="calendar-plus" style="width:14px;height:14px;"></i>
+            <span>Fixer la date</span>
+          </button>
+        </div>
+      </div>
+    `;
+  } else {
+    let pillText = `J-${countdown.daysLeft}`;
+    let pillSub = 'RESTANTS';
+    let pillStyle = '';
+
+    if (countdown.isToday) {
+      pillText = 'JOUR J';
+      pillSub = 'EXAMEN';
+      pillStyle = 'border-color:rgba(16,185,129,0.5);background:rgba(16,185,129,0.2);color:var(--emerald);';
+    } else if (countdown.isExpired) {
+      pillText = `+${Math.abs(countdown.daysLeft)} j`;
+      pillSub = 'PASSÉ';
+      pillStyle = 'border-color:rgba(239,68,68,0.5);background:rgba(239,68,68,0.2);color:#fca5a5;';
+    }
+
+    container.innerHTML = `
+      <div class="dashboard-exam-banner">
+        <div class="exam-banner-left">
+          <div class="exam-banner-days-pill" style="${pillStyle}">
+            <span class="exam-banner-days-number">${pillText}</span>
+            <span class="exam-banner-days-label">${pillSub}</span>
+          </div>
+          <div class="exam-banner-info">
+            <div class="exam-banner-title">
+              <span>${escapeHtml(modTitle)}${escapeHtml(yearTitle)}</span>
+              <span class="exam-banner-module-tag">Module Actif</span>
+            </div>
+            <div class="exam-banner-desc">
+              Épreuve fixée au <strong>${escapeHtml(countdown.fullFormattedDate)}</strong>. Cadence cible : <strong>${formatNumber(countdown.dailyIterationsRequired)} QCM / jour</strong> pour éliminer les ${formatNumber(metrics.remainingDistinctQuestions)} questions restantes.
+            </div>
+          </div>
+        </div>
+        <div class="exam-banner-right">
+          <button type="button" class="btn-banner-action" id="btn-banner-open-settings">
+            <i data-lucide="edit-3" style="width:14px;height:14px;"></i>
+            <span>Changer date / module</span>
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  const btnOpen = document.getElementById('btn-banner-open-settings');
+  if (btnOpen) {
+    btnOpen.onclick = () => {
+      openSettingsModal();
+    };
+  }
+
+  refreshLucide(container);
+}
+
+function openSettingsModal() {
+  document.getElementById('settings-gemini-key').value = geminiService.getApiKey();
+  
+  const examDateInput = document.getElementById('settings-exam-date');
+  const savedDate = getExamDate();
+  if (examDateInput) {
+    examDateInput.value = savedDate;
+    updateSettingsCountdownPreview(savedDate);
+  }
+
+  updateActiveModuleBadge();
+  renderModuleSelectorUI();
+  modals.settings.style.display = 'flex';
+  refreshLucide(modals.settings);
 }
 
 // ============================================================================
@@ -12403,11 +13558,24 @@ function updateDashboardUI() {
   document.getElementById('stat-mistakes-count').textContent = formatNumber(metrics.totalMistakes);
   document.getElementById('stat-progress-pct').textContent = `${metrics.progressPct}%`;
   
-  // Daily Target & Exam Countdown
+  // Daily Target & Exam Countdown Badge
   const badgeCountdown = document.getElementById('badge-exam-countdown');
   if (badgeCountdown) {
-    badgeCountdown.textContent = `⏳ J-${countdown.daysLeft} • Examen 10/11`;
+    if (countdown.hasDate) {
+      if (countdown.isToday) {
+        badgeCountdown.textContent = '⏳ Jour J • Examen aujourd\'hui';
+      } else if (countdown.isExpired) {
+        badgeCountdown.textContent = `⏳ Examen passé (+${Math.abs(countdown.daysLeft)} j)`;
+      } else {
+        badgeCountdown.textContent = `⏳ J-${countdown.daysLeft} • Examen ${countdown.examDateStr}`;
+      }
+    } else {
+      badgeCountdown.textContent = '⏳ Date examen à fixer';
+    }
   }
+
+  // Render dynamic top countdown banner
+  renderDashboardExamBanner(countdown, metrics);
 
   const dailyTargetEl = document.getElementById('stat-daily-target');
   if (dailyTargetEl) {
@@ -17965,17 +19133,47 @@ function setupEventListeners() {
     versionBadgeEl.textContent = `v${CURRENT_APP_VERSION}`;
   }
 
-  document.getElementById('btn-open-settings').onclick = () => {
-    document.getElementById('settings-gemini-key').value = geminiService.getApiKey();
-    modals.settings.style.display = 'flex';
-  };
-  document.getElementById('btn-close-settings-modal').onclick = () => modals.settings.style.display = 'none';
-  document.getElementById('btn-save-settings').onclick = () => {
-    const key = document.getElementById('settings-gemini-key').value;
-    geminiService.setApiKey(key);
-    alert('Clé API Gemini enregistrée !');
-    modals.settings.style.display = 'none';
-  };
+  const btnOpenSettings = document.getElementById('btn-open-settings');
+  if (btnOpenSettings) {
+    btnOpenSettings.onclick = openSettingsModal;
+  }
+
+  const btnCloseSettings = document.getElementById('btn-close-settings-modal');
+  if (btnCloseSettings) {
+    btnCloseSettings.onclick = () => modals.settings.style.display = 'none';
+  }
+
+  const examDateInput = document.getElementById('settings-exam-date');
+  if (examDateInput) {
+    examDateInput.oninput = (e) => updateSettingsCountdownPreview(e.target.value);
+  }
+
+  const btnClearExamDate = document.getElementById('btn-clear-exam-date');
+  if (btnClearExamDate) {
+    btnClearExamDate.onclick = () => {
+      if (examDateInput) examDateInput.value = '';
+      updateSettingsCountdownPreview('');
+    };
+  }
+
+  const btnSaveSettings = document.getElementById('btn-save-settings');
+  if (btnSaveSettings) {
+    btnSaveSettings.onclick = () => {
+      const key = document.getElementById('settings-gemini-key').value.trim();
+      geminiService.setApiKey(key);
+
+      if (examDateInput) {
+        setExamDate(examDateInput.value);
+      }
+
+      showAppToast('✅ Paramètres et date d\'examen enregistrés !');
+      modals.settings.style.display = 'none';
+
+      updateDashboardUI();
+      updateArenaDailyBadge();
+      if (currentView === 'stats') renderStatsUI();
+    };
+  }
 
   // GitHub Releases Update Buttons
   const btnCheckUpdates = document.getElementById('btn-check-updates-manual');
