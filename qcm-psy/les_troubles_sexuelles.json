@@ -1,0 +1,1232 @@
+{
+  "version": "2.0",
+  "exported_at": "2026-11-13T09:30:32.209Z",
+  "app": "Mystidia Cursus Medical Explorer",
+  "course": {
+    "title": "Les troubles sexuelles",
+    "module": "Psychiatrie",
+    "year": "5ème Année (DFASM2)",
+    "session_id": "session_1792187615824_pu5atet",
+    "questions_count": 21
+  },
+  "questions": [
+    {
+      "id": 1,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295629,
+          "text": "Elle survient exclusivement chez l'homme de plus de 50 ans",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 295630,
+          "text": "Elle ne provoque jamais de gêne ou de frustration",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 295631,
+          "text": "Elle est diagnostiquée uniquement sur une plainte du partenaire",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 295632,
+          "text": "Elle n'est jamais associée à des tentatives d'évitement de l'intimité",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 295633,
+          "text": "Elle survient sur un délai pour éjaculer toujours inférieur à 1 minute dès le premier rapport",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026 "
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles sexuelles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Sur le mécanisme de l'éjaculation précoce primaire:",
+      "has_media": false,
+      "statement": "Sur le mécanisme de l'éjaculation précoce primaire:",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "  Définition : Il s'agit d'une dysfonction sexuelle masculine caractérisée par Une éjaculation qui survient toujours ou presque toujours en 1 minute ou moins après la pénétration vaginale depuis le 1er rapport sexuel (éjaculation prématurée primaire) 1- Faux:La forme primaire débute dès les premiers rapports (jeune adulte).  2-Faux: Elle provoque souvent gêne, frustration, anxiété de performance et un évitement.3- Faux : : plainte du patient atteint 4-Faux : l’évitement est fréquent en raison de l’anxiété de performance .5-Vrai (voir definition)cours 2026Troubles sexuels cour 5 éme.pptx - Google Slides",
+      "original_id": 60460,
+      "clinical_case": null,
+      "display_title": "Question 1",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<h4><strong style=\"background-color: rgb(204, 224, 245); color: rgb(0, 41, 102);\">  Définition&nbsp;:</strong><span style=\"background-color: rgb(204, 224, 245); color: rgb(0, 41, 102);\"> Il s'agit d'une dysfonction sexuelle masculine caractérisée par Une éjaculation qui survient toujours ou presque toujours en 1 minute ou moins après la pénétration vaginale depuis le 1er rapport sexuel (éjaculation prématurée primaire)</span></h4><p><br></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">&nbsp;1- Faux</strong><strong style=\"color: rgb(37, 49, 89);\">:</strong>La forme primaire débute dès les premiers rapports <strong style=\"background-color: rgb(255, 235, 204);\">(jeune adulte).</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">  2-Faux:</strong> Elle provoque souvent gêne, frustration, anxiété de performance et un évitement.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">3- Faux&nbsp;: </strong>: plainte du patient atteint&nbsp;</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux&nbsp;: </strong>l’évitement est fréquent en raison de l’anxiété de performance .</p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">5-Vrai</strong> (voir definition)</p><p><br></p><p><br></p><p><br></p><p><br></p><p>cours 2026</p><p><a href=\"https://docs.google.com/presentation/d/1Q6FjDX3fzUVPuYqbM59ggS9N044_GaOu/edit?slide=id.p11#slide=id.p11\" rel=\"noopener noreferrer\" target=\"_blank\">Troubles sexuels cour 5 éme.pptx - Google Slides</a></p>"
+    },
+    {
+      "id": 2,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295619,
+          "text": "IIEF-5",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 295620,
+          "text": "FSFI",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 295621,
+          "text": "SEP",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 295622,
+          "text": "Rigiscan",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 295623,
+          "text": "SHBG",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026 "
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles sexuelles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel score est utilisé pour l'évaluation de la fonction sexuelle féminine ?",
+      "has_media": false,
+      "statement": "Quel score est utilisé pour l'évaluation de la fonction sexuelle féminine ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": " 1- Faux: IIEF-5 : International Index of Erectile Function , Questionnaireinternational de la fonction érectile2-Vrai: FSFI : Female Sexual Function Index, Spécifiquement développé pour évaluer la fonction sexuelle féminine3- Faux :SEP : Sexual Encounter Profil , utilisé dans les études sur l’efficacité des traitements de la dysfonction érectile4-Faux : Le Rigiscan est un appareil qui mesure les érections nocturnes5 -Faux :SHBG :Sex Hormone-Binding Globulin, dosage biologique, pas un score d’évaluation.cours 2026Troubles sexuels cour 5 éme.pptx - Google Slides",
+      "original_id": 60458,
+      "clinical_case": null,
+      "display_title": "Question 2",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">&nbsp;1- Faux</strong><strong style=\"color: rgb(37, 49, 89);\">:</strong><strong style=\"color: rgb(37, 49, 89); background-color: rgb(250, 204, 204);\"> IIEF-5 :</strong><span style=\"color: rgb(37, 49, 89); background-color: rgb(250, 204, 204);\"> International Index of Erectile Function ,</span><span style=\"color: rgb(37, 49, 89);\"> Questionnaire</span></p><p>international de la fonction érectile</p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai: </strong><strong style=\"color: rgb(37, 49, 89); background-color: rgb(204, 232, 204);\">FSFI :</strong><span style=\"color: rgb(37, 49, 89); background-color: rgb(204, 232, 204);\"> Female Sexual Function Index</span>, Spécifiquement développé pour évaluer la fonction sexuelle féminine</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">3- Faux&nbsp;:</strong><strong style=\"color: rgb(37, 49, 89); background-color: rgb(250, 204, 204);\">SEP :</strong><span style=\"color: rgb(37, 49, 89); background-color: rgb(250, 204, 204);\"> Sexual Encounter Profil</span><span style=\"background-color: rgb(250, 204, 204);\"> </span>, utilisé dans les études sur l’efficacité des traitements de la dysfonction érectile</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux&nbsp;: </strong><span style=\"color: rgb(37, 49, 89); background-color: rgb(250, 204, 204);\">Le</span><strong style=\"color: rgb(37, 49, 89); background-color: rgb(250, 204, 204);\"> Rigiscan </strong><span style=\"color: rgb(37, 49, 89); background-color: rgb(250, 204, 204);\">est un appareil qui mesure les érections nocturnes</span></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">5 -Faux&nbsp;:</strong><strong style=\"background-color: rgb(250, 204, 204);\">SHBG</strong><span style=\"background-color: rgb(250, 204, 204);\">&nbsp;:Sex Hormone-Binding Globulin,</span> dosage biologique, pas un score d’évaluation.</p><p><br></p><p><br></p><p><br></p><p><br></p><p>cours 2026</p><p><a href=\"https://docs.google.com/presentation/d/1Q6FjDX3fzUVPuYqbM59ggS9N044_GaOu/edit?slide=id.p11#slide=id.p11\" rel=\"noopener noreferrer\" target=\"_blank\">Troubles sexuels cour 5 éme.pptx - Google Slides</a></p>"
+    },
+    {
+      "id": 3,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265862,
+          "text": "1.2.4",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265863,
+          "text": "2.3.5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265864,
+          "text": "2.4.5",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 265865,
+          "text": "2.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265866,
+          "text": "2.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles sexuelles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les paraphilies sont ? (RJ)\n1- La dyspareunie\n2- Le fétichisme\n3- L'anorgasmie\n4- L'exhibitionnisme\n5- Le sadisme sexuel",
+      "has_media": false,
+      "statement": "Les paraphilies sont ? (RJ)\n1- La dyspareunie\n2- Le fétichisme\n3- L'anorgasmie\n4- L'exhibitionnisme\n5- Le sadisme sexuel",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "1.3- Faux, Ces troubles sexuelles font partie des dysfonctions sexuels. Rappels :  Les troubles sexuels sont classés en 03 groupes :• Dysfonctions sexuelles• Paraphilies• Troubles de l'identité sexuelle. ",
+      "original_id": 54078,
+      "clinical_case": null,
+      "display_title": "Question 3",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">1.3- Faux,</strong><strong> </strong>Ces troubles sexuelles font partie des dysfonctions sexuels. </p><p><br></p><p><strong><u>Rappels</u> </strong>:  Les troubles sexuels sont classés en 03 groupes :</p><p>• Dysfonctions sexuelles</p><p>• Paraphilies</p><p>• Troubles de l'identité sexuelle. </p>"
+    },
+    {
+      "id": 4,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265857,
+          "text": "1.2.5",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265858,
+          "text": "1.3.4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265859,
+          "text": "1.2.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 265860,
+          "text": "1.2",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 265861,
+          "text": "1.4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles sexuelles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les dysfonctions sexuelles sont ? (RJ)\n1- Les dysfonctions érectiles\n2- Le vaginisme\n3- Le voyeurisme\n4- L'aversion sexuelle\n5- La pédophilie",
+      "has_media": false,
+      "statement": "Les dysfonctions sexuelles sont ? (RJ)\n1- Les dysfonctions érectiles\n2- Le vaginisme\n3- Le voyeurisme\n4- L'aversion sexuelle\n5- La pédophilie",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "3.4.5- Faux, Ces troubles sexuelles font partie des paraphilies (perversions sexuelles).Rappels :  Les troubles sexuels sont classés en 03 groupes :• Dysfonctions sexuelles• Paraphilies• Troubles de l'identité sexuelle. ",
+      "original_id": 54077,
+      "clinical_case": null,
+      "display_title": "Question 4",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">3.4.5- Faux,</strong><strong> </strong>Ces troubles sexuelles font partie des paraphilies (perversions sexuelles).</p><p><br></p><p><strong><u>Rappels</u> </strong>:  Les troubles sexuels sont classés en 03 groupes :</p><p>• Dysfonctions sexuelles</p><p>• Paraphilies</p><p>• Troubles de l'identité sexuelle. </p>"
+    },
+    {
+      "id": 5,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 253012,
+          "text": "Fétichisme",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 253013,
+          "text": "Zoophilie",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 253014,
+          "text": "Vaginisme",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 253015,
+          "text": "Pédophilie",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 253016,
+          "text": "Inceste",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles sexuelles",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des propositions n'est pas une déviation dans le choix de l'objet sexuel, laquelle ?",
+      "has_media": false,
+      "statement": "L'une des propositions n'est pas une déviation dans le choix de l'objet sexuel, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 51099,
+      "clinical_case": null,
+      "display_title": "Question 5",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 6,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 253062,
+          "text": "Spasme volontaire et répété de la musculature du 1/3 > du vagin",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 253063,
+          "text": "Spasme involontaire et répété de la musculature du 1/3 > du vagin",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 253064,
+          "text": "Spasme volontaire et répété de la musculature du 1/3 < du vagin",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 253065,
+          "text": "Spasme involontaire et répété de la musculature du 1/3 < du vagin",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 253066,
+          "text": "Spasme survenant pendant ou après un rapport sexuel conventionnel",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles sexuelles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le vaginisme est un :",
+      "has_media": false,
+      "statement": "Le vaginisme est un :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 51109,
+      "clinical_case": null,
+      "display_title": "Question 6",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": 7,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252667,
+          "text": "Le voyeurisme",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252668,
+          "text": "La pédophilie",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252669,
+          "text": "La dysphorie de genre",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 252670,
+          "text": "Le fétichisme",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252671,
+          "text": "Le sadomasochisme",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles sexuelles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Tous ces troubles sont des paraphilies sauf un, lequel?",
+      "has_media": false,
+      "statement": "Tous ces troubles sont des paraphilies sauf un, lequel?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "C- Faux, Est une incongruence marquée entre le genre ressenti/exprimé et le genre assigné, pendant une durée d'au moins 6 mois. Ne fait pas partie des troubles sexuelles. Ps! It has to be a sickness to be in the DSM V right, Yet we shouldnt normalise such concepts in the name of \"medecine\", cause this is pure 'abnomination'.  \"و لآمرنهم فليغيرن خلق الله\"Voici une vidéo explicative du Pr Eyad Qunaibi (un Professeur en pharmacologie) dans laquelle il explique l'histoire de ces concepts, et comment ça détruit la vie des peuples: https://youtu.be/M3Eg557qRE8?si=hhjy-ZlE1zZ9Fx-R",
+      "original_id": 51030,
+      "clinical_case": null,
+      "display_title": "Question 7",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">C- Faux</strong>, Est une incongruence marquée entre le genre ressenti/exprimé et le genre assigné, pendant une durée d'au moins 6 mois. Ne fait pas partie des troubles sexuelles. </p><p><br></p><p><strong>Ps</strong>! It has to be a sickness to be in the DSM V right, Yet we shouldnt normalise such concepts in the name of \"medecine\", cause this is pure 'abnomination'.  \"و لآمرنهم فليغيرن خلق الله\"</p><p><span style=\"background-color: rgb(255, 255, 255); color: rgb(5, 5, 5);\">Voici une vidéo explicative du </span><strong style=\"background-color: rgb(255, 255, 255); color: rgb(5, 5, 5);\"><u>Pr Eyad Qunaibi</u></strong><span style=\"background-color: rgb(255, 255, 255); color: rgb(5, 5, 5);\"> (un Professeur en pharmacologie) dans laquelle il explique l'histoire de ces concepts, et comment ça détruit la vie des peuples: </span><a href=\"https://youtu.be/M3Eg557qRE8?si=hhjy-ZlE1zZ9Fx-R&amp;fbclid=IwZXh0bgNhZW0CMTAAAR1lLUpgwsfl9pHCeU6JQ8g-R4LMyEhQGOOswIK3-pFiFekVSfm2GIrTH0s_aem_lmoVaP8xcjBgy4g24pu0Pw\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: transparent; color: var(--blue-link);\">https://youtu.be/M3Eg557qRE8?si=hhjy-ZlE1zZ9Fx-R</a></p>"
+    },
+    {
+      "id": 8,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 221029,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 221030,
+          "text": "2.3",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 221031,
+          "text": "3.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 221032,
+          "text": "2.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 221033,
+          "text": "1.3.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles sexuelles",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des associations concerne le comportement paraphilique, laquelle ?\n1. Concerne la perturbation de la performance sexuelle\n2. Comportement contraignants et répétitifs.\n3. Comportement compatibles avec une bonne insertion sociale\n4. Comportement prédominent chez la femme\n5. Comportement se révèle définitivement avant la puberté",
+      "has_media": false,
+      "statement": "L'une des associations concerne le comportement paraphilique, laquelle ?\n1. Concerne la perturbation de la performance sexuelle\n2. Comportement contraignants et répétitifs.\n3. Comportement compatibles avec une bonne insertion sociale\n4. Comportement prédominent chez la femme\n5. Comportement se révèle définitivement avant la puberté",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44930,
+      "clinical_case": null,
+      "display_title": "Question 8",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 9,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 221024,
+          "text": "1.2.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 221025,
+          "text": "1.3.5",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 221026,
+          "text": "1.3.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 221027,
+          "text": "2.4.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 221028,
+          "text": "3.4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles sexuelles",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des propositions concerne la dyspareunie, laquelle?\n1. C'est une douleur génitale persistante.\n2. Survenant exclusivement pendant les rapports sexuels\n3. Elle peut être due à un trouble anxieux\n4. Elle est plus fréquente chez les hommes.\n5. Elle peut être due à une hygiène intime excessive",
+      "has_media": false,
+      "statement": "L'une des propositions concerne la dyspareunie, laquelle?\n1. C'est une douleur génitale persistante.\n2. Survenant exclusivement pendant les rapports sexuels\n3. Elle peut être due à un trouble anxieux\n4. Elle est plus fréquente chez les hommes.\n5. Elle peut être due à une hygiène intime excessive",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44929,
+      "clinical_case": null,
+      "display_title": "Question 9",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 10,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 221019,
+          "text": "Dysfonctionnement sexuel masculin le plus fréquent",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 221020,
+          "text": "Liée généralement à l'angoisse",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 221021,
+          "text": "C'est une perte du contrôle du réflexe éjaculateur",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 221022,
+          "text": "C'est une éjaculation rétrograde",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 221023,
+          "text": "Survient en moins de deux minute de l’intromission.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles sexuelles",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des propositions ne concerne pas l'éjaculation précoce, laquelle ?",
+      "has_media": false,
+      "statement": "L'une des propositions ne concerne pas l'éjaculation précoce, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44928,
+      "clinical_case": null,
+      "display_title": "Question 10",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 11,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220815,
+          "text": "Spasme volontaire et répété de la musculature du 1/3 > du vagin",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220816,
+          "text": "Spasme involontaire et répété de la musculature du 1/3 > du vagin",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220817,
+          "text": "Spasme volontaire et répété de la Musculature du 1/3 < du vagin",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220818,
+          "text": "Spasme involontaire et répété de la musculature du 1/3 < du vagin",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220819,
+          "text": "Spasme survenant pendant ou après un rapport sexuel conventionnel",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles sexuelles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le vaginisme est un :",
+      "has_media": false,
+      "statement": "Le vaginisme est un :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44887,
+      "clinical_case": null,
+      "display_title": "Question 11",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 12,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220825,
+          "text": "Est spasme involontaire et répété de la musculature du tiers inferieur du vagin",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 220826,
+          "text": "Uniquement associé à des facteurs psychologiques",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220827,
+          "text": "Douleur génitale répété et persistante",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220828,
+          "text": "Survient pendant ou après un rapport sexuel conventionnel",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220829,
+          "text": "Toutes ses réponses sont justes",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles sexuelles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le vaginisme (cocher la réponse juste)",
+      "has_media": false,
+      "statement": "Le vaginisme (cocher la réponse juste)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44889,
+      "clinical_case": null,
+      "display_title": "Question 12",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 13,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220810,
+          "text": "1+2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220811,
+          "text": "1+3+4",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 220812,
+          "text": "1+3",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220813,
+          "text": "2+5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220814,
+          "text": "1+3+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles sexuelles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Cocher l'association juste concernant la paraphilie :\n\n1 Désigne une sexualité déviante\n2 Désigne un trouble de l'identité sexuelle\n3 Le trouble exhibitionnisme en fait partie\n4 Fantaisies imaginatives sexuellement excitantes et des impulsions sexuelles\n5 Désigne une identification intense et persistante à l'autre sexe",
+      "has_media": false,
+      "statement": "Cocher l'association juste concernant la paraphilie :\n\n1 Désigne une sexualité déviante\n2 Désigne un trouble de l'identité sexuelle\n3 Le trouble exhibitionnisme en fait partie\n4 Fantaisies imaginatives sexuellement excitantes et des impulsions sexuelles\n5 Désigne une identification intense et persistante à l'autre sexe",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44886,
+      "clinical_case": null,
+      "display_title": "Question 13",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 14,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220800,
+          "text": "Examens biologiques pour explorer la dysfonction érectile",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220801,
+          "text": "Evaluation cardiovasculaire",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220802,
+          "text": "Evaluation psycho-sexologique plus approfondie",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220803,
+          "text": "Conseils hygiéno-diététiques",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220804,
+          "text": "Initiation d’un traitement",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles sexuelles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Mourad âgé de 61 ans, consulte pour une dysfonction érectile, évoluant depuis plus de 3 ans. Dans ses antécédents on note une HTA depuis 3 ans, traitée par ARA-II, une cholestérolémie limite au dernier bilan et un tabagisme actif, divorcé depuis 5 ans, il compte se remarie. Il souhaite prendre du Cialis\nQue proposez-vous à ce patient ? (RF)",
+      "has_media": false,
+      "statement": "Mourad âgé de 61 ans, consulte pour une dysfonction érectile, évoluant depuis plus de 3 ans. Dans ses antécédents on note une HTA depuis 3 ans, traitée par ARA-II, une cholestérolémie limite au dernier bilan et un tabagisme actif, divorcé depuis 5 ans, il compte se remarie. Il souhaite prendre du Cialis\nQue proposez-vous à ce patient ? (RF)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44884,
+      "clinical_case": null,
+      "display_title": "Question 14",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 15,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220820,
+          "text": "Dysfonction sexuelle occasionnant des douleurs",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220821,
+          "text": "Ne provoque pas de souffrance dans le couple",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220822,
+          "text": "Fait suite à une phase de plateau correcte",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220823,
+          "text": "Fait partie des paraphilies",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220824,
+          "text": "Un trouble de l'orgasme",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles sexuelles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les affirmations suivantes concernant l'éjaculation précoce sont fausses, sauf une, laquelle ?",
+      "has_media": false,
+      "statement": "Les affirmations suivantes concernant l'éjaculation précoce sont fausses, sauf une, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44888,
+      "clinical_case": null,
+      "display_title": "Question 15",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 16,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220805,
+          "text": "Classer dans la catégorie des « troubles liés à des douleurs génito-pelviennes ou à la pénétration »",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220806,
+          "text": "Contraction involontaire, réflexe et persistante des muscles du périnée et le tiers externe du vagin",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220807,
+          "text": "Vaginisme n'empêche pas la pénétration",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 220808,
+          "text": "Dysfonction sexuelle",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220809,
+          "text": "Vaginisme peut être primaire ou secondaire",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles sexuelles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les affirmations suivante concernant le vaginisme sont exactes, sauf, laquelle ?",
+      "has_media": false,
+      "statement": "Les affirmations suivante concernant le vaginisme sont exactes, sauf, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44885,
+      "clinical_case": null,
+      "display_title": "Question 16",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 17,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220845,
+          "text": "C’est une anéjaculation.",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 220846,
+          "text": "Se limite à un retard d’orgasme après une phase normale de désir et d'excitation sexuelle.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220847,
+          "text": "C’est un retard à l'éjaculation.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 220848,
+          "text": "Comorbidité à un trouble de l'érection.",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220849,
+          "text": "C’est une éjaculation rétrograde.",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P4 2022"
+        ],
+        "type": "QCM",
+        "module": "Psychiatrie - Les troubles sexuelles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Trouble de l’orgasme chez l'homme : (la ou les RJ)",
+      "has_media": false,
+      "statement": "Trouble de l’orgasme chez l'homme : (la ou les RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44893,
+      "clinical_case": null,
+      "display_title": "Question 17",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 18,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220830,
+          "text": "Dyspareunies.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220831,
+          "text": "Fréquent principalement chez les femmes.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220832,
+          "text": "Vulvodynies.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220833,
+          "text": "Difficultés à obtenir l'érection.",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220834,
+          "text": "Vaginisme.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P4 2022"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles sexuelles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Trouble sexuels douloureux : (la ou les RF)",
+      "has_media": false,
+      "statement": "Trouble sexuels douloureux : (la ou les RF)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44890,
+      "clinical_case": null,
+      "display_title": "Question 18",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 19,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220835,
+          "text": "Orgasme absent + bonne stimulation sexuelle",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 220836,
+          "text": "Orgasme absent + mauvaise stimulation sexuelle",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220837,
+          "text": "Orgasme insatisfaisant",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220838,
+          "text": "Orgasme retardé",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220839,
+          "text": "Pas de souffrance psychologique",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2022"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles sexuelles",
+        "series": "Mystidia Exams"
+      },
+      "question": "L’anorgasmie se définit comme : (RJ)",
+      "has_media": false,
+      "statement": "L’anorgasmie se définit comme : (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44891,
+      "clinical_case": null,
+      "display_title": "Question 19",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 20,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220850,
+          "text": "Augmentation de la rigidité sexuelle",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220851,
+          "text": "Incapacité répétée à atteindre une érection adéquate",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 220852,
+          "text": "Incapacité à parvenir à l’éjaculation",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220853,
+          "text": "Éjaculation précoce",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220854,
+          "text": "Éjaculation retardée",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2022"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles sexuelles",
+        "series": "Mystidia Exams"
+      },
+      "question": "La dysfonction érectile se définit par : (RJ)",
+      "has_media": false,
+      "statement": "La dysfonction érectile se définit par : (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44894,
+      "clinical_case": null,
+      "display_title": "Question 20",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 21,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220840,
+          "text": "Est un spasme involontaire et répété de la musculature du tiers inferieur du vagin",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 220841,
+          "text": "Est un spasme involontaire et répété de la musculature du tiers supérieur du vagin",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220842,
+          "text": "Uniquement associé des facteurs psychologiques",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220843,
+          "text": "Douleur génitale répété et persistante",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220844,
+          "text": "Survient pendant ou après un rapport sexuel conventionnel",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2022"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles sexuelles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le vaginisme : (RJ)",
+      "has_media": false,
+      "statement": "Le vaginisme : (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44892,
+      "clinical_case": null,
+      "display_title": "Question 21",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    }
+  ]
+}

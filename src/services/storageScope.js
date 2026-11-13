@@ -6,12 +6,19 @@
 import { getActiveModuleId } from './moduleCatalog.js';
 
 const LEGACY_PEDIA_KEY_MAP = {
+  drill_state: 'pedia_drill_state_v1',
   today_tracker: 'pedia_today_tracker',
-  first_pass_records: 'pedia_first_pass_records_v1',
+  first_pass_records: 'pedia_first_pass_records_v2',
+  first_pass_records_v1: 'pedia_first_pass_records_v1',
   lesson_tracker: 'pedia_lesson_tracker_v1',
+  lesson_tracker_state: 'pedia_lesson_tracker_state_v1',
+  lesson_sessions: 'pedia_lesson_sessions_v1',
   reasoning_notes: 'pedia_drill_reasoning_notes_v1',
+  study_history: 'pedia_study_history_v1',
   ai_cache: 'pedia_ai_explanations_cache',
-  lesson_timer_cleared: 'pedia_lesson_timer_cleared_at'
+  lesson_timer_cleared: 'pedia_lesson_timer_cleared_at',
+  selected_chapters: 'pedia_selected_chapters_v1',
+  snoozed_questions: 'pedia_snoozed_questions_v1'
 };
 
 export function resolveStorageKey(baseKey, moduleId) {

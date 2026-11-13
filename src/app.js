@@ -18,10 +18,25 @@ import {
 } from './services/moduleCatalog.js';
 
 // Global Data Access & O(1) Fast Lookup Maps
-const allQuestions = window.PEDIA_QUESTIONS || [];
-const allChapters = window.PEDIA_CHAPTERS || [];
-const questionsMap = new Map(allQuestions.map(q => [q.uid, q]));
-const chaptersMap = new Map(allChapters.map(c => [c.id, c]));
+function getDatasetForModule(moduleId) {
+  const modId = moduleId || getActiveModuleId();
+  if ((modId === 'psychiatrie' || modId === 'psychiatrie_5') && typeof window !== 'undefined' && window.PSY_QUESTIONS && window.PSY_CHAPTERS) {
+    return {
+      questions: window.PSY_QUESTIONS,
+      chapters: window.PSY_CHAPTERS
+    };
+  }
+  return {
+    questions: (typeof window !== 'undefined' && window.PEDIA_QUESTIONS) || [],
+    chapters: (typeof window !== 'undefined' && window.PEDIA_CHAPTERS) || []
+  };
+}
+
+let activeDataset = getDatasetForModule(getActiveModuleId());
+let allQuestions = activeDataset.questions;
+let allChapters = activeDataset.chapters;
+let questionsMap = new Map(allQuestions.map(q => [q.uid, q]));
+let chaptersMap = new Map(allChapters.map(c => [c.id, c]));
 
 // Services
 const queueEngine = new QueueEngine(allQuestions, allChapters);
@@ -338,6 +353,44 @@ function updateSettingsCountdownPreview(dateStr) {
   }
 }
 
+function switchActiveModule(moduleId) {
+  const mod = setActiveModuleId(moduleId);
+  activeDataset = getDatasetForModule(mod.id);
+  allQuestions = activeDataset.questions;
+  allChapters = activeDataset.chapters;
+  questionsMap = new Map(allQuestions.map(q => [q.uid, q]));
+  chaptersMap = new Map(allChapters.map(c => [c.id, c]));
+
+  queueEngine.switchModule(allQuestions, allChapters);
+  if (studyTracker && typeof studyTracker.reloadForModule === 'function') {
+    studyTracker.reloadForModule();
+  }
+  if (lessonTracker && typeof lessonTracker.reloadForModule === 'function') {
+    lessonTracker.reloadForModule();
+  }
+
+  // Update header subtitle if element exists
+  const headerSubtitle = document.querySelector('.brand-subtitle');
+  if (headerSubtitle) {
+    headerSubtitle.textContent = `${mod.title} • Répétition Espacée & Raisonnement IA`;
+  }
+
+  updateActiveModuleBadge();
+  renderModuleSelectorUI();
+  updateDashboardUI();
+  updateArenaDailyBadge();
+
+  if (currentView === 'arena') {
+    loadNextArenaQuestion();
+  } else if (currentView === 'notebook') {
+    renderNotebookUI();
+  } else if (currentView === 'stats') {
+    renderStatsUI();
+  }
+
+  showAppToast(`✅ Module ${mod.title} activé ! (${allQuestions.length} QCM)`);
+}
+
 function renderModuleSelectorUI() {
   const container = document.getElementById('settings-years-accordion');
   if (!container) return;
@@ -434,11 +487,7 @@ function renderModuleSelectorUI() {
       e.preventDefault();
       const modId = card.getAttribute('data-module-select');
       try {
-        setActiveModuleId(modId);
-        showAppToast(`✅ Module Pédiatrie actif !`);
-        updateActiveModuleBadge();
-        renderModuleSelectorUI();
-        updateDashboardUI();
+        switchActiveModule(modId);
       } catch (err) {
         showAppToast(err.message);
       }

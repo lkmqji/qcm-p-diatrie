@@ -1,0 +1,1636 @@
+{
+  "version": "2.0",
+  "exported_at": "2026-11-13T09:30:31.307Z",
+  "app": "Mystidia Cursus Medical Explorer",
+  "course": {
+    "title": "L'adolescence et ses troubles",
+    "module": "Psychiatrie",
+    "year": "5ème Année (DFASM2)",
+    "session_id": "session_1792187465641_vnxt7i9",
+    "questions_count": 28
+  },
+  "questions": [
+    {
+      "id": "1.1",
+      "case_id": 1,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 318215,
+          "text": " 1+2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 318216,
+          "text": " 1 + 2 + 3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 318217,
+          "text": "3+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 318218,
+          "text": "4+5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 318219,
+          "text": "2+3+4+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2026"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": " Parmi les manifestations suivantes, lesquelles ne font partie des troubles du\ncomportement observé dans\nce cas ?\n1. Vols répétés.\n2. Fugues.\n3. Violations des règles sociales.\n4. Autoagressivité.\n5. Hallucinations auditives.",
+      "has_media": false,
+      "statement": " Parmi les manifestations suivantes, lesquelles ne font partie des troubles du\ncomportement observé dans\nce cas ?\n1. Vols répétés.\n2. Fugues.\n3. Violations des règles sociales.\n4. Autoagressivité.\n5. Hallucinations auditives.",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Question 1:D.Faux, l’adolescent présente de l'hétéroagressivité (bagarres) mais aucun comportement autoagressif (automutilation, tentative de suicide).E.Faux, Dans l’énoncé  il n'y a aucun élément psychotique décrit donc pas d'hallucinations auditives.Question 2 :B.Vrai, Le Trouble des conduites (TC) se caractérise par une répétition de conduites où les droits fondamentaux d'autrui et les normes sociales sont bafoués (vols, bagarres, fugues, absences scolaires, absence de culpabilité), ce qui correspond exactement au profil de cet adolescent.Question 3 :B.Faux, Au contraire le trouble des conduites surtout s'il débute précocement est un facteur de risque majeur pour le développement d'une personnalité antisociale (ou psychopathie) à l'âge adulte.Question 4 :E.Vrai, L'évaluation d'un trouble des conduites doit être globale (approche bio-psycho-sociale).Question 5:A.Vrai, Bien que la consommation de substances et la dépression  soient très fréquentes le TDAH est la comorbidité la plus intimement liée au trouble des conduites. Près de 30 à 50 % des enfants/adolescents atteints d'un trouble des conduites souffrent également d'un TDAH. L'impulsivité du TDAH fait souvent le lit des passages à l'acte médico-légaux.Question 6 :A.Faux, il n'existe aucun médicament \"curatif\" du trouble des conduites, on ne traite par médicament que les comorbidités associés.E.Faux, Elle n'est réservée qu'aux crises aiguës (danger imminent pour soi ou pour autrui).",
+      "original_id": 65137,
+      "clinical_case": "Un adolescent de 15 ans est amené en consultation de pédopsychiatrie par ses parents pour des troubles du comportement évoluant depuis plus d'un an. Les parents rapportent des absences scolaires répétées, des fugues à plusieurs reprises, des vols d'argent au domicile familial, des bagarres fréquentes au collège ainsi qu'une consommation occasionnelle de\r\ncannabis avec des camarades et surtout un refus d'obéir aux règles familiales.\r\nL'adolescent minimise les faits et ne manifeste aucun sentiment de culpabilité. Les résultats scolaires se sont fortement dégradés. L'examen somatique est sans particularité.",
+      "display_title": "Question 1 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong>Question 1:</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">D.Faux, </strong>l’adolescent présente de l'<em>hétéroagressivité</em> (bagarres) mais aucun comportement autoagressif (automutilation, tentative de suicide).</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux, </strong>Dans l’énoncé <strong>&nbsp;</strong>il n'y a aucun élément psychotique décrit donc pas d'hallucinations auditives.</p><p><br></p><p><strong>Question 2 :</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai, </strong>Le Trouble des conduites (TC) se caractérise par une répétition de conduites où les droits fondamentaux d'autrui et les normes sociales sont bafoués (vols, bagarres, fugues, absences scolaires, absence de culpabilité), ce qui correspond exactement au profil de cet adolescent.</p><p><br></p><p><strong>Question 3 :</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">B.Faux, </strong>Au contraire le trouble des conduites surtout s'il débute précocement est un facteur de risque majeur pour le développement d'une personnalité antisociale (ou psychopathie) à l'âge adulte.</p><p><br></p><p><strong>Question 4 :</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">E.Vrai, </strong>L'évaluation d'un trouble des conduites doit être globale (approche bio-psycho-sociale).</p><p><br></p><p><strong>Question 5:</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">A.Vrai, </strong>Bien que la consommation de substances et la dépression  soient très fréquentes le TDAH est la comorbidité la plus intimement liée au trouble des conduites. Près de 30 à 50 % des enfants/adolescents atteints d'un trouble des conduites souffrent également d'un TDAH. </p><p>L'impulsivité du TDAH fait souvent le lit des passages à l'acte médico-légaux.</p><p><br></p><p><strong>Question 6 :</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">A.Faux, </strong>il<span style=\"color: rgb(230, 0, 0);\"> </span>n'existe aucun médicament \"curatif\" du trouble des conduites, on ne traite par médicament que les comorbidités associés.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux, </strong>Elle n'est réservée qu'aux crises aiguës (danger imminent pour soi ou pour autrui).</p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p>"
+    },
+    {
+      "id": "1.2",
+      "case_id": 1,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 318220,
+          "text": " Trouble oppositionnel avec provocation.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 318221,
+          "text": " Trouble des conduites.",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 318222,
+          "text": "Épisode dépressif caractérisé.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 318223,
+          "text": " Trouble panique.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 318224,
+          "text": "Anorexie mentale.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2026"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": " Quel diagnostic est le plus probable?",
+      "has_media": false,
+      "statement": " Quel diagnostic est le plus probable?",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Question 1:D.Faux, l’adolescent présente de l'hétéroagressivité (bagarres) mais aucun comportement autoagressif (automutilation, tentative de suicide).E.Faux, Dans l’énoncé  il n'y a aucun élément psychotique décrit donc pas d'hallucinations auditives.Question 2 :B.Vrai, Le Trouble des conduites (TC) se caractérise par une répétition de conduites où les droits fondamentaux d'autrui et les normes sociales sont bafoués (vols, bagarres, fugues, absences scolaires, absence de culpabilité), ce qui correspond exactement au profil de cet adolescent.Question 3 :B.Faux, Au contraire le trouble des conduites surtout s'il débute précocement est un facteur de risque majeur pour le développement d'une personnalité antisociale (ou psychopathie) à l'âge adulte.Question 4 :E.Vrai, L'évaluation d'un trouble des conduites doit être globale (approche bio-psycho-sociale).Question 5:A.Vrai, Bien que la consommation de substances et la dépression  soient très fréquentes le TDAH est la comorbidité la plus intimement liée au trouble des conduites. Près de 30 à 50 % des enfants/adolescents atteints d'un trouble des conduites souffrent également d'un TDAH. L'impulsivité du TDAH fait souvent le lit des passages à l'acte médico-légaux.Question 6 :A.Faux, il n'existe aucun médicament \"curatif\" du trouble des conduites, on ne traite par médicament que les comorbidités associés.E.Faux, Elle n'est réservée qu'aux crises aiguës (danger imminent pour soi ou pour autrui).",
+      "original_id": 65138,
+      "clinical_case": "Un adolescent de 15 ans est amené en consultation de pédopsychiatrie par ses parents pour des troubles du comportement évoluant depuis plus d'un an. Les parents rapportent des absences scolaires répétées, des fugues à plusieurs reprises, des vols d'argent au domicile familial, des bagarres fréquentes au collège ainsi qu'une consommation occasionnelle de\r\ncannabis avec des camarades et surtout un refus d'obéir aux règles familiales.\r\nL'adolescent minimise les faits et ne manifeste aucun sentiment de culpabilité. Les résultats scolaires se sont fortement dégradés. L'examen somatique est sans particularité.",
+      "display_title": "Question 1 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong>Question 1:</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">D.Faux, </strong>l’adolescent présente de l'<em>hétéroagressivité</em> (bagarres) mais aucun comportement autoagressif (automutilation, tentative de suicide).</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux, </strong>Dans l’énoncé <strong>&nbsp;</strong>il n'y a aucun élément psychotique décrit donc pas d'hallucinations auditives.</p><p><br></p><p><strong>Question 2 :</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai, </strong>Le Trouble des conduites (TC) se caractérise par une répétition de conduites où les droits fondamentaux d'autrui et les normes sociales sont bafoués (vols, bagarres, fugues, absences scolaires, absence de culpabilité), ce qui correspond exactement au profil de cet adolescent.</p><p><br></p><p><strong>Question 3 :</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">B.Faux, </strong>Au contraire le trouble des conduites surtout s'il débute précocement est un facteur de risque majeur pour le développement d'une personnalité antisociale (ou psychopathie) à l'âge adulte.</p><p><br></p><p><strong>Question 4 :</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">E.Vrai, </strong>L'évaluation d'un trouble des conduites doit être globale (approche bio-psycho-sociale).</p><p><br></p><p><strong>Question 5:</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">A.Vrai, </strong>Bien que la consommation de substances et la dépression  soient très fréquentes le TDAH est la comorbidité la plus intimement liée au trouble des conduites. Près de 30 à 50 % des enfants/adolescents atteints d'un trouble des conduites souffrent également d'un TDAH. </p><p>L'impulsivité du TDAH fait souvent le lit des passages à l'acte médico-légaux.</p><p><br></p><p><strong>Question 6 :</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">A.Faux, </strong>il<span style=\"color: rgb(230, 0, 0);\"> </span>n'existe aucun médicament \"curatif\" du trouble des conduites, on ne traite par médicament que les comorbidités associés.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux, </strong>Elle n'est réservée qu'aux crises aiguës (danger imminent pour soi ou pour autrui).</p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p>"
+    },
+    {
+      "id": "1.3",
+      "case_id": 1,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 318225,
+          "text": "Il peut débuter à l'enfance.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 318226,
+          "text": "Il n'expose à un risque de personnalité antisociale à l'âge adulte.",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 318227,
+          "text": " Il expose à un risque de personnalité antisociale à l'âge adulte.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 318228,
+          "text": "Il est souvent associé à l'échec scolaire.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 318229,
+          "text": "Il peut s'accompagner d'une consommation de substances.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2026"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": " Concernant ce trouble présenté par cet adolescent, une proposition est fausse, laquelle?",
+      "has_media": false,
+      "statement": " Concernant ce trouble présenté par cet adolescent, une proposition est fausse, laquelle?",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Question 1:D.Faux, l’adolescent présente de l'hétéroagressivité (bagarres) mais aucun comportement autoagressif (automutilation, tentative de suicide).E.Faux, Dans l’énoncé  il n'y a aucun élément psychotique décrit donc pas d'hallucinations auditives.Question 2 :B.Vrai, Le Trouble des conduites (TC) se caractérise par une répétition de conduites où les droits fondamentaux d'autrui et les normes sociales sont bafoués (vols, bagarres, fugues, absences scolaires, absence de culpabilité), ce qui correspond exactement au profil de cet adolescent.Question 3 :B.Faux, Au contraire le trouble des conduites surtout s'il débute précocement est un facteur de risque majeur pour le développement d'une personnalité antisociale (ou psychopathie) à l'âge adulte.Question 4 :E.Vrai, L'évaluation d'un trouble des conduites doit être globale (approche bio-psycho-sociale).Question 5:A.Vrai, Bien que la consommation de substances et la dépression  soient très fréquentes le TDAH est la comorbidité la plus intimement liée au trouble des conduites. Près de 30 à 50 % des enfants/adolescents atteints d'un trouble des conduites souffrent également d'un TDAH. L'impulsivité du TDAH fait souvent le lit des passages à l'acte médico-légaux.Question 6 :A.Faux, il n'existe aucun médicament \"curatif\" du trouble des conduites, on ne traite par médicament que les comorbidités associés.E.Faux, Elle n'est réservée qu'aux crises aiguës (danger imminent pour soi ou pour autrui).",
+      "original_id": 65139,
+      "clinical_case": "Un adolescent de 15 ans est amené en consultation de pédopsychiatrie par ses parents pour des troubles du comportement évoluant depuis plus d'un an. Les parents rapportent des absences scolaires répétées, des fugues à plusieurs reprises, des vols d'argent au domicile familial, des bagarres fréquentes au collège ainsi qu'une consommation occasionnelle de\r\ncannabis avec des camarades et surtout un refus d'obéir aux règles familiales.\r\nL'adolescent minimise les faits et ne manifeste aucun sentiment de culpabilité. Les résultats scolaires se sont fortement dégradés. L'examen somatique est sans particularité.",
+      "display_title": "Question 1 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong>Question 1:</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">D.Faux, </strong>l’adolescent présente de l'<em>hétéroagressivité</em> (bagarres) mais aucun comportement autoagressif (automutilation, tentative de suicide).</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux, </strong>Dans l’énoncé <strong>&nbsp;</strong>il n'y a aucun élément psychotique décrit donc pas d'hallucinations auditives.</p><p><br></p><p><strong>Question 2 :</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai, </strong>Le Trouble des conduites (TC) se caractérise par une répétition de conduites où les droits fondamentaux d'autrui et les normes sociales sont bafoués (vols, bagarres, fugues, absences scolaires, absence de culpabilité), ce qui correspond exactement au profil de cet adolescent.</p><p><br></p><p><strong>Question 3 :</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">B.Faux, </strong>Au contraire le trouble des conduites surtout s'il débute précocement est un facteur de risque majeur pour le développement d'une personnalité antisociale (ou psychopathie) à l'âge adulte.</p><p><br></p><p><strong>Question 4 :</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">E.Vrai, </strong>L'évaluation d'un trouble des conduites doit être globale (approche bio-psycho-sociale).</p><p><br></p><p><strong>Question 5:</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">A.Vrai, </strong>Bien que la consommation de substances et la dépression  soient très fréquentes le TDAH est la comorbidité la plus intimement liée au trouble des conduites. Près de 30 à 50 % des enfants/adolescents atteints d'un trouble des conduites souffrent également d'un TDAH. </p><p>L'impulsivité du TDAH fait souvent le lit des passages à l'acte médico-légaux.</p><p><br></p><p><strong>Question 6 :</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">A.Faux, </strong>il<span style=\"color: rgb(230, 0, 0);\"> </span>n'existe aucun médicament \"curatif\" du trouble des conduites, on ne traite par médicament que les comorbidités associés.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux, </strong>Elle n'est réservée qu'aux crises aiguës (danger imminent pour soi ou pour autrui).</p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p>"
+    },
+    {
+      "id": "1.4",
+      "case_id": 1,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 318230,
+          "text": "Contexte familial.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 318231,
+          "text": "Antécédents judiciaires.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 318232,
+          "text": "Difficultés scolaires.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 318233,
+          "text": "Antécédents psychiatriques personnels et familiaux.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 318234,
+          "text": "Toutes les réponses sont justes.",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2026"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": " Quels facteurs doivent être recherchés lors de l'évaluation ?",
+      "has_media": false,
+      "statement": " Quels facteurs doivent être recherchés lors de l'évaluation ?",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Question 1:D.Faux, l’adolescent présente de l'hétéroagressivité (bagarres) mais aucun comportement autoagressif (automutilation, tentative de suicide).E.Faux, Dans l’énoncé  il n'y a aucun élément psychotique décrit donc pas d'hallucinations auditives.Question 2 :B.Vrai, Le Trouble des conduites (TC) se caractérise par une répétition de conduites où les droits fondamentaux d'autrui et les normes sociales sont bafoués (vols, bagarres, fugues, absences scolaires, absence de culpabilité), ce qui correspond exactement au profil de cet adolescent.Question 3 :B.Faux, Au contraire le trouble des conduites surtout s'il débute précocement est un facteur de risque majeur pour le développement d'une personnalité antisociale (ou psychopathie) à l'âge adulte.Question 4 :E.Vrai, L'évaluation d'un trouble des conduites doit être globale (approche bio-psycho-sociale).Question 5:A.Vrai, Bien que la consommation de substances et la dépression  soient très fréquentes le TDAH est la comorbidité la plus intimement liée au trouble des conduites. Près de 30 à 50 % des enfants/adolescents atteints d'un trouble des conduites souffrent également d'un TDAH. L'impulsivité du TDAH fait souvent le lit des passages à l'acte médico-légaux.Question 6 :A.Faux, il n'existe aucun médicament \"curatif\" du trouble des conduites, on ne traite par médicament que les comorbidités associés.E.Faux, Elle n'est réservée qu'aux crises aiguës (danger imminent pour soi ou pour autrui).",
+      "original_id": 65140,
+      "clinical_case": "Un adolescent de 15 ans est amené en consultation de pédopsychiatrie par ses parents pour des troubles du comportement évoluant depuis plus d'un an. Les parents rapportent des absences scolaires répétées, des fugues à plusieurs reprises, des vols d'argent au domicile familial, des bagarres fréquentes au collège ainsi qu'une consommation occasionnelle de\r\ncannabis avec des camarades et surtout un refus d'obéir aux règles familiales.\r\nL'adolescent minimise les faits et ne manifeste aucun sentiment de culpabilité. Les résultats scolaires se sont fortement dégradés. L'examen somatique est sans particularité.",
+      "display_title": "Question 1 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong>Question 1:</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">D.Faux, </strong>l’adolescent présente de l'<em>hétéroagressivité</em> (bagarres) mais aucun comportement autoagressif (automutilation, tentative de suicide).</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux, </strong>Dans l’énoncé <strong>&nbsp;</strong>il n'y a aucun élément psychotique décrit donc pas d'hallucinations auditives.</p><p><br></p><p><strong>Question 2 :</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai, </strong>Le Trouble des conduites (TC) se caractérise par une répétition de conduites où les droits fondamentaux d'autrui et les normes sociales sont bafoués (vols, bagarres, fugues, absences scolaires, absence de culpabilité), ce qui correspond exactement au profil de cet adolescent.</p><p><br></p><p><strong>Question 3 :</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">B.Faux, </strong>Au contraire le trouble des conduites surtout s'il débute précocement est un facteur de risque majeur pour le développement d'une personnalité antisociale (ou psychopathie) à l'âge adulte.</p><p><br></p><p><strong>Question 4 :</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">E.Vrai, </strong>L'évaluation d'un trouble des conduites doit être globale (approche bio-psycho-sociale).</p><p><br></p><p><strong>Question 5:</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">A.Vrai, </strong>Bien que la consommation de substances et la dépression  soient très fréquentes le TDAH est la comorbidité la plus intimement liée au trouble des conduites. Près de 30 à 50 % des enfants/adolescents atteints d'un trouble des conduites souffrent également d'un TDAH. </p><p>L'impulsivité du TDAH fait souvent le lit des passages à l'acte médico-légaux.</p><p><br></p><p><strong>Question 6 :</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">A.Faux, </strong>il<span style=\"color: rgb(230, 0, 0);\"> </span>n'existe aucun médicament \"curatif\" du trouble des conduites, on ne traite par médicament que les comorbidités associés.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux, </strong>Elle n'est réservée qu'aux crises aiguës (danger imminent pour soi ou pour autrui).</p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p>"
+    },
+    {
+      "id": "1.5",
+      "case_id": 1,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 318235,
+          "text": "TDAH.",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 318236,
+          "text": "Consommation de substances.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 318237,
+          "text": "Dépression.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 318238,
+          "text": " Troubles anxieux.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 318239,
+          "text": " Trouble de l'apprentissage.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2026"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": " Quelle est la comorbidité la plus fréquente qui doit être recherchée?",
+      "has_media": false,
+      "statement": " Quelle est la comorbidité la plus fréquente qui doit être recherchée?",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Question 1:D.Faux, l’adolescent présente de l'hétéroagressivité (bagarres) mais aucun comportement autoagressif (automutilation, tentative de suicide).E.Faux, Dans l’énoncé  il n'y a aucun élément psychotique décrit donc pas d'hallucinations auditives.Question 2 :B.Vrai, Le Trouble des conduites (TC) se caractérise par une répétition de conduites où les droits fondamentaux d'autrui et les normes sociales sont bafoués (vols, bagarres, fugues, absences scolaires, absence de culpabilité), ce qui correspond exactement au profil de cet adolescent.Question 3 :B.Faux, Au contraire le trouble des conduites surtout s'il débute précocement est un facteur de risque majeur pour le développement d'une personnalité antisociale (ou psychopathie) à l'âge adulte.Question 4 :E.Vrai, L'évaluation d'un trouble des conduites doit être globale (approche bio-psycho-sociale).Question 5:A.Vrai, Bien que la consommation de substances et la dépression  soient très fréquentes le TDAH est la comorbidité la plus intimement liée au trouble des conduites. Près de 30 à 50 % des enfants/adolescents atteints d'un trouble des conduites souffrent également d'un TDAH. L'impulsivité du TDAH fait souvent le lit des passages à l'acte médico-légaux.Question 6 :A.Faux, il n'existe aucun médicament \"curatif\" du trouble des conduites, on ne traite par médicament que les comorbidités associés.E.Faux, Elle n'est réservée qu'aux crises aiguës (danger imminent pour soi ou pour autrui).",
+      "original_id": 65141,
+      "clinical_case": "Un adolescent de 15 ans est amené en consultation de pédopsychiatrie par ses parents pour des troubles du comportement évoluant depuis plus d'un an. Les parents rapportent des absences scolaires répétées, des fugues à plusieurs reprises, des vols d'argent au domicile familial, des bagarres fréquentes au collège ainsi qu'une consommation occasionnelle de\r\ncannabis avec des camarades et surtout un refus d'obéir aux règles familiales.\r\nL'adolescent minimise les faits et ne manifeste aucun sentiment de culpabilité. Les résultats scolaires se sont fortement dégradés. L'examen somatique est sans particularité.",
+      "display_title": "Question 1 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong>Question 1:</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">D.Faux, </strong>l’adolescent présente de l'<em>hétéroagressivité</em> (bagarres) mais aucun comportement autoagressif (automutilation, tentative de suicide).</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux, </strong>Dans l’énoncé <strong>&nbsp;</strong>il n'y a aucun élément psychotique décrit donc pas d'hallucinations auditives.</p><p><br></p><p><strong>Question 2 :</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai, </strong>Le Trouble des conduites (TC) se caractérise par une répétition de conduites où les droits fondamentaux d'autrui et les normes sociales sont bafoués (vols, bagarres, fugues, absences scolaires, absence de culpabilité), ce qui correspond exactement au profil de cet adolescent.</p><p><br></p><p><strong>Question 3 :</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">B.Faux, </strong>Au contraire le trouble des conduites surtout s'il débute précocement est un facteur de risque majeur pour le développement d'une personnalité antisociale (ou psychopathie) à l'âge adulte.</p><p><br></p><p><strong>Question 4 :</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">E.Vrai, </strong>L'évaluation d'un trouble des conduites doit être globale (approche bio-psycho-sociale).</p><p><br></p><p><strong>Question 5:</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">A.Vrai, </strong>Bien que la consommation de substances et la dépression  soient très fréquentes le TDAH est la comorbidité la plus intimement liée au trouble des conduites. Près de 30 à 50 % des enfants/adolescents atteints d'un trouble des conduites souffrent également d'un TDAH. </p><p>L'impulsivité du TDAH fait souvent le lit des passages à l'acte médico-légaux.</p><p><br></p><p><strong>Question 6 :</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">A.Faux, </strong>il<span style=\"color: rgb(230, 0, 0);\"> </span>n'existe aucun médicament \"curatif\" du trouble des conduites, on ne traite par médicament que les comorbidités associés.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux, </strong>Elle n'est réservée qu'aux crises aiguës (danger imminent pour soi ou pour autrui).</p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p>"
+    },
+    {
+      "id": "1.6",
+      "case_id": 1,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 318240,
+          "text": " 1 + 2 + 3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 318241,
+          "text": " 1 + 2 + 4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 318242,
+          "text": "2+3+4",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 318243,
+          "text": " 2 + 3 + 5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 318244,
+          "text": "2 + 3 + 4 + 5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2026"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": "La prise en charge comprend:\nA. Traitement médicamenteux curatif.\nB. Travail avec l'école.\nC. Prise en charge des addictions éventuelles.\nD.Psychothérapie individuelle.\nE.Hospitalisation.",
+      "has_media": false,
+      "statement": "La prise en charge comprend:\nA. Traitement médicamenteux curatif.\nB. Travail avec l'école.\nC. Prise en charge des addictions éventuelles.\nD.Psychothérapie individuelle.\nE.Hospitalisation.",
+      "sub_index": 6,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Question 1:D.Faux, l’adolescent présente de l'hétéroagressivité (bagarres) mais aucun comportement autoagressif (automutilation, tentative de suicide).E.Faux, Dans l’énoncé  il n'y a aucun élément psychotique décrit donc pas d'hallucinations auditives.Question 2 :B.Vrai, Le Trouble des conduites (TC) se caractérise par une répétition de conduites où les droits fondamentaux d'autrui et les normes sociales sont bafoués (vols, bagarres, fugues, absences scolaires, absence de culpabilité), ce qui correspond exactement au profil de cet adolescent.Question 3 :B.Faux, Au contraire le trouble des conduites surtout s'il débute précocement est un facteur de risque majeur pour le développement d'une personnalité antisociale (ou psychopathie) à l'âge adulte.Question 4 :E.Vrai, L'évaluation d'un trouble des conduites doit être globale (approche bio-psycho-sociale).Question 5:A.Vrai, Bien que la consommation de substances et la dépression  soient très fréquentes le TDAH est la comorbidité la plus intimement liée au trouble des conduites. Près de 30 à 50 % des enfants/adolescents atteints d'un trouble des conduites souffrent également d'un TDAH. L'impulsivité du TDAH fait souvent le lit des passages à l'acte médico-légaux.Question 6 :A.Faux, il n'existe aucun médicament \"curatif\" du trouble des conduites, on ne traite par médicament que les comorbidités associés.E.Faux, Elle n'est réservée qu'aux crises aiguës (danger imminent pour soi ou pour autrui).",
+      "original_id": 65142,
+      "clinical_case": "Un adolescent de 15 ans est amené en consultation de pédopsychiatrie par ses parents pour des troubles du comportement évoluant depuis plus d'un an. Les parents rapportent des absences scolaires répétées, des fugues à plusieurs reprises, des vols d'argent au domicile familial, des bagarres fréquentes au collège ainsi qu'une consommation occasionnelle de\r\ncannabis avec des camarades et surtout un refus d'obéir aux règles familiales.\r\nL'adolescent minimise les faits et ne manifeste aucun sentiment de culpabilité. Les résultats scolaires se sont fortement dégradés. L'examen somatique est sans particularité.",
+      "display_title": "Question 1 - Question 6",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong>Question 1:</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">D.Faux, </strong>l’adolescent présente de l'<em>hétéroagressivité</em> (bagarres) mais aucun comportement autoagressif (automutilation, tentative de suicide).</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux, </strong>Dans l’énoncé <strong>&nbsp;</strong>il n'y a aucun élément psychotique décrit donc pas d'hallucinations auditives.</p><p><br></p><p><strong>Question 2 :</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai, </strong>Le Trouble des conduites (TC) se caractérise par une répétition de conduites où les droits fondamentaux d'autrui et les normes sociales sont bafoués (vols, bagarres, fugues, absences scolaires, absence de culpabilité), ce qui correspond exactement au profil de cet adolescent.</p><p><br></p><p><strong>Question 3 :</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">B.Faux, </strong>Au contraire le trouble des conduites surtout s'il débute précocement est un facteur de risque majeur pour le développement d'une personnalité antisociale (ou psychopathie) à l'âge adulte.</p><p><br></p><p><strong>Question 4 :</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">E.Vrai, </strong>L'évaluation d'un trouble des conduites doit être globale (approche bio-psycho-sociale).</p><p><br></p><p><strong>Question 5:</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">A.Vrai, </strong>Bien que la consommation de substances et la dépression  soient très fréquentes le TDAH est la comorbidité la plus intimement liée au trouble des conduites. Près de 30 à 50 % des enfants/adolescents atteints d'un trouble des conduites souffrent également d'un TDAH. </p><p>L'impulsivité du TDAH fait souvent le lit des passages à l'acte médico-légaux.</p><p><br></p><p><strong>Question 6 :</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">A.Faux, </strong>il<span style=\"color: rgb(230, 0, 0);\"> </span>n'existe aucun médicament \"curatif\" du trouble des conduites, on ne traite par médicament que les comorbidités associés.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux, </strong>Elle n'est réservée qu'aux crises aiguës (danger imminent pour soi ou pour autrui).</p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p><p><br></p>"
+    },
+    {
+      "id": 2,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284796,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284797,
+          "text": "1.4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 284798,
+          "text": "2.3",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 284799,
+          "text": "2.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284800,
+          "text": "2.3.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Cochez l'association juste concernant l'adolescence :\n1. Débute à la puberté et se termine à 18 ans\n2. L'adolescent développe un intérêt au groupe\n3. On objective une croissance staturale\n4. Permet le développement de l'identité sexué\n5. Les troubles du comportement sont toujours présents",
+      "has_media": false,
+      "statement": "Cochez l'association juste concernant l'adolescence :\n1. Débute à la puberté et se termine à 18 ans\n2. L'adolescent développe un intérêt au groupe\n3. On objective une croissance staturale\n4. Permet le développement de l'identité sexué\n5. Les troubles du comportement sont toujours présents",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A/ FAUX : L'adolescence a une durée variable. Si elle commence bien avec la puberté (début biologique), la fin est plus floue. Elle se termine avec l'autonomie psychosociale et l'accès au statut d'adulte, ce qui peut s'étendre bien au-delà de 18 ans (jusqu'à 20-25 ans selon les modèles de la psychologie développementale)B/ JUSTE: Le groupe de pairs devient le lieu privilégié de l'identification secondaire. l| remplace temporairement la famille comme source de soutien et d'expérimentation identitaire, jouant un rôle crucial dans le processus de séparation-individuation. C/ JUSTE  : C'est le poussée de croissance pubertaire, un phénomène biologique central de la puberté, qui est la base de la transformation corporelle et du remaniement de l'image du corps de l'adolescent.D/ FAUX: Bien que le développement de l'identité de genre soit important, ce n'est pas l'adolescence qui le permet seul. Les bases de 'identité sexuée sont posées dès l'enfance. L'adolescence est davantage marquée par le développement de l'identité sexuelle et l'intégration du corps sexué. E/FAUX : Les troubles du comportement sont des manifestations fréquentes de la crise adolescente (conduites hétéro-agressives ou auto-agressives), mais ils ne sont pas systématiques ni toujours présents chez tous les adolescents. Une adolescence sans troubles majeurs est possible",
+      "original_id": 58159,
+      "clinical_case": null,
+      "display_title": "Question 2",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>A/ FAUX : L'adolescence a une durée variable. Si elle commence bien avec la puberté (début biologique), la fin est plus floue. Elle se termine avec l'autonomie psychosociale et l'accès au statut d'adulte, ce qui peut s'étendre bien au-delà de 18 ans (jusqu'à 20-25 ans selon les modèles de la psychologie développementale)</p><p><br></p><p>B/ JUSTE: Le groupe de pairs devient le lieu privilégié de l'identification secondaire. l| remplace temporairement la famille comme source de soutien et d'expérimentation identitaire, jouant un rôle crucial dans le processus de séparation-individuation.</p><p><br></p><p> C/ JUSTE  : C'est le poussée de croissance pubertaire, un phénomène biologique central de la puberté, qui est la base de la transformation corporelle et du remaniement de l'image du corps de l'adolescent.</p><p><br></p><p>D/ FAUX: Bien que le développement de l'identité de genre soit important, ce n'est pas l'adolescence qui le permet seul. Les bases de 'identité sexuée sont posées dès l'enfance. L'adolescence est davantage marquée par le développement de l'identité sexuelle et l'intégration du corps sexué.</p><p> </p><p>E/FAUX : Les troubles du comportement sont des manifestations fréquentes de la crise adolescente (conduites hétéro-agressives ou auto-agressives), mais ils ne sont pas systématiques ni toujours présents chez tous les adolescents. Une adolescence sans troubles majeurs est possible</p>"
+    },
+    {
+      "id": "3.1",
+      "case_id": 3,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284606,
+          "text": "Dépression.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284607,
+          "text": "Schizophrénie",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 284608,
+          "text": "Trouble du spectre autistique.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 284609,
+          "text": "Trouble bipolaire.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284610,
+          "text": "Trouble cognitifs chez l’enfant.",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2025"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'isolement social peut être le signe de plusieurs pathologies, sauf une, laquelle ?",
+      "has_media": false,
+      "statement": "L'isolement social peut être le signe de plusieurs pathologies, sauf une, laquelle ?",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Question 01A/FAUX : L'isolement est un critère diagnostique majeur (retrait, anhédonie, perte d'intérêt).B/ FAUX:  L'isolement est souvent un symptôme prodromique ou initial (retraitprogressif, perte de contact vital, autisme schizophrénique).C/ FAUX : L'isolement est inhérent au trouble, caractérisé par des déficits persistants de la communication et des interactions sociales D/ FAUX:  L'isolement peut survenir lors de la phase dépressive ou, paradoxalement,lors d'un état mixte/maniaco-dépressif. E/ VRAI : Les troubles cognitifs chez l'enfant  ne sont pas définis par l'isolement social. L'isolement peut en être une conséquence secondaire (par honte, échec scolaire), mais ce n'est pas un symptôme primaire de la pathologie cognitive elle-même. Question 02: E/ FAUX: La perte de I'investissement scolaire est généralement une conséquence/symptôme fréquent de l'état dépressif adolescent, appelé Troubles du rendement scolaire Ou désinvestissement, et non sa cause OU son facteur favorisant initial.Question 03: C/ FAUX:  L'exploration des idées suicidaires (ideation suicidaire) doit être directe, non-jugeante et empathique.Question 04:C/FAUX : Les idées suicidaires ( sont un symptôme de détresse psychologique et non une maladie en soi. Bien qu'elles soient un critère diagnostique important de la dépression ou d'autres pathologies psychiatriques graves, elles peuvent aussi survenir chez des adolescents en crise développementale ou face à un facteur de stress psychosocial majeur (harcèlement, deuil, rupture). L'adolescent peut exprimer des idées suicidaires dans le cadre d'un état de crise aiguë ou d'une réaction aiguë au stress, sans forcément remplir les critères d'une pathologie psychiatrique chronique ou sévère.Question 05: D/ FAUX : Au contraire, I'auto-intoxication médicamenteuse, notamment par le Paracétamol est le moyen le plus fréquent de tentative de suicide ou d'actes auto-agressifs chez I'adolescent, en particulier chez la jeune fille, en raison de son accessibilité Question 06: C/ JUSTE La tentative de suicide est un symptôme familial autant qu'individuel, et la famille est une ressource thérapeutique majeure.Le modèle de prise en charge post-critique repose sur l'approche systémique : les parents doivent être informés dans le respect du secret partagé avec l'adolescente, soutenus, et intégrés au dispositif de soins (entretiens familiaux, psychoéducation, surveillance du risque). L'implication parentale renforce le facteur de protection contre la récidive et permet decomprendre les dynamiques familiales qui ont pu contribuer à la crise. Le reproche ou l'interdiction de contact sont des attitudes contre-productives, et le secretmédical ne s'applique pas de manière absolue si la sécurité du mineur est en jeu.",
+      "original_id": 58121,
+      "clinical_case": "Maya, 15 ans, est admise aux urgences après une tentative de suicide par ingestion de 40 comprimés de paracétamol. La mère rapporte des changements comportementaux récents : isolement, perte d'intérêt pour l'école et troubles du sommeil. Le bilan biologique réalisé aux urgences révèle également une consommation récente de cannabis.",
+      "display_title": "Question 3 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 01</u></em></p><p><br></p><p><span style=\"background-color: rgb(250, 204, 204);\">A/FAUX</span> : L'isolement est un critère diagnostique majeur (retrait, anhédonie, perte d'intérêt).</p><p>B/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span>:  L'isolement est souvent un symptôme prodromique ou initial (retrait</p><p>progressif, perte de contact vital, autisme schizophrénique).</p><p>C/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span> : L'isolement est inhérent au trouble, caractérisé par des déficits persistants de la communication et des interactions sociales </p><p>D/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span>:  L'isolement peut survenir lors de la phase dépressive ou, paradoxalement,</p><p>lors d'un état mixte/maniaco-dépressif. </p><p>E/ <span style=\"background-color: rgb(204, 232, 204);\">VRAI</span> : Les troubles cognitifs chez l'enfant  ne sont pas définis par l'isolement social. L'isolement peut en être une conséquence secondaire (par honte, échec scolaire), mais ce n'est pas un symptôme primaire de la pathologie cognitive elle-même.</p><p><br></p><p> <em style=\"background-color: rgb(204, 224, 245);\"><u>Question 02: </u></em></p><p>E/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span>: La perte de I'investissement scolaire est généralement une conséquence/symptôme fréquent de l'état dépressif adolescent, appelé Troubles du rendement scolaire Ou désinvestissement, et non sa cause OU son facteur favorisant initial.</p><p><br></p><p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 03: </u></em></p><p>C/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span>:  L'exploration des idées suicidaires (ideation suicidaire) doit être directe, non-jugeante et empathique.</p><p><br></p><p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 04:</u></em></p><p>C/<span style=\"background-color: rgb(250, 204, 204);\">FAUX</span> : Les idées suicidaires ( sont un symptôme de détresse psychologique et non une maladie en soi. Bien qu'elles soient un critère diagnostique important de la dépression ou d'autres pathologies psychiatriques graves, elles peuvent aussi survenir chez des adolescents en crise développementale ou face à un facteur de stress psychosocial majeur (harcèlement, deuil, rupture). L'adolescent peut exprimer des idées suicidaires dans le cadre d'un état de crise aiguë ou d'une réaction aiguë au stress, sans forcément remplir les critères d'une pathologie psychiatrique chronique ou sévère.</p><p><br></p><p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 05: </u></em></p><p>D/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span> : Au contraire, I'auto-intoxication médicamenteuse, notamment par le Paracétamol est le moyen le plus fréquent de tentative de suicide ou d'actes auto-agressifs chez I'adolescent, en particulier chez la jeune fille, en raison de son accessibilité </p><p><br></p><p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 06: </u></em></p><p>C/ <span style=\"background-color: rgb(204, 232, 204);\">JUSTE</span> La tentative de suicide est un symptôme familial autant qu'individuel, et la famille est une ressource thérapeutique majeure.Le modèle de prise en charge post-critique repose sur l'approche systémique : les parents doivent être informés dans le respect du secret partagé avec l'adolescente, soutenus, et intégrés au dispositif de soins (entretiens familiaux, psychoéducation, surveillance du risque). L'implication parentale renforce le facteur de protection contre la récidive et permet de</p><p>comprendre les dynamiques familiales qui ont pu contribuer à la crise. Le reproche ou l'interdiction de contact sont des attitudes contre-productives, et le secret</p><p>médical ne s'applique pas de manière absolue si la sécurité du mineur est en jeu.</p>"
+    },
+    {
+      "id": "3.2",
+      "case_id": 3,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284611,
+          "text": "La perte de l'enfance et des repères familiaux stables.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284612,
+          "text": "La perte des repères corporels antérieurs à la puberté.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 284613,
+          "text": "La perte d'une image idéale de soi.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 284614,
+          "text": "L'écart entre les attentes parentales et les capacités ressenties.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284615,
+          "text": " La perte de l'investissement scolaire.",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2025"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": "La tendance dépressive à l'adolescence peut être favorisée par plusieurs remaniements psychiques, sauf un :",
+      "has_media": false,
+      "statement": "La tendance dépressive à l'adolescence peut être favorisée par plusieurs remaniements psychiques, sauf un :",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Question 01A/FAUX : L'isolement est un critère diagnostique majeur (retrait, anhédonie, perte d'intérêt).B/ FAUX:  L'isolement est souvent un symptôme prodromique ou initial (retraitprogressif, perte de contact vital, autisme schizophrénique).C/ FAUX : L'isolement est inhérent au trouble, caractérisé par des déficits persistants de la communication et des interactions sociales D/ FAUX:  L'isolement peut survenir lors de la phase dépressive ou, paradoxalement,lors d'un état mixte/maniaco-dépressif. E/ VRAI : Les troubles cognitifs chez l'enfant  ne sont pas définis par l'isolement social. L'isolement peut en être une conséquence secondaire (par honte, échec scolaire), mais ce n'est pas un symptôme primaire de la pathologie cognitive elle-même. Question 02: E/ FAUX: La perte de I'investissement scolaire est généralement une conséquence/symptôme fréquent de l'état dépressif adolescent, appelé Troubles du rendement scolaire Ou désinvestissement, et non sa cause OU son facteur favorisant initial.Question 03: C/ FAUX:  L'exploration des idées suicidaires (ideation suicidaire) doit être directe, non-jugeante et empathique.Question 04:C/FAUX : Les idées suicidaires ( sont un symptôme de détresse psychologique et non une maladie en soi. Bien qu'elles soient un critère diagnostique important de la dépression ou d'autres pathologies psychiatriques graves, elles peuvent aussi survenir chez des adolescents en crise développementale ou face à un facteur de stress psychosocial majeur (harcèlement, deuil, rupture). L'adolescent peut exprimer des idées suicidaires dans le cadre d'un état de crise aiguë ou d'une réaction aiguë au stress, sans forcément remplir les critères d'une pathologie psychiatrique chronique ou sévère.Question 05: D/ FAUX : Au contraire, I'auto-intoxication médicamenteuse, notamment par le Paracétamol est le moyen le plus fréquent de tentative de suicide ou d'actes auto-agressifs chez I'adolescent, en particulier chez la jeune fille, en raison de son accessibilité Question 06: C/ JUSTE La tentative de suicide est un symptôme familial autant qu'individuel, et la famille est une ressource thérapeutique majeure.Le modèle de prise en charge post-critique repose sur l'approche systémique : les parents doivent être informés dans le respect du secret partagé avec l'adolescente, soutenus, et intégrés au dispositif de soins (entretiens familiaux, psychoéducation, surveillance du risque). L'implication parentale renforce le facteur de protection contre la récidive et permet decomprendre les dynamiques familiales qui ont pu contribuer à la crise. Le reproche ou l'interdiction de contact sont des attitudes contre-productives, et le secretmédical ne s'applique pas de manière absolue si la sécurité du mineur est en jeu.",
+      "original_id": 58122,
+      "clinical_case": "Maya, 15 ans, est admise aux urgences après une tentative de suicide par ingestion de 40 comprimés de paracétamol. La mère rapporte des changements comportementaux récents : isolement, perte d'intérêt pour l'école et troubles du sommeil. Le bilan biologique réalisé aux urgences révèle également une consommation récente de cannabis.",
+      "display_title": "Question 3 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 01</u></em></p><p><br></p><p><span style=\"background-color: rgb(250, 204, 204);\">A/FAUX</span> : L'isolement est un critère diagnostique majeur (retrait, anhédonie, perte d'intérêt).</p><p>B/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span>:  L'isolement est souvent un symptôme prodromique ou initial (retrait</p><p>progressif, perte de contact vital, autisme schizophrénique).</p><p>C/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span> : L'isolement est inhérent au trouble, caractérisé par des déficits persistants de la communication et des interactions sociales </p><p>D/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span>:  L'isolement peut survenir lors de la phase dépressive ou, paradoxalement,</p><p>lors d'un état mixte/maniaco-dépressif. </p><p>E/ <span style=\"background-color: rgb(204, 232, 204);\">VRAI</span> : Les troubles cognitifs chez l'enfant  ne sont pas définis par l'isolement social. L'isolement peut en être une conséquence secondaire (par honte, échec scolaire), mais ce n'est pas un symptôme primaire de la pathologie cognitive elle-même.</p><p><br></p><p> <em style=\"background-color: rgb(204, 224, 245);\"><u>Question 02: </u></em></p><p>E/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span>: La perte de I'investissement scolaire est généralement une conséquence/symptôme fréquent de l'état dépressif adolescent, appelé Troubles du rendement scolaire Ou désinvestissement, et non sa cause OU son facteur favorisant initial.</p><p><br></p><p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 03: </u></em></p><p>C/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span>:  L'exploration des idées suicidaires (ideation suicidaire) doit être directe, non-jugeante et empathique.</p><p><br></p><p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 04:</u></em></p><p>C/<span style=\"background-color: rgb(250, 204, 204);\">FAUX</span> : Les idées suicidaires ( sont un symptôme de détresse psychologique et non une maladie en soi. Bien qu'elles soient un critère diagnostique important de la dépression ou d'autres pathologies psychiatriques graves, elles peuvent aussi survenir chez des adolescents en crise développementale ou face à un facteur de stress psychosocial majeur (harcèlement, deuil, rupture). L'adolescent peut exprimer des idées suicidaires dans le cadre d'un état de crise aiguë ou d'une réaction aiguë au stress, sans forcément remplir les critères d'une pathologie psychiatrique chronique ou sévère.</p><p><br></p><p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 05: </u></em></p><p>D/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span> : Au contraire, I'auto-intoxication médicamenteuse, notamment par le Paracétamol est le moyen le plus fréquent de tentative de suicide ou d'actes auto-agressifs chez I'adolescent, en particulier chez la jeune fille, en raison de son accessibilité </p><p><br></p><p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 06: </u></em></p><p>C/ <span style=\"background-color: rgb(204, 232, 204);\">JUSTE</span> La tentative de suicide est un symptôme familial autant qu'individuel, et la famille est une ressource thérapeutique majeure.Le modèle de prise en charge post-critique repose sur l'approche systémique : les parents doivent être informés dans le respect du secret partagé avec l'adolescente, soutenus, et intégrés au dispositif de soins (entretiens familiaux, psychoéducation, surveillance du risque). L'implication parentale renforce le facteur de protection contre la récidive et permet de</p><p>comprendre les dynamiques familiales qui ont pu contribuer à la crise. Le reproche ou l'interdiction de contact sont des attitudes contre-productives, et le secret</p><p>médical ne s'applique pas de manière absolue si la sécurité du mineur est en jeu.</p>"
+    },
+    {
+      "id": "3.3",
+      "case_id": 3,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284616,
+          "text": "Minimiser ses propos pour le rassurer.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284617,
+          "text": "Interrompre s'il pleure pour éviter l'aggravation.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 284618,
+          "text": "L'interroger directement sur ses idées suicidaires.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 284619,
+          "text": "Parler uniquement à ses parents.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284620,
+          "text": "Utiliser l'humour pour détendre l'atmosphère.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2025"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Lors de l'entretien avec l'adolescente, comment explorer la présence d'idées suicidaires ?",
+      "has_media": false,
+      "statement": "Lors de l'entretien avec l'adolescente, comment explorer la présence d'idées suicidaires ?",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Question 01A/FAUX : L'isolement est un critère diagnostique majeur (retrait, anhédonie, perte d'intérêt).B/ FAUX:  L'isolement est souvent un symptôme prodromique ou initial (retraitprogressif, perte de contact vital, autisme schizophrénique).C/ FAUX : L'isolement est inhérent au trouble, caractérisé par des déficits persistants de la communication et des interactions sociales D/ FAUX:  L'isolement peut survenir lors de la phase dépressive ou, paradoxalement,lors d'un état mixte/maniaco-dépressif. E/ VRAI : Les troubles cognitifs chez l'enfant  ne sont pas définis par l'isolement social. L'isolement peut en être une conséquence secondaire (par honte, échec scolaire), mais ce n'est pas un symptôme primaire de la pathologie cognitive elle-même. Question 02: E/ FAUX: La perte de I'investissement scolaire est généralement une conséquence/symptôme fréquent de l'état dépressif adolescent, appelé Troubles du rendement scolaire Ou désinvestissement, et non sa cause OU son facteur favorisant initial.Question 03: C/ FAUX:  L'exploration des idées suicidaires (ideation suicidaire) doit être directe, non-jugeante et empathique.Question 04:C/FAUX : Les idées suicidaires ( sont un symptôme de détresse psychologique et non une maladie en soi. Bien qu'elles soient un critère diagnostique important de la dépression ou d'autres pathologies psychiatriques graves, elles peuvent aussi survenir chez des adolescents en crise développementale ou face à un facteur de stress psychosocial majeur (harcèlement, deuil, rupture). L'adolescent peut exprimer des idées suicidaires dans le cadre d'un état de crise aiguë ou d'une réaction aiguë au stress, sans forcément remplir les critères d'une pathologie psychiatrique chronique ou sévère.Question 05: D/ FAUX : Au contraire, I'auto-intoxication médicamenteuse, notamment par le Paracétamol est le moyen le plus fréquent de tentative de suicide ou d'actes auto-agressifs chez I'adolescent, en particulier chez la jeune fille, en raison de son accessibilité Question 06: C/ JUSTE La tentative de suicide est un symptôme familial autant qu'individuel, et la famille est une ressource thérapeutique majeure.Le modèle de prise en charge post-critique repose sur l'approche systémique : les parents doivent être informés dans le respect du secret partagé avec l'adolescente, soutenus, et intégrés au dispositif de soins (entretiens familiaux, psychoéducation, surveillance du risque). L'implication parentale renforce le facteur de protection contre la récidive et permet decomprendre les dynamiques familiales qui ont pu contribuer à la crise. Le reproche ou l'interdiction de contact sont des attitudes contre-productives, et le secretmédical ne s'applique pas de manière absolue si la sécurité du mineur est en jeu.",
+      "original_id": 58123,
+      "clinical_case": "Maya, 15 ans, est admise aux urgences après une tentative de suicide par ingestion de 40 comprimés de paracétamol. La mère rapporte des changements comportementaux récents : isolement, perte d'intérêt pour l'école et troubles du sommeil. Le bilan biologique réalisé aux urgences révèle également une consommation récente de cannabis.",
+      "display_title": "Question 3 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 01</u></em></p><p><br></p><p><span style=\"background-color: rgb(250, 204, 204);\">A/FAUX</span> : L'isolement est un critère diagnostique majeur (retrait, anhédonie, perte d'intérêt).</p><p>B/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span>:  L'isolement est souvent un symptôme prodromique ou initial (retrait</p><p>progressif, perte de contact vital, autisme schizophrénique).</p><p>C/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span> : L'isolement est inhérent au trouble, caractérisé par des déficits persistants de la communication et des interactions sociales </p><p>D/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span>:  L'isolement peut survenir lors de la phase dépressive ou, paradoxalement,</p><p>lors d'un état mixte/maniaco-dépressif. </p><p>E/ <span style=\"background-color: rgb(204, 232, 204);\">VRAI</span> : Les troubles cognitifs chez l'enfant  ne sont pas définis par l'isolement social. L'isolement peut en être une conséquence secondaire (par honte, échec scolaire), mais ce n'est pas un symptôme primaire de la pathologie cognitive elle-même.</p><p><br></p><p> <em style=\"background-color: rgb(204, 224, 245);\"><u>Question 02: </u></em></p><p>E/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span>: La perte de I'investissement scolaire est généralement une conséquence/symptôme fréquent de l'état dépressif adolescent, appelé Troubles du rendement scolaire Ou désinvestissement, et non sa cause OU son facteur favorisant initial.</p><p><br></p><p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 03: </u></em></p><p>C/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span>:  L'exploration des idées suicidaires (ideation suicidaire) doit être directe, non-jugeante et empathique.</p><p><br></p><p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 04:</u></em></p><p>C/<span style=\"background-color: rgb(250, 204, 204);\">FAUX</span> : Les idées suicidaires ( sont un symptôme de détresse psychologique et non une maladie en soi. Bien qu'elles soient un critère diagnostique important de la dépression ou d'autres pathologies psychiatriques graves, elles peuvent aussi survenir chez des adolescents en crise développementale ou face à un facteur de stress psychosocial majeur (harcèlement, deuil, rupture). L'adolescent peut exprimer des idées suicidaires dans le cadre d'un état de crise aiguë ou d'une réaction aiguë au stress, sans forcément remplir les critères d'une pathologie psychiatrique chronique ou sévère.</p><p><br></p><p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 05: </u></em></p><p>D/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span> : Au contraire, I'auto-intoxication médicamenteuse, notamment par le Paracétamol est le moyen le plus fréquent de tentative de suicide ou d'actes auto-agressifs chez I'adolescent, en particulier chez la jeune fille, en raison de son accessibilité </p><p><br></p><p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 06: </u></em></p><p>C/ <span style=\"background-color: rgb(204, 232, 204);\">JUSTE</span> La tentative de suicide est un symptôme familial autant qu'individuel, et la famille est une ressource thérapeutique majeure.Le modèle de prise en charge post-critique repose sur l'approche systémique : les parents doivent être informés dans le respect du secret partagé avec l'adolescente, soutenus, et intégrés au dispositif de soins (entretiens familiaux, psychoéducation, surveillance du risque). L'implication parentale renforce le facteur de protection contre la récidive et permet de</p><p>comprendre les dynamiques familiales qui ont pu contribuer à la crise. Le reproche ou l'interdiction de contact sont des attitudes contre-productives, et le secret</p><p>médical ne s'applique pas de manière absolue si la sécurité du mineur est en jeu.</p>"
+    },
+    {
+      "id": "3.4",
+      "case_id": 3,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284621,
+          "text": "Elles peuvent se traduire par des scarifications.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284622,
+          "text": "Elles ne doivent jamais être banalisées.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 284623,
+          "text": "Elles sont toujours liées à une pathologie psychiatrique grave.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 284624,
+          "text": "Elles doivent être systématiquement explorées.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284625,
+          "text": "Elles doivent être déclarées aux parents",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2025"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle affirmation est fausse concernant les idées suicidaires chez l'adolescent ?",
+      "has_media": false,
+      "statement": "Quelle affirmation est fausse concernant les idées suicidaires chez l'adolescent ?",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Question 01A/FAUX : L'isolement est un critère diagnostique majeur (retrait, anhédonie, perte d'intérêt).B/ FAUX:  L'isolement est souvent un symptôme prodromique ou initial (retraitprogressif, perte de contact vital, autisme schizophrénique).C/ FAUX : L'isolement est inhérent au trouble, caractérisé par des déficits persistants de la communication et des interactions sociales D/ FAUX:  L'isolement peut survenir lors de la phase dépressive ou, paradoxalement,lors d'un état mixte/maniaco-dépressif. E/ VRAI : Les troubles cognitifs chez l'enfant  ne sont pas définis par l'isolement social. L'isolement peut en être une conséquence secondaire (par honte, échec scolaire), mais ce n'est pas un symptôme primaire de la pathologie cognitive elle-même. Question 02: E/ FAUX: La perte de I'investissement scolaire est généralement une conséquence/symptôme fréquent de l'état dépressif adolescent, appelé Troubles du rendement scolaire Ou désinvestissement, et non sa cause OU son facteur favorisant initial.Question 03: C/ FAUX:  L'exploration des idées suicidaires (ideation suicidaire) doit être directe, non-jugeante et empathique.Question 04:C/FAUX : Les idées suicidaires ( sont un symptôme de détresse psychologique et non une maladie en soi. Bien qu'elles soient un critère diagnostique important de la dépression ou d'autres pathologies psychiatriques graves, elles peuvent aussi survenir chez des adolescents en crise développementale ou face à un facteur de stress psychosocial majeur (harcèlement, deuil, rupture). L'adolescent peut exprimer des idées suicidaires dans le cadre d'un état de crise aiguë ou d'une réaction aiguë au stress, sans forcément remplir les critères d'une pathologie psychiatrique chronique ou sévère.Question 05: D/ FAUX : Au contraire, I'auto-intoxication médicamenteuse, notamment par le Paracétamol est le moyen le plus fréquent de tentative de suicide ou d'actes auto-agressifs chez I'adolescent, en particulier chez la jeune fille, en raison de son accessibilité Question 06: C/ JUSTE La tentative de suicide est un symptôme familial autant qu'individuel, et la famille est une ressource thérapeutique majeure.Le modèle de prise en charge post-critique repose sur l'approche systémique : les parents doivent être informés dans le respect du secret partagé avec l'adolescente, soutenus, et intégrés au dispositif de soins (entretiens familiaux, psychoéducation, surveillance du risque). L'implication parentale renforce le facteur de protection contre la récidive et permet decomprendre les dynamiques familiales qui ont pu contribuer à la crise. Le reproche ou l'interdiction de contact sont des attitudes contre-productives, et le secretmédical ne s'applique pas de manière absolue si la sécurité du mineur est en jeu.",
+      "original_id": 58124,
+      "clinical_case": "Maya, 15 ans, est admise aux urgences après une tentative de suicide par ingestion de 40 comprimés de paracétamol. La mère rapporte des changements comportementaux récents : isolement, perte d'intérêt pour l'école et troubles du sommeil. Le bilan biologique réalisé aux urgences révèle également une consommation récente de cannabis.",
+      "display_title": "Question 3 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 01</u></em></p><p><br></p><p><span style=\"background-color: rgb(250, 204, 204);\">A/FAUX</span> : L'isolement est un critère diagnostique majeur (retrait, anhédonie, perte d'intérêt).</p><p>B/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span>:  L'isolement est souvent un symptôme prodromique ou initial (retrait</p><p>progressif, perte de contact vital, autisme schizophrénique).</p><p>C/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span> : L'isolement est inhérent au trouble, caractérisé par des déficits persistants de la communication et des interactions sociales </p><p>D/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span>:  L'isolement peut survenir lors de la phase dépressive ou, paradoxalement,</p><p>lors d'un état mixte/maniaco-dépressif. </p><p>E/ <span style=\"background-color: rgb(204, 232, 204);\">VRAI</span> : Les troubles cognitifs chez l'enfant  ne sont pas définis par l'isolement social. L'isolement peut en être une conséquence secondaire (par honte, échec scolaire), mais ce n'est pas un symptôme primaire de la pathologie cognitive elle-même.</p><p><br></p><p> <em style=\"background-color: rgb(204, 224, 245);\"><u>Question 02: </u></em></p><p>E/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span>: La perte de I'investissement scolaire est généralement une conséquence/symptôme fréquent de l'état dépressif adolescent, appelé Troubles du rendement scolaire Ou désinvestissement, et non sa cause OU son facteur favorisant initial.</p><p><br></p><p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 03: </u></em></p><p>C/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span>:  L'exploration des idées suicidaires (ideation suicidaire) doit être directe, non-jugeante et empathique.</p><p><br></p><p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 04:</u></em></p><p>C/<span style=\"background-color: rgb(250, 204, 204);\">FAUX</span> : Les idées suicidaires ( sont un symptôme de détresse psychologique et non une maladie en soi. Bien qu'elles soient un critère diagnostique important de la dépression ou d'autres pathologies psychiatriques graves, elles peuvent aussi survenir chez des adolescents en crise développementale ou face à un facteur de stress psychosocial majeur (harcèlement, deuil, rupture). L'adolescent peut exprimer des idées suicidaires dans le cadre d'un état de crise aiguë ou d'une réaction aiguë au stress, sans forcément remplir les critères d'une pathologie psychiatrique chronique ou sévère.</p><p><br></p><p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 05: </u></em></p><p>D/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span> : Au contraire, I'auto-intoxication médicamenteuse, notamment par le Paracétamol est le moyen le plus fréquent de tentative de suicide ou d'actes auto-agressifs chez I'adolescent, en particulier chez la jeune fille, en raison de son accessibilité </p><p><br></p><p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 06: </u></em></p><p>C/ <span style=\"background-color: rgb(204, 232, 204);\">JUSTE</span> La tentative de suicide est un symptôme familial autant qu'individuel, et la famille est une ressource thérapeutique majeure.Le modèle de prise en charge post-critique repose sur l'approche systémique : les parents doivent être informés dans le respect du secret partagé avec l'adolescente, soutenus, et intégrés au dispositif de soins (entretiens familiaux, psychoéducation, surveillance du risque). L'implication parentale renforce le facteur de protection contre la récidive et permet de</p><p>comprendre les dynamiques familiales qui ont pu contribuer à la crise. Le reproche ou l'interdiction de contact sont des attitudes contre-productives, et le secret</p><p>médical ne s'applique pas de manière absolue si la sécurité du mineur est en jeu.</p>"
+    },
+    {
+      "id": "3.5",
+      "case_id": 3,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284626,
+          "text": "Elle constitue un moyen suicidaire fréquemment utilisé en raison de son accessibilité.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284627,
+          "text": " Elle peut survenir dans un contexte de chantage affectif.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 284628,
+          "text": " Elle peut traduire une véritable détresse psychologique.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 284629,
+          "text": "Elle constitue un comportement rare chez les adolescents.",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 284630,
+          "text": " Elle nécessite toujours une évaluation psychiatrique.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2025"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": "L’ingestion médicamenteuse chez l’adolescente peut avoir plusieurs significations. Quelle affirmation est fausse ?",
+      "has_media": false,
+      "statement": "L’ingestion médicamenteuse chez l’adolescente peut avoir plusieurs significations. Quelle affirmation est fausse ?",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Question 01A/FAUX : L'isolement est un critère diagnostique majeur (retrait, anhédonie, perte d'intérêt).B/ FAUX:  L'isolement est souvent un symptôme prodromique ou initial (retraitprogressif, perte de contact vital, autisme schizophrénique).C/ FAUX : L'isolement est inhérent au trouble, caractérisé par des déficits persistants de la communication et des interactions sociales D/ FAUX:  L'isolement peut survenir lors de la phase dépressive ou, paradoxalement,lors d'un état mixte/maniaco-dépressif. E/ VRAI : Les troubles cognitifs chez l'enfant  ne sont pas définis par l'isolement social. L'isolement peut en être une conséquence secondaire (par honte, échec scolaire), mais ce n'est pas un symptôme primaire de la pathologie cognitive elle-même. Question 02: E/ FAUX: La perte de I'investissement scolaire est généralement une conséquence/symptôme fréquent de l'état dépressif adolescent, appelé Troubles du rendement scolaire Ou désinvestissement, et non sa cause OU son facteur favorisant initial.Question 03: C/ FAUX:  L'exploration des idées suicidaires (ideation suicidaire) doit être directe, non-jugeante et empathique.Question 04:C/FAUX : Les idées suicidaires ( sont un symptôme de détresse psychologique et non une maladie en soi. Bien qu'elles soient un critère diagnostique important de la dépression ou d'autres pathologies psychiatriques graves, elles peuvent aussi survenir chez des adolescents en crise développementale ou face à un facteur de stress psychosocial majeur (harcèlement, deuil, rupture). L'adolescent peut exprimer des idées suicidaires dans le cadre d'un état de crise aiguë ou d'une réaction aiguë au stress, sans forcément remplir les critères d'une pathologie psychiatrique chronique ou sévère.Question 05: D/ FAUX : Au contraire, I'auto-intoxication médicamenteuse, notamment par le Paracétamol est le moyen le plus fréquent de tentative de suicide ou d'actes auto-agressifs chez I'adolescent, en particulier chez la jeune fille, en raison de son accessibilité Question 06: C/ JUSTE La tentative de suicide est un symptôme familial autant qu'individuel, et la famille est une ressource thérapeutique majeure.Le modèle de prise en charge post-critique repose sur l'approche systémique : les parents doivent être informés dans le respect du secret partagé avec l'adolescente, soutenus, et intégrés au dispositif de soins (entretiens familiaux, psychoéducation, surveillance du risque). L'implication parentale renforce le facteur de protection contre la récidive et permet decomprendre les dynamiques familiales qui ont pu contribuer à la crise. Le reproche ou l'interdiction de contact sont des attitudes contre-productives, et le secretmédical ne s'applique pas de manière absolue si la sécurité du mineur est en jeu.",
+      "original_id": 58125,
+      "clinical_case": "Maya, 15 ans, est admise aux urgences après une tentative de suicide par ingestion de 40 comprimés de paracétamol. La mère rapporte des changements comportementaux récents : isolement, perte d'intérêt pour l'école et troubles du sommeil. Le bilan biologique réalisé aux urgences révèle également une consommation récente de cannabis.",
+      "display_title": "Question 3 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 01</u></em></p><p><br></p><p><span style=\"background-color: rgb(250, 204, 204);\">A/FAUX</span> : L'isolement est un critère diagnostique majeur (retrait, anhédonie, perte d'intérêt).</p><p>B/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span>:  L'isolement est souvent un symptôme prodromique ou initial (retrait</p><p>progressif, perte de contact vital, autisme schizophrénique).</p><p>C/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span> : L'isolement est inhérent au trouble, caractérisé par des déficits persistants de la communication et des interactions sociales </p><p>D/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span>:  L'isolement peut survenir lors de la phase dépressive ou, paradoxalement,</p><p>lors d'un état mixte/maniaco-dépressif. </p><p>E/ <span style=\"background-color: rgb(204, 232, 204);\">VRAI</span> : Les troubles cognitifs chez l'enfant  ne sont pas définis par l'isolement social. L'isolement peut en être une conséquence secondaire (par honte, échec scolaire), mais ce n'est pas un symptôme primaire de la pathologie cognitive elle-même.</p><p><br></p><p> <em style=\"background-color: rgb(204, 224, 245);\"><u>Question 02: </u></em></p><p>E/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span>: La perte de I'investissement scolaire est généralement une conséquence/symptôme fréquent de l'état dépressif adolescent, appelé Troubles du rendement scolaire Ou désinvestissement, et non sa cause OU son facteur favorisant initial.</p><p><br></p><p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 03: </u></em></p><p>C/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span>:  L'exploration des idées suicidaires (ideation suicidaire) doit être directe, non-jugeante et empathique.</p><p><br></p><p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 04:</u></em></p><p>C/<span style=\"background-color: rgb(250, 204, 204);\">FAUX</span> : Les idées suicidaires ( sont un symptôme de détresse psychologique et non une maladie en soi. Bien qu'elles soient un critère diagnostique important de la dépression ou d'autres pathologies psychiatriques graves, elles peuvent aussi survenir chez des adolescents en crise développementale ou face à un facteur de stress psychosocial majeur (harcèlement, deuil, rupture). L'adolescent peut exprimer des idées suicidaires dans le cadre d'un état de crise aiguë ou d'une réaction aiguë au stress, sans forcément remplir les critères d'une pathologie psychiatrique chronique ou sévère.</p><p><br></p><p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 05: </u></em></p><p>D/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span> : Au contraire, I'auto-intoxication médicamenteuse, notamment par le Paracétamol est le moyen le plus fréquent de tentative de suicide ou d'actes auto-agressifs chez I'adolescent, en particulier chez la jeune fille, en raison de son accessibilité </p><p><br></p><p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 06: </u></em></p><p>C/ <span style=\"background-color: rgb(204, 232, 204);\">JUSTE</span> La tentative de suicide est un symptôme familial autant qu'individuel, et la famille est une ressource thérapeutique majeure.Le modèle de prise en charge post-critique repose sur l'approche systémique : les parents doivent être informés dans le respect du secret partagé avec l'adolescente, soutenus, et intégrés au dispositif de soins (entretiens familiaux, psychoéducation, surveillance du risque). L'implication parentale renforce le facteur de protection contre la récidive et permet de</p><p>comprendre les dynamiques familiales qui ont pu contribuer à la crise. Le reproche ou l'interdiction de contact sont des attitudes contre-productives, et le secret</p><p>médical ne s'applique pas de manière absolue si la sécurité du mineur est en jeu.</p>"
+    },
+    {
+      "id": "3.6",
+      "case_id": 3,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284631,
+          "text": "Leur reproche futur négligence.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284632,
+          "text": "Leur interdire tout contact avec l’adolescente.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 284633,
+          "text": " Les impliquer dans la prise en charge",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 284634,
+          "text": "Ne pas leur parler pour préserver le secret médical.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284635,
+          "text": "Leur conseiller de la liaison seule pour qu’elle se responsabilise.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2025"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle est l’attitude la plus appropriée vis-à-vis de la famille après cette tentative de suicide ?",
+      "has_media": false,
+      "statement": "Quelle est l’attitude la plus appropriée vis-à-vis de la famille après cette tentative de suicide ?",
+      "sub_index": 6,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Question 01A/FAUX : L'isolement est un critère diagnostique majeur (retrait, anhédonie, perte d'intérêt).B/ FAUX:  L'isolement est souvent un symptôme prodromique ou initial (retraitprogressif, perte de contact vital, autisme schizophrénique).C/ FAUX : L'isolement est inhérent au trouble, caractérisé par des déficits persistants de la communication et des interactions sociales D/ FAUX:  L'isolement peut survenir lors de la phase dépressive ou, paradoxalement,lors d'un état mixte/maniaco-dépressif. E/ VRAI : Les troubles cognitifs chez l'enfant  ne sont pas définis par l'isolement social. L'isolement peut en être une conséquence secondaire (par honte, échec scolaire), mais ce n'est pas un symptôme primaire de la pathologie cognitive elle-même. Question 02: E/ FAUX: La perte de I'investissement scolaire est généralement une conséquence/symptôme fréquent de l'état dépressif adolescent, appelé Troubles du rendement scolaire Ou désinvestissement, et non sa cause OU son facteur favorisant initial.Question 03: C/ FAUX:  L'exploration des idées suicidaires (ideation suicidaire) doit être directe, non-jugeante et empathique.Question 04:C/FAUX : Les idées suicidaires ( sont un symptôme de détresse psychologique et non une maladie en soi. Bien qu'elles soient un critère diagnostique important de la dépression ou d'autres pathologies psychiatriques graves, elles peuvent aussi survenir chez des adolescents en crise développementale ou face à un facteur de stress psychosocial majeur (harcèlement, deuil, rupture). L'adolescent peut exprimer des idées suicidaires dans le cadre d'un état de crise aiguë ou d'une réaction aiguë au stress, sans forcément remplir les critères d'une pathologie psychiatrique chronique ou sévère.Question 05: D/ FAUX : Au contraire, I'auto-intoxication médicamenteuse, notamment par le Paracétamol est le moyen le plus fréquent de tentative de suicide ou d'actes auto-agressifs chez I'adolescent, en particulier chez la jeune fille, en raison de son accessibilité Question 06: C/ JUSTE La tentative de suicide est un symptôme familial autant qu'individuel, et la famille est une ressource thérapeutique majeure.Le modèle de prise en charge post-critique repose sur l'approche systémique : les parents doivent être informés dans le respect du secret partagé avec l'adolescente, soutenus, et intégrés au dispositif de soins (entretiens familiaux, psychoéducation, surveillance du risque). L'implication parentale renforce le facteur de protection contre la récidive et permet decomprendre les dynamiques familiales qui ont pu contribuer à la crise. Le reproche ou l'interdiction de contact sont des attitudes contre-productives, et le secretmédical ne s'applique pas de manière absolue si la sécurité du mineur est en jeu.",
+      "original_id": 58126,
+      "clinical_case": "Maya, 15 ans, est admise aux urgences après une tentative de suicide par ingestion de 40 comprimés de paracétamol. La mère rapporte des changements comportementaux récents : isolement, perte d'intérêt pour l'école et troubles du sommeil. Le bilan biologique réalisé aux urgences révèle également une consommation récente de cannabis.",
+      "display_title": "Question 3 - Question 6",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 01</u></em></p><p><br></p><p><span style=\"background-color: rgb(250, 204, 204);\">A/FAUX</span> : L'isolement est un critère diagnostique majeur (retrait, anhédonie, perte d'intérêt).</p><p>B/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span>:  L'isolement est souvent un symptôme prodromique ou initial (retrait</p><p>progressif, perte de contact vital, autisme schizophrénique).</p><p>C/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span> : L'isolement est inhérent au trouble, caractérisé par des déficits persistants de la communication et des interactions sociales </p><p>D/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span>:  L'isolement peut survenir lors de la phase dépressive ou, paradoxalement,</p><p>lors d'un état mixte/maniaco-dépressif. </p><p>E/ <span style=\"background-color: rgb(204, 232, 204);\">VRAI</span> : Les troubles cognitifs chez l'enfant  ne sont pas définis par l'isolement social. L'isolement peut en être une conséquence secondaire (par honte, échec scolaire), mais ce n'est pas un symptôme primaire de la pathologie cognitive elle-même.</p><p><br></p><p> <em style=\"background-color: rgb(204, 224, 245);\"><u>Question 02: </u></em></p><p>E/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span>: La perte de I'investissement scolaire est généralement une conséquence/symptôme fréquent de l'état dépressif adolescent, appelé Troubles du rendement scolaire Ou désinvestissement, et non sa cause OU son facteur favorisant initial.</p><p><br></p><p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 03: </u></em></p><p>C/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span>:  L'exploration des idées suicidaires (ideation suicidaire) doit être directe, non-jugeante et empathique.</p><p><br></p><p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 04:</u></em></p><p>C/<span style=\"background-color: rgb(250, 204, 204);\">FAUX</span> : Les idées suicidaires ( sont un symptôme de détresse psychologique et non une maladie en soi. Bien qu'elles soient un critère diagnostique important de la dépression ou d'autres pathologies psychiatriques graves, elles peuvent aussi survenir chez des adolescents en crise développementale ou face à un facteur de stress psychosocial majeur (harcèlement, deuil, rupture). L'adolescent peut exprimer des idées suicidaires dans le cadre d'un état de crise aiguë ou d'une réaction aiguë au stress, sans forcément remplir les critères d'une pathologie psychiatrique chronique ou sévère.</p><p><br></p><p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 05: </u></em></p><p>D/ <span style=\"background-color: rgb(250, 204, 204);\">FAUX</span> : Au contraire, I'auto-intoxication médicamenteuse, notamment par le Paracétamol est le moyen le plus fréquent de tentative de suicide ou d'actes auto-agressifs chez I'adolescent, en particulier chez la jeune fille, en raison de son accessibilité </p><p><br></p><p><em style=\"background-color: rgb(204, 224, 245);\"><u>Question 06: </u></em></p><p>C/ <span style=\"background-color: rgb(204, 232, 204);\">JUSTE</span> La tentative de suicide est un symptôme familial autant qu'individuel, et la famille est une ressource thérapeutique majeure.Le modèle de prise en charge post-critique repose sur l'approche systémique : les parents doivent être informés dans le respect du secret partagé avec l'adolescente, soutenus, et intégrés au dispositif de soins (entretiens familiaux, psychoéducation, surveillance du risque). L'implication parentale renforce le facteur de protection contre la récidive et permet de</p><p>comprendre les dynamiques familiales qui ont pu contribuer à la crise. Le reproche ou l'interdiction de contact sont des attitudes contre-productives, et le secret</p><p>médical ne s'applique pas de manière absolue si la sécurité du mineur est en jeu.</p>"
+    },
+    {
+      "id": 4,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265997,
+          "text": "Peur du jugement des autres",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265998,
+          "text": "Instabilité émotionnelle",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265999,
+          "text": "Recherche d'identité",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 266000,
+          "text": "Opposition à l'autorité parentale",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266001,
+          "text": "Désir de dépendance",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle est la principale caractéristique de la crise d'adolescence ?",
+      "has_media": false,
+      "statement": "Quelle est la principale caractéristique de la crise d'adolescence ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "La crise d’adolescence se manifeste surtout par la célèbre \"crise d’originalité juvénile\".L’adolescent cherche à tout prix à se singulariser, par ses avis, ses actes mais aussi par ses jugements sur lui-même. Il cherche à se différencier à tout prix de son entourage familial. c’est un désir voire une certitude d’être profondément original.",
+      "original_id": 54105,
+      "clinical_case": null,
+      "display_title": "Question 4",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>La crise d’adolescence se manifeste surtout par la célèbre \"<strong>crise d’originalité juvénile</strong>\".</p><p>L’adolescent cherche à tout prix à <strong style=\"background-color: rgb(255, 255, 102);\">se singulariser,</strong> par ses avis, ses actes mais aussi par ses jugements sur lui-même. Il cherche à <strong style=\"background-color: rgb(255, 255, 102);\">se différencier</strong> à tout prix de son entourage familial. c’est un désir voire une certitude d’être profondément original.</p>"
+    },
+    {
+      "id": 5,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265992,
+          "text": "Le visage",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265993,
+          "text": "Les jambes",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265994,
+          "text": "Les bras",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 265995,
+          "text": "Le dos",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265996,
+          "text": "Le ventre",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [],
+        "type": "QCU",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est le site corporel le plus souvent touché par les scarifications chez les adolescents ?",
+      "has_media": false,
+      "statement": "Quel est le site corporel le plus souvent touché par les scarifications chez les adolescents ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Les automutilations impulsives surviennent brutalement, après une phase d'angoisse, lorsque l'adolescent attaque son corps au moyen d'un couteau, d'une glace brisée, d'une lame de rasoir, ou bien se précipite contre un objet dur. Ces automutilations concernent surtout les avant-bras, plus rarement le visage, les filles plus que les garçons. 60% des inscriptions corporelles surviendraient pendant les règles. Leur visée serait de « couper » la souffrance psychique, passivement subie, en s'administrant activement une douleur physique. Ces scarifications dont la fréquence semble croître s'observent dans les troubles du comportement alimentaire, la dépression, les consommations de produits, les difficultés liées à la sexualité (aussi bien antécédent d'abus sexuel que trouble de l'identité sexuelle), les troubles de la personnalité, un niveau intellectuel limite. Sur le plan psychopathologique, on retrouve des carences dans la constitution de l'image de soi et d'objet avec le recours à l'agir comme mode d'externalisation privilégié des affects.",
+      "original_id": 54104,
+      "clinical_case": null,
+      "display_title": "Question 5",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>Les automutilations impulsives surviennent brutalement, après une phase d'angoisse, lorsque l'adolescent attaque son corps au moyen d'un couteau, d'une glace brisée, d'une lame de rasoir, ou bien se précipite contre un objet dur. </p><p><strong style=\"background-color: rgb(255, 255, 102);\">Ces automutilations concernent surtout les avant-bras</strong>, plus rarement le visage, <strong>les filles plus que les garçons.</strong> 60% des inscriptions corporelles surviendraient pendant les règles. <strong style=\"background-color: rgb(102, 185, 102);\">Leur visée serait de « couper » la souffrance psychique</strong>, passivement subie, en s'administrant activement une douleur physique. Ces scarifications dont la fréquence semble croître s'observent dans les troubles du comportement alimentaire, la dépression, les consommations de produits, les difficultés liées à la sexualité (aussi bien antécédent d'abus sexuel que trouble de l'identité sexuelle), les troubles de la personnalité, un niveau intellectuel limite. </p><p>Sur le plan psychopathologique, on retrouve des carences dans la constitution de l'image de soi et d'objet avec le recours à l'agir comme mode d'externalisation privilégié des affects.</p>"
+    },
+    {
+      "id": 6,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265987,
+          "text": "Obtenir de l'attention",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265988,
+          "text": "Echappen à la douleur émotionnelle",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 265989,
+          "text": "Imitation des pairs",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 265990,
+          "text": "Conformité aux réseaux sociaux",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265991,
+          "text": "Défi envers les parents",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est le motif psychologique le plus fréquent des scarifications chez les adolescents ?",
+      "has_media": false,
+      "statement": "Quel est le motif psychologique le plus fréquent des scarifications chez les adolescents ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Les automutilations impulsives surviennent brutalement, après une phase d'angoisse, lorsque l'adolescent attaque son corps au moyen d'un couteau, d'une glace brisée, d'une lame de rasoir, ou bien se précipite contre un objet dur. Ces automutilations concernent surtout les avant-bras, plus rarement le visage, les filles plus que les garçons. 60% des inscriptions corporelles surviendraient pendant les règles. Leur visée serait de « couper » la souffrance psychique, passivement subie, en s'administrant activement une douleur physique. Ces scarifications dont la fréquence semble croître s'observent dans les troubles du comportement alimentaire, la dépression, les consommations de produits, les difficultés liées à la sexualité (aussi bien antécédent d'abus sexuel que trouble de l'identité sexuelle), les troubles de la personnalité, un niveau intellectuel limite. Sur le plan psychopathologique, on retrouve des carences dans la constitution de l'image de soi et d'objet avec le recours à l'agir comme mode d'externalisation privilégié des affects.",
+      "original_id": 54103,
+      "clinical_case": null,
+      "display_title": "Question 6",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>Les automutilations impulsives surviennent brutalement, après une phase d'angoisse, lorsque l'adolescent attaque son corps au moyen d'un couteau, d'une glace brisée, d'une lame de rasoir, ou bien se précipite contre un objet dur. </p><p>Ces automutilations concernent surtout les avant-bras, plus rarement le visage, <strong>les filles plus que les garçons.</strong> 60% des inscriptions corporelles surviendraient pendant les règles. <strong style=\"background-color: rgb(102, 185, 102);\">Leur visée serait de « couper » la souffrance psychique</strong>, passivement subie, en s'administrant activement une douleur physique. Ces scarifications dont la fréquence semble croître s'observent dans les troubles du comportement alimentaire, la dépression, les consommations de produits, les difficultés liées à la sexualité (aussi bien antécédent d'abus sexuel que trouble de l'identité sexuelle), les troubles de la personnalité, un niveau intellectuel limite. </p><p>Sur le plan psychopathologique, on retrouve des carences dans la constitution de l'image de soi et d'objet avec le recours à l'agir comme mode d'externalisation privilégié des affects.</p>"
+    },
+    {
+      "id": 7,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265982,
+          "text": "Pendaison",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265983,
+          "text": "Intoxication médicamenteuse",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 265984,
+          "text": "Arme à feu",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 265985,
+          "text": "Noyade",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265986,
+          "text": "Défenestration",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle est la méthode la plus courante de tentative de suicide chez les adolescents ?",
+      "has_media": false,
+      "statement": "Quelle est la méthode la plus courante de tentative de suicide chez les adolescents ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "La méthode la plus courante de tentative de suicide chez les adolescents est l’intoxication médicamenteuse volontaire. Cette tendance est observée dans plusieurs études récentes.Selon une enquête menée en Algérie, 75 % des tentatives de suicide chez les adolescents étaient dues à l'ingestion de médicaments.jeune-independant.netUne étude menée au Centre hospitalier universitaire de la Martinique a révélé que 58,1 % des tentatives de suicide chez les adolescents de 11 à 18 ans impliquaient une intoxication médicamenteuse volontaire .cambridge.orgUne autre étude, publiée dans Pas à Pas en Pédiatrie, indique que plus de 80 % des tentatives de suicide chez les adolescents sont médicamenteuses, surpassant d'autres méthodes telles que la défenestration ou la pendaison .pap-pediatrie.frLes tentatives de suicide chez les adolescents sont souvent liées à divers facteurs, notamment : Conflits familiaux dans 72 % des casLe paracétamol est l'un des médicaments les plus fréquemment impliqués dans les tentatives de suicide par intoxication médicamenteuse chez les adolescents. Sa large disponibilité en vente libre et sa présence dans de nombreux foyers en font une substance facilement accessible pour cette tranche d'âge.",
+      "original_id": 54102,
+      "clinical_case": null,
+      "display_title": "Question 7",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>La méthode la plus courante de tentative de suicide chez les adolescents est <strong>l’intoxication médicamenteuse volontaire</strong>. Cette tendance est observée dans plusieurs études récentes.</p><ul><li>Selon une enquête menée en Algérie, <strong>75 %</strong> des tentatives de suicide chez les adolescents étaient dues à l'ingestion de médicaments.<a href=\"https://www.jeune-independant.net/75-des-tentatives-de-suicide-sont-commises-par-des-adolescents/?utm_source=chatgpt.com\" rel=\"noopener noreferrer\" target=\"_blank\">jeune-independant.net</a></li><li>Une étude menée au Centre hospitalier universitaire de la Martinique a révélé que <strong>58,1 %</strong> des tentatives de suicide chez les adolescents de 11 à 18 ans impliquaient une intoxication médicamenteuse volontaire .<a href=\"https://www.cambridge.org/core/journals/european-psychiatry/article/les-tentatives-de-suicide-chez-les-jeunes-ages-de-11-a-18-ans-dans-les-services-durgence-et-de-reanimation-du-centre-hospitalier-universitaire-de-la-martinique/47FE0B923387B35A43901FFA669A4715?utm_source=chatgpt.com\" rel=\"noopener noreferrer\" target=\"_blank\">cambridge.org</a></li><li>Une autre étude, publiée dans <em>Pas à Pas en Pédiatrie</em>, indique que <strong>plus de 80 %</strong> des tentatives de suicide chez les adolescents sont médicamenteuses, surpassant d'autres méthodes telles que la défenestration ou la pendaison .<a href=\"https://pap-pediatrie.fr/medecine-ado/tentative-de-suicide-medicamenteuse-chez-ladolescent?utm_source=chatgpt.com\" rel=\"noopener noreferrer\" target=\"_blank\">pap-pediatrie.fr</a></li></ul><p>Les tentatives de suicide chez les adolescents sont souvent liées à divers facteurs, notamment : <strong>Conflits familiaux dans </strong>72 % des cas</p><p>Le <strong>paracétamol</strong> est l'un des médicaments les plus fréquemment impliqués dans les tentatives de suicide par intoxication médicamenteuse chez les adolescents. Sa large disponibilité en vente libre et sa présence dans de nombreux foyers en font une substance facilement accessible pour cette tranche d'âge.</p>"
+    },
+    {
+      "id": 8,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265977,
+          "text": "Absence totale de règles",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265978,
+          "text": "Surveillance stricte",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265979,
+          "text": "Éducation et communication ouverte",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 265980,
+          "text": "Sanctions disciplinaires",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265981,
+          "text": "Ignorer le problème",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle est l'approche privilégiée pour prévenir les troubles du comportement chez les adolescents?",
+      "has_media": false,
+      "statement": "Quelle est l'approche privilégiée pour prévenir les troubles du comportement chez les adolescents?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Mesures thérapeutiques:Reconnaissance de la souffrance de l'enfant La reconnaissance de la souffrance de l'enfant dans ses diverses modalités d'expression est un premier temps thérapeutique déterminant. Renforcement et amélioration qualitative de l'offre relationnelle: Il importe d'abord, quand les conditions le permettent, que soit tentée une psychothérapie mère-nourrisson propre à restaurer la mutualité des échanges. Mesures préventives•Lutte contre les facteurs de carences au sein des structures d'accueil  : La lutte contre les facteurs de carences au sein des structures d'accueil des jeunes enfants a incontestablement porté ses fruits Le personnel des pouponnières, averti des risques encourus par les enfants placés, s'efforce de développer une < relation privilégiée, stable et fiable > avec chacun d'entre eux. • Interventions préventives auprès des < familles à risque > Les interventions préventives auprès des familles à risque > restent difficiles à mettre en œuvre, malgré les efforts déployés par les services de PMI, et les dispositifs de soutien à domicile. L'aide à la parentalité peut en effet porter ses fruits en cas d'alliance authentique. Certains préconisent de mener des actions préventives auprès des jeunes couples, voire des adolescents en leur qualité de futurs parents.",
+      "original_id": 54101,
+      "clinical_case": null,
+      "display_title": "Question 8",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><span style=\"background-color: rgb(204, 224, 245);\">Mesures thérapeutiques</span>:</p><ul><li class=\"ql-indent-1\">Reconnaissance de la souffrance de l'enfant La reconnaissance de la souffrance de l'enfant dans ses diverses modalités d'expression est un premier temps thérapeutique déterminant. </li><li class=\"ql-indent-1\">Renforcement et amélioration qualitative de l'offre relationnelle: Il importe d'abord, quand les conditions le permettent, que soit tentée une psychothérapie mère-nourrisson propre à restaurer la mutualité des échanges.</li></ul><p> <span style=\"background-color: rgb(204, 224, 245);\">Mesures préventives</span></p><p class=\"ql-indent-1\">•<span style=\"background-color: rgb(255, 235, 204);\">Lutte contre les facteurs de carences au sein des structures d'accueil  : </span>La lutte contre les facteurs de carences au sein des structures d'accueil des jeunes enfants a incontestablement porté ses fruits Le personnel des pouponnières, averti des risques encourus par les enfants placés, s'efforce de développer une &lt; relation privilégiée, stable et fiable &gt; avec chacun d'entre eux.</p><p class=\"ql-indent-1\"> • <span style=\"background-color: rgb(255, 235, 204);\">Interventions préventives auprès des &lt; familles à risque &gt;</span> Les interventions préventives auprès des familles à risque &gt; restent difficiles à mettre en œuvre, malgré les efforts déployés par les services de PMI, et les dispositifs de soutien à domicile. L'aide à la parentalité peut en effet porter ses fruits en cas d'alliance authentique. Certains préconisent de mener des actions préventives auprès des jeunes couples, voire des adolescents en leur qualité de futurs parents.</p>"
+    },
+    {
+      "id": 9,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265972,
+          "text": "Amélioration de la concentration",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265973,
+          "text": "Augmentation de l'activité physique",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265974,
+          "text": "Troubles du sommeil",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 265975,
+          "text": "Réduction de l'anxiété",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265976,
+          "text": "Amélioration des relations familiales",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est l'effet de la surexposition aux écrans sur les adolescents ?",
+      "has_media": false,
+      "statement": "Quel est l'effet de la surexposition aux écrans sur les adolescents ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "La surexposition aux écrans chez les adolescents peut avoir plusieurs effets négatifs, bien que certains usages encadrés puissent être neutres ou bénéfiques. Voici les principaux impacts connus, selon les données issues d'études scientifiques et d'organismes comme l’OMS, l’INSERM ou Santé publique France :Effets négatifs de la surexposition aux écrans chez les adolescents1. Troubles cognitifs et attentionnelsBaisse de la concentration et de la capacité à maintenir l’attention (surtout avec les contenus rapides et fragmentés).Difficultés à passer d’une tâche à l’autre ou à soutenir un effort cognitif prolongé.Risque accru de retard du langage (notamment chez les plus jeunes) et de baisse des performances scolaires.2. Perturbation du sommeilExposition à la lumière bleue des écrans en soirée = inhibition de la mélatonine (hormone du sommeil).Retard d’endormissement, sommeil de moins bonne qualité, fatigue chronique.3. Santé mentaleCorrélation avec l’anxiété, la dépression, le sentiment d’isolement ou une baisse de l’estime de soi, notamment en lien avec les réseaux sociaux.Risque de cyberdépendance (recherche compulsive de stimulation via les écrans).Renforcement de comparaisons sociales néfastes via les contenus idéalisés.4. Image corporelle et troubles alimentairesLes standards irréalistes diffusés sur les réseaux peuvent entraîner insatisfaction corporelle, troubles du comportement alimentaire, voire TCA (anorexie, boulimie…).5. Sédentarité et problèmes de santé physiqueMoins d’activité physique, augmentation du risque d’obésité, de douleurs musculo-squelettiques (dos, cou), fatigue oculaire.6. Exposition à des contenus inadaptésViolence, pornographie, discours haineux, désinformation…Effets possibles sur la désensibilisation à la violence, normalisation de comportements à risque, ou modification des repères éthiques et affectifs.✨ It's all because of phones, exactly like our mothers told us.",
+      "original_id": 54100,
+      "clinical_case": null,
+      "display_title": "Question 9",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>La <strong>surexposition aux écrans chez les adolescents</strong> peut avoir plusieurs <strong>effets négatifs</strong>, bien que certains usages encadrés puissent être neutres ou bénéfiques. Voici les principaux impacts connus, selon les données issues d'études scientifiques et d'organismes comme l’OMS, l’INSERM ou Santé publique France :</p><h3><strong><u>Effets négatifs de la surexposition aux écrans chez les adolescents</u></strong></h3><h4>1. <strong>Troubles cognitifs et attentionnels</strong></h4><ul><li><strong>Baisse de la concentration</strong> et de la capacité à maintenir l’attention (surtout avec les contenus rapides et fragmentés).</li><li>Difficultés à passer d’une tâche à l’autre ou à soutenir un effort cognitif prolongé.</li><li>Risque accru de <strong>retard du langage</strong> (notamment chez les plus jeunes) et de <strong>baisse des performances scolaires</strong>.</li></ul><h4>2. <strong>Perturbation du sommeil</strong></h4><ul><li>Exposition à la <strong>lumière bleue</strong> des écrans en soirée = inhibition de la mélatonine (hormone du sommeil).</li><li>Retard d’endormissement, sommeil de moins bonne qualité, <strong>fatigue chronique</strong>.</li></ul><h4>3. <strong>Santé mentale</strong></h4><ul><li>Corrélation avec <strong>l’anxiété</strong>, la <strong>dépression</strong>, le <strong>sentiment d’isolement</strong> ou une <strong>baisse de l’estime de soi</strong>, notamment en lien avec les réseaux sociaux.</li><li>Risque de <strong>cyberdépendance</strong> (recherche compulsive de stimulation via les écrans).</li><li>Renforcement de <strong>comparaisons sociales</strong> néfastes via les contenus idéalisés.</li></ul><h4>4. <strong>Image corporelle et troubles alimentaires</strong></h4><ul><li>Les standards irréalistes diffusés sur les réseaux peuvent entraîner <strong>insatisfaction corporelle</strong>, troubles du comportement alimentaire, voire <strong>TCA</strong> (anorexie, boulimie…).</li></ul><h4>5. <strong>Sédentarité et problèmes de santé physique</strong></h4><ul><li>Moins d’activité physique, augmentation du risque d’<strong>obésité</strong>, de douleurs musculo-squelettiques (dos, cou), fatigue oculaire.</li></ul><h4>6. <strong>Exposition à des contenus inadaptés</strong></h4><ul><li>Violence, pornographie, discours haineux, désinformation…</li><li>Effets possibles sur la <strong>désensibilisation à la violence</strong>, normalisation de comportements à risque, ou modification des repères éthiques et affectifs.</li></ul><p><br></p><p>✨ It's all because of phones, exactly like our mothers told us.</p>"
+    },
+    {
+      "id": 10,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265962,
+          "text": "8-14 ans",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265963,
+          "text": "10-19 ans",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 265964,
+          "text": "12-20 ans",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 265965,
+          "text": "15-24 ans",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265966,
+          "text": "18-30 ans",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est l'âge approximatif de l'adolescence selon l'OMS ?",
+      "has_media": true,
+      "statement": "Quel est l'âge approximatif de l'adolescence selon l'OMS ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Selon l'Organisation mondiale de la Santé (OMS), l’adolescence est définie comme la période de la vie comprise entre 10 et 19 ans.",
+      "original_id": 54098,
+      "clinical_case": null,
+      "display_title": "Question 10",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1749057988.44.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p>Selon l'Organisation mondiale de la Santé (OMS), l’adolescence est définie comme la période de la vie comprise entre <strong>10 et 19 ans</strong>.</p>"
+    },
+    {
+      "id": "11.1",
+      "case_id": 11,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252532,
+          "text": " Commence à la puberté",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 252533,
+          "text": "Se termine à 18 ans",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252534,
+          "text": "Est une période de l'enfance",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252535,
+          "text": " Est toujours vécu difficilement",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252536,
+          "text": "Commence à 12 ans",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'adolescence (RJ):",
+      "has_media": false,
+      "statement": "L'adolescence (RJ):",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "L’Organisation Mondiale de la Santé (OMS) considère que : « l’adolescence est la période de croissance et de développement humain qui se situe entre l’enfance et l’âge adulte, entre les âges de 10 et 19 ans. Elle représente une période de transition critique dans la vie et se caractérise par un rythme important de croissance et de changements qui n’est supérieur que pendant la petite enfance. »Trouble des conduites (TC) :• Association de manière intense, persistante, répétitive de conduites de non-respect des normes et émotions pro sociales limitées ( absence de remords, manque d’empathie)• À l’anamnèse, on retrouve :- Des agressions envers des personnes ou des animaux- Des destructions de biens matériels (feu, vandalisme)- Des vols- Des violations des règles établies (fugues; absentéisme scolaire)",
+      "original_id": 51003,
+      "clinical_case": "Samy est un adolescent de 13 ans, il est scolarisé en 2eme année moyenne. Ses parents se plaignent de ses comportements violents répétitifs. Il se bagarre constamment avec ses camarades de classe, il a récemment cassé le bras de l'un de ses camarades, Il a aussi cassé les dents d’un autre. L'adolescent a déjà détruit, ou volé des objets appartenant à d'autres jeunes. Il a aussi l'habitude de torturer le chat de la voisine. A l'examen clinique, Samy présente un bon contact, son humeur est colérique, le fonctionnement cognitif est adapté. Il ne présente ni délire ni hallucinations. Son jugement parait altéré car il ne présente aucun remords sur ce qu'il a fait.",
+      "display_title": "Question 11 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong>L’Organisation Mondiale de la Santé (OMS) considère que : </strong></p><p>« l’adolescence est la période de croissance et de développement humain qui se situe entre l’enfance et l’âge adulte, entre les âges de <strong>10 et 19 ans.</strong> Elle représente une période de transition critique dans la vie et se caractérise par un rythme important de croissance et de changements qui n’est supérieur que pendant la petite enfance. »</p><p><br></p><p><strong style=\"color: rgb(0, 71, 178);\">Trouble des conduites (TC) :</strong></p><p>• <strong><u>Association </u></strong>de manière intense, persistante, répétitive de <strong style=\"background-color: rgb(204, 232, 204);\">conduites de non-respect des normes</strong> et <strong style=\"background-color: rgb(204, 232, 204);\">émotions pro sociales <u>limitées</u></strong><u> </u>( absence de remords, manque d’empathie)</p><p>• À l’anamnèse, on retrouve :</p><p>- Des agressions envers des personnes ou des animaux</p><p>- Des destructions de biens matériels (feu, vandalisme)</p><p>- Des vols</p><p>- Des violations des règles établies (fugues; absentéisme scolaire)</p>"
+    },
+    {
+      "id": "11.2",
+      "case_id": 11,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252537,
+          "text": "Des troubles du comportement",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252538,
+          "text": "Un changement corporel.",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 252539,
+          "text": "Une intelligence sensori-motrice",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252540,
+          "text": "Une autonomie financière",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252541,
+          "text": "Une souffrance psychique",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'adolescence se caractérise par (RJ)",
+      "has_media": false,
+      "statement": "L'adolescence se caractérise par (RJ)",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "L’Organisation Mondiale de la Santé (OMS) considère que : « l’adolescence est la période de croissance et de développement humain qui se situe entre l’enfance et l’âge adulte, entre les âges de 10 et 19 ans. Elle représente une période de transition critique dans la vie et se caractérise par un rythme important de croissance et de changements qui n’est supérieur que pendant la petite enfance. »Trouble des conduites (TC) :• Association de manière intense, persistante, répétitive de conduites de non-respect des normes et émotions pro sociales limitées ( absence de remords, manque d’empathie)• À l’anamnèse, on retrouve :- Des agressions envers des personnes ou des animaux- Des destructions de biens matériels (feu, vandalisme)- Des vols- Des violations des règles établies (fugues; absentéisme scolaire)",
+      "original_id": 51004,
+      "clinical_case": "Samy est un adolescent de 13 ans, il est scolarisé en 2eme année moyenne. Ses parents se plaignent de ses comportements violents répétitifs. Il se bagarre constamment avec ses camarades de classe, il a récemment cassé le bras de l'un de ses camarades, Il a aussi cassé les dents d’un autre. L'adolescent a déjà détruit, ou volé des objets appartenant à d'autres jeunes. Il a aussi l'habitude de torturer le chat de la voisine. A l'examen clinique, Samy présente un bon contact, son humeur est colérique, le fonctionnement cognitif est adapté. Il ne présente ni délire ni hallucinations. Son jugement parait altéré car il ne présente aucun remords sur ce qu'il a fait.",
+      "display_title": "Question 11 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong>L’Organisation Mondiale de la Santé (OMS) considère que : </strong></p><p>« l’adolescence est la période de croissance et de développement humain qui se situe entre l’enfance et l’âge adulte, entre les âges de <strong>10 et 19 ans.</strong> Elle représente une période de transition critique dans la vie et se caractérise par un rythme important de croissance et de changements qui n’est supérieur que pendant la petite enfance. »</p><p><br></p><p><strong style=\"color: rgb(0, 71, 178);\">Trouble des conduites (TC) :</strong></p><p>• <strong><u>Association </u></strong>de manière intense, persistante, répétitive de <strong style=\"background-color: rgb(204, 232, 204);\">conduites de non-respect des normes</strong> et <strong style=\"background-color: rgb(204, 232, 204);\">émotions pro sociales <u>limitées</u></strong><u> </u>( absence de remords, manque d’empathie)</p><p>• À l’anamnèse, on retrouve :</p><p>- Des agressions envers des personnes ou des animaux</p><p>- Des destructions de biens matériels (feu, vandalisme)</p><p>- Des vols</p><p>- Des violations des règles établies (fugues; absentéisme scolaire)</p>"
+    },
+    {
+      "id": "11.3",
+      "case_id": 11,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252542,
+          "text": "1.3.5",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252543,
+          "text": "3.4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252544,
+          "text": "1.2.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252545,
+          "text": "2.4",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 252546,
+          "text": "2.3.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans l’observation, vous objectivez les signes suivant (RJ)\n1- Des émotions pro sociales \n2- Des destructions de biens \n3- Un déficit cognitif \n4- Des vols d'objets \n5- Un délire ",
+      "has_media": false,
+      "statement": "Dans l’observation, vous objectivez les signes suivant (RJ)\n1- Des émotions pro sociales \n2- Des destructions de biens \n3- Un déficit cognitif \n4- Des vols d'objets \n5- Un délire ",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "L’Organisation Mondiale de la Santé (OMS) considère que : « l’adolescence est la période de croissance et de développement humain qui se situe entre l’enfance et l’âge adulte, entre les âges de 10 et 19 ans. Elle représente une période de transition critique dans la vie et se caractérise par un rythme important de croissance et de changements qui n’est supérieur que pendant la petite enfance. »Trouble des conduites (TC) :• Association de manière intense, persistante, répétitive de conduites de non-respect des normes et émotions pro sociales limitées ( absence de remords, manque d’empathie)• À l’anamnèse, on retrouve :- Des agressions envers des personnes ou des animaux- Des destructions de biens matériels (feu, vandalisme)- Des vols- Des violations des règles établies (fugues; absentéisme scolaire)",
+      "original_id": 51005,
+      "clinical_case": "Samy est un adolescent de 13 ans, il est scolarisé en 2eme année moyenne. Ses parents se plaignent de ses comportements violents répétitifs. Il se bagarre constamment avec ses camarades de classe, il a récemment cassé le bras de l'un de ses camarades, Il a aussi cassé les dents d’un autre. L'adolescent a déjà détruit, ou volé des objets appartenant à d'autres jeunes. Il a aussi l'habitude de torturer le chat de la voisine. A l'examen clinique, Samy présente un bon contact, son humeur est colérique, le fonctionnement cognitif est adapté. Il ne présente ni délire ni hallucinations. Son jugement parait altéré car il ne présente aucun remords sur ce qu'il a fait.",
+      "display_title": "Question 11 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong>L’Organisation Mondiale de la Santé (OMS) considère que : </strong></p><p>« l’adolescence est la période de croissance et de développement humain qui se situe entre l’enfance et l’âge adulte, entre les âges de <strong>10 et 19 ans.</strong> Elle représente une période de transition critique dans la vie et se caractérise par un rythme important de croissance et de changements qui n’est supérieur que pendant la petite enfance. »</p><p><br></p><p><strong style=\"color: rgb(0, 71, 178);\">Trouble des conduites (TC) :</strong></p><p>• <strong><u>Association </u></strong>de manière intense, persistante, répétitive de <strong style=\"background-color: rgb(204, 232, 204);\">conduites de non-respect des normes</strong> et <strong style=\"background-color: rgb(204, 232, 204);\">émotions pro sociales <u>limitées</u></strong><u> </u>( absence de remords, manque d’empathie)</p><p>• À l’anamnèse, on retrouve :</p><p>- Des agressions envers des personnes ou des animaux</p><p>- Des destructions de biens matériels (feu, vandalisme)</p><p>- Des vols</p><p>- Des violations des règles établies (fugues; absentéisme scolaire)</p>"
+    },
+    {
+      "id": "11.4",
+      "case_id": 11,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252547,
+          "text": " Un trouble du spectre de l'autisme.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252548,
+          "text": "Un handicap intellectuel",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252549,
+          "text": "Un trouble des conduites",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 252550,
+          "text": " Une personnalité antisociale",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252551,
+          "text": "Un Trouble du comportement",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est le diagnostic le plus probable? (RJ)",
+      "has_media": false,
+      "statement": "Quel est le diagnostic le plus probable? (RJ)",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "L’Organisation Mondiale de la Santé (OMS) considère que : « l’adolescence est la période de croissance et de développement humain qui se situe entre l’enfance et l’âge adulte, entre les âges de 10 et 19 ans. Elle représente une période de transition critique dans la vie et se caractérise par un rythme important de croissance et de changements qui n’est supérieur que pendant la petite enfance. »Trouble des conduites (TC) :• Association de manière intense, persistante, répétitive de conduites de non-respect des normes et émotions pro sociales limitées ( absence de remords, manque d’empathie)• À l’anamnèse, on retrouve :- Des agressions envers des personnes ou des animaux- Des destructions de biens matériels (feu, vandalisme)- Des vols- Des violations des règles établies (fugues; absentéisme scolaire)",
+      "original_id": 51006,
+      "clinical_case": "Samy est un adolescent de 13 ans, il est scolarisé en 2eme année moyenne. Ses parents se plaignent de ses comportements violents répétitifs. Il se bagarre constamment avec ses camarades de classe, il a récemment cassé le bras de l'un de ses camarades, Il a aussi cassé les dents d’un autre. L'adolescent a déjà détruit, ou volé des objets appartenant à d'autres jeunes. Il a aussi l'habitude de torturer le chat de la voisine. A l'examen clinique, Samy présente un bon contact, son humeur est colérique, le fonctionnement cognitif est adapté. Il ne présente ni délire ni hallucinations. Son jugement parait altéré car il ne présente aucun remords sur ce qu'il a fait.",
+      "display_title": "Question 11 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong>L’Organisation Mondiale de la Santé (OMS) considère que : </strong></p><p>« l’adolescence est la période de croissance et de développement humain qui se situe entre l’enfance et l’âge adulte, entre les âges de <strong>10 et 19 ans.</strong> Elle représente une période de transition critique dans la vie et se caractérise par un rythme important de croissance et de changements qui n’est supérieur que pendant la petite enfance. »</p><p><br></p><p><strong style=\"color: rgb(0, 71, 178);\">Trouble des conduites (TC) :</strong></p><p>• <strong><u>Association </u></strong>de manière intense, persistante, répétitive de <strong style=\"background-color: rgb(204, 232, 204);\">conduites de non-respect des normes</strong> et <strong style=\"background-color: rgb(204, 232, 204);\">émotions pro sociales <u>limitées</u></strong><u> </u>( absence de remords, manque d’empathie)</p><p>• À l’anamnèse, on retrouve :</p><p>- Des agressions envers des personnes ou des animaux</p><p>- Des destructions de biens matériels (feu, vandalisme)</p><p>- Des vols</p><p>- Des violations des règles établies (fugues; absentéisme scolaire)</p>"
+    },
+    {
+      "id": "11.5",
+      "case_id": 11,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252552,
+          "text": "1.3",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 252553,
+          "text": "1.5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252554,
+          "text": "2.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252555,
+          "text": "3.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252556,
+          "text": "4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Une fois le diagnostic établi vous décidez de l'intervention thérapeutique suivante (RJ):\n1- Une psychothérapie \n2- Intervention à minima \n3- Un traitement médicamenteux \n4- Une hospitalisation \n5- Une abstention thérapeutique ",
+      "has_media": false,
+      "statement": "Une fois le diagnostic établi vous décidez de l'intervention thérapeutique suivante (RJ):\n1- Une psychothérapie \n2- Intervention à minima \n3- Un traitement médicamenteux \n4- Une hospitalisation \n5- Une abstention thérapeutique ",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "L’Organisation Mondiale de la Santé (OMS) considère que : « l’adolescence est la période de croissance et de développement humain qui se situe entre l’enfance et l’âge adulte, entre les âges de 10 et 19 ans. Elle représente une période de transition critique dans la vie et se caractérise par un rythme important de croissance et de changements qui n’est supérieur que pendant la petite enfance. »Trouble des conduites (TC) :• Association de manière intense, persistante, répétitive de conduites de non-respect des normes et émotions pro sociales limitées ( absence de remords, manque d’empathie)• À l’anamnèse, on retrouve :- Des agressions envers des personnes ou des animaux- Des destructions de biens matériels (feu, vandalisme)- Des vols- Des violations des règles établies (fugues; absentéisme scolaire)",
+      "original_id": 51007,
+      "clinical_case": "Samy est un adolescent de 13 ans, il est scolarisé en 2eme année moyenne. Ses parents se plaignent de ses comportements violents répétitifs. Il se bagarre constamment avec ses camarades de classe, il a récemment cassé le bras de l'un de ses camarades, Il a aussi cassé les dents d’un autre. L'adolescent a déjà détruit, ou volé des objets appartenant à d'autres jeunes. Il a aussi l'habitude de torturer le chat de la voisine. A l'examen clinique, Samy présente un bon contact, son humeur est colérique, le fonctionnement cognitif est adapté. Il ne présente ni délire ni hallucinations. Son jugement parait altéré car il ne présente aucun remords sur ce qu'il a fait.",
+      "display_title": "Question 11 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong>L’Organisation Mondiale de la Santé (OMS) considère que : </strong></p><p>« l’adolescence est la période de croissance et de développement humain qui se situe entre l’enfance et l’âge adulte, entre les âges de <strong>10 et 19 ans.</strong> Elle représente une période de transition critique dans la vie et se caractérise par un rythme important de croissance et de changements qui n’est supérieur que pendant la petite enfance. »</p><p><br></p><p><strong style=\"color: rgb(0, 71, 178);\">Trouble des conduites (TC) :</strong></p><p>• <strong><u>Association </u></strong>de manière intense, persistante, répétitive de <strong style=\"background-color: rgb(204, 232, 204);\">conduites de non-respect des normes</strong> et <strong style=\"background-color: rgb(204, 232, 204);\">émotions pro sociales <u>limitées</u></strong><u> </u>( absence de remords, manque d’empathie)</p><p>• À l’anamnèse, on retrouve :</p><p>- Des agressions envers des personnes ou des animaux</p><p>- Des destructions de biens matériels (feu, vandalisme)</p><p>- Des vols</p><p>- Des violations des règles établies (fugues; absentéisme scolaire)</p>"
+    },
+    {
+      "id": 12,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220874,
+          "text": "1+2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220875,
+          "text": "1+4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220876,
+          "text": "2+3",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 220877,
+          "text": "2+4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220878,
+          "text": "2+3+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Cochez l'association juste concernant l'adolescence:\n1. Débute à la puberté et se termine à 18 ans\n2. L'adolescent développe un intérêt au groupe\n3. On objective une croissance staturale\n4. Permet le développement de l'identité sexué\n5. Les troubles du comportement sont toujours présents",
+      "has_media": false,
+      "statement": "Cochez l'association juste concernant l'adolescence:\n1. Débute à la puberté et se termine à 18 ans\n2. L'adolescent développe un intérêt au groupe\n3. On objective une croissance staturale\n4. Permet le développement de l'identité sexué\n5. Les troubles du comportement sont toujours présents",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44899,
+      "clinical_case": null,
+      "display_title": "Question 12",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 13,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220570,
+          "text": "1+2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220571,
+          "text": "1+3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220572,
+          "text": "3+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220573,
+          "text": "2+5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220574,
+          "text": "4+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des associations concerne la décompensation comportementale chez l'adolescent, laquelle ?\n\n1 Prescription médicamenteuse est de règle\n2 Décompensation sur plan mentale peut être objectivée\n3 Hospitalisation est nécessaire\n4 Rassurer les parents\n5 Réaction des parents doit être solide et souple",
+      "has_media": false,
+      "statement": "L'une des associations concerne la décompensation comportementale chez l'adolescent, laquelle ?\n\n1 Prescription médicamenteuse est de règle\n2 Décompensation sur plan mentale peut être objectivée\n3 Hospitalisation est nécessaire\n4 Rassurer les parents\n5 Réaction des parents doit être solide et souple",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44838,
+      "clinical_case": null,
+      "display_title": "Question 13",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 14,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220575,
+          "text": "Débute vers l'adolescence et prend fin vers l'âge de 18 ans",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220576,
+          "text": "Phase de développement d'un intérêt au groupe",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 220577,
+          "text": "Croissance staturale est mise en latence",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220578,
+          "text": "Développement de l'identité sexué",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220579,
+          "text": "Troubles du comportement toujours présent",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - L'adolescence et ses troubles",
+        "series": "Mystidia Exams"
+      },
+      "question": "Parmi ses propositions concernant l'adolescence, une réponse est juste, laquelle ?",
+      "has_media": false,
+      "statement": "Parmi ses propositions concernant l'adolescence, une réponse est juste, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44839,
+      "clinical_case": null,
+      "display_title": "Question 14",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    }
+  ]
+}

@@ -1,0 +1,1583 @@
+{
+  "version": "2.0",
+  "exported_at": "2026-11-13T09:30:30.123Z",
+  "app": "Mystidia Cursus Medical Explorer",
+  "course": {
+    "title": "Généralités sur le développement de l'enfant",
+    "module": "Psychiatrie",
+    "year": "5ème Année (DFASM2)",
+    "session_id": "session_1792187319371_j4351gg",
+    "questions_count": 27
+  },
+  "questions": [
+    {
+      "id": 1,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 315826,
+          "text": "L'irritabilité peut remplacer l'humeur triste.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 315827,
+          "text": "Les idées suicidaires sont rares.",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 315828,
+          "text": "La baisse des performances scolaires peut être révélatrice.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 315829,
+          "text": "L'incurie peut être un signe annonciateur.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 315830,
+          "text": "Le risque suicidaire doit être systématiquement évalué.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "Toutes ces propositions concernent la dépression de l'adolescent sauf une, laquelle ?",
+      "has_media": false,
+      "statement": "Toutes ces propositions concernent la dépression de l'adolescent sauf une, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "B.Fausse, selon le cours off près de 20-30% des lycéens déclarent avoir déjà eu des idées suicidaires. ",
+      "original_id": 64668,
+      "clinical_case": null,
+      "display_title": "Question 1",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">B.Fausse,</strong> selon le cours off près de 20-30% des lycéens déclarent avoir déjà eu des idées suicidaires. </p><p><br></p>"
+    },
+    {
+      "id": 2,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 315821,
+          "text": "1+2+3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 315822,
+          "text": "1+2+4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 315823,
+          "text": "2+3+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 315824,
+          "text": "2+3+5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 315825,
+          "text": "2+3+4+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'adolescence est caractérisée par l'une des associations, laquelle ? \n1. Une période de stabilité affective. \n2. Une transition entre l'enfance et l'âge adulte. \n3. Des modifications biologiques, psychologiques et sociales. \n4. Une disparition progressive des conflits identitaires. \n5. Une vulnérabilité accrue aux troubles mentaux.",
+      "has_media": false,
+      "statement": "L'adolescence est caractérisée par l'une des associations, laquelle ? \n1. Une période de stabilité affective. \n2. Une transition entre l'enfance et l'âge adulte. \n3. Des modifications biologiques, psychologiques et sociales. \n4. Une disparition progressive des conflits identitaires. \n5. Une vulnérabilité accrue aux troubles mentaux.",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A.Fausse, L’adolescence est au contraire une période de grande variabilité émotionnelle Due aux changements hormonaux, psychologiques et sociaux .D.Fausse, L’adolescence est justement la période où les conflits identitaires apparaissent et sont les plus marqués.",
+      "original_id": 64667,
+      "clinical_case": null,
+      "display_title": "Question 2",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">A.Fausse, </strong>L’adolescence est au contraire une période de grande variabilité émotionnelle Due aux changements hormonaux, psychologiques et sociaux&nbsp;.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">D.Fausse, </strong>L’adolescence est justement la période où les conflits identitaires apparaissent et sont les plus marqués.</p><p><br></p>"
+    },
+    {
+      "id": 3,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 315816,
+          "text": "Les comportements sont expliqués par la présence de pulsions.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 315817,
+          "text": "Le développement passe par différents stades.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 315818,
+          "text": "Le stade oral est caractérisé par le plaisir de succion.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 315819,
+          "text": "Le stade anal ne permet pas l'acquisition du contrôle sphinctérien.",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 315820,
+          "text": "Le développement est étudié selon un modèle affectif.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "Toutes ces propositions concernant les hypothèses selon Freud sauf une :",
+      "has_media": true,
+      "statement": "Toutes ces propositions concernant les hypothèses selon Freud sauf une :",
+      "sub_index": null,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187319371_j4351gg/session_1792187319371_j4351gg_q_2_1792187360637_img_0.jpg",
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187319371_j4351gg/session_1792187319371_j4351gg_q_2_1792187360637_img_1.jpg"
+      ],
+      "croq_answer": null,
+      "explanation": "D.Fausse, le stade anal permet l’acquisition du contrôle sphinctérien et de la propreté.",
+      "original_id": 64666,
+      "clinical_case": null,
+      "display_title": "Question 3",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">D.Fausse,</strong> le stade anal permet l’acquisition du contrôle sphinctérien et de la propreté.</p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187319371_j4351gg/session_1792187319371_j4351gg_q_2_1792187360637_img_0.jpg\"><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187319371_j4351gg/session_1792187319371_j4351gg_q_2_1792187360637_img_1.jpg\"></p>"
+    },
+    {
+      "id": 4,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 315811,
+          "text": "Le style insécure désorganisé peut être en rapport avec des comportements violents des parents.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 315812,
+          "text": "Le style ambivalent protège contre le développement de troubles de la personnalité car la personne acquiert de bonnes capacités d'adaptation.",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 315813,
+          "text": "Un style d'attachement insécure évitant ne manifeste pas de réactions à la séparation avec sa mère.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 315814,
+          "text": "Un style d'attachement sécure permet d'explorer le monde.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 315815,
+          "text": "Le bébé a des compétences qui lui permettent de créer un lien affectif dès la naissance.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "Toutes ces propositions concernent la théorie de l'attachement de Bowlby sauf une :",
+      "has_media": true,
+      "statement": "Toutes ces propositions concernent la théorie de l'attachement de Bowlby sauf une :",
+      "sub_index": null,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187319371_j4351gg/session_1792187319371_j4351gg_q_3_1792187360637_img_0.jpg",
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187319371_j4351gg/session_1792187319371_j4351gg_q_3_1792187360637_img_1.jpg"
+      ],
+      "croq_answer": null,
+      "explanation": "B.Fausse, Le style ambivalent (ou anxieux-ambivalent) ne protège absolument pas contre les troubles de la personnalité c'est  tout le contraire.",
+      "original_id": 64665,
+      "clinical_case": null,
+      "display_title": "Question 4",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">B.Fausse,</strong> Le style ambivalent (ou anxieux-ambivalent) ne protège absolument pas contre les troubles de la personnalité c'est  tout le contraire.</p><p><br></p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187319371_j4351gg/session_1792187319371_j4351gg_q_3_1792187360637_img_0.jpg\"><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187319371_j4351gg/session_1792187319371_j4351gg_q_3_1792187360637_img_1.jpg\"></p><p><br></p>"
+    },
+    {
+      "id": 5,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 308425,
+          "text": "Le développement cognitif dépend uniquement de l’apprentissage scolaire.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 308426,
+          "text": "L’enfant passe par des stades successifs de développement cognitif.",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 308427,
+          "text": "Le développement cognitif est identique chez tous les enfants dès la naissance.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 308428,
+          "text": "L’intelligence de l’enfant est fixe et ne change pas avec l’âge.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 308429,
+          "text": "Le langage apparaît avant toute forme de pensée.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "S2 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "Concernant le développement cognitif selon Piaget, quelle proposition est correcte ? (RJ)",
+      "has_media": false,
+      "statement": "Concernant le développement cognitif selon Piaget, quelle proposition est correcte ? (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A-FauxPiaget insistait sur l'interaction entre maturation biologique et expérience, pas uniquement l'apprentissage scolaire.B-VraiLa théorie de Piaget repose sur des stades qualitativement différents (sensorimoteur, préopératoire, opératoire concret, opératoire formel).C-Faux Il existe des variations individuelles liées à l'environnement et aux expériences.D-FauxL'intelligence se développe et se transforme avec l'âge selon Piaget.E-Faux﻿Piaget considère que la pensée précède et conditionne le langage.",
+      "original_id": 63089,
+      "clinical_case": null,
+      "display_title": "Question 5",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(250, 204, 204);\">A-</strong><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Piaget insistait sur l'interaction entre maturation biologique et expérience, pas uniquement l'apprentissage scolaire.</span></p><p><br></p><p><strong style=\"background-color: rgb(204, 232, 204);\">B-</strong><strong style=\"background-color: rgb(204, 232, 204); color: rgb(0, 138, 0);\">Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">La théorie de Piaget repose sur des stades qualitativement différents (</span><strong style=\"color: rgb(15, 17, 21);\">sensorimoteur</strong><span style=\"color: rgb(15, 17, 21);\">, </span><strong style=\"color: rgb(15, 17, 21);\">préopératoire</strong><span style=\"color: rgb(15, 17, 21);\">,</span><strong style=\"color: rgb(15, 17, 21);\"> opératoire concret</strong><span style=\"color: rgb(15, 17, 21);\">, </span><strong style=\"color: rgb(15, 17, 21);\">opératoire formel</strong><span style=\"color: rgb(15, 17, 21);\">).</span></p><p><br></p><p><strong style=\"background-color: rgb(250, 204, 204);\">C-</strong><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">Faux</strong><span style=\"color: rgb(15, 17, 21);\">&nbsp;</span></p><p><span style=\"color: rgb(15, 17, 21);\">Il existe des variations individuelles liées à l'environnement et aux expériences.</span></p><p><br></p><p><strong style=\"background-color: rgb(250, 204, 204);\">D-</strong><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">L'intelligence se développe et se transforme avec l'âge selon Piaget.</span></p><p><br></p><p><strong style=\"background-color: rgb(250, 204, 204);\">E-</strong><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">Faux</strong></p><p><strong style=\"color: rgb(230, 0, 0); background-color: rgb(250, 204, 204);\"><span class=\"ql-cursor\">﻿</span></strong><span style=\"color: rgb(15, 17, 21);\">Piaget considère que</span><strong style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 102);\"> la pensée précède et conditionne le langage.</strong></p>"
+    },
+    {
+      "id": 6,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 308430,
+          "text": "Développe la pensée abstraite",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 308431,
+          "text": "Utilise la logique formelle",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 308432,
+          "text": "Comprend la conservation des quantités",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 308433,
+          "text": "Découvre le monde par les actions et les sensations",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 308434,
+          "text": "Résout des problèmes mathématiques",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "S2 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans le stade sensori-moteur, l’enfant : (RJ)",
+      "has_media": false,
+      "statement": "Dans le stade sensori-moteur, l’enfant : (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A-Faux La pensée abstraite apparaît au stade des opérations formelles (adolescence).B-FauxLa logique formelle est caractéristique du stade des opérations formellesC-Faux La conservation des quantités apparaît au stade opératoire concret (vers 7-8 ans).D-VraiLe stade sensorimoteur (0-2 ans) est caractérisé par l'apprentissage via les sens et la motricité.E-FauxLes problèmes mathématiques complexes nécessitent la pensée abstraite.",
+      "original_id": 63090,
+      "clinical_case": null,
+      "display_title": "Question 6",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(250, 204, 204);\">A-</strong><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;La pensée abstraite apparaît au stade de</span><span style=\"color: rgb(0, 71, 178);\">s </span><strong style=\"color: rgb(0, 71, 178);\">opérations formelles (adolescence).</strong></p><p><br></p><p><span style=\"border-color: rgb(229, 231, 235); --tw-shadow: 0 0 transparent; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgba(59,130,246,0.5); --tw-ring-offset-shadow: 0 0 transparent; --tw-ring-shadow: 0 0 transparent; font-weight: bolder; background-color: rgb(250, 204, 204);\">B-</span><span style=\"border-color: rgb(229, 231, 235); --tw-shadow: 0 0 transparent; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgba(59,130,246,0.5); --tw-ring-offset-shadow: 0 0 transparent; --tw-ring-shadow: 0 0 transparent; font-weight: bolder; background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">Faux</span></p><p><span style=\"color: rgb(15, 17, 21);\">La logique formelle est caractéristique du stade des</span><strong style=\"color: rgb(240, 102, 102);\"> </strong><strong style=\"color: rgb(0, 71, 178);\">opérations formelles</strong></p><p><br></p><p><strong style=\"background-color: rgb(250, 204, 204);\">C-</strong><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;La conservation des quantités apparaît au</span><strong style=\"color: rgb(0, 71, 178);\"> s</strong><strong style=\"color: rgb(107, 36, 178);\">tade opératoire concret (vers 7-8 ans).</strong></p><p><br></p><p><span style=\"border-color: rgb(229, 231, 235); --tw-shadow: 0 0 transparent; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgba(59,130,246,0.5); --tw-ring-offset-shadow: 0 0 transparent; --tw-ring-shadow: 0 0 transparent; font-weight: bolder; background-color: rgb(204, 232, 204);\">D-</span><span style=\"border-color: rgb(229, 231, 235); --tw-shadow: 0 0 transparent; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgba(59,130,246,0.5); --tw-ring-offset-shadow: 0 0 transparent; --tw-ring-shadow: 0 0 transparent; font-weight: bolder; background-color: rgb(204, 232, 204); color: rgb(0, 138, 0);\">Vrai</span></p><p><span style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 102);\">Le stade sensorimoteur (0-2 ans) </span><span style=\"color: rgb(15, 17, 21);\">est caractérisé par l'apprentissage via les</span><strong style=\"color: rgb(15, 17, 21);\"> sens et la motricité.</strong></p><p><br></p><p><strong style=\"background-color: rgb(250, 204, 204);\">E-</strong><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les problèmes mathématiques complexes nécessitent la </span><strong style=\"color: rgb(15, 17, 21);\">pensée abstraite.</strong></p><p><br></p>"
+    },
+    {
+      "id": 7,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 308439,
+          "text": "Punition et récompense",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 308440,
+          "text": "Assimilation et accommodation",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 308441,
+          "text": "Conditionnement",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 308442,
+          "text": "Mémoire et perception",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 308443,
+          "text": "Imitation",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "S1 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "Selon Piaget, les structures cognitives se développent grâce aux processus de : (RJ)",
+      "has_media": false,
+      "statement": "Selon Piaget, les structures cognitives se développent grâce aux processus de : (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A-FauxPunition et récompense relèvent du conditionnement opérant (Skinner), pas de Piaget.B-VraiL'assimilation (intégrer de nouvelles informations aux structures existantes) et l'accommodation (modifier les structures) sont les deux processus d'adaptation selon Piaget.C-FauxLe conditionnement est un concept lié aux théories de l'apprentissage (Pavlov/Skinner)D-FauxMémoire et perception sont des fonctions cognitives mais pas les processus spécifiques de Piaget.E-FauxL'imitation est un comportement mais pas le mécanisme central du développement cognitif selon Piaget",
+      "original_id": 63092,
+      "clinical_case": null,
+      "display_title": "Question 7",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(250, 204, 204);\">A-</strong><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">Faux</strong></p><p><strong style=\"color: rgb(15, 17, 21);\">Punition</strong><span style=\"color: rgb(15, 17, 21);\"> et </span><strong style=\"color: rgb(15, 17, 21);\">récompense</strong><span style=\"color: rgb(15, 17, 21);\"> relèvent du conditionnement opérant (</span><strong style=\"color: rgb(15, 17, 21);\">Skinner</strong><span style=\"color: rgb(15, 17, 21);\">), pas de Piaget.</span></p><p><br></p><p><span style=\"border-color: rgb(229, 231, 235); --tw-shadow: 0 0 transparent; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgba(59,130,246,0.5); --tw-ring-offset-shadow: 0 0 transparent; --tw-ring-shadow: 0 0 transparent; font-weight: bolder; background-color: rgb(204, 232, 204);\">B-</span><span style=\"border-color: rgb(229, 231, 235); --tw-shadow: 0 0 transparent; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgba(59,130,246,0.5); --tw-ring-offset-shadow: 0 0 transparent; --tw-ring-shadow: 0 0 transparent; font-weight: bolder; background-color: rgb(204, 232, 204); color: rgb(0, 138, 0);\">Vrai</span></p><p><strong style=\"color: rgb(15, 17, 21);\">L'assimilation</strong><span style=\"color: rgb(15, 17, 21);\"> (intégrer de nouvelles informations aux structures existantes) et </span><strong style=\"color: rgb(15, 17, 21);\">l'accommodation</strong><span style=\"color: rgb(15, 17, 21);\"> (modifier les structures) sont les deux processus d'adaptation selon </span><strong style=\"color: rgb(15, 17, 21);\">Piaget</strong><span style=\"color: rgb(15, 17, 21);\">.</span></p><p><br></p><p><strong style=\"background-color: rgb(250, 204, 204);\">C-</strong><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">Faux</strong></p><p><span style=\"color: rgb(48, 48, 48);\">Le conditionnement est un concept lié aux</span><strong style=\"color: rgb(48, 48, 48);\"> théories de l'apprentissage</strong><span style=\"color: rgb(48, 48, 48);\"> (</span><strong style=\"color: rgb(48, 48, 48);\">Pavlov/Skinner</strong><span style=\"color: rgb(48, 48, 48);\">)</span></p><p><br></p><p><span style=\"border-color: rgb(229, 231, 235); --tw-shadow: 0 0 transparent; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgba(59,130,246,0.5); --tw-ring-offset-shadow: 0 0 transparent; --tw-ring-shadow: 0 0 transparent; font-weight: bolder; background-color: rgb(250, 204, 204);\">D-</span><span style=\"border-color: rgb(229, 231, 235); --tw-shadow: 0 0 transparent; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgba(59,130,246,0.5); --tw-ring-offset-shadow: 0 0 transparent; --tw-ring-shadow: 0 0 transparent; font-weight: bolder; background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">Faux</span></p><p><span style=\"color: rgb(15, 17, 21);\">Mémoire et perception sont des</span><strong style=\"color: rgb(15, 17, 21);\"> fonctions cognitives </strong><span style=\"color: rgb(15, 17, 21);\">mais pas les processus spécifiques de Piaget.</span></p><p><br></p><p><strong style=\"background-color: rgb(250, 204, 204);\">E-</strong><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">L'imitation est un </span><strong style=\"color: rgb(15, 17, 21);\">comportement</strong><span style=\"color: rgb(15, 17, 21);\"> mais pas le mécanisme central du développement cognitif selon Piaget</span></p>"
+    },
+    {
+      "id": 8,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284791,
+          "text": "Le stade phallique",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 284792,
+          "text": "Le stade anal",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 284793,
+          "text": "Le stade oral",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 284794,
+          "text": "Le stade de latence",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284795,
+          "text": "Le stade sensorimoteur",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le complexe d'Œdipe survient au cours de l'un de ces stades du développement décrit par  Freud, lequel ?",
+      "has_media": true,
+      "statement": "Le complexe d'Œdipe survient au cours de l'un de ces stades du développement décrit par  Freud, lequel ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Le stade phallique est la troisième phase du développement psychosexuel et se situe généralement entre trois et cinq ou six ans. • Zone Érogène Primaire : La zone dintérêt et de plaisir est centrée sur les organes génitaux(pénis chez le garçon, clitoris - souvent considéré comme l\"équivalent phallique - chez la fille)• Plaisir et Curiosité : L'enfant découvre et s'intéresse à ses parties génitales (auto-érotisme,masturbation) et à la différence des sexes. Il s'interroge sur la présence ou l'absence du phallus (le pénis), symbole de puissance, d'où le terme de \"primauté du phallus\". • Sexualité Narcissique : La sexualité est principalement auto-centrée et narcissique ; l'enfants'intéresse à son propre corps et à la comparaison anatomique.• Complexe de Castration : Cette phase est intrinsèquement liée au complexe de castrationqui est la peur de perdre le pénis chez le garçon (en lien avec la menace perçue du père comme rival) et, chez la fille, |'idée d'une infériorité due à l'absence de pénis (envie du pénis).Le complexe d'Œdipe, qui tire son nom du mythe grec, émerge et culmine durant le stade phallique. C'est un schéma dramatique et universel de désirs et de conflits inconscients qui structurent la personnalité.",
+      "original_id": 58158,
+      "clinical_case": null,
+      "display_title": "Question 8",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1761934083.2607.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p>Le stade phallique est la troisième phase du développement psychosexuel et se situe généralement entre trois et cinq ou six ans.</p><p class=\"ql-indent-1\"> • <span style=\"background-color: rgb(250, 204, 204);\">Zone Érogène Primaire</span> : La zone dintérêt et de plaisir est centrée sur les organes génitaux</p><p class=\"ql-indent-1\">(pénis chez le garçon, clitoris - souvent considéré comme l\"équivalent phallique - chez la fille)</p><p class=\"ql-indent-1\">• <span style=\"background-color: rgb(250, 204, 204);\">Plaisir et Curiosité</span> : L'enfant découvre et s'intéresse à ses parties génitales (auto-érotisme,</p><p class=\"ql-indent-1\">masturbation) et à la différence des sexes. Il s'interroge sur la présence ou l'absence du phallus (le pénis), symbole de puissance, d'où le terme de \"primauté du phallus\".</p><p class=\"ql-indent-1\"> • <span style=\"background-color: rgb(250, 204, 204);\">Sexualité Narcissique</span> : La sexualité est principalement auto-centrée et narcissique ; l'enfant</p><p class=\"ql-indent-1\">s'intéresse à son propre corps et à la comparaison anatomique.</p><p class=\"ql-indent-1\">• <span style=\"background-color: rgb(250, 204, 204);\">Complexe de Castration</span> : Cette phase est intrinsèquement liée au complexe de castration</p><p class=\"ql-indent-1\">qui est la peur de perdre le pénis chez le garçon (en lien avec la menace perçue du père comme rival) et, chez la fille, |'idée d'une infériorité due à l'absence de pénis (envie du pénis).</p><p class=\"ql-indent-1\"><br></p><p>Le complexe d'Œdipe, qui tire son nom du mythe grec, émerge et culmine durant le stade phallique. C'est un schéma dramatique et universel de désirs et de conflits inconscients qui structurent la personnalité.</p>"
+    },
+    {
+      "id": 9,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284601,
+          "text": "Stade sensori-moteur.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284602,
+          "text": "Stade préopératoire.",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 284603,
+          "text": "Stade des opérations concrètes.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 284604,
+          "text": "Stade des opérations formelles.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284605,
+          "text": "Troubles cognitifs chez l'enfant.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'égocentrisme cognitif est caractéristique du :",
+      "has_media": false,
+      "statement": "L'égocentrisme cognitif est caractéristique du :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "L'égocentrisme cognitif traduit l'incapacité de l'enfant à se décentrer de son propre point de vue et à coordonner celui-ci avec celui d'autrui. L'enfant croit que les autres perçoivent et pensent le monde exactement comme lui.Il se caractérise par: Langage Égocentrique: L'enfant parle pour lui-même sans se soucier d'être compris par I'auditeur. Non-Conservation: L'incapacité à comprendre que la quantité d'une substance reste la même malgré une modification de sa forme ou de son apparence. Animisme: Tendance à attribuer des caractéristiques humaines à des objets inanimés Artificialisme et Finalisme: Croyance que tout a été créé par 'homme ou pour servir I'homme.Le stade préopératoire est le deuxième stade de la théorie du développement cognitif de Jean Piaget, qui se situe généralement entre 2 et 7 ans ( certaines sources le limitent à 6 ans ou 7-8 ans) Ce stade marque le passage de l'intelligence pratique (sensori-motrice) à la pensée représentative grâce à l'acquisition de la fonction symbolique lou sémiotique).La principale avancée de ce stade est le développement de la fonction symbolique, qui permet à I'enfant de se représenter mentalement des objets ou des événements sans leur présence immédiate.",
+      "original_id": 58120,
+      "clinical_case": null,
+      "display_title": "Question 9",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>L'égocentrisme cognitif traduit l'incapacité de l'enfant à se décentrer de son propre point de vue et à coordonner celui-ci avec celui d'autrui. L'enfant croit que les autres perçoivent et pensent le monde exactement comme lui.</p><p>Il se caractérise par: </p><ul><li><em style=\"background-color: rgb(255, 235, 204);\">Langage Égocentrique:</em> L'enfant parle pour lui-même sans se soucier d'être compris par I'auditeur.</li><li> <span style=\"background-color: rgb(255, 235, 204);\">Non-Conservation</span>: L'incapacité à comprendre que la quantité d'une substance reste la même malgré une modification de sa forme ou de son apparence.</li><li> <span style=\"background-color: rgb(255, 235, 204);\">Animisme</span>: Tendance à attribuer des caractéristiques humaines à des objets inanimés</li><li> <span style=\"background-color: rgb(255, 235, 204);\">Artificialisme et Finalisme</span>: Croyance que tout a été créé par 'homme ou pour servir I'homme.</li></ul><p><br></p><p>Le stade préopératoire est le deuxième stade de la théorie du développement cognitif de Jean Piaget, qui se situe généralement entre 2 et 7 ans ( certaines sources le limitent à 6 ans ou 7-8 ans)</p><p> Ce stade marque le passage de l'intelligence pratique (sensori-motrice) à la pensée représentative grâce à l'acquisition de la fonction symbolique lou sémiotique).</p><p><br></p><p>La principale avancée de ce stade est le développement de la fonction symbolique, qui permet à I'enfant de se représenter mentalement des objets ou des événements sans leur présence immédiate.</p>"
+    },
+    {
+      "id": 10,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284596,
+          "text": "La bouche.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284597,
+          "text": "L'anus.",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 284598,
+          "text": "Les organes génitaux.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 284599,
+          "text": "La peau.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284600,
+          "text": "Les oreilles.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "À 18 mois, quelle est la zone érogène dominante selon Freud ?",
+      "has_media": true,
+      "statement": "À 18 mois, quelle est la zone érogène dominante selon Freud ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Les Stades Psychosexuels de Freud1. Stade Oral (Naissance à 1-1,5 an)C'est le premier stade où la source principale de plaisir et d'interaction avec le monde est centrée sur la bouche (zone érogène). Le bébé explore, s'alimente et réduit ses tensions par la succion, la morsure et I'incorporation, Conflit : Le sevrage et la dépendance. Une fixation pourrait entraîner des traits de personnalité liés à la passivité, l'avidité, ou l'oralité (fumer, manger, parler de manière excessive). 2. Stade Anal (1 an à 3 ans) La zone érogène se déplace vers l'anus et les fonctions d'élimination. Le plaisir est lié à la rétention et à l'expulsion des selles, ce qui est l'enfant's première occasion de démontrer son autonomie et de contrôler son environnement.Conflit : L'apprentissage de la propreté. Les conflits autour du contrôle peuvent mener à une personnalité anale rétentive (ordonnée, rigide, économe) ou anale explosive (désordonnée, laxiste, impulsive). 3. Stade Phallique (3 ans à 5-6 ans) Le centre de la libido se fixe sur les organes génitaux, bien que l'intérêt soit encore immature et égocentrique. L'enfant prend conscience des différences anatomiques entre les sexes. Conflit: Le Complexe d'Œdipe (pour les garçons) ou le Complexe d'Électre (pour les filles). C'est le conflit fondamental où l'enfant désire le parent du sexe opposé et rivalise avec celui du même sexe. Sa résolution est cruciale pour le développement du Surmoi et I'identité sexuelle.4. Stade de Latence (6 ans à la Puberté)Ce n'est pas un stade psychosexuel au sens strict. L'énergie libidinale est refoulée et sublimée (redirigée) vers des activités non sexuelles : l'école, les amitiés, les sports, l'apprentissage des compétences sociales et la culture. Caractéristique : Période de relative calme sexuel et d'intégration des rôles sociaux et des valeurs morales. 5. Stade Génital (Puberté à l'âge adulte) La libido se réactive, mais l'objectif change. Les pulsions sexuelles sont désormais orientées vers des partenaires externes et matures, visant la satisfaction mutuelle et la reproduction. Objectif:Atteindre une sexualité et une identité adultes, avec la capacité d'aimer et de travailler de manière productive. C'est l'aboutissement de la maturation psychosexuelle.",
+      "original_id": 58119,
+      "clinical_case": null,
+      "display_title": "Question 10",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1761931908.9356.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p>Les Stades Psychosexuels de Freud</p><ul><li><em style=\"background-color: rgb(235, 214, 255);\"><u>1. Stade Oral (Naissance à 1-1,5 an)</u></em></li></ul><p>C'est le premier stade où la source principale de plaisir et d'interaction avec le monde est centrée sur la bouche (zone érogène). Le bébé explore, s'alimente et réduit ses tensions par la succion, la morsure et I'incorporation, </p><p>Conflit : Le sevrage et la dépendance. Une fixation pourrait entraîner des traits de personnalité liés à la passivité, l'avidité, ou l'oralité (fumer, manger, parler de manière excessive).</p><p><br></p><ul><li> <span style=\"background-color: rgb(235, 214, 255);\">2. Stade Anal (1 an à 3 ans)</span></li></ul><p> La zone érogène se déplace vers l'anus et les fonctions d'élimination. Le plaisir est lié à la rétention et à l'expulsion des selles, ce qui est l'enfant's première occasion de démontrer son autonomie et de contrôler son environnement.</p><p>Conflit : L'apprentissage de la propreté. Les conflits autour du contrôle peuvent mener à une personnalité anale rétentive (ordonnée, rigide, économe) ou anale explosive (désordonnée, laxiste, impulsive).</p><p><br></p><ul><li><span style=\"background-color: rgb(235, 214, 255);\"> 3. Stade Phallique (3 ans à 5-6 ans) </span></li></ul><p>Le centre de la libido se fixe sur les organes génitaux, bien que l'intérêt soit encore immature et égocentrique. L'enfant prend conscience des différences anatomiques entre les sexes.</p><p> Conflit: Le Complexe d'Œdipe (pour les garçons) ou le Complexe d'Électre (pour les filles). C'est le conflit fondamental où l'enfant désire le parent du sexe opposé et rivalise avec celui du même sexe. Sa résolution est cruciale pour le développement du Surmoi et I'identité sexuelle.</p><p><br></p><ul><li><span style=\"background-color: rgb(235, 214, 255);\">4. Stade de Latence (6 ans à la Puberté)</span></li></ul><p>Ce n'est pas un stade psychosexuel au sens strict. L'énergie libidinale est refoulée et sublimée (redirigée) vers des activités non sexuelles : l'école, les amitiés, les sports, l'apprentissage des compétences sociales et la culture. Caractéristique : Période de relative calme sexuel et d'intégration des rôles sociaux et des valeurs morales.</p><p> </p><ul><li><span style=\"background-color: rgb(235, 214, 255);\">5. Stade Génital (Puberté à l'âge adulte)</span></li></ul><p> La libido se réactive, mais l'objectif change. Les pulsions sexuelles sont désormais orientées vers des partenaires externes et matures, visant la satisfaction mutuelle et la reproduction. </p><p>Objectif:Atteindre une sexualité et une identité adultes, avec la capacité d'aimer et de travailler de manière productive. C'est l'aboutissement de la maturation psychosexuelle.</p>"
+    },
+    {
+      "id": 11,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284591,
+          "text": "L'apprentissage social.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284592,
+          "text": "La résolution de conflits cognitifs.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 284593,
+          "text": "La gestion des pulsions libidinales.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 284594,
+          "text": "L'attachement sécurisé.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284595,
+          "text": "L'interaction avec ses parents.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "Selon Freud, quel est le moteur principal du développement de l'enfant ?",
+      "has_media": false,
+      "statement": "Selon Freud, quel est le moteur principal du développement de l'enfant ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Freud a développé une théorie du développement psychosexuel en plusieurs étapes, où le moteur principal est l'énergie psychique qu'il nomme la libido (l'énergie associée aux pulsions de vie, principalement sexuelles et agressives au sens large) • Le Moteur Principal : Le développement de l'enfant est vu comme une succession de stadespsychosexuels (oral, anal, phallique, latence, génital). À chaque stade, l'énergie libidinale se fixe sur une zone érogène du corps (la bouche, l'anus, les organes génitaux) • Le Développement : Le passage d'un stade à l'autre et la maturation de l'enfant dépendent de la manière dont cette énergie pulsionnelle est gérée, exprimée, réprimée, ou sublimée. Les conflits psychiques majeurs (comme le complexe d'Œdipe/Électre pendant le stade phallique) sont au cœur de cette dynamique et sont directement liés à l'investissement et à la gestion de cette énergie",
+      "original_id": 58118,
+      "clinical_case": null,
+      "display_title": "Question 11",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>Freud a développé une théorie du développement psychosexuel en plusieurs étapes, où le moteur principal est l'énergie psychique qu'il nomme la libido (l'énergie associée aux pulsions de vie, principalement sexuelles et agressives au sens large)</p><p class=\"ql-indent-1\"> • Le Moteur Principal : Le développement de l'enfant est vu comme une succession de stades</p><p>psychosexuels (oral, anal, phallique, latence, génital). À chaque stade, l'énergie libidinale se fixe sur une zone érogène du corps (la bouche, l'anus, les organes génitaux)</p><p class=\"ql-indent-1\"> • Le Développement : Le passage d'un stade à l'autre et la maturation de l'enfant dépendent de la manière dont cette énergie pulsionnelle est gérée, exprimée, réprimée, ou sublimée. Les conflits psychiques majeurs (comme le complexe d'Œdipe/Électre pendant le stade phallique) sont au cœur de cette dynamique et sont directement liés à l'investissement et à la gestion de cette énergie</p>"
+    },
+    {
+      "id": 12,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284586,
+          "text": "Le conflit de sevrage.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284587,
+          "text": "Le complexe d'Œdipe.",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 284588,
+          "text": "L'anxiété de séparation.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 284589,
+          "text": "Le stade sensori-moteur.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284590,
+          "text": "Attachement ambivalent.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "Un enfant de 4 ans qui manifeste une rivalité envers son père et un attachement excessif à sa mère illustre :",
+      "has_media": false,
+      "statement": "Un enfant de 4 ans qui manifeste une rivalité envers son père et un attachement excessif à sa mère illustre :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Le Complexe d'Œdipe, théorisé par Sigmund Freud, est un ensemble organisé de désirs affectueux et hostiles éprouvés par l'enfant à l'égard de ses parents. ll se déroule classiquement durant la phase phallique (entre 3 et 5-7 ans) du développement psychosexuel. 1. Forme Positive/Directe (pour le Garçon) : Le garçon éprouve un désir amoureux et sexuel (libidinal) pour sa mère et une jalousie/rivalité à l'égard de son père, qu'il désire inconsciemment éliminer. 2. Forme Inversée (pour le Garçon) : I existe aussi une attirance pour le parent du même sexe et une rivalité envers le parent du sexe opposé. 3. Complexe d'Électre (pour la Fille) : Le concept est plus complexe chez la fille, où l'amour originel pour la mère est détourné vers le père, souvent après la dé couverte de la différence des sexes et l'entrée dans le complexe de castration.Sur le plan clinique, le complexe d'Œdipe, en tant que structure fondatrice de la psyché, est lié à l'émergence de plusieurs manifestations dans l'enfance et de troubles à l'åge adulte en cas de mauvaise résolution.  Chez l'Enfant (Manifestations Normales)Pendant la phase phallique, l'enfant peut manifester de manière transitoire des comportements qui reflètent le conflit œdipien • Jalousie et rivalité envers le parent rival (ex. : I'enfant s'interpose entre ses parents)• Attachement exclusif et préférence marquée pour le parent désiré (ex. : veut dormir avec lui/ elle).•Sentiments ambivalents envers le parent rival (mélange d'amour, d'admiration et de ressentiment/agressivite). •Angoisse de Castration : Chez le garçon, c'est la peur inconsciente de perdre son pénis  Chez la fille, c'est souvent la reconnaissance d'un manque (organisateur de l'entrée dans l'Œdipe). ",
+      "original_id": 58117,
+      "clinical_case": null,
+      "display_title": "Question 12",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>Le Complexe d'Œdipe, théorisé par Sigmund Freud, est un ensemble organisé de désirs affectueux et hostiles éprouvés par l'enfant à l'égard de ses parents. ll se déroule classiquement durant la phase phallique (entre 3 et 5-7 ans) du développement psychosexuel.</p><p><br></p><p> 1. <strong><em>Forme Positive/Directe (pour le Garçon)</em></strong> : Le garçon éprouve un désir amoureux et sexuel (libidinal) pour sa mère et une jalousie/rivalité à l'égard de son père, qu'il désire inconsciemment éliminer. </p><p>2. <strong><em>Forme Inversée (pour le Garçon) </em></strong>: I existe aussi une attirance pour le parent du même sexe et une rivalité envers le parent du sexe opposé. </p><p>3. <strong><em>Complexe d'Électre (pour la Fille)</em></strong> : Le concept est plus complexe chez la fille, où l'amour originel pour la mère est détourné vers le père, souvent après la dé couverte de la différence des sexes et l'entrée dans le complexe de castration.</p><p><br></p><p>Sur le plan clinique, le complexe d'Œdipe, en tant que structure fondatrice de la psyché, est lié à l'émergence de plusieurs manifestations dans l'enfance et de troubles à l'åge adulte en cas de mauvaise résolution.</p><p><br></p><p> <em style=\"background-color: rgb(204, 232, 204);\"> Chez l'Enfant (Manifestations Normales)</em></p><p>Pendant la phase phallique, l'enfant peut manifester de manière transitoire des comportements qui reflètent le conflit œdipien</p><p> • Jalousie et rivalité envers le parent rival (ex. : I'enfant s'interpose entre ses parents)</p><p>• Attachement exclusif et préférence marquée pour le parent désiré (ex. : veut dormir avec lui/ elle).</p><p>•Sentiments ambivalents envers le parent rival (mélange d'amour, d'admiration et de ressentiment/agressivite). </p><p>•Angoisse de Castration : Chez le garçon, c'est la peur inconsciente de perdre son pénis  </p><p>Chez la fille, c'est souvent la reconnaissance d'un manque (organisateur de l'entrée dans l'Œdipe).</p><p> </p>"
+    },
+    {
+      "id": 13,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265967,
+          "text": "Pensée intuitive",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265968,
+          "text": "Pensée concrète",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265969,
+          "text": "Pensée formelle",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 265970,
+          "text": "Pensée préopératoire",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265971,
+          "text": "Absence de pensée abstraite",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle est la caractéristique du développement cognitif de l'adolescent selon Piaget ?",
+      "has_media": false,
+      "statement": "Quelle est la caractéristique du développement cognitif de l'adolescent selon Piaget ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Piaget est un psychologue connu pour ses travaux sur le développement de l'intelligence chez l'enfant. Il a identifié 4 stades de développement, le 4ème et le dernier stade est le stade des opérations formelle chez l'adolescent. À ce stade, le jeune accède à une forme de pensée abstraite et hypothético-déductive, ce qui marque une rupture importante avec les étapes précédentes du développement cognitif.Pensée abstraiteL’adolescent est capable de manipuler des idées qui ne sont pas directement liées à des objets concrets.Il peut réfléchir sur des symboles, des principes moraux, des théories, sans avoir besoin d’un appui sensoriel ou tangible.Formulation d’hypothèsesIl est capable de formuler des hypothèses et de les tester mentalement, comme dans la démarche scientifique.Exemple : face à un problème, il peut proposer plusieurs explications possibles, les confronter logiquement et choisir la plus plausible.Détachement du réelL’adolescent peut raisonner indépendamment de ce qu’il perçoit dans le monde réel.Il peut envisager des mondes possibles, des alternatives au présent, ce qui permet l’émergence de la pensée critique.Capacité à raisonner sur des concepts complexesIl devient apte à réfléchir sur des questions abstraites et universelles : le sens de la vie, la justice, les croyances religieuses, les systèmes politiques…Cela ouvre la voie à l’engagement idéologique, à la remise en question de l’autorité ou des normes sociales.",
+      "original_id": 54099,
+      "clinical_case": null,
+      "display_title": "Question 13",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">Piaget </strong><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">est un psychologue connu pour ses travaux sur le développement de l'intelligence chez l'enfant. Il a identifié 4 stades de développement, le 4ème et le dernier stade est le stade des opérations formelle chez l'adolescent. </span></p><p>À ce stade, le jeune accède à une forme de <strong>pensée abstraite et hypothético-déductive</strong>, ce qui marque une rupture importante avec les étapes précédentes du développement cognitif.</p><h4><strong><u>Pensée abstraite</u></strong></h4><ul><li>L’adolescent est capable de manipuler <strong>des idées qui ne sont pas directement liées à des objets concrets</strong>.</li><li>Il peut réfléchir sur <strong>des symboles, des principes moraux, des théories</strong>, sans avoir besoin d’un appui sensoriel ou tangible.</li></ul><h4><strong><u>Formulation d’hypothèses</u></strong></h4><ul><li>Il est capable de <strong>formuler des hypothèses</strong> et de les tester mentalement, comme dans la démarche scientifique.</li><li>Exemple : face à un problème, il peut proposer plusieurs explications possibles, les confronter logiquement et choisir la plus plausible.</li></ul><h4><strong><u>Détachement du réel</u></strong></h4><ul><li>L’adolescent peut raisonner <strong>indépendamment de ce qu’il perçoit</strong> dans le monde réel.</li><li>Il peut envisager des mondes possibles, des alternatives au présent, ce qui permet l’émergence de la pensée critique.</li></ul><h4><strong><u>Capacité à raisonner sur des concepts complexes</u></strong></h4><ul><li>Il devient apte à réfléchir sur des <strong>questions abstraites et universelles</strong> : le sens de la vie, la justice, les croyances religieuses, les systèmes politiques…</li><li>Cela ouvre la voie à l’engagement idéologique, à la remise en question de l’autorité ou des normes sociales.</li></ul><p><br></p><p><br></p>"
+    },
+    {
+      "id": 14,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265772,
+          "text": "La première personne avec qui l'enfant joue",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265773,
+          "text": "La personne qui nourrit l'enfant",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265774,
+          "text": "La personne qui offre sécurité et réconfort émotionnel",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 265775,
+          "text": "Toute personne faisant partie de l'entourage de l'enfant",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265776,
+          "text": "La personne avec qui l'enfant passe le plus de temps",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "La figure d'attachement est définie comme : (RJ)",
+      "has_media": false,
+      "statement": "La figure d'attachement est définie comme : (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "John bowlby a développé la théorie de l'attachement, qui a eu une influence majeure sur le domaine de la psychologie du développement, basé sur deux paramètres: • Attachement : besoin biologique et instinctif de former des liens affectifs avec les figures d'attachement.• Figures d'attachement :personnes qui fournissent un soutien émotionnel et physique à l'enfant.(des parents ou des principaux soignants).",
+      "original_id": 54060,
+      "clinical_case": null,
+      "display_title": "Question 14",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">John bowlby</strong><span style=\"background-color: transparent; color: rgb(0, 0, 0);\"> a développé la théorie de l'attachement, qui a eu une influence majeure sur le domaine de la psychologie du développement, basé sur deux paramètres: </span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Attachement : </strong><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">besoin biologique et instinctif de former des liens affectifs avec les figures d'attachement.</span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• </strong><strong style=\"background-color: rgb(255, 255, 102); color: rgb(0, 0, 0);\">Figures d'attachement</strong><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"> </strong><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">:personnes qui fournissent un soutien émotionnel et physique à l'enfant.(des parents ou des principaux soignants).</span></p><p><br></p>"
+    },
+    {
+      "id": 15,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265767,
+          "text": "Sécure",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 265768,
+          "text": "Insécure-évitant",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265769,
+          "text": "Insécure-ambivalent",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 265770,
+          "text": "Désorganisé",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265771,
+          "text": "Anxieux-phobique",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "Selon la théorie de l'attachement, un enfant qui montre de l'anxiété lors du départ de la figure d'attachement mais qui se réconforte rapidement à son retour, présente un attachement : (RJ)",
+      "has_media": true,
+      "statement": "Selon la théorie de l'attachement, un enfant qui montre de l'anxiété lors du départ de la figure d'attachement mais qui se réconforte rapidement à son retour, présente un attachement : (RJ)",
+      "sub_index": null,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187319371_j4351gg/session_1792187319371_j4351gg_q_14_1792187360637_img_0.png"
+      ],
+      "croq_answer": null,
+      "explanation": "B- Vrai, La permanence de l'objet est acquise à la fin de stade sensori-moteur. John bowlby a développé la théorie de l'attachement, qui a eu une influence majeure sur le domaine de la psychologie du développement, on reconnait : • Attachement : besoin biologique et instinctif de former des liens affectifs avec les figures d'attachement.• Figures d'attachement :personnes qui fournissent un soutien émotionnel et physique à l'enfant.(des parents ou des principaux soignants).John bowlby décrit 4 types d'attachement qui se développent chez les enfants selon leurs interactions avec leurs figures d'attachement",
+      "original_id": 54059,
+      "clinical_case": null,
+      "display_title": "Question 15",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1748859908.0717.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> La permanence de l'objet est acquise à la fin de stade sensori-moteur. </p><p><br></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">John bowlby</strong><span style=\"background-color: transparent; color: rgb(0, 0, 0);\"> a développé la théorie de l'attachement, qui a eu une influence majeure sur le domaine de la psychologie du développement, on reconnait : </span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Attachement : </strong><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">besoin biologique et instinctif de former des liens affectifs avec les figures d'attachement.</span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Figures d'attachement </strong><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">:personnes qui fournissent un soutien émotionnel et physique à l'enfant.(des parents ou des principaux soignants).</span></p><p><strong style=\"color: rgb(0, 0, 0); background-color: transparent;\">John bowlby </strong><span style=\"color: rgb(0, 0, 0); background-color: transparent;\">décrit 4 types d'attachement qui se développent chez les enfants selon leurs interactions avec leurs figures d'attachement</span><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187319371_j4351gg/session_1792187319371_j4351gg_q_14_1792187360637_img_0.png\"></p>"
+    },
+    {
+      "id": 16,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265762,
+          "text": "À la naissance",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265763,
+          "text": "Stade sensori-moteur",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 265764,
+          "text": "Stade préopératoire",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 265765,
+          "text": "Stade des opérations concrètes",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265766,
+          "text": "Stade des opérations formelles",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "La permanence de l'objet est acquise dans le : (RJ)",
+      "has_media": true,
+      "statement": "La permanence de l'objet est acquise dans le : (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "B- Vrai, La permanence de l'objet est acquise à la fin de stade sensori-moteur. Le développement cognitif selon Jean Piaget repose sur l'idée que l'intelligence se construit progressivement à travers une série de stades ordonnés, liés à l’âge, chacun caractérisé par un mode particulier de pensée. Il a identifié 4 stades de développement : Ordre de succession fixe, mais l'âge peut varier selon chaque enfant.La permanence de l'objet est la capacité de comprendre qu’un objet continue d’exister même s’il n’est plus visible, audible ou directement perçu par les sens.-Avant l’acquisition de cette notion :Si un objet est caché (derrière un coussin, par exemple), le bébé agit comme s’il n’existait plus.Il vit dans un monde immédiat, sans représentation mentale durable.-Vers 8-9 mois : premières manifestationsLe bébé commence à chercher un objet caché → il a compris qu’il existe toujours, même hors de sa vue.Ce comportement marque le début de la représentation mentale.",
+      "original_id": 54058,
+      "clinical_case": null,
+      "display_title": "Question 16",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1748859614.4187.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> La permanence de l'objet est acquise à la fin de stade sensori-moteur. </p><p><br></p><p>Le développement cognitif selon <strong>Jean Piaget</strong> repose sur l'idée que l'intelligence se construit progressivement à travers une série de <strong>stades</strong> ordonnés, liés à l’âge, chacun caractérisé par un mode particulier de pensée. <span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Il a identifié 4 stades de développement : </span><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">Ordre de succession fixe,</strong><span style=\"background-color: transparent; color: rgb(0, 0, 0);\"> mais l'âge peut varier selon chaque enfant.</span></p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 0);\">La permanence de l'objet</strong> est la capacité de comprendre qu’un objet <strong>continue d’exister</strong> même s’il <strong>n’est plus visible</strong>, audible ou directement perçu par les sens.</p><p>-Avant l’acquisition de cette notion :</p><ul><li>Si un objet est caché (derrière un coussin, par exemple), <strong>le bébé agit comme s’il n’existait plus</strong>.</li><li>Il vit dans un monde immédiat, sans représentation mentale durable.</li></ul><p>-Vers 8-9 mois : premières manifestations</p><ul><li>Le bébé commence à <strong>chercher un objet caché</strong> → il a compris qu’il <strong>existe toujours</strong>, même hors de sa vue.</li><li>Ce comportement marque le début de la <strong>représentation mentale</strong>.</li></ul>"
+    },
+    {
+      "id": 17,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252942,
+          "text": "1.2.3.4",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252943,
+          "text": "1.2.4.3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252944,
+          "text": "1.3.4.2",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 252945,
+          "text": "1.4.2.3",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252946,
+          "text": "1.4.3.2",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le développement cognitif selon Piaget passe successivement par l'ordre suivant des stades (Cochez la réponse qui porte l'ordre correct) :\n1- Stade sensorimoteur\n2- Stade des opérations formelles\n3- Stade préopératoire\n4- Stade des opérations concrètes",
+      "has_media": true,
+      "statement": "Le développement cognitif selon Piaget passe successivement par l'ordre suivant des stades (Cochez la réponse qui porte l'ordre correct) :\n1- Stade sensorimoteur\n2- Stade des opérations formelles\n3- Stade préopératoire\n4- Stade des opérations concrètes",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": " ",
+      "original_id": 51085,
+      "clinical_case": null,
+      "display_title": "Question 17",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1725145788.1567.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p> </p>"
+    },
+    {
+      "id": 18,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252777,
+          "text": "Le stade anal",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252778,
+          "text": "Le stade phallique",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 252779,
+          "text": "Le stade oral",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252780,
+          "text": "Le stade d'adolescence",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252781,
+          "text": "Le stade de latence",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans le développement selon S. Freud, le complexe d’Œdipe survient au cours de l'un de ces stades, lequel ?",
+      "has_media": true,
+      "statement": "Dans le développement selon S. Freud, le complexe d’Œdipe survient au cours de l'un de ces stades, lequel ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": " ",
+      "original_id": 51052,
+      "clinical_case": null,
+      "display_title": "Question 18",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1725129520.9224.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p> </p>"
+    },
+    {
+      "id": 19,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252762,
+          "text": "1.2.3.4",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252763,
+          "text": "2.1.3.4",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 252764,
+          "text": "2.3.4.1",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252765,
+          "text": "1.2.4.3",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252766,
+          "text": "3.4.1.2",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "L’attachement chez le nourrisson se développe à travers 4 phases, cochez le bon ordre de ce développement:\n1- Phase de formation\n2- Phase du pré-attachement\n3- Phase de l'attachement\n4- Phase de relations réciproques",
+      "has_media": true,
+      "statement": "L’attachement chez le nourrisson se développe à travers 4 phases, cochez le bon ordre de ce développement:\n1- Phase de formation\n2- Phase du pré-attachement\n3- Phase de l'attachement\n4- Phase de relations réciproques",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Le développement de l'attachement passe généralement par 4 phases :1. Phase de pré-attachementCette première phase a lieu au cours des six premières semaines de vie du bébé. Le petit accepte facilement, en général, n’importe quel être humain qui le fait se sentir à l’aise. En d’autres termes, il ne montre de préférence pour personne en particulier.2. Phase de formationAprès six semaines, et jusqu’à environ huit mois, l’enfant commence à se sentir anxieux s’il est séparé des autres êtres humains. Il ne note cependant pas spécialement l’absence de la mère. Et ne rejette pas totalement les inconnus.3. Phase d’attachementÀ partir de six ou huit mois, et jusqu’à deux ans environ, la phase du lien d’attachement à proprement parler débute. Le bébé ressent de la colère si on le sépare de sa mère et peut même souffrir d’anxiété.4. Phase de relations réciproquesÀ partir de deux ans, la quatrième et dernière phase commence. On l’appelle la phase des relations réciproques. Le petit comprend que l’absence de la mère n’est pas définitive. Si tout va bien, il pourra calmer sa propre anxiété.",
+      "original_id": 51049,
+      "clinical_case": null,
+      "display_title": "Question 19",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1725129286.0098.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p><span style=\"background-color: var(--app-body-bg-color); color: rgba(31,41,55,var(--tw-text-opacity));\">Le développement de l'attachement passe généralement par 4 phases :</span></p><p><strong><u>1. Phase de pré-attachement</u></strong></p><p>Cette première phase a lieu au cours des six premières semaines de vie du bébé. Le petit accepte facilement, en général, n’importe quel être humain qui le fait se sentir à l’aise. En d’autres termes, il ne montre de préférence pour personne en particulier.</p><p><strong><u>2. Phase de formation</u></strong></p><p>Après six semaines, et jusqu’à environ huit mois, l’enfant commence à se sentir anxieux s’il est séparé des autres êtres humains. Il ne note cependant pas spécialement l’absence de la mère. Et ne rejette pas totalement les inconnus.</p><p><strong><u>3. Phase d’attachement</u></strong></p><p>À partir de six ou huit mois, et jusqu’à deux ans environ, la phase du lien d’attachement à proprement parler débute. Le bébé ressent de la colère si on le sépare de sa mère et peut même souffrir d’anxiété.</p><p><strong><u>4. Phase de relations réciproques</u></strong></p><p>À partir de deux ans, la quatrième et dernière phase commence. On l’appelle la phase des relations réciproques. Le petit comprend que l’absence de la mère n’est pas définitive. Si tout va bien, il pourra calmer sa propre anxiété.</p>"
+    },
+    {
+      "id": 20,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252757,
+          "text": "Stade préopératoire",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252758,
+          "text": "Stade des opérations formelles",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252759,
+          "text": "Stade sensorimoteur",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 252760,
+          "text": "Stade des opérations concrètes",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252761,
+          "text": "Stade préopératoire et opérations formelles",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans le développement cognitif selon Piaget, l'Assimilation et l'Accommodation sont des processus importants qui caractérisent le stade suivant :",
+      "has_media": true,
+      "statement": "Dans le développement cognitif selon Piaget, l'Assimilation et l'Accommodation sont des processus importants qui caractérisent le stade suivant :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Piaget a décrit quatre stades du développement de l’intelligence : 1. LE STADE SENSORI-MOTEUR (0 - 2 ANS)Il est antérieur au langage et à la pensée proprement dite. Ce stade est divisé en plusieurs phases :a. Phase d’exercice des réflexes : Les réactions du bébé sont liées aux tendances instinctives telles que : nutrition, réaction simples de défense…b. Premières habitudes élémentaires :Les diverses réactions ne se répètent pas sans plus, mais incorporent de nouveaux stimuli qui sont assimilés (Assimilation).Les schèmes d’action (qui sont : les sensations, perceptions et mouvements propres à l’enfant) se transforment en fonction de cette assimilation (c’est l’accommodation)c. Objectivation du monde extérieur par rapport à son propre corps :Ce n’est qu’à la fin de la première année que l’enfant sera capable de considérer un objet comme un mobile indépendant de son mouvement propre et saura de plus tenir compte des déplacements de cet objet dans l’espace, et sera capable d’action plus complexe, les détours afin d’atteindre un objet et l’utilisation de l’objet comme support ou comme instrument (bâton, ficelle…) pour atteindre un but ou changer la position d’un objet.2. LE STADE PREOPERATOIRE (2 - 7 ANS)L’enfant peut intégrerez un objet quelconque dans son schème d’action en tant que substitut d’un autre objet : c’est le symbolisme, Par exemple : une pierre devient un coussin et l’enfant imite l’action de dormir en posant sa tête dessus.La fonction symbolique se développe à travers les jeux par lesquels l’enfant reproduit les situations complexes car il ne peut y réfléchir.3. LE STADE DES OPERATIONS CONCRETES (7 - 12 ANS);- les opérations de la pensée sont encore concrètes en ce sens qu’elles ne portent que sur la réalité susceptible d’être manipulée.- Il ne peut pas encore raisonner en se fondant uniquement sur des énoncées verbaux, d’autant moins sur des hypothèses.4. LE STADE DES OPERATIONS FORMELLES (12 - 16 ANS):Le caractère essential de la pensée à ce niveau est qu’elle est capable de se dégager du contenu concret pour situer l’actuel dans un ensemble plus vaste de virtuel.Étant en face des problèmes à résoudre, l’adolescent manie des données expérimentales pour formuler des hypothèses, c’est-à-dire qu’il tient compte du possible et non seulement, comme il le faisait auparavant du réel de ce qu’il constate actuellement.",
+      "original_id": 51048,
+      "clinical_case": null,
+      "display_title": "Question 20",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1725129151.9973.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p>Piaget a décrit quatre stades du développement de l’intelligence : </p><p><strong><u>1. LE STADE SENSORI-MOTEUR (0 - 2 ANS)</u></strong></p><p>Il est antérieur au langage et à la pensée proprement dite. Ce stade est divisé en plusieurs phases :</p><p><strong>a. Phase d’exercice des réflexes</strong> : Les réactions du bébé sont liées aux tendances instinctives telles que : nutrition, réaction simples de défense…</p><p><strong>b. Premières habitudes élémentaires :</strong></p><p>Les diverses réactions ne se répètent pas sans plus, mais incorporent de nouveaux stimuli qui sont assimilés (<strong style=\"background-color: rgb(255, 194, 102);\">Assimilation</strong>).</p><p>Les schèmes d’action (qui sont : les sensations, perceptions et mouvements propres à l’enfant) se transforment en fonction de cette assimilation (c’est <strong style=\"background-color: rgb(255, 194, 102);\">l’accommodation</strong>)</p><p><strong>c. Objectivation du monde extérieur par rapport à son propre corps :</strong></p><p>Ce n’est qu’à la fin de la première année que l’enfant sera capable de considérer un objet comme un mobile indépendant de son mouvement propre et saura de plus tenir compte des déplacements de cet objet dans l’espace, et sera capable d’action plus complexe, les détours afin d’atteindre un objet et l’utilisation de l’objet comme support ou comme instrument (bâton, ficelle…) pour atteindre un but ou changer la position d’un objet.</p><p><strong><u>2. LE STADE PREOPERATOIRE (2 - 7 ANS)</u></strong></p><p>L’enfant peut intégrerez un objet quelconque dans son schème d’action en tant que substitut d’un autre objet : c’est le symbolisme, Par exemple : une pierre devient un coussin et l’enfant imite l’action de dormir en posant sa tête dessus.</p><p>La fonction symbolique se développe à travers les jeux par lesquels l’enfant reproduit les situations complexes car il ne peut y réfléchir.</p><p><strong><u>3. LE STADE DES OPERATIONS CONCRETES (7 - 12 ANS);</u></strong></p><p>- les opérations de la pensée sont encore concrètes en ce sens qu’elles ne portent que sur la réalité susceptible d’être manipulée.</p><p>- Il ne peut pas encore raisonner en se fondant uniquement sur des énoncées verbaux, d’autant moins sur des hypothèses.</p><p><strong><u>4. LE STADE DES OPERATIONS FORMELLES (12 - 16 ANS):</u></strong></p><p>Le caractère essential de la pensée à ce niveau est qu’elle est capable de se dégager du contenu concret pour situer l’actuel dans un ensemble plus vaste de virtuel.</p><p>Étant en face des problèmes à résoudre, l’adolescent manie des données expérimentales pour formuler des hypothèses, c’est-à-dire qu’il tient compte du possible et non seulement, comme il le faisait auparavant du réel de ce qu’il constate actuellement.</p>"
+    },
+    {
+      "id": 21,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220497,
+          "text": "1-2-3-4",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220498,
+          "text": "1-2-4-3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220499,
+          "text": "1-3-4-2",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 220500,
+          "text": "1-4-2-3",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220501,
+          "text": "1-4-3-2",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le développement cognitif selon Piaget passe successivement par l'ordre suivant des stades : (Cochez la réponse qui porte l'ordre correcte) :\n\n1 Stade sensorimoteur\n2 Stade des opérations formelles\n3 Stade préopératoire\n4 Stade des opérations concrètes",
+      "has_media": true,
+      "statement": "Le développement cognitif selon Piaget passe successivement par l'ordre suivant des stades : (Cochez la réponse qui porte l'ordre correcte) :\n\n1 Stade sensorimoteur\n2 Stade des opérations formelles\n3 Stade préopératoire\n4 Stade des opérations concrètes",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Here is a mind map that has it all ",
+      "original_id": 44823,
+      "clinical_case": null,
+      "display_title": "Question 21",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1714832172.0217.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p>Here is a mind map that has it all </p>"
+    },
+    {
+      "id": 22,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220522,
+          "text": "Le stade anal",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220523,
+          "text": "Le stade phallique",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 220524,
+          "text": "Le stade oral",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220525,
+          "text": "Le stade de latence",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220526,
+          "text": "Le stade sensorimoteur",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2023",
+          "P3 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans le développement selon S. Freud, le complexe d'Œdipe survient au cours du stade suivant : (cocher la réponse juste) :",
+      "has_media": true,
+      "statement": "Dans le développement selon S. Freud, le complexe d'Œdipe survient au cours du stade suivant : (cocher la réponse juste) :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Voir le mind map ",
+      "original_id": 44828,
+      "clinical_case": null,
+      "display_title": "Question 22",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1714835442.6842.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p>Voir le mind map </p>"
+    },
+    {
+      "id": 23,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220487,
+          "text": "1+2+3+4",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220488,
+          "text": "1+2+4+3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220489,
+          "text": "2+1+3+4",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 220490,
+          "text": "2+3+4+1",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220491,
+          "text": "2+4+3+1",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "L’attachement chez le nourrisson se développent à travers 4 phases, cocher le bon ordre de ce développent :\n\n1 Phase de formation\n2 Phase du pré-attachement\n3 Phase de l'attachement\n4 Phase de relations réciproques",
+      "has_media": false,
+      "statement": "L’attachement chez le nourrisson se développent à travers 4 phases, cocher le bon ordre de ce développent :\n\n1 Phase de formation\n2 Phase du pré-attachement\n3 Phase de l'attachement\n4 Phase de relations réciproques",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44821,
+      "clinical_case": null,
+      "display_title": "Question 23",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 24,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220502,
+          "text": "Stade préopératoire",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220503,
+          "text": "Stade des opérations formelles",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220504,
+          "text": "Stade des opérations concrètes",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220505,
+          "text": "Stade sensorimoteur",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220506,
+          "text": "Aucune de ces réponses",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans le développement cognitif selon Piaget, l’Assimilation et l’accommodation sont des processus importants qui caractérisent le stade suivant :",
+      "has_media": false,
+      "statement": "Dans le développement cognitif selon Piaget, l’Assimilation et l’accommodation sont des processus importants qui caractérisent le stade suivant :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44824,
+      "clinical_case": null,
+      "display_title": "Question 24",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 25,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220561,
+          "text": "1-2-3-4-5",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220562,
+          "text": "1-2-3-5-4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220563,
+          "text": "1-2-5-4-3",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 220564,
+          "text": "1-2-4-3-5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220565,
+          "text": "1-5-4-3-2",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le développement psychosocial selon Sigmund Freud passe par l’ordre suivant des stades (Cochez la réponse qui porte l’ordre correcte) \n\n1 Stade oral\n2 Stade anal\n3 Stade génital\n4 Stade de latence\n5 Stade phallique",
+      "has_media": false,
+      "statement": "Le développement psychosocial selon Sigmund Freud passe par l’ordre suivant des stades (Cochez la réponse qui porte l’ordre correcte) \n\n1 Stade oral\n2 Stade anal\n3 Stade génital\n4 Stade de latence\n5 Stade phallique",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44836,
+      "clinical_case": null,
+      "display_title": "Question 25",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 26,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220566,
+          "text": "1-2-3-4",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220567,
+          "text": "1-2-4-3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220568,
+          "text": "1-3-4-2",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 220569,
+          "text": "1-4-3-2",
+          "letter": "D",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le développement cognitif selon Piaget passe successivement par l'ordre solvant des stades : (Cochez la réponse qui porte l'ordre correcte) :\n\n1 Stade sensorimoteur\n2 Stade des opérations formelles\n3 Stade préopératoire\n4 Stade des opérations concrètes",
+      "has_media": false,
+      "statement": "Le développement cognitif selon Piaget passe successivement par l'ordre solvant des stades : (Cochez la réponse qui porte l'ordre correcte) :\n\n1 Stade sensorimoteur\n2 Stade des opérations formelles\n3 Stade préopératoire\n4 Stade des opérations concrètes",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44837,
+      "clinical_case": null,
+      "display_title": "Question 26",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 27,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220605,
+          "text": "La peur du noir peut être observée durant la petite enfance",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220606,
+          "text": "Le sourire sociale est observé à 6 mois",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 220607,
+          "text": "L’angoisse de l’étranger est observée à 9 mois",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220608,
+          "text": "Le raisonnement abstrait est observé à l’adolescence",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220609,
+          "text": "Le raisonnement logique est observé à partir de 7 ans",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2022"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Généralités sur le développement de l'enfant",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans le développement et de l’enfant de l’adolescent : (RF)",
+      "has_media": false,
+      "statement": "Dans le développement et de l’enfant de l’adolescent : (RF)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44845,
+      "clinical_case": null,
+      "display_title": "Question 27",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    }
+  ]
+}

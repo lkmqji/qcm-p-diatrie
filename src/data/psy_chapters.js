@@ -1,0 +1,122 @@
+window.PSY_CHAPTERS = [
+  {
+    "id": "aspects_medico-legaux_et_organisations_des_soins_en_psychiatrie",
+    "title": "Aspects médico-légaux et organisations des soins en psychiatrie",
+    "count": 23,
+    "croqCount": 0
+  },
+  {
+    "id": "autres",
+    "title": "Autres",
+    "count": 3,
+    "croqCount": 0
+  },
+  {
+    "id": "carences_de_soins_maternels",
+    "title": "Carences de soins maternels",
+    "count": 24,
+    "croqCount": 0
+  },
+  {
+    "id": "confusion_mentale",
+    "title": "Confusion mentale",
+    "count": 77,
+    "croqCount": 0
+  },
+  {
+    "id": "generalites_sur_le_developpement_de_l_enfant",
+    "title": "Généralités sur le développement de l'enfant",
+    "count": 27,
+    "croqCount": 0
+  },
+  {
+    "id": "l_adolescence_et_ses_troubles",
+    "title": "L'adolescence et ses troubles",
+    "count": 28,
+    "croqCount": 0
+  },
+  {
+    "id": "la_deficience_mentale",
+    "title": "La déficience mentale",
+    "count": 15,
+    "croqCount": 0
+  },
+  {
+    "id": "les_addictions",
+    "title": "Les addictions",
+    "count": 36,
+    "croqCount": 0
+  },
+  {
+    "id": "les_troubles_a_symptomatologie_somatique",
+    "title": "Les troubles à symptomatologie somatique",
+    "count": 40,
+    "croqCount": 0
+  },
+  {
+    "id": "les_troubles_du_spectre_de_l_autisme",
+    "title": "Les troubles du spectre de l'autisme",
+    "count": 47,
+    "croqCount": 0
+  },
+  {
+    "id": "les_troubles_sexuelles",
+    "title": "Les troubles sexuelles",
+    "count": 21,
+    "croqCount": 0
+  },
+  {
+    "id": "schizophrenies",
+    "title": "Schizophrénies",
+    "count": 60,
+    "croqCount": 0
+  },
+  {
+    "id": "td_les_antipsychotiques",
+    "title": "TD : Les antipsychotiques",
+    "count": 18,
+    "croqCount": 0
+  },
+  {
+    "id": "trouble_delirant",
+    "title": "Trouble délirant",
+    "count": 65,
+    "croqCount": 0
+  },
+  {
+    "id": "troubles_anxieux_et_troubles_obsessionnels_compulsifs",
+    "title": "Troubles anxieux et troubles obsessionnels compulsifs",
+    "count": 92,
+    "croqCount": 0
+  },
+  {
+    "id": "troubles_bipolaires_et_troubles_depressifs",
+    "title": "Troubles bipolaires et troubles dépressifs",
+    "count": 142,
+    "croqCount": 0
+  },
+  {
+    "id": "troubles_psychiques_post-traumatiques_et_troubles_lies_au_stress_ptsd",
+    "title": "Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+    "count": 34,
+    "croqCount": 0
+  },
+  {
+    "id": "troubles_psychotiques_aigus_et_transitoires",
+    "title": "Troubles psychotiques aigus et transitoires",
+    "count": 35,
+    "croqCount": 0
+  },
+  {
+    "id": "troubles_veille_sommeil",
+    "title": "Troubles veille sommeil",
+    "count": 55,
+    "croqCount": 0
+  },
+  {
+    "id": "urgences_psychiatriques",
+    "title": "Urgences psychiatriques",
+    "count": 20,
+    "croqCount": 0
+  }
+];

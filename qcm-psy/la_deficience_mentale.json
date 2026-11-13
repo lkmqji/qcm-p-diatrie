@@ -1,0 +1,887 @@
+{
+  "version": "2.0",
+  "exported_at": "2026-11-13T09:30:31.009Z",
+  "app": "Mystidia Cursus Medical Explorer",
+  "course": {
+    "title": "La déficience mentale",
+    "module": "Psychiatrie",
+    "year": "5ème Année (DFASM2)",
+    "session_id": "session_1792187444561_t7npb0e",
+    "questions_count": 15
+  },
+  "questions": [
+    {
+      "id": 1,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284786,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284787,
+          "text": "1.3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 284788,
+          "text": "1.2.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 284789,
+          "text": "1.3.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284790,
+          "text": "2.3.4",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - La déficience mentale",
+        "series": "Mystidia Exams"
+      },
+      "question": "La déficience intellectuelle : est caractérisée par l'une des associations suivantes, laquelle ?\n1. Le QI est le seul moyen d'évaluation du fonctionnement intellectuel.\n2. Un niveau d'aide limité correspond à une sévérité moyenne\n3. Le fonctionnement adaptatif est atteint\n4. Le fonctionnement intellectuel est atteint.",
+      "has_media": true,
+      "statement": "La déficience intellectuelle : est caractérisée par l'une des associations suivantes, laquelle ?\n1. Le QI est le seul moyen d'évaluation du fonctionnement intellectuel.\n2. Un niveau d'aide limité correspond à une sévérité moyenne\n3. Le fonctionnement adaptatif est atteint\n4. Le fonctionnement intellectuel est atteint.",
+      "sub_index": null,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187444561_t7npb0e/session_1792187444561_t7npb0e_q_0_1792187461918_img_0.jpg",
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187444561_t7npb0e/session_1792187444561_t7npb0e_q_0_1792187461918_img_1.jpg"
+      ],
+      "croq_answer": null,
+      "explanation": "Selon le DSM V la déficience intellectuelle se définit par : A-Déficit des fonctions intellectuelles:  raisonnement, lạ résoluțion de problèmes, la planification, l'abstraction, le jugement, l'apprentissage scolaire et l'apprentissage par l'experience B-Déficit des fonctions adaptatives Dans les domaines conceptuels, sociaux et pratiques. C-Débute pendant la période du développement: Chez les enfants de moins de 5 ans,,quand le degré de sévérité ne peut être évalué, avec certitude, le diagnostic de retard global du développement peut être posé avant qu'une réévaluation ultériëure ne soit réalisée.DÉFICIT DES FONCTIONS INTELLECTUELLESles tests standardisés : Pas que le QI Les tests d'intelligence exemple : le WISCQuotient Intellectuel (QI):  Le QI est un score dérivé de plusieurs épreuves. Il existe plusieurs test de Qi qui cherchent à mesurer des compétences générales ou spécifiques : la lecture, le langage, le raisonnement abstrait, etc. le vocabulạire, la mémoire, la culture generale, les capacités visuo- constructives,Les tests de Ql: \" la Wechsler Intelligence Scale for Children, • l'échelle de Stanford- Binet, \" l'échelle Kaufman Assessment Battery for Children et les matrices de Raven.DÉFICIT DES FONCTIONS ADAPTATIVES les déficits adaptatifs limitent le fonctionnement de la vie quotidienne (à la maison, l'école, le travail, la collectivité) comme : La communication (expression des besoins, des sentiments...) La participation sociale (sports collectifs, ateliers artistiques..) L'indépendance (toilette, repas, habillage...) •Echelle d'évaluation du comportement socio-adaptatif VinelandLe degré de sévéritéLes différents niveaux sont définis sur la base du fonctionnement adaptatifle niveau d'assistance requis (dans les domaines conceptuel, social et pratique) est classée comme suit : Intermittente : assistance occasionnelle nécessaireLimitée : assistance comme un programme ponctuel dans un atelier protégéImportante : assistance permanente quotidienne,Permanente : haut degré d'assistance dans le cadre de toutes les activités de la vie quotidienne⁃ Ainsi on aura 3 niveau de sévérité du Handicap intellectuel: Léger, Moyen, Grave et Profond",
+      "original_id": 58157,
+      "clinical_case": null,
+      "display_title": "Question 1",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>Selon le DSM V la déficience intellectuelle se définit par : </p><p><br></p><ul><li>A-<strong style=\"background-color: rgb(204, 232, 204);\"><em>Déficit des fonctions intellectuelles</em></strong><span style=\"background-color: rgb(204, 232, 204);\">:  </span>raisonnement, lạ résoluțion de problèmes, la planification, l'abstraction, le jugement, l'apprentissage scolaire et l'apprentissage par l'experience</li><li> B-<strong style=\"background-color: rgb(204, 232, 204);\"><em>Déficit des fonctions adaptatives</em></strong> Dans les domaines conceptuels, sociaux et pratiques.</li><li> C-<strong><em>Débute pendant la période du développement</em></strong>: Chez les enfants de moins de 5 ans,,quand le degré de sévérité ne peut être évalué, avec certitude, le diagnostic de retard global du développement peut être posé avant qu'une réévaluation ultériëure ne soit réalisée.</li></ul><p><br></p><p>DÉFICIT DES FONCTIONS INTELLECTUELLES</p><ul><li>les tests standardisés : <span style=\"background-color: rgb(230, 0, 0);\">Pas que le QI </span></li><li class=\"ql-indent-1\">Les tests d'intelligence exemple : le WISC</li><li class=\"ql-indent-1\">Quotient Intellectuel (QI):  Le QI est un score dérivé de plusieurs épreuves. Il existe plusieurs test de Qi qui cherchent à mesurer des compétences générales ou spécifiques : la lecture, le langage, le raisonnement abstrait, etc. le vocabulạire, la mémoire, la culture generale, les capacités visuo- constructives,</li><li class=\"ql-indent-1\">Les tests de Ql: \" la Wechsler Intelligence Scale for Children, • l'échelle de Stanford- Binet, \" l'échelle Kaufman Assessment Battery for Children et les matrices de Raven.</li></ul><p>DÉFICIT DES FONCTIONS ADAPTATIVES</p><ul><li> les déficits adaptatifs limitent le fonctionnement de la vie quotidienne (à la maison, l'école, le travail, la collectivité) comme : </li><li class=\"ql-indent-1\">La communication (expression des besoins, des sentiments...) </li><li class=\"ql-indent-1\">La participation sociale (sports collectifs, ateliers artistiques..) </li><li class=\"ql-indent-1\">L'indépendance (toilette, repas, habillage...)</li><li> •Echelle d'évaluation du comportement socio-adaptatif Vineland</li></ul><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187444561_t7npb0e/session_1792187444561_t7npb0e_q_0_1792187461918_img_0.jpg\"></p><p><br></p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187444561_t7npb0e/session_1792187444561_t7npb0e_q_0_1792187461918_img_1.jpg\"></p><p><br></p><p><u>Le degré de sévérité</u></p><p>Les différents niveaux sont définis sur la base du fonctionnement adaptatif</p><ul><li>le niveau d'assistance requis (dans les domaines conceptuel, social et pratique) est classée comme suit : Intermittente : assistance occasionnelle nécessaire</li><li class=\"ql-indent-1\"><span style=\"background-color: rgb(204, 232, 204);\">Limitée</span> : assistance comme un programme ponctuel dans un atelier protégé</li><li class=\"ql-indent-1\"><span style=\"background-color: rgb(204, 232, 204);\">Importante</span> : assistance permanente quotidienne,</li><li class=\"ql-indent-1\"><span style=\"background-color: rgb(204, 232, 204);\">Permanente</span> : haut degré d'assistance dans le cadre de toutes les activités de la vie quotidienne</li></ul><p>⁃ Ainsi on aura 3 niveau de sévérité du Handicap intellectuel: Léger, Moyen, Grave et Profond</p>"
+    },
+    {
+      "id": 2,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265802,
+          "text": "Stimulation cognitive précoce",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265803,
+          "text": "Dépistage néonatal et traitement substitutif",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 265804,
+          "text": "Utilisation d'oméga 3",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 265805,
+          "text": "Thérapie comportementale intensive",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265806,
+          "text": "Toutes les réponses précédentes",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - La déficience mentale",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle intervention est la plus efficace pour prévenir le retard intellectuel lié à l'hypothyroïdie congénitale ? (RJ)",
+      "has_media": false,
+      "statement": "Quelle intervention est la plus efficace pour prévenir le retard intellectuel lié à l'hypothyroïdie congénitale ? (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "B- Vrai, Le dépistage néonatal de l’hypothyroïdie congénitale est réalisé de manière systématique dans les heures suivant la naissance, par ponction capillaire au niveau du talon : quelques gouttes de sang sont déposées sur papier buvard pour mesure de la TSH. Seules les hypothyroïdies primaires sont dépistées ainsi.",
+      "original_id": 54066,
+      "clinical_case": null,
+      "display_title": "Question 2",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> Le dépistage néonatal de l’hypothyroïdie congénitale est réalisé de manière systématique dans les heures suivant la naissance, par ponction capillaire au niveau du talon : quelques gouttes de sang sont déposées sur papier buvard pour mesure de la TSH. Seules les hypothyroïdies primaires sont dépistées ainsi.</p><p><br></p>"
+    },
+    {
+      "id": 3,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265797,
+          "text": "Cognition uniquement",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265798,
+          "text": "Communication – autonomie et compétences sociales.",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 265799,
+          "text": "Seule la performance scolaire",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 265800,
+          "text": "Seule l'habilité motrice",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265801,
+          "text": "Toutes les réponses sont justes",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - La déficience mentale",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel domaine du fonctionnement adaptatif est évalué pour poser un diagnostic d'handicap intellectuel ? (RJ)",
+      "has_media": false,
+      "statement": "Quel domaine du fonctionnement adaptatif est évalué pour poser un diagnostic d'handicap intellectuel ? (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "B- Vrai, Le diagnostic de handicap intellectuel repose non seulement sur une évaluation du quotient intellectuel, mais surtout sur l’évaluation des capacités adaptatives. Ces capacités concernent trois grands domaines :Communication : la capacité à comprendre et à s’exprimer.Autonomie : la capacité à gérer les activités de la vie quotidienne (habillage, alimentation, hygiène, déplacements…).Compétences sociales : les relations avec les autres, l’intégration sociale, la gestion des émotions.",
+      "original_id": 54065,
+      "clinical_case": null,
+      "display_title": "Question 3",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> Le diagnostic de handicap intellectuel repose non seulement sur une évaluation du quotient intellectuel, mais surtout sur l’évaluation des <strong>capacités adaptatives</strong>. Ces capacités concernent trois grands domaines :</p><ul><li><strong>Communication</strong> : la capacité à comprendre et à s’exprimer.</li><li><strong>Autonomie</strong> : la capacité à gérer les activités de la vie quotidienne (habillage, alimentation, hygiène, déplacements…).</li><li><strong>Compétences sociales</strong> : les relations avec les autres, l’intégration sociale, la gestion des émotions.</li></ul><p><br></p>"
+    },
+    {
+      "id": 4,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265792,
+          "text": "Echelle de weschler",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 265793,
+          "text": "Echelle de Vineland",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265794,
+          "text": "Echelle de corners",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 265795,
+          "text": "Epreuve de stroop",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265796,
+          "text": "A et B sont justes",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - La déficience mentale",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle échelle est la plus utilisé pour évaluer le fonctionnement intellectuel chez l'enfant ? (RJ)",
+      "has_media": false,
+      "statement": "Quelle échelle est la plus utilisé pour évaluer le fonctionnement intellectuel chez l'enfant ? (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A- Vrai, WISC-IV (Wechsler Intelligence Scale for Children – 4e édition) et WISC-V sont les tests les plus couramment utilisés pour les enfants. Ils permettent d’évaluer plusieurs composantes du fonctionnement cognitif : compréhension verbale, raisonnement perceptif, mémoire de travail, vitesse de traitement, etc.Ces tests fournissent un score global, le QI total, ainsi que des indices spécifiques qui permettent de mieux comprendre les forces et les faiblesses cognitives de l’enfant.B- Faux, Echelle de Vineland évalue les capacités adaptatives (autonomie, communication…), pas le QI.C- Faux, Sert au dépistage du TDAH, pas à l’évaluation intellectuelleD- Faux, Test d’inhibition et de fonctions exécutives, pas un test global du fonctionnement intellectuel.La démarche diagnostique de la déficience mentale est multidimensionnelle et nécessite de combiner :L’évaluation standardisée du QI (WISC-IV, WISC-V).L’évaluation des comportements adaptatifs (Vineland).Une interprétation clinique globale, prenant en compte le contexte familial, social et éducatif.Cette démarche permet non seulement de poser un diagnostic précis mais aussi d’orienter les interventions éducatives, sociales et thérapeutiques adaptées aux besoins spécifiques de l’enfant.",
+      "original_id": 54064,
+      "clinical_case": null,
+      "display_title": "Question 4",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(0, 138, 0);\">A- Vrai,</strong> <strong>WISC-IV (Wechsler Intelligence Scale for Children – 4e édition)</strong> et <strong>WISC-V</strong> sont les tests les plus couramment utilisés pour les enfants. Ils permettent d’évaluer plusieurs composantes du fonctionnement cognitif : compréhension verbale, raisonnement perceptif, mémoire de travail, vitesse de traitement, etc.</p><p>Ces tests fournissent un score global, le QI total, ainsi que des indices spécifiques qui permettent de mieux comprendre les forces et les faiblesses cognitives de l’enfant.</p><p><strong style=\"color: rgb(230, 0, 0);\">B- Faux,</strong> Echelle de Vineland évalue les <strong>capacités adaptatives</strong> (autonomie, communication…), pas le QI.</p><p><strong style=\"color: rgb(230, 0, 0);\">C- Faux,</strong> Sert au <strong>dépistage du TDAH</strong>, pas à l’évaluation intellectuelle</p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> Test d’<strong>inhibition</strong> et de fonctions exécutives, pas un test global du fonctionnement intellectuel.</p><p><br></p><p><strong>La démarche diagnostique</strong> de la déficience mentale est multidimensionnelle et nécessite de combiner :</p><ul><li>L’évaluation standardisée du QI (WISC-IV, WISC-V).</li><li>L’évaluation des comportements adaptatifs (Vineland).</li><li>Une interprétation clinique globale, prenant en compte le contexte familial, social et éducatif.</li></ul><p>Cette démarche permet non seulement de poser un diagnostic précis mais aussi d’orienter les interventions éducatives, sociales et thérapeutiques adaptées aux besoins spécifiques de l’enfant.</p>"
+    },
+    {
+      "id": 5,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252787,
+          "text": "1.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252788,
+          "text": "1.3.4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252789,
+          "text": "1.2.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252790,
+          "text": "2.3.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252791,
+          "text": "1.2.3.4",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - La déficience mentale",
+        "series": "Mystidia Exams"
+      },
+      "question": "Parmi les étiologies prénatales de la déficience intellectuelle, on trouve (association juste) ?\n1- Le syndrome de l'X fragile\n2- La phénylcétonurie\n3- L'hypothyroïdie\n4- Grande prématurité",
+      "has_media": true,
+      "statement": "Parmi les étiologies prénatales de la déficience intellectuelle, on trouve (association juste) ?\n1- Le syndrome de l'X fragile\n2- La phénylcétonurie\n3- L'hypothyroïdie\n4- Grande prématurité",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Les causes prénatales de déficiences intellectuelle.",
+      "original_id": 51054,
+      "clinical_case": null,
+      "display_title": "Question 5",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1725129804.0267.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p>Les causes prénatales de déficiences intellectuelle.</p>"
+    },
+    {
+      "id": 6,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252782,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252783,
+          "text": "1.3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 253151,
+          "text": "1.3.4",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 253152,
+          "text": "2.3.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 253153,
+          "text": "3.4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - La déficience mentale",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans la déficience intellectuelle :\n1- Un niveau d'aide limité correspond à une sévérité moyenne\n2- Le QI est le seul moyen d'évaluation du fonctionnement intellectuel\n3- Le fonctionnement adaptatif est atteint\n4- Le fonctionnement intellectuel est atteint",
+      "has_media": false,
+      "statement": "Dans la déficience intellectuelle :\n1- Un niveau d'aide limité correspond à une sévérité moyenne\n2- Le QI est le seul moyen d'évaluation du fonctionnement intellectuel\n3- Le fonctionnement adaptatif est atteint\n4- Le fonctionnement intellectuel est atteint",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": " Les différents niveaux sont définis sur la base du fonctionnement adaptatif. Le niveau d’assistance requis (dans les domaines conceptuel, social et pratique) est classée comme suit :▪ Intermittente : assistance occasionnelle nécessaire.▪ Limitée : assistance comme un programme ponctuel dans un atelier protégé.▪ Importante : assistance permanente quotidienne.▪ Permanente : haut degré d’assistance dans le cadre de toutes les activités de la vie quotidienne.->  Ainsi on aura 3 niveau de sévérité du Handicap intellectuel: Léger, Moyen, Grave et Profond",
+      "original_id": 51053,
+      "clinical_case": null,
+      "display_title": "Question 6",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p> Les différents niveaux sont définis sur la base du fonctionnement adaptatif. Le niveau d’assistance requis (dans les domaines conceptuel, social et pratique) est classée comme suit :</p><p>▪ Intermittente : assistance occasionnelle nécessaire.</p><p>▪ <strong style=\"background-color: rgb(255, 235, 204);\">Limitée </strong>: assistance comme un programme ponctuel dans un atelier protégé.</p><p>▪ Importante : assistance permanente quotidienne.</p><p>▪ Permanente : haut degré d’assistance dans le cadre de toutes les activités de la vie quotidienne.</p><p>-&gt;  Ainsi on aura 3 niveau de sévérité du Handicap intellectuel: Léger, <strong style=\"background-color: rgb(255, 235, 204);\">Moyen</strong>, Grave et Profond</p>"
+    },
+    {
+      "id": 7,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220869,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220870,
+          "text": "1.3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220871,
+          "text": "1.2.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220872,
+          "text": "1.3.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220873,
+          "text": "2.3.4",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - La déficience mentale",
+        "series": "Mystidia Exams"
+      },
+      "question": "la déficience intellectuelle est caractérisée par l'une des associations suivantes, laquelle ?\n1- Le QI est le seul moyen d'évaluation du fonctionnement intellectuel.\n2- Un niveau d'aide limité correspond à une sévérité moyenne,\n3- Le fonctionnement adaptatif est atteint.\n4- Le fonctionnement intellectuel est atteint",
+      "has_media": false,
+      "statement": "la déficience intellectuelle est caractérisée par l'une des associations suivantes, laquelle ?\n1- Le QI est le seul moyen d'évaluation du fonctionnement intellectuel.\n2- Un niveau d'aide limité correspond à une sévérité moyenne,\n3- Le fonctionnement adaptatif est atteint.\n4- Le fonctionnement intellectuel est atteint",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44898,
+      "clinical_case": null,
+      "display_title": "Question 7",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 8,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220934,
+          "text": "1.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220935,
+          "text": "1.3.4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220936,
+          "text": "1.2.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220937,
+          "text": "2.3.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220938,
+          "text": "1.2.3.4",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - La déficience mentale",
+        "series": "Mystidia Exams"
+      },
+      "question": "Parmi les étiologies prénatales de la Déficience intellectuelle on trouve ?\n1- Le syndrome de l'X fragile.\n2- La phénylcétonurie.\n3- L'hypothyroïdie.\n4- La grande prématurité",
+      "has_media": false,
+      "statement": "Parmi les étiologies prénatales de la Déficience intellectuelle on trouve ?\n1- Le syndrome de l'X fragile.\n2- La phénylcétonurie.\n3- L'hypothyroïdie.\n4- La grande prématurité",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44911,
+      "clinical_case": null,
+      "display_title": "Question 8",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": "9.1",
+      "case_id": 9,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220879,
+          "text": "1.4",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220880,
+          "text": "2.3",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 220881,
+          "text": "1.2.3",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220882,
+          "text": "2.3.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220883,
+          "text": "2.3.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - La déficience mentale",
+        "series": "Mystidia Exams"
+      },
+      "question": "Cochez l’association juste concernantles domaines du fonctionnement qui sont alertés chez cet enfant :\n1. La communication non verbale.\n2. Les apprentissagesscolaires\n3. L'apprentissage par expérience\n4. L'autonomie\n5. Toutes ses réponses sont justes",
+      "has_media": false,
+      "statement": "Cochez l’association juste concernantles domaines du fonctionnement qui sont alertés chez cet enfant :\n1. La communication non verbale.\n2. Les apprentissagesscolaires\n3. L'apprentissage par expérience\n4. L'autonomie\n5. Toutes ses réponses sont justes",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44900,
+      "clinical_case": "Vous recevez en consultation le jeune Salim âgé de 7ans accompagné de ses deux parents. L'enfant est scolarisé en 2e année primaire et présente des difficultés dans les apprentissages scolaires. Les parents vous informent qu'il a parlé tard et qu’il trouve toujours une difficulté à raconter une histoire. Salimne sait pas jouer avec les autres enfants de son âge et il ne connait pas la valeur de la monnaie et ne sait pas\r\nfaire des petits achats. Durant l’examen vous objectivez un contact familier et un jeu immature.\r\nL’enfant dit avoir l’âge de 5ans.Ilsaitcompter jusqu’à 10, il reconnait quelques lettres mais ne sait pas lire les mots et ne sait pas écrire son prénom.",
+      "display_title": "Question 9 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "9.2",
+      "case_id": 9,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220884,
+          "text": "Trouble du spectre de l’autisme",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220885,
+          "text": "Dyscalculie",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220886,
+          "text": "Dyslexie",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220887,
+          "text": "Retard global du développement",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220888,
+          "text": "Handicap intellectuel",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - La déficience mentale",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est le diagnostic le plus probable?\n",
+      "has_media": false,
+      "statement": "Quel est le diagnostic le plus probable?\n",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44901,
+      "clinical_case": "Vous recevez en consultation le jeune Salim âgé de 7ans accompagné de ses deux parents. L'enfant est scolarisé en 2e année primaire et présente des difficultés dans les apprentissages scolaires. Les parents vous informent qu'il a parlé tard et qu’il trouve toujours une difficulté à raconter une histoire. Salimne sait pas jouer avec les autres enfants de son âge et il ne connait pas la valeur de la monnaie et ne sait pas\r\nfaire des petits achats. Durant l’examen vous objectivez un contact familier et un jeu immature.\r\nL’enfant dit avoir l’âge de 5ans.Ilsaitcompter jusqu’à 10, il reconnait quelques lettres mais ne sait pas lire les mots et ne sait pas écrire son prénom.",
+      "display_title": "Question 9 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "9.3",
+      "case_id": 9,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220889,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220890,
+          "text": "1.3.4",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 220891,
+          "text": "2.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220892,
+          "text": "1.2.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220893,
+          "text": "4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - La déficience mentale",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelsera votre conduiteà tenir ? cochez l’association juste :\n1. Rechercher l’étiologie du trouble.\n2. Prescrire un traitement médical.\n3. Annoncer le diagnostic\n4. Evaluer la sévérité\n5. Toutes ses réponses sont justes",
+      "has_media": false,
+      "statement": "Quelsera votre conduiteà tenir ? cochez l’association juste :\n1. Rechercher l’étiologie du trouble.\n2. Prescrire un traitement médical.\n3. Annoncer le diagnostic\n4. Evaluer la sévérité\n5. Toutes ses réponses sont justes",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44902,
+      "clinical_case": "Vous recevez en consultation le jeune Salim âgé de 7ans accompagné de ses deux parents. L'enfant est scolarisé en 2e année primaire et présente des difficultés dans les apprentissages scolaires. Les parents vous informent qu'il a parlé tard et qu’il trouve toujours une difficulté à raconter une histoire. Salimne sait pas jouer avec les autres enfants de son âge et il ne connait pas la valeur de la monnaie et ne sait pas\r\nfaire des petits achats. Durant l’examen vous objectivez un contact familier et un jeu immature.\r\nL’enfant dit avoir l’âge de 5ans.Ilsaitcompter jusqu’à 10, il reconnait quelques lettres mais ne sait pas lire les mots et ne sait pas écrire son prénom.",
+      "display_title": "Question 9 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "9.4",
+      "case_id": 9,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220894,
+          "text": "1.3",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 220895,
+          "text": "1.4.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220896,
+          "text": "2.3",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220897,
+          "text": "2.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220898,
+          "text": "4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - La déficience mentale",
+        "series": "Mystidia Exams"
+      },
+      "question": "Cochez l’association juste concernant l’évaluation de la sévérité du trouble :\n1. En fonction du Quotient intellectuel (IQ)\n2. Selon le fonctionnement adaptatif\n3. En 4 niveaux\n4. En 3 niveaux\n5. Selon la communication sociale\n",
+      "has_media": false,
+      "statement": "Cochez l’association juste concernant l’évaluation de la sévérité du trouble :\n1. En fonction du Quotient intellectuel (IQ)\n2. Selon le fonctionnement adaptatif\n3. En 4 niveaux\n4. En 3 niveaux\n5. Selon la communication sociale\n",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44903,
+      "clinical_case": "Vous recevez en consultation le jeune Salim âgé de 7ans accompagné de ses deux parents. L'enfant est scolarisé en 2e année primaire et présente des difficultés dans les apprentissages scolaires. Les parents vous informent qu'il a parlé tard et qu’il trouve toujours une difficulté à raconter une histoire. Salimne sait pas jouer avec les autres enfants de son âge et il ne connait pas la valeur de la monnaie et ne sait pas\r\nfaire des petits achats. Durant l’examen vous objectivez un contact familier et un jeu immature.\r\nL’enfant dit avoir l’âge de 5ans.Ilsaitcompter jusqu’à 10, il reconnait quelques lettres mais ne sait pas lire les mots et ne sait pas écrire son prénom.",
+      "display_title": "Question 9 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "9.5",
+      "case_id": 9,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220899,
+          "text": "1.2.4",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220900,
+          "text": "1.2.4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220901,
+          "text": "1.2.3",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220902,
+          "text": "2.4.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220903,
+          "text": "3.4.5",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - La déficience mentale",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans le cadre de la prise en charge de la pathologie vous recommandez les mesures suivantes, cochez l’association juste :\n1. I'ESDM (Early start denver model).\n2. Leprogramme TEACCH\n3. Rechercher et traiter les comorbidités.\n4. Une prise en charge éducative.\n5. Une prise en charge sociale ",
+      "has_media": false,
+      "statement": "Dans le cadre de la prise en charge de la pathologie vous recommandez les mesures suivantes, cochez l’association juste :\n1. I'ESDM (Early start denver model).\n2. Leprogramme TEACCH\n3. Rechercher et traiter les comorbidités.\n4. Une prise en charge éducative.\n5. Une prise en charge sociale ",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44904,
+      "clinical_case": "Vous recevez en consultation le jeune Salim âgé de 7ans accompagné de ses deux parents. L'enfant est scolarisé en 2e année primaire et présente des difficultés dans les apprentissages scolaires. Les parents vous informent qu'il a parlé tard et qu’il trouve toujours une difficulté à raconter une histoire. Salimne sait pas jouer avec les autres enfants de son âge et il ne connait pas la valeur de la monnaie et ne sait pas\r\nfaire des petits achats. Durant l’examen vous objectivez un contact familier et un jeu immature.\r\nL’enfant dit avoir l’âge de 5ans.Ilsaitcompter jusqu’à 10, il reconnait quelques lettres mais ne sait pas lire les mots et ne sait pas écrire son prénom.",
+      "display_title": "Question 9 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": 10,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220595,
+          "text": "1-4-5",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220596,
+          "text": "1-3-5",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 220597,
+          "text": "2-3-4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220598,
+          "text": "1-2-5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220599,
+          "text": "3-4-5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - La déficience mentale",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des associations suivantes définit la déficience intellectuelle légère, laquelle ?\n\n1 Qui peut avoir comme étiologie une convulsion fébrile\n2 Qui peut avoir comme étiologie une démence\n3 Qui se répercute sur la vie sociale et scolaire de l'individu\n4 Quotient intellectuel est inférieur à 50\n5 Insertion sociale et professionnelle est possible",
+      "has_media": false,
+      "statement": "L'une des associations suivantes définit la déficience intellectuelle légère, laquelle ?\n\n1 Qui peut avoir comme étiologie une convulsion fébrile\n2 Qui peut avoir comme étiologie une démence\n3 Qui se répercute sur la vie sociale et scolaire de l'individu\n4 Quotient intellectuel est inférieur à 50\n5 Insertion sociale et professionnelle est possible",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44843,
+      "clinical_case": null,
+      "display_title": "Question 10",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 11,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220600,
+          "text": "1-2-5",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220601,
+          "text": "1-4-5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220602,
+          "text": "2-3-4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220603,
+          "text": "2-4-5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220604,
+          "text": "3-4-5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - La déficience mentale",
+        "series": "Mystidia Exams"
+      },
+      "question": "La démarche de prise en charge d'un handicap intellectuel est basée essentiellement sur l'une des associations suivantes laquelle ?\n\n1 Chimiothérapie\n2 Programmes éducatif et psychologique\n3 Hospitalière\n4 Nécessitant l'intervention d'une équipe pluridisciplinaire\n5 Implication de la famille est primordiale",
+      "has_media": false,
+      "statement": "La démarche de prise en charge d'un handicap intellectuel est basée essentiellement sur l'une des associations suivantes laquelle ?\n\n1 Chimiothérapie\n2 Programmes éducatif et psychologique\n3 Hospitalière\n4 Nécessitant l'intervention d'une équipe pluridisciplinaire\n5 Implication de la famille est primordiale",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44844,
+      "clinical_case": null,
+      "display_title": "Question 11",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    }
+  ]
+}

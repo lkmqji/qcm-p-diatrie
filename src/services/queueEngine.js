@@ -1,7 +1,17 @@
 // Spaced Repetition Queue Engine with Dynamic Penalty & Mastery Thresholds
+import { resolveStorageKey } from './storageScope.js';
 
-const STORAGE_KEY = 'pedia_drill_state_v1';
-const REASONING_KEY = 'pedia_drill_reasoning_notes_v1';
+function getStorageKey() {
+  return typeof resolveStorageKey === 'function' ? resolveStorageKey('drill_state') : 'pedia_drill_state_v1';
+}
+
+function getReasoningKey() {
+  return typeof resolveStorageKey === 'function' ? resolveStorageKey('reasoning_notes') : 'pedia_drill_reasoning_notes_v1';
+}
+
+function getTodayTrackerKey() {
+  return typeof resolveStorageKey === 'function' ? resolveStorageKey('today_tracker') : 'pedia_today_tracker';
+}
 
 /**
  * Strips redundant static question data (questionText, options, clinicalCase, explanation)
@@ -108,7 +118,7 @@ export class QueueEngine {
   loadState() {
     try {
       this.sanitizeReasoningNotesStorage();
-      const saved = localStorage.getItem(STORAGE_KEY);
+      const saved = localStorage.getItem(getStorageKey());
       if (saved) {
         const parsed = JSON.parse(saved);
         this.stats = parsed.stats || {};
@@ -138,7 +148,7 @@ export class QueueEngine {
    */
   sanitizeReasoningNotesStorage() {
     try {
-      const raw = localStorage.getItem(REASONING_KEY);
+      const raw = localStorage.getItem(getReasoningKey());
       if (!raw) return;
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
@@ -146,7 +156,7 @@ export class QueueEngine {
         if (hasBloated) {
           console.log(`[Storage] Optimizing ${parsed.length} reasoning notes to lean format...`);
           const slimmed = parsed.map(n => slimNote(n));
-          localStorage.setItem(REASONING_KEY, JSON.stringify(slimmed));
+          localStorage.setItem(getReasoningKey(), JSON.stringify(slimmed));
         }
       }
     } catch (e) {
@@ -167,7 +177,7 @@ export class QueueEngine {
         snoozedQuestions: this.snoozedQuestions || {},
         lastUpdated: Date.now()
       };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      localStorage.setItem(getStorageKey(), JSON.stringify(data));
     } catch (err) {
       console.warn("Failed to save state:", err);
     }
@@ -524,7 +534,7 @@ export class QueueEngine {
       const existing = this.getRawReasoningNotes();
       const slimmed = slimNote(noteData);
       const updated = [slimmed, ...existing.filter(n => n.questionUid !== noteData.questionUid || n.id !== noteData.id)];
-      localStorage.setItem(REASONING_KEY, JSON.stringify(updated.slice(0, 500))); // Keep up to 500 notes
+      localStorage.setItem(getReasoningKey(), JSON.stringify(updated.slice(0, 500))); // Keep up to 500 notes
     } catch (err) {
       console.warn("Failed to save reasoning note:", err);
     }
@@ -532,7 +542,7 @@ export class QueueEngine {
 
   getRawReasoningNotes() {
     try {
-      const raw = localStorage.getItem(REASONING_KEY);
+      const raw = localStorage.getItem(getReasoningKey());
       if (!raw) return [];
       const parsed = JSON.parse(raw);
       return Array.isArray(parsed) ? parsed : [];
@@ -554,7 +564,7 @@ export class QueueEngine {
   deleteReasoningNote(id) {
     try {
       const notes = this.getRawReasoningNotes().filter(n => n.id !== id);
-      localStorage.setItem(REASONING_KEY, JSON.stringify(notes));
+      localStorage.setItem(getReasoningKey(), JSON.stringify(notes));
     } catch {}
   }
 
@@ -562,7 +572,7 @@ export class QueueEngine {
     if (!questionUid) return;
     try {
       const notes = this.getRawReasoningNotes().filter(n => n.questionUid !== questionUid);
-      localStorage.setItem(REASONING_KEY, JSON.stringify(notes));
+      localStorage.setItem(getReasoningKey(), JSON.stringify(notes));
     } catch {}
   }
 
@@ -583,7 +593,7 @@ export class QueueEngine {
   getTodayTracker() {
     const todayStr = new Date().toISOString().slice(0, 10);
     try {
-      const raw = localStorage.getItem('pedia_today_tracker');
+      const raw = localStorage.getItem(getTodayTrackerKey());
       if (raw) {
         const parsed = JSON.parse(raw);
         if (parsed.dateStr === todayStr) {
@@ -593,7 +603,7 @@ export class QueueEngine {
     } catch {}
     const fresh = { dateStr: todayStr, count: 0 };
     try {
-      localStorage.setItem('pedia_today_tracker', JSON.stringify(fresh));
+      localStorage.setItem(getTodayTrackerKey(), JSON.stringify(fresh));
     } catch {}
     return fresh;
   }
@@ -602,9 +612,28 @@ export class QueueEngine {
     const tracker = this.getTodayTracker();
     tracker.count = (tracker.count || 0) + 1;
     try {
-      localStorage.setItem('pedia_today_tracker', JSON.stringify(tracker));
+      localStorage.setItem(getTodayTrackerKey(), JSON.stringify(tracker));
     } catch {}
     return tracker.count;
+  }
+
+  /**
+   * Switch active module dataset and reinitialize queue/stats
+   */
+  switchModule(newQuestions, newChapters) {
+    this.saveState();
+    this.allQuestions = newQuestions || [];
+    this.chapters = newChapters || [];
+    this.questionsMap = getQuestionsMap(this.allQuestions);
+    this._cachedMetrics = null;
+    this.stats = {};
+    this.queue = [];
+    this.cursor = 0;
+    this.totalMistakesCount = 0;
+    this.selectedChapterIds = [];
+    this.snoozedQuestions = {};
+    this.loadState();
+    this.initSession(this.selectedChapterIds);
   }
 
   /**
@@ -661,13 +690,13 @@ export class QueueEngine {
       }
       if (Array.isArray(merged.reasoningNotes)) {
         const slimmed = merged.reasoningNotes.map(n => slimNote(n));
-        localStorage.setItem(REASONING_KEY, JSON.stringify(slimmed.slice(0, 500)));
+        localStorage.setItem(getReasoningKey(), JSON.stringify(slimmed.slice(0, 500)));
       }
       if (merged.todayTracker && typeof merged.todayTracker === 'object') {
         const currentTracker = this.getTodayTracker();
         if (merged.todayTracker.dateStr === currentTracker.dateStr) {
           currentTracker.count = Math.max(currentTracker.count, merged.todayTracker.count || 0);
-          localStorage.setItem('pedia_today_tracker', JSON.stringify(currentTracker));
+          localStorage.setItem(getTodayTrackerKey(), JSON.stringify(currentTracker));
         }
       }
       this.saveState();

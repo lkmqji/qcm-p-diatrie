@@ -1,8 +1,15 @@
 // Study Progress & Analytics Tracking Service for PédiaDrill
 // Manages daily study history, intelligent sessions, precise question timers, streaks, first-pass discovery tracking, and analytics.
+import { resolveStorageKey } from './storageScope.js';
 
-export const STUDY_HISTORY_KEY = 'pedia_study_history_v1';
-export const FIRST_PASS_KEY = 'pedia_first_pass_records_v2';
+function getStudyHistoryKey() {
+  return typeof resolveStorageKey === 'function' ? resolveStorageKey('study_history') : 'pedia_study_history_v1';
+}
+
+function getFirstPassKey() {
+  return typeof resolveStorageKey === 'function' ? resolveStorageKey('first_pass_records') : 'pedia_first_pass_records_v2';
+}
+
 export const INACTIVITY_THRESHOLD_MS = 2 * 60 * 1000; // 2 minutes: pause timer
 export const SESSION_GAP_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes: new session
 export const MAX_QUESTION_TIME_CAP_SEC = 180; // 3 minutes cap per question to prevent outlier skew
@@ -19,10 +26,21 @@ export class StudyTracker {
     this.lastActionTimestamp = Date.now();
   }
 
+  reloadForModule() {
+    this.history = this.loadHistory();
+    this.firstPassRecords = this.loadFirstPassRecords();
+    this.currentQuestionStartTime = null;
+    this.accumulatedQuestionTimeMs = 0;
+    this.isTimerPaused = false;
+    this.lastPauseTimestamp = null;
+    this.activeSessionStarted = false;
+    this.lastActionTimestamp = Date.now();
+  }
+
   loadHistory() {
     try {
       if (typeof localStorage === 'undefined') return {};
-      const raw = localStorage.getItem(STUDY_HISTORY_KEY);
+      const raw = localStorage.getItem(getStudyHistoryKey());
       if (!raw) return {};
       const parsed = JSON.parse(raw);
       return (parsed && typeof parsed === 'object') ? parsed : {};
@@ -35,7 +53,7 @@ export class StudyTracker {
   saveHistory() {
     try {
       if (typeof localStorage === 'undefined') return;
-      localStorage.setItem(STUDY_HISTORY_KEY, JSON.stringify(this.history));
+      localStorage.setItem(getStudyHistoryKey(), JSON.stringify(this.history));
     } catch (e) {
       console.warn("Failed to save study history:", e);
     }
@@ -45,10 +63,10 @@ export class StudyTracker {
     try {
       if (typeof localStorage === 'undefined') return {};
       // Purge legacy biased v1 store if migrating to v2
-      if (localStorage.getItem('pedia_first_pass_records_v1') && !localStorage.getItem(FIRST_PASS_KEY)) {
+      if (localStorage.getItem('pedia_first_pass_records_v1') && !localStorage.getItem(getFirstPassKey())) {
         localStorage.removeItem('pedia_first_pass_records_v1');
       }
-      const raw = localStorage.getItem(FIRST_PASS_KEY);
+      const raw = localStorage.getItem(getFirstPassKey());
       if (!raw) return {};
       const parsed = JSON.parse(raw);
       return (parsed && typeof parsed === 'object') ? parsed : {};
@@ -61,7 +79,7 @@ export class StudyTracker {
   saveFirstPassRecords() {
     try {
       if (typeof localStorage === 'undefined') return;
-      localStorage.setItem(FIRST_PASS_KEY, JSON.stringify(this.firstPassRecords));
+      localStorage.setItem(getFirstPassKey(), JSON.stringify(this.firstPassRecords));
     } catch (e) {
       console.warn("Failed to save first-pass records:", e);
     }

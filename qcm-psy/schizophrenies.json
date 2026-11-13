@@ -1,0 +1,3504 @@
+{
+  "version": "2.0",
+  "exported_at": "2026-11-13T09:30:28.311Z",
+  "app": "Mystidia Cursus Medical Explorer",
+  "course": {
+    "title": "Schizophrénies",
+    "module": "Psychiatrie",
+    "year": "5ème Année (DFASM2)",
+    "session_id": "session_1792186939317_bq24ylk",
+    "questions_count": 60
+  },
+  "questions": [
+    {
+      "id": 1,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 318284,
+          "text": "Hallucinations auditives.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 318285,
+          "text": "Émoussement affectif.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 318286,
+          "text": "Déficit de la mémoire de travail.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 318287,
+          "text": "Idées délirantes de grandeur.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 318288,
+          "text": "Anhédonie.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Concernant les symptômes cognitifs de la schizophrenie, laquelle des propositions suivantes est correcte ?",
+      "has_media": true,
+      "statement": "Concernant les symptômes cognitifs de la schizophrenie, laquelle des propositions suivantes est correcte ?",
+      "sub_index": null,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792186939317_bq24ylk/session_1792186939317_bq24ylk_q_0_1792186966418_img_0.webp"
+      ],
+      "croq_answer": null,
+      "explanation": "A.Faux, font parties des symptômes positifs de la schizophrénie.B.Faux,  Il s'agit d'une réduction de l'expression des émotions et fait  partie des symptômes négatifs.D.Faux, symptômes positif majeur de la schizophrènie.E.Faux, c’est l’incapacité à ressentir du plaisir et fait partie des symptômes négatifs.Rappel :Dans le cadre de la schizophrénie les symptômes cognitifs se manifestant principalement par un déficit de la mémoire de travail,une altération des fonctions exécutives (difficultés de planification et de résolution de problèmes) et des troubles de l'attention. ",
+      "original_id": 65151,
+      "clinical_case": null,
+      "display_title": "Question 1",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">A.Faux,</strong> font parties des symptômes positifs de la schizophrénie.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">B.Faux, </strong> Il s'agit d'une réduction de l'expression des émotions et fait  partie des symptômes négatifs.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">D.Faux, </strong>symptômes positif majeur de la schizophrènie.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux, </strong>c’est l’incapacité à ressentir du plaisir et fait partie des symptômes négatifs.</p><p><br></p><p><strong style=\"color: rgb(153, 51, 255);\">Rappel :</strong></p><p>Dans le cadre de la schizophrénie les symptômes cognitifs se manifestant principalement par un déficit de la mémoire de travail,une altération des fonctions exécutives (difficultés de planification et de résolution de problèmes) et des troubles de l'attention.&nbsp;</p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792186939317_bq24ylk/session_1792186939317_bq24ylk_q_0_1792186966418_img_0.webp\"></p>"
+    },
+    {
+      "id": 2,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 318279,
+          "text": "Avolition.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 318280,
+          "text": "Anhédonie.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 318281,
+          "text": "Émoussement affectif.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 318282,
+          "text": "Hallucinations auditives.",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 318283,
+          "text": "Retrait social.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "les symptômes positifs de la schizophrénie, laquelle des propositions suivantes correcte?",
+      "has_media": true,
+      "statement": "les symptômes positifs de la schizophrénie, laquelle des propositions suivantes correcte?",
+      "sub_index": null,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792186939317_bq24ylk/session_1792186939317_bq24ylk_q_1_1792186966418_img_0.jpg"
+      ],
+      "croq_answer": null,
+      "explanation": "Rappel sur les symptômes positifs :Dans le cadre de la schizophrénie les symptômes positifs (ou productifs) désignent des manifestations qui s'ajoutent au fonctionnement psychique normal, marquant souvent une rupture avec la réalité. Ils regroupent principalement les idées délirantes (comme le délire de persécution ou de grandeur) et les hallucinations, qu'elles soient auditives, visuelles ou sensorielles. Ces symptômes représentent une production mentale inhabituelle, contrairement aux symptômes négatifs qui correspondent à un retrait ou à un appauvrissement des fonctions. ",
+      "original_id": 65150,
+      "clinical_case": null,
+      "display_title": "Question 2",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(153, 51, 255);\">Rappel sur les symptômes positifs :</strong></p><p><br></p><p>Dans le cadre de la schizophrénie les symptômes positifs (ou productifs) désignent des manifestations qui s'ajoutent au fonctionnement psychique normal, marquant souvent une rupture avec la réalité. </p><p>Ils regroupent principalement <strong>les idées délirantes</strong> (comme le délire de persécution ou de grandeur) et<strong> les hallucinations</strong>, qu'elles soient auditives, visuelles ou sensorielles. </p><p>Ces symptômes représentent une production mentale inhabituelle, contrairement aux symptômes négatifs qui correspondent à un retrait ou à un appauvrissement des fonctions.&nbsp;</p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792186939317_bq24ylk/session_1792186939317_bq24ylk_q_1_1792186966418_img_0.jpg\"></p>"
+    },
+    {
+      "id": 3,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 318274,
+          "text": "1 + 2 + 3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 318275,
+          "text": "1 + 4 + 5",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 318276,
+          "text": "2 + 3 + 4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 318277,
+          "text": "2 + 4 + 5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 318278,
+          "text": "3 + 4 + 5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quels symptômes appartiennent au registre des manifestations cliniques déficitaires de\nla schizophrénie?\n1. Affects émoussés.\n2. Hallucinations auditives.\n3. Délire mystique.\n4. Apragmatisme.\n5. diminution de l'expression verbale.",
+      "has_media": true,
+      "statement": "Quels symptômes appartiennent au registre des manifestations cliniques déficitaires de\nla schizophrénie?\n1. Affects émoussés.\n2. Hallucinations auditives.\n3. Délire mystique.\n4. Apragmatisme.\n5. diminution de l'expression verbale.",
+      "sub_index": null,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792186939317_bq24ylk/session_1792186939317_bq24ylk_q_2_1792186966418_img_0.webp"
+      ],
+      "croq_answer": null,
+      "explanation": "B.Faux, les hallucinations auditives font partie des symptômes positifs.C.Faux, Le délire mystique fait partie des symptômes positifs.Rappel sur les manifestations déficitaires (symptômes négatifs) de la schizo :• Emoussement des affects : athymormie, froideur du contact, amimie, regard figé,indifférence affective, anesthésie affective• Avolition : Il s’agit d’une diminution de la capacité à mettre en œuvre et maintenirune activité nécessitant un engagement dans l’action.• Apragmatisme : perte de la volonté d’agir• Aboulie : perte d’agir• Clinophilie : tendance à rester au lit• Alogie : pauvreté du discours• Anhédonie : perte de tout plaisir• Retrait social , repli sur soi ……repli autistique• Négativisme: attitude de raideur, de refus tout contact : fermeture des paupières ,enfouissement dans les draps , refus de la main tendue…Source diapositive 2026.",
+      "original_id": 65149,
+      "clinical_case": null,
+      "display_title": "Question 3",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">B.Faux, </strong>les hallucinations auditives font partie des symptômes positifs.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">C.Faux, </strong>Le délire mystique fait partie des symptômes positifs.</p><p><br></p><p><strong style=\"color: rgb(153, 51, 255);\">Rappel sur les manifestations déficitaires (symptômes négatifs) de la schizo :</strong></p><p><br></p><p><span style=\"color: rgb(214, 128, 165);\">• </span><strong>Emoussement des affects </strong>: athymormie, froideur du contact, amimie, regard figé,</p><p>indifférence affective, anesthésie affective</p><p><span style=\"color: rgb(214, 128, 165);\">• </span><strong>Avolition </strong>: Il s’agit d’une diminution de la capacité à mettre en œuvre et maintenir</p><p>une activité nécessitant un engagement dans l’action.</p><p><span style=\"color: rgb(214, 128, 165);\">• </span><strong>Apragmatisme </strong>: perte de la volonté d’agir</p><p><span style=\"color: rgb(214, 128, 165);\">• </span><strong>Aboulie </strong>: perte d’agir</p><p><span style=\"color: rgb(214, 128, 165);\">• </span><strong>Clinophilie </strong>: tendance à rester au lit</p><p><span style=\"color: rgb(214, 128, 165);\">• </span><strong>Alogie </strong>: pauvreté du discours</p><p><span style=\"color: rgb(214, 128, 165);\">• </span><strong>Anhédonie </strong>: perte de tout plaisir</p><p><span style=\"color: rgb(214, 128, 165);\">• </span><strong>Retrait social </strong>, repli sur soi ……repli autistique</p><p><span style=\"color: rgb(214, 128, 165);\">• </span><strong>Négativisme</strong>: attitude de raideur, de refus tout contact : fermeture des paupières ,</p><p>enfouissement dans les draps , refus de la main tendue…</p><p><br></p><p><strong>Source diapositive 2026.</strong></p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792186939317_bq24ylk/session_1792186939317_bq24ylk_q_2_1792186966418_img_0.webp\"></p>"
+    },
+    {
+      "id": 4,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 315841,
+          "text": "1+2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 315842,
+          "text": "2+4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 315843,
+          "text": "2+5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 315844,
+          "text": "1+3",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 315845,
+          "text": "3+4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Concernant les symptômes négatifs de la schizophrénie, identifier les propositions exactes : \n1. Anhédonie. \n2. Hallucinations auditives. \n3. Émoussement affectif. \n4. Idées délirantes de persécution. \n5. Syndrome d'influence.",
+      "has_media": true,
+      "statement": "Concernant les symptômes négatifs de la schizophrénie, identifier les propositions exactes : \n1. Anhédonie. \n2. Hallucinations auditives. \n3. Émoussement affectif. \n4. Idées délirantes de persécution. \n5. Syndrome d'influence.",
+      "sub_index": null,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792186939317_bq24ylk/session_1792186939317_bq24ylk_q_3_1792186966419_img_0.jpg"
+      ],
+      "croq_answer": null,
+      "explanation": "Rappel: Source : https://mystidia.com/lecture?uId=1F2knPBh8JwtJrjyRtWYXHda5MTw2vlzL",
+      "original_id": 64671,
+      "clinical_case": null,
+      "display_title": "Question 4",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(153, 51, 255);\">Rappel: </strong></p><p><br></p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792186939317_bq24ylk/session_1792186939317_bq24ylk_q_3_1792186966419_img_0.jpg\"></p><p><br></p><p><strong>Source : </strong><a href=\"https://mystidia.com/lecture?uId=1F2knPBh8JwtJrjyRtWYXHda5MTw2vlzL\" rel=\"noopener noreferrer\" target=\"_blank\">https://mystidia.com/lecture?uId=1F2knPBh8JwtJrjyRtWYXHda5MTw2vlzL</a></p>"
+    },
+    {
+      "id": 5,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 315836,
+          "text": "1+2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 315837,
+          "text": "2+4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 315838,
+          "text": "1+3",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 315839,
+          "text": "3+5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 315840,
+          "text": "2+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Concernant les symptômes positifs de la schizophrénie, identifier les propositions exactes : \n1. Hallucinations auditives. \n2. Émoussement affectif. \n3. Idées délirantes. \n4. Avolition. \n5. Syndrome d’influence.",
+      "has_media": true,
+      "statement": "Concernant les symptômes positifs de la schizophrénie, identifier les propositions exactes : \n1. Hallucinations auditives. \n2. Émoussement affectif. \n3. Idées délirantes. \n4. Avolition. \n5. Syndrome d’influence.",
+      "sub_index": null,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792186939317_bq24ylk/session_1792186939317_bq24ylk_q_4_1792186966419_img_0.jpg"
+      ],
+      "croq_answer": null,
+      "explanation": "Rappel sur les symptômes positifs :Source : https://mystidia.com/lecture?uId=1F2knPBh8JwtJrjyRtWYXHda5MTw2vlzL",
+      "original_id": 64670,
+      "clinical_case": null,
+      "display_title": "Question 5",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(153, 51, 255);\">Rappel sur les symptômes positifs :</strong></p><p><br></p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792186939317_bq24ylk/session_1792186939317_bq24ylk_q_4_1792186966419_img_0.jpg\"></p><p><strong>Source : </strong><a href=\"https://mystidia.com/lecture?uId=1F2knPBh8JwtJrjyRtWYXHda5MTw2vlzL\" rel=\"noopener noreferrer\" target=\"_blank\">https://mystidia.com/lecture?uId=1F2knPBh8JwtJrjyRtWYXHda5MTw2vlzL</a></p>"
+    },
+    {
+      "id": 6,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266232,
+          "text": "Sentiment d'étrangeté vis-à-vis de l'environnement",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266233,
+          "text": "Sentiment d'étrangeté vis-à-vis de son propre visage",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 266234,
+          "text": "Sentiment d'étrangeté vis-à-vis de son propre corps",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266235,
+          "text": "Sentiment pénible à être coupé en morceaux",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266236,
+          "text": "Sentiment d'étrangeté vis-à-vis de sa psyché",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le signe de miroir correspond à un :",
+      "has_media": false,
+      "statement": "Le signe de miroir correspond à un :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Le signe de miroir correspond à un symptôme délirant d'identification, typique de certaines psychoses chroniques (souvent schizophrénie ou troubles délirants).Le signe de miroir désigne le délire selon lequel le patient croit que son image dans le miroir n'est pas la sienne, mais celle d’un double, d’une autre personne, ou encore d’un être qui l’observe ou le contrôle.",
+      "original_id": 54152,
+      "clinical_case": null,
+      "display_title": "Question 6",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>Le <strong>signe de miroir</strong> correspond à un <strong>symptôme délirant d'identification</strong>, typique de certaines <strong>psychoses chroniques</strong> (souvent schizophrénie ou troubles délirants).</p><p>Le <strong>signe de miroir</strong> désigne le <strong>délire selon lequel le patient croit que son image dans le miroir n'est pas la sienne</strong>, mais celle <strong>d’un double</strong>, <strong>d’une autre personne</strong>, ou encore <strong>d’un être qui l’observe ou le contrôle</strong>.</p>"
+    },
+    {
+      "id": 7,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266227,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266228,
+          "text": "1.3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 266229,
+          "text": "2.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266230,
+          "text": "2.5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 266231,
+          "text": "4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le grand automatisme mental est caractérisé par:\n1- Devinement de la pensée\n2- Paroles imposées\n3- Actes commentés\n4- Pensées imposées\n5- Actes imposés",
+      "has_media": false,
+      "statement": "Le grand automatisme mental est caractérisé par:\n1- Devinement de la pensée\n2- Paroles imposées\n3- Actes commentés\n4- Pensées imposées\n5- Actes imposés",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Le grand automatisme mental est un syndrome délirant d’influence, vécu comme une atteinte à l’intimité psychique. Il est typique des formes graves de schizophrénie.On distingue deux types de syndrome d’automatisme mental :A. L’Automatisme mental mineur :comprend des hallucinations intrapsychiques qui s’imposent à la conscience du patient: le vol et le devinement de la pensée par autrui, les commentaires de la pensée et des actes,les échos de la pensée (les pensées sont répétées à haute voix).Le patient a le sentiment que ses pensées lui sont imposées de l’extérieur (coercition).B. L’Automatisme mental majeur :- Actes imposés : à l’origine des passages à l’acte auto –agressif ( tentative de suicide, automutilations ) ou hétéro-agressif- Paroles imposées",
+      "original_id": 54151,
+      "clinical_case": null,
+      "display_title": "Question 7",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>Le grand automatisme mental est un <strong>syndrome délirant d’influence</strong>, vécu comme une atteinte à l’intimité psychique. Il est typique des <strong>formes graves de schizophrénie</strong>.</p><p><br></p><p>On distingue deux types de syndrome d’automatisme mental :</p><p><strong><u>A. L’Automatisme mental mineur :</u></strong></p><p>comprend des hallucinations intrapsychiques qui s’imposent à la conscience du patient:</p><ul><li> le vol et le devinement de la pensée par autrui,</li><li> les commentaires de la pensée et des actes,</li><li>les échos de la pensée (les pensées sont répétées à haute voix).</li></ul><p>Le patient a le sentiment que ses pensées lui sont imposées de l’extérieur (coercition).</p><p><strong><u>B. L’Automatisme mental majeur :</u></strong></p><p>- Actes imposés : à l’origine des passages à l’acte auto –agressif ( tentative de suicide, automutilations ) ou hétéro-agressif</p><p>- Paroles imposées</p>"
+    },
+    {
+      "id": "8.1",
+      "case_id": 8,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252707,
+          "text": "Persécution",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252708,
+          "text": "Mystique",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252709,
+          "text": "Grandeur",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252710,
+          "text": "Hypochondriaque",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252711,
+          "text": "Filiation",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans l'observation, les thématiques du délire (RF):",
+      "has_media": true,
+      "statement": "Dans l'observation, les thématiques du délire (RF):",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "QST 1  : E- Faux, délire de filiation = Conviction pathologique du patient d'appartenir à une haute descendance. QST 2  : D- Faux, L'influence est un type de délire et non pas d'hallucination, ''une force a pris le contrôle de moi''.QST 3  : D- Faux, Maniérisme fait partie des signes désorganisés. QST 4 : B- Vrai, Angoisse de morcellement et de dépersonnalisation : le patient se sent morcelé, sentiment pénible d’étre coupé en mille morceaux qui peut entrainer des tentatives de suicide, ou suicide réussi.-> la moitié de mon corps traine par terre, il réplique en nous avec disant je dois mettre fin à ça, la mort est ma seule issue, laisser moi partir, je dois mourir, les voix du diable me le demandent. QST 9 : B- Vrai, Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. ",
+      "original_id": 51038,
+      "clinical_case": "Mr Ahmed, âgé de 32 ans, originaire et demeurant à Alger, célibataire, sans profession, admis à notre niveau à la demande de sa famille pour des troubles du comportement à type d'instabilité psychomotrice, crise de clasticité et hétéro-agressivité verbale. \r\nSelon les propos de la famille, le début des troubles semble remonté à l'âge de 24 ans, où le patient commençait à s'isoler, il s'est éloigné de son cercle d'amis et ne parlait à personne car dit-il : « mes amis sont manipulés par des gens qui les remontent contre moi ». Il insultait les gens qui marchaient dehors car il pensait qu'ils parlaient de lui, et se disputait avec sa famille et les insultait à son tour. \r\nL'examen mental, nous met en face d'un patient de taille et de corpulence moyenne, sa tenue corporo-vestimentaire est correcte, Le contact est superficiel, sa mimique est inexpressive et la thymie est émoussée. Le discours est incohérent, le patient rapporte que le complot est évident « Ma famille s'acharnait sur moi, elle me voulait du mal », «Mes amis se sont éloignés de moi parce qu'il y a quelqu'un qui les monte contre moi », Il rapporte aussi : « j'avais un problème neurologique, un problème urologique, et actuellement un aﬀaiblissement et une maigreur anormales, ces symptômes sont apparus suite à un traitement injectable que j'ai reçu il y quelques jours sous les ordres de personnes qui me veulent du mal» car ils me savent l'élu de dieu, je suis destiné à une prophétie grandiose, je vais faire régner le calme et la sérénité dans le monde. \r\nIl rapporte également « j'entends des voix de femmes qui m'insultent et qui m'ordonnent de devenir mécréant », le diable veut me posséder, il apparait devant moi dans mes moments de communion avec Dieu. \r\nll bouge sans cesse en moi, la moitié de mon corps traine par terre, il réplique en nous avec disant je dois mettre fin à ça, la mort est ma seule issue, laisser moi partir, je dois mourir, les voix du diable me le demandent.",
+      "display_title": "Question 8 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1725184632.7661.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p><strong><u>QST 1  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">E- Faux,</strong> délire de filiation = Conviction pathologique du patient d'appartenir à une haute descendance. </p><p><br></p><p><strong><u>QST 2  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> L'influence est un type de délire et non pas d'hallucination, ''une force a pris le contrôle de moi''.</p><p><br></p><p><strong><u>QST 3  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> Maniérisme fait partie des signes désorganisés. </p><p><br></p><p><strong><u>QST 4 : </u></strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> Angoisse de morcellement et de dépersonnalisation : le patient se sent morcelé, sentiment pénible d’étre coupé en mille morceaux qui peut entrainer des tentatives de suicide, ou suicide réussi.</p><p>-&gt; <strong><u>la moitié de mon corps traine par terre</u></strong>, il réplique en nous avec disant je dois mettre fin à ça, <strong><u>la mort est ma seule issue</u></strong>, laisser moi partir, <strong><u>je dois mourir</u></strong>, les voix du diable me le demandent.&nbsp;</p><p><br></p><p><strong><u>QST 9 : </u></strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. </p>"
+    },
+    {
+      "id": "8.2",
+      "case_id": 8,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252712,
+          "text": "Acoustico-verbales",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252713,
+          "text": "Automatisme mental à type de commandement d'acte",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252714,
+          "text": "Visuelles",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252715,
+          "text": "D'influence",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 252716,
+          "text": "Cénesthésiques ",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans l'observation, les hallucinations sont (RF):",
+      "has_media": true,
+      "statement": "Dans l'observation, les hallucinations sont (RF):",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "QST 1  : E- Faux, délire de filiation = Conviction pathologique du patient d'appartenir à une haute descendance. QST 2  : D- Faux, L'influence est un type de délire et non pas d'hallucination, ''une force a pris le contrôle de moi''.QST 3  : D- Faux, Maniérisme fait partie des signes désorganisés. QST 4 : B- Vrai, Angoisse de morcellement et de dépersonnalisation : le patient se sent morcelé, sentiment pénible d’étre coupé en mille morceaux qui peut entrainer des tentatives de suicide, ou suicide réussi.-> la moitié de mon corps traine par terre, il réplique en nous avec disant je dois mettre fin à ça, la mort est ma seule issue, laisser moi partir, je dois mourir, les voix du diable me le demandent. QST 9 : B- Vrai, Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. ",
+      "original_id": 51039,
+      "clinical_case": "Mr Ahmed, âgé de 32 ans, originaire et demeurant à Alger, célibataire, sans profession, admis à notre niveau à la demande de sa famille pour des troubles du comportement à type d'instabilité psychomotrice, crise de clasticité et hétéro-agressivité verbale. \r\nSelon les propos de la famille, le début des troubles semble remonté à l'âge de 24 ans, où le patient commençait à s'isoler, il s'est éloigné de son cercle d'amis et ne parlait à personne car dit-il : « mes amis sont manipulés par des gens qui les remontent contre moi ». Il insultait les gens qui marchaient dehors car il pensait qu'ils parlaient de lui, et se disputait avec sa famille et les insultait à son tour. \r\nL'examen mental, nous met en face d'un patient de taille et de corpulence moyenne, sa tenue corporo-vestimentaire est correcte, Le contact est superficiel, sa mimique est inexpressive et la thymie est émoussée. Le discours est incohérent, le patient rapporte que le complot est évident « Ma famille s'acharnait sur moi, elle me voulait du mal », «Mes amis se sont éloignés de moi parce qu'il y a quelqu'un qui les monte contre moi », Il rapporte aussi : « j'avais un problème neurologique, un problème urologique, et actuellement un aﬀaiblissement et une maigreur anormales, ces symptômes sont apparus suite à un traitement injectable que j'ai reçu il y quelques jours sous les ordres de personnes qui me veulent du mal» car ils me savent l'élu de dieu, je suis destiné à une prophétie grandiose, je vais faire régner le calme et la sérénité dans le monde. \r\nIl rapporte également « j'entends des voix de femmes qui m'insultent et qui m'ordonnent de devenir mécréant », le diable veut me posséder, il apparait devant moi dans mes moments de communion avec Dieu. \r\nll bouge sans cesse en moi, la moitié de mon corps traine par terre, il réplique en nous avec disant je dois mettre fin à ça, la mort est ma seule issue, laisser moi partir, je dois mourir, les voix du diable me le demandent.",
+      "display_title": "Question 8 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1725184632.7661.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p><strong><u>QST 1  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">E- Faux,</strong> délire de filiation = Conviction pathologique du patient d'appartenir à une haute descendance. </p><p><br></p><p><strong><u>QST 2  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> L'influence est un type de délire et non pas d'hallucination, ''une force a pris le contrôle de moi''.</p><p><br></p><p><strong><u>QST 3  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> Maniérisme fait partie des signes désorganisés. </p><p><br></p><p><strong><u>QST 4 : </u></strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> Angoisse de morcellement et de dépersonnalisation : le patient se sent morcelé, sentiment pénible d’étre coupé en mille morceaux qui peut entrainer des tentatives de suicide, ou suicide réussi.</p><p>-&gt; <strong><u>la moitié de mon corps traine par terre</u></strong>, il réplique en nous avec disant je dois mettre fin à ça, <strong><u>la mort est ma seule issue</u></strong>, laisser moi partir, <strong><u>je dois mourir</u></strong>, les voix du diable me le demandent.&nbsp;</p><p><br></p><p><strong><u>QST 9 : </u></strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. </p>"
+    },
+    {
+      "id": "8.3",
+      "case_id": 8,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252717,
+          "text": "Alogie",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252718,
+          "text": "Schizoïdie évolutive",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252719,
+          "text": "Avolition",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252720,
+          "text": "Maniérisme",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 252721,
+          "text": "Négativisme",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les signes négatifs de la schizophrénie sont (RF): ",
+      "has_media": true,
+      "statement": "Les signes négatifs de la schizophrénie sont (RF): ",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "QST 1  : E- Faux, délire de filiation = Conviction pathologique du patient d'appartenir à une haute descendance. QST 2  : D- Faux, L'influence est un type de délire et non pas d'hallucination, ''une force a pris le contrôle de moi''.QST 3  : D- Faux, Maniérisme fait partie des signes désorganisés. QST 4 : B- Vrai, Angoisse de morcellement et de dépersonnalisation : le patient se sent morcelé, sentiment pénible d’étre coupé en mille morceaux qui peut entrainer des tentatives de suicide, ou suicide réussi.-> la moitié de mon corps traine par terre, il réplique en nous avec disant je dois mettre fin à ça, la mort est ma seule issue, laisser moi partir, je dois mourir, les voix du diable me le demandent. QST 9 : B- Vrai, Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. ",
+      "original_id": 51040,
+      "clinical_case": "Mr Ahmed, âgé de 32 ans, originaire et demeurant à Alger, célibataire, sans profession, admis à notre niveau à la demande de sa famille pour des troubles du comportement à type d'instabilité psychomotrice, crise de clasticité et hétéro-agressivité verbale. \r\nSelon les propos de la famille, le début des troubles semble remonté à l'âge de 24 ans, où le patient commençait à s'isoler, il s'est éloigné de son cercle d'amis et ne parlait à personne car dit-il : « mes amis sont manipulés par des gens qui les remontent contre moi ». Il insultait les gens qui marchaient dehors car il pensait qu'ils parlaient de lui, et se disputait avec sa famille et les insultait à son tour. \r\nL'examen mental, nous met en face d'un patient de taille et de corpulence moyenne, sa tenue corporo-vestimentaire est correcte, Le contact est superficiel, sa mimique est inexpressive et la thymie est émoussée. Le discours est incohérent, le patient rapporte que le complot est évident « Ma famille s'acharnait sur moi, elle me voulait du mal », «Mes amis se sont éloignés de moi parce qu'il y a quelqu'un qui les monte contre moi », Il rapporte aussi : « j'avais un problème neurologique, un problème urologique, et actuellement un aﬀaiblissement et une maigreur anormales, ces symptômes sont apparus suite à un traitement injectable que j'ai reçu il y quelques jours sous les ordres de personnes qui me veulent du mal» car ils me savent l'élu de dieu, je suis destiné à une prophétie grandiose, je vais faire régner le calme et la sérénité dans le monde. \r\nIl rapporte également « j'entends des voix de femmes qui m'insultent et qui m'ordonnent de devenir mécréant », le diable veut me posséder, il apparait devant moi dans mes moments de communion avec Dieu. \r\nll bouge sans cesse en moi, la moitié de mon corps traine par terre, il réplique en nous avec disant je dois mettre fin à ça, la mort est ma seule issue, laisser moi partir, je dois mourir, les voix du diable me le demandent.",
+      "display_title": "Question 8 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1725184632.7661.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p><strong><u>QST 1  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">E- Faux,</strong> délire de filiation = Conviction pathologique du patient d'appartenir à une haute descendance. </p><p><br></p><p><strong><u>QST 2  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> L'influence est un type de délire et non pas d'hallucination, ''une force a pris le contrôle de moi''.</p><p><br></p><p><strong><u>QST 3  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> Maniérisme fait partie des signes désorganisés. </p><p><br></p><p><strong><u>QST 4 : </u></strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> Angoisse de morcellement et de dépersonnalisation : le patient se sent morcelé, sentiment pénible d’étre coupé en mille morceaux qui peut entrainer des tentatives de suicide, ou suicide réussi.</p><p>-&gt; <strong><u>la moitié de mon corps traine par terre</u></strong>, il réplique en nous avec disant je dois mettre fin à ça, <strong><u>la mort est ma seule issue</u></strong>, laisser moi partir, <strong><u>je dois mourir</u></strong>, les voix du diable me le demandent.&nbsp;</p><p><br></p><p><strong><u>QST 9 : </u></strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. </p>"
+    },
+    {
+      "id": "8.4",
+      "case_id": 8,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252722,
+          "text": "Des plaintes hypochondriaques ",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252723,
+          "text": "L'angoisse de morcellement ",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 252724,
+          "text": "Le signe du miroir",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252725,
+          "text": "La déréalisation",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252726,
+          "text": "Cénesthésique",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans l'observation, la dépersonnalisation (RJ):",
+      "has_media": true,
+      "statement": "Dans l'observation, la dépersonnalisation (RJ):",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "QST 1  : E- Faux, délire de filiation = Conviction pathologique du patient d'appartenir à une haute descendance. QST 2  : D- Faux, L'influence est un type de délire et non pas d'hallucination, ''une force a pris le contrôle de moi''.QST 3  : D- Faux, Maniérisme fait partie des signes désorganisés. QST 4 : B- Vrai, Angoisse de morcellement et de dépersonnalisation : le patient se sent morcelé, sentiment pénible d’étre coupé en mille morceaux qui peut entrainer des tentatives de suicide, ou suicide réussi.-> la moitié de mon corps traine par terre, il réplique en nous avec disant je dois mettre fin à ça, la mort est ma seule issue, laisser moi partir, je dois mourir, les voix du diable me le demandent. QST 9 : B- Vrai, Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. ",
+      "original_id": 51041,
+      "clinical_case": "Mr Ahmed, âgé de 32 ans, originaire et demeurant à Alger, célibataire, sans profession, admis à notre niveau à la demande de sa famille pour des troubles du comportement à type d'instabilité psychomotrice, crise de clasticité et hétéro-agressivité verbale. \r\nSelon les propos de la famille, le début des troubles semble remonté à l'âge de 24 ans, où le patient commençait à s'isoler, il s'est éloigné de son cercle d'amis et ne parlait à personne car dit-il : « mes amis sont manipulés par des gens qui les remontent contre moi ». Il insultait les gens qui marchaient dehors car il pensait qu'ils parlaient de lui, et se disputait avec sa famille et les insultait à son tour. \r\nL'examen mental, nous met en face d'un patient de taille et de corpulence moyenne, sa tenue corporo-vestimentaire est correcte, Le contact est superficiel, sa mimique est inexpressive et la thymie est émoussée. Le discours est incohérent, le patient rapporte que le complot est évident « Ma famille s'acharnait sur moi, elle me voulait du mal », «Mes amis se sont éloignés de moi parce qu'il y a quelqu'un qui les monte contre moi », Il rapporte aussi : « j'avais un problème neurologique, un problème urologique, et actuellement un aﬀaiblissement et une maigreur anormales, ces symptômes sont apparus suite à un traitement injectable que j'ai reçu il y quelques jours sous les ordres de personnes qui me veulent du mal» car ils me savent l'élu de dieu, je suis destiné à une prophétie grandiose, je vais faire régner le calme et la sérénité dans le monde. \r\nIl rapporte également « j'entends des voix de femmes qui m'insultent et qui m'ordonnent de devenir mécréant », le diable veut me posséder, il apparait devant moi dans mes moments de communion avec Dieu. \r\nll bouge sans cesse en moi, la moitié de mon corps traine par terre, il réplique en nous avec disant je dois mettre fin à ça, la mort est ma seule issue, laisser moi partir, je dois mourir, les voix du diable me le demandent.",
+      "display_title": "Question 8 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1725184632.7661.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p><strong><u>QST 1  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">E- Faux,</strong> délire de filiation = Conviction pathologique du patient d'appartenir à une haute descendance. </p><p><br></p><p><strong><u>QST 2  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> L'influence est un type de délire et non pas d'hallucination, ''une force a pris le contrôle de moi''.</p><p><br></p><p><strong><u>QST 3  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> Maniérisme fait partie des signes désorganisés. </p><p><br></p><p><strong><u>QST 4 : </u></strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> Angoisse de morcellement et de dépersonnalisation : le patient se sent morcelé, sentiment pénible d’étre coupé en mille morceaux qui peut entrainer des tentatives de suicide, ou suicide réussi.</p><p>-&gt; <strong><u>la moitié de mon corps traine par terre</u></strong>, il réplique en nous avec disant je dois mettre fin à ça, <strong><u>la mort est ma seule issue</u></strong>, laisser moi partir, <strong><u>je dois mourir</u></strong>, les voix du diable me le demandent.&nbsp;</p><p><br></p><p><strong><u>QST 9 : </u></strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. </p>"
+    },
+    {
+      "id": "8.5",
+      "case_id": 8,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252727,
+          "text": "Trouble de l'humeur avec caractéristiques psychotiques",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252728,
+          "text": "Délire hypochondriaque",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252729,
+          "text": "Dépression mélancolique",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252730,
+          "text": "Schizophrénie",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 252731,
+          "text": "Un trouble délirant",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le diagnostic posé est celui (RJ):",
+      "has_media": true,
+      "statement": "Le diagnostic posé est celui (RJ):",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "QST 1  : E- Faux, délire de filiation = Conviction pathologique du patient d'appartenir à une haute descendance. QST 2  : D- Faux, L'influence est un type de délire et non pas d'hallucination, ''une force a pris le contrôle de moi''.QST 3  : D- Faux, Maniérisme fait partie des signes désorganisés. QST 4 : B- Vrai, Angoisse de morcellement et de dépersonnalisation : le patient se sent morcelé, sentiment pénible d’étre coupé en mille morceaux qui peut entrainer des tentatives de suicide, ou suicide réussi.-> la moitié de mon corps traine par terre, il réplique en nous avec disant je dois mettre fin à ça, la mort est ma seule issue, laisser moi partir, je dois mourir, les voix du diable me le demandent. QST 9 : B- Vrai, Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. ",
+      "original_id": 51042,
+      "clinical_case": "Mr Ahmed, âgé de 32 ans, originaire et demeurant à Alger, célibataire, sans profession, admis à notre niveau à la demande de sa famille pour des troubles du comportement à type d'instabilité psychomotrice, crise de clasticité et hétéro-agressivité verbale. \r\nSelon les propos de la famille, le début des troubles semble remonté à l'âge de 24 ans, où le patient commençait à s'isoler, il s'est éloigné de son cercle d'amis et ne parlait à personne car dit-il : « mes amis sont manipulés par des gens qui les remontent contre moi ». Il insultait les gens qui marchaient dehors car il pensait qu'ils parlaient de lui, et se disputait avec sa famille et les insultait à son tour. \r\nL'examen mental, nous met en face d'un patient de taille et de corpulence moyenne, sa tenue corporo-vestimentaire est correcte, Le contact est superficiel, sa mimique est inexpressive et la thymie est émoussée. Le discours est incohérent, le patient rapporte que le complot est évident « Ma famille s'acharnait sur moi, elle me voulait du mal », «Mes amis se sont éloignés de moi parce qu'il y a quelqu'un qui les monte contre moi », Il rapporte aussi : « j'avais un problème neurologique, un problème urologique, et actuellement un aﬀaiblissement et une maigreur anormales, ces symptômes sont apparus suite à un traitement injectable que j'ai reçu il y quelques jours sous les ordres de personnes qui me veulent du mal» car ils me savent l'élu de dieu, je suis destiné à une prophétie grandiose, je vais faire régner le calme et la sérénité dans le monde. \r\nIl rapporte également « j'entends des voix de femmes qui m'insultent et qui m'ordonnent de devenir mécréant », le diable veut me posséder, il apparait devant moi dans mes moments de communion avec Dieu. \r\nll bouge sans cesse en moi, la moitié de mon corps traine par terre, il réplique en nous avec disant je dois mettre fin à ça, la mort est ma seule issue, laisser moi partir, je dois mourir, les voix du diable me le demandent.",
+      "display_title": "Question 8 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1725184632.7661.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p><strong><u>QST 1  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">E- Faux,</strong> délire de filiation = Conviction pathologique du patient d'appartenir à une haute descendance. </p><p><br></p><p><strong><u>QST 2  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> L'influence est un type de délire et non pas d'hallucination, ''une force a pris le contrôle de moi''.</p><p><br></p><p><strong><u>QST 3  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> Maniérisme fait partie des signes désorganisés. </p><p><br></p><p><strong><u>QST 4 : </u></strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> Angoisse de morcellement et de dépersonnalisation : le patient se sent morcelé, sentiment pénible d’étre coupé en mille morceaux qui peut entrainer des tentatives de suicide, ou suicide réussi.</p><p>-&gt; <strong><u>la moitié de mon corps traine par terre</u></strong>, il réplique en nous avec disant je dois mettre fin à ça, <strong><u>la mort est ma seule issue</u></strong>, laisser moi partir, <strong><u>je dois mourir</u></strong>, les voix du diable me le demandent.&nbsp;</p><p><br></p><p><strong><u>QST 9 : </u></strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. </p>"
+    },
+    {
+      "id": "8.6",
+      "case_id": 8,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252732,
+          "text": "Délire polymorphe non structuré",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252733,
+          "text": "Hallucinations",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252734,
+          "text": "Délire systématisé",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 252735,
+          "text": "Désorganisation du comportement ",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252736,
+          "text": "Signes négatifs",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Sur la base de quels critères avez-vous, posé le diagnostic (RF):",
+      "has_media": true,
+      "statement": "Sur la base de quels critères avez-vous, posé le diagnostic (RF):",
+      "sub_index": 6,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "QST 1  : E- Faux, délire de filiation = Conviction pathologique du patient d'appartenir à une haute descendance. QST 2  : D- Faux, L'influence est un type de délire et non pas d'hallucination, ''une force a pris le contrôle de moi''.QST 3  : D- Faux, Maniérisme fait partie des signes désorganisés. QST 4 : B- Vrai, Angoisse de morcellement et de dépersonnalisation : le patient se sent morcelé, sentiment pénible d’étre coupé en mille morceaux qui peut entrainer des tentatives de suicide, ou suicide réussi.-> la moitié de mon corps traine par terre, il réplique en nous avec disant je dois mettre fin à ça, la mort est ma seule issue, laisser moi partir, je dois mourir, les voix du diable me le demandent. QST 9 : B- Vrai, Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. ",
+      "original_id": 51043,
+      "clinical_case": "Mr Ahmed, âgé de 32 ans, originaire et demeurant à Alger, célibataire, sans profession, admis à notre niveau à la demande de sa famille pour des troubles du comportement à type d'instabilité psychomotrice, crise de clasticité et hétéro-agressivité verbale. \r\nSelon les propos de la famille, le début des troubles semble remonté à l'âge de 24 ans, où le patient commençait à s'isoler, il s'est éloigné de son cercle d'amis et ne parlait à personne car dit-il : « mes amis sont manipulés par des gens qui les remontent contre moi ». Il insultait les gens qui marchaient dehors car il pensait qu'ils parlaient de lui, et se disputait avec sa famille et les insultait à son tour. \r\nL'examen mental, nous met en face d'un patient de taille et de corpulence moyenne, sa tenue corporo-vestimentaire est correcte, Le contact est superficiel, sa mimique est inexpressive et la thymie est émoussée. Le discours est incohérent, le patient rapporte que le complot est évident « Ma famille s'acharnait sur moi, elle me voulait du mal », «Mes amis se sont éloignés de moi parce qu'il y a quelqu'un qui les monte contre moi », Il rapporte aussi : « j'avais un problème neurologique, un problème urologique, et actuellement un aﬀaiblissement et une maigreur anormales, ces symptômes sont apparus suite à un traitement injectable que j'ai reçu il y quelques jours sous les ordres de personnes qui me veulent du mal» car ils me savent l'élu de dieu, je suis destiné à une prophétie grandiose, je vais faire régner le calme et la sérénité dans le monde. \r\nIl rapporte également « j'entends des voix de femmes qui m'insultent et qui m'ordonnent de devenir mécréant », le diable veut me posséder, il apparait devant moi dans mes moments de communion avec Dieu. \r\nll bouge sans cesse en moi, la moitié de mon corps traine par terre, il réplique en nous avec disant je dois mettre fin à ça, la mort est ma seule issue, laisser moi partir, je dois mourir, les voix du diable me le demandent.",
+      "display_title": "Question 8 - Question 6",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1725184632.7661.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p><strong><u>QST 1  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">E- Faux,</strong> délire de filiation = Conviction pathologique du patient d'appartenir à une haute descendance. </p><p><br></p><p><strong><u>QST 2  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> L'influence est un type de délire et non pas d'hallucination, ''une force a pris le contrôle de moi''.</p><p><br></p><p><strong><u>QST 3  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> Maniérisme fait partie des signes désorganisés. </p><p><br></p><p><strong><u>QST 4 : </u></strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> Angoisse de morcellement et de dépersonnalisation : le patient se sent morcelé, sentiment pénible d’étre coupé en mille morceaux qui peut entrainer des tentatives de suicide, ou suicide réussi.</p><p>-&gt; <strong><u>la moitié de mon corps traine par terre</u></strong>, il réplique en nous avec disant je dois mettre fin à ça, <strong><u>la mort est ma seule issue</u></strong>, laisser moi partir, <strong><u>je dois mourir</u></strong>, les voix du diable me le demandent.&nbsp;</p><p><br></p><p><strong><u>QST 9 : </u></strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. </p>"
+    },
+    {
+      "id": "8.7",
+      "case_id": 8,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252737,
+          "text": "Stabiliser le patient",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252738,
+          "text": "Éviter les rechutes",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252739,
+          "text": "Assurer une bonne observance du traitement",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252740,
+          "text": "Assurer une bonne intégration sociale",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252741,
+          "text": "Obtenir une guérison totale du trouble",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les objectifs de votre prise en charge (RF): ",
+      "has_media": true,
+      "statement": "Les objectifs de votre prise en charge (RF): ",
+      "sub_index": 7,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "QST 1  : E- Faux, délire de filiation = Conviction pathologique du patient d'appartenir à une haute descendance. QST 2  : D- Faux, L'influence est un type de délire et non pas d'hallucination, ''une force a pris le contrôle de moi''.QST 3  : D- Faux, Maniérisme fait partie des signes désorganisés. QST 4 : B- Vrai, Angoisse de morcellement et de dépersonnalisation : le patient se sent morcelé, sentiment pénible d’étre coupé en mille morceaux qui peut entrainer des tentatives de suicide, ou suicide réussi.-> la moitié de mon corps traine par terre, il réplique en nous avec disant je dois mettre fin à ça, la mort est ma seule issue, laisser moi partir, je dois mourir, les voix du diable me le demandent. QST 9 : B- Vrai, Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. ",
+      "original_id": 51044,
+      "clinical_case": "Mr Ahmed, âgé de 32 ans, originaire et demeurant à Alger, célibataire, sans profession, admis à notre niveau à la demande de sa famille pour des troubles du comportement à type d'instabilité psychomotrice, crise de clasticité et hétéro-agressivité verbale. \r\nSelon les propos de la famille, le début des troubles semble remonté à l'âge de 24 ans, où le patient commençait à s'isoler, il s'est éloigné de son cercle d'amis et ne parlait à personne car dit-il : « mes amis sont manipulés par des gens qui les remontent contre moi ». Il insultait les gens qui marchaient dehors car il pensait qu'ils parlaient de lui, et se disputait avec sa famille et les insultait à son tour. \r\nL'examen mental, nous met en face d'un patient de taille et de corpulence moyenne, sa tenue corporo-vestimentaire est correcte, Le contact est superficiel, sa mimique est inexpressive et la thymie est émoussée. Le discours est incohérent, le patient rapporte que le complot est évident « Ma famille s'acharnait sur moi, elle me voulait du mal », «Mes amis se sont éloignés de moi parce qu'il y a quelqu'un qui les monte contre moi », Il rapporte aussi : « j'avais un problème neurologique, un problème urologique, et actuellement un aﬀaiblissement et une maigreur anormales, ces symptômes sont apparus suite à un traitement injectable que j'ai reçu il y quelques jours sous les ordres de personnes qui me veulent du mal» car ils me savent l'élu de dieu, je suis destiné à une prophétie grandiose, je vais faire régner le calme et la sérénité dans le monde. \r\nIl rapporte également « j'entends des voix de femmes qui m'insultent et qui m'ordonnent de devenir mécréant », le diable veut me posséder, il apparait devant moi dans mes moments de communion avec Dieu. \r\nll bouge sans cesse en moi, la moitié de mon corps traine par terre, il réplique en nous avec disant je dois mettre fin à ça, la mort est ma seule issue, laisser moi partir, je dois mourir, les voix du diable me le demandent.",
+      "display_title": "Question 8 - Question 7",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1725184632.7661.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p><strong><u>QST 1  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">E- Faux,</strong> délire de filiation = Conviction pathologique du patient d'appartenir à une haute descendance. </p><p><br></p><p><strong><u>QST 2  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> L'influence est un type de délire et non pas d'hallucination, ''une force a pris le contrôle de moi''.</p><p><br></p><p><strong><u>QST 3  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> Maniérisme fait partie des signes désorganisés. </p><p><br></p><p><strong><u>QST 4 : </u></strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> Angoisse de morcellement et de dépersonnalisation : le patient se sent morcelé, sentiment pénible d’étre coupé en mille morceaux qui peut entrainer des tentatives de suicide, ou suicide réussi.</p><p>-&gt; <strong><u>la moitié de mon corps traine par terre</u></strong>, il réplique en nous avec disant je dois mettre fin à ça, <strong><u>la mort est ma seule issue</u></strong>, laisser moi partir, <strong><u>je dois mourir</u></strong>, les voix du diable me le demandent.&nbsp;</p><p><br></p><p><strong><u>QST 9 : </u></strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. </p>"
+    },
+    {
+      "id": "8.8",
+      "case_id": 8,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252742,
+          "text": "Hospitalisation",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252743,
+          "text": "L'électro convulsivothérapie systématique",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 252744,
+          "text": "Le traitement pharmacologique",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252745,
+          "text": "Abord psychothérapique",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252746,
+          "text": "Abord social",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "La prise en charge repose sur (RF):",
+      "has_media": true,
+      "statement": "La prise en charge repose sur (RF):",
+      "sub_index": 8,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "QST 1  : E- Faux, délire de filiation = Conviction pathologique du patient d'appartenir à une haute descendance. QST 2  : D- Faux, L'influence est un type de délire et non pas d'hallucination, ''une force a pris le contrôle de moi''.QST 3  : D- Faux, Maniérisme fait partie des signes désorganisés. QST 4 : B- Vrai, Angoisse de morcellement et de dépersonnalisation : le patient se sent morcelé, sentiment pénible d’étre coupé en mille morceaux qui peut entrainer des tentatives de suicide, ou suicide réussi.-> la moitié de mon corps traine par terre, il réplique en nous avec disant je dois mettre fin à ça, la mort est ma seule issue, laisser moi partir, je dois mourir, les voix du diable me le demandent. QST 9 : B- Vrai, Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. ",
+      "original_id": 51045,
+      "clinical_case": "Mr Ahmed, âgé de 32 ans, originaire et demeurant à Alger, célibataire, sans profession, admis à notre niveau à la demande de sa famille pour des troubles du comportement à type d'instabilité psychomotrice, crise de clasticité et hétéro-agressivité verbale. \r\nSelon les propos de la famille, le début des troubles semble remonté à l'âge de 24 ans, où le patient commençait à s'isoler, il s'est éloigné de son cercle d'amis et ne parlait à personne car dit-il : « mes amis sont manipulés par des gens qui les remontent contre moi ». Il insultait les gens qui marchaient dehors car il pensait qu'ils parlaient de lui, et se disputait avec sa famille et les insultait à son tour. \r\nL'examen mental, nous met en face d'un patient de taille et de corpulence moyenne, sa tenue corporo-vestimentaire est correcte, Le contact est superficiel, sa mimique est inexpressive et la thymie est émoussée. Le discours est incohérent, le patient rapporte que le complot est évident « Ma famille s'acharnait sur moi, elle me voulait du mal », «Mes amis se sont éloignés de moi parce qu'il y a quelqu'un qui les monte contre moi », Il rapporte aussi : « j'avais un problème neurologique, un problème urologique, et actuellement un aﬀaiblissement et une maigreur anormales, ces symptômes sont apparus suite à un traitement injectable que j'ai reçu il y quelques jours sous les ordres de personnes qui me veulent du mal» car ils me savent l'élu de dieu, je suis destiné à une prophétie grandiose, je vais faire régner le calme et la sérénité dans le monde. \r\nIl rapporte également « j'entends des voix de femmes qui m'insultent et qui m'ordonnent de devenir mécréant », le diable veut me posséder, il apparait devant moi dans mes moments de communion avec Dieu. \r\nll bouge sans cesse en moi, la moitié de mon corps traine par terre, il réplique en nous avec disant je dois mettre fin à ça, la mort est ma seule issue, laisser moi partir, je dois mourir, les voix du diable me le demandent.",
+      "display_title": "Question 8 - Question 8",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1725184632.7661.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p><strong><u>QST 1  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">E- Faux,</strong> délire de filiation = Conviction pathologique du patient d'appartenir à une haute descendance. </p><p><br></p><p><strong><u>QST 2  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> L'influence est un type de délire et non pas d'hallucination, ''une force a pris le contrôle de moi''.</p><p><br></p><p><strong><u>QST 3  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> Maniérisme fait partie des signes désorganisés. </p><p><br></p><p><strong><u>QST 4 : </u></strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> Angoisse de morcellement et de dépersonnalisation : le patient se sent morcelé, sentiment pénible d’étre coupé en mille morceaux qui peut entrainer des tentatives de suicide, ou suicide réussi.</p><p>-&gt; <strong><u>la moitié de mon corps traine par terre</u></strong>, il réplique en nous avec disant je dois mettre fin à ça, <strong><u>la mort est ma seule issue</u></strong>, laisser moi partir, <strong><u>je dois mourir</u></strong>, les voix du diable me le demandent.&nbsp;</p><p><br></p><p><strong><u>QST 9 : </u></strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. </p>"
+    },
+    {
+      "id": "8.9",
+      "case_id": 8,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252747,
+          "text": "Un Neuroleptique sédatif et anti-déficitaire",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252748,
+          "text": "Un Neuroleptique incisif et sédatif",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 252749,
+          "text": "Les Antidépresseurs et les benzodiazepines",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252750,
+          "text": "Les Thymorégulateurs ",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252751,
+          "text": "Les Benzodiazepines",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le traitement biologique repose sur (RJ)",
+      "has_media": true,
+      "statement": "Le traitement biologique repose sur (RJ)",
+      "sub_index": 9,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "QST 1  : E- Faux, délire de filiation = Conviction pathologique du patient d'appartenir à une haute descendance. QST 2  : D- Faux, L'influence est un type de délire et non pas d'hallucination, ''une force a pris le contrôle de moi''.QST 3  : D- Faux, Maniérisme fait partie des signes désorganisés. QST 4 : B- Vrai, Angoisse de morcellement et de dépersonnalisation : le patient se sent morcelé, sentiment pénible d’étre coupé en mille morceaux qui peut entrainer des tentatives de suicide, ou suicide réussi.-> la moitié de mon corps traine par terre, il réplique en nous avec disant je dois mettre fin à ça, la mort est ma seule issue, laisser moi partir, je dois mourir, les voix du diable me le demandent. QST 9 : B- Vrai, Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. ",
+      "original_id": 51046,
+      "clinical_case": "Mr Ahmed, âgé de 32 ans, originaire et demeurant à Alger, célibataire, sans profession, admis à notre niveau à la demande de sa famille pour des troubles du comportement à type d'instabilité psychomotrice, crise de clasticité et hétéro-agressivité verbale. \r\nSelon les propos de la famille, le début des troubles semble remonté à l'âge de 24 ans, où le patient commençait à s'isoler, il s'est éloigné de son cercle d'amis et ne parlait à personne car dit-il : « mes amis sont manipulés par des gens qui les remontent contre moi ». Il insultait les gens qui marchaient dehors car il pensait qu'ils parlaient de lui, et se disputait avec sa famille et les insultait à son tour. \r\nL'examen mental, nous met en face d'un patient de taille et de corpulence moyenne, sa tenue corporo-vestimentaire est correcte, Le contact est superficiel, sa mimique est inexpressive et la thymie est émoussée. Le discours est incohérent, le patient rapporte que le complot est évident « Ma famille s'acharnait sur moi, elle me voulait du mal », «Mes amis se sont éloignés de moi parce qu'il y a quelqu'un qui les monte contre moi », Il rapporte aussi : « j'avais un problème neurologique, un problème urologique, et actuellement un aﬀaiblissement et une maigreur anormales, ces symptômes sont apparus suite à un traitement injectable que j'ai reçu il y quelques jours sous les ordres de personnes qui me veulent du mal» car ils me savent l'élu de dieu, je suis destiné à une prophétie grandiose, je vais faire régner le calme et la sérénité dans le monde. \r\nIl rapporte également « j'entends des voix de femmes qui m'insultent et qui m'ordonnent de devenir mécréant », le diable veut me posséder, il apparait devant moi dans mes moments de communion avec Dieu. \r\nll bouge sans cesse en moi, la moitié de mon corps traine par terre, il réplique en nous avec disant je dois mettre fin à ça, la mort est ma seule issue, laisser moi partir, je dois mourir, les voix du diable me le demandent.",
+      "display_title": "Question 8 - Question 9",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1725184632.7661.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p><strong><u>QST 1  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">E- Faux,</strong> délire de filiation = Conviction pathologique du patient d'appartenir à une haute descendance. </p><p><br></p><p><strong><u>QST 2  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> L'influence est un type de délire et non pas d'hallucination, ''une force a pris le contrôle de moi''.</p><p><br></p><p><strong><u>QST 3  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> Maniérisme fait partie des signes désorganisés. </p><p><br></p><p><strong><u>QST 4 : </u></strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> Angoisse de morcellement et de dépersonnalisation : le patient se sent morcelé, sentiment pénible d’étre coupé en mille morceaux qui peut entrainer des tentatives de suicide, ou suicide réussi.</p><p>-&gt; <strong><u>la moitié de mon corps traine par terre</u></strong>, il réplique en nous avec disant je dois mettre fin à ça, <strong><u>la mort est ma seule issue</u></strong>, laisser moi partir, <strong><u>je dois mourir</u></strong>, les voix du diable me le demandent.&nbsp;</p><p><br></p><p><strong><u>QST 9 : </u></strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. </p>"
+    },
+    {
+      "id": "8.10",
+      "case_id": 8,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252752,
+          "text": "Comorbidité addictive",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252753,
+          "text": "Mauvaise compliance au traitement",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252754,
+          "text": "Bon Insight",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 252755,
+          "text": "Hérédité psychopathologique chargée",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252756,
+          "text": "Rechutes",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les facteurs de mauvais pronostic sont (RF):",
+      "has_media": true,
+      "statement": "Les facteurs de mauvais pronostic sont (RF):",
+      "sub_index": 10,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "QST 1  : E- Faux, délire de filiation = Conviction pathologique du patient d'appartenir à une haute descendance. QST 2  : D- Faux, L'influence est un type de délire et non pas d'hallucination, ''une force a pris le contrôle de moi''.QST 3  : D- Faux, Maniérisme fait partie des signes désorganisés. QST 4 : B- Vrai, Angoisse de morcellement et de dépersonnalisation : le patient se sent morcelé, sentiment pénible d’étre coupé en mille morceaux qui peut entrainer des tentatives de suicide, ou suicide réussi.-> la moitié de mon corps traine par terre, il réplique en nous avec disant je dois mettre fin à ça, la mort est ma seule issue, laisser moi partir, je dois mourir, les voix du diable me le demandent. QST 9 : B- Vrai, Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. ",
+      "original_id": 51047,
+      "clinical_case": "Mr Ahmed, âgé de 32 ans, originaire et demeurant à Alger, célibataire, sans profession, admis à notre niveau à la demande de sa famille pour des troubles du comportement à type d'instabilité psychomotrice, crise de clasticité et hétéro-agressivité verbale. \r\nSelon les propos de la famille, le début des troubles semble remonté à l'âge de 24 ans, où le patient commençait à s'isoler, il s'est éloigné de son cercle d'amis et ne parlait à personne car dit-il : « mes amis sont manipulés par des gens qui les remontent contre moi ». Il insultait les gens qui marchaient dehors car il pensait qu'ils parlaient de lui, et se disputait avec sa famille et les insultait à son tour. \r\nL'examen mental, nous met en face d'un patient de taille et de corpulence moyenne, sa tenue corporo-vestimentaire est correcte, Le contact est superficiel, sa mimique est inexpressive et la thymie est émoussée. Le discours est incohérent, le patient rapporte que le complot est évident « Ma famille s'acharnait sur moi, elle me voulait du mal », «Mes amis se sont éloignés de moi parce qu'il y a quelqu'un qui les monte contre moi », Il rapporte aussi : « j'avais un problème neurologique, un problème urologique, et actuellement un aﬀaiblissement et une maigreur anormales, ces symptômes sont apparus suite à un traitement injectable que j'ai reçu il y quelques jours sous les ordres de personnes qui me veulent du mal» car ils me savent l'élu de dieu, je suis destiné à une prophétie grandiose, je vais faire régner le calme et la sérénité dans le monde. \r\nIl rapporte également « j'entends des voix de femmes qui m'insultent et qui m'ordonnent de devenir mécréant », le diable veut me posséder, il apparait devant moi dans mes moments de communion avec Dieu. \r\nll bouge sans cesse en moi, la moitié de mon corps traine par terre, il réplique en nous avec disant je dois mettre fin à ça, la mort est ma seule issue, laisser moi partir, je dois mourir, les voix du diable me le demandent.",
+      "display_title": "Question 8 - Question 10",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1725184632.7661.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p><strong><u>QST 1  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">E- Faux,</strong> délire de filiation = Conviction pathologique du patient d'appartenir à une haute descendance. </p><p><br></p><p><strong><u>QST 2  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> L'influence est un type de délire et non pas d'hallucination, ''une force a pris le contrôle de moi''.</p><p><br></p><p><strong><u>QST 3  : </u></strong></p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> Maniérisme fait partie des signes désorganisés. </p><p><br></p><p><strong><u>QST 4 : </u></strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> Angoisse de morcellement et de dépersonnalisation : le patient se sent morcelé, sentiment pénible d’étre coupé en mille morceaux qui peut entrainer des tentatives de suicide, ou suicide réussi.</p><p>-&gt; <strong><u>la moitié de mon corps traine par terre</u></strong>, il réplique en nous avec disant je dois mettre fin à ça, <strong><u>la mort est ma seule issue</u></strong>, laisser moi partir, <strong><u>je dois mourir</u></strong>, les voix du diable me le demandent.&nbsp;</p><p><br></p><p><strong><u>QST 9 : </u></strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. </p>"
+    },
+    {
+      "id": "9.1",
+      "case_id": 9,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229405,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229406,
+          "text": "1.3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229407,
+          "text": "2.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229408,
+          "text": "3.5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 229409,
+          "text": "3.4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quels sont les signes psychiatriques mis en évidence dans cette observation ?\n1. Un délire de ruine\n2. Un syndrome de Cotard\n3. Un syndrome d'influence\n4. Théâtralisme\n5. Un retrait social",
+      "has_media": false,
+      "statement": "Quels sont les signes psychiatriques mis en évidence dans cette observation ?\n1. Un délire de ruine\n2. Un syndrome de Cotard\n3. Un syndrome d'influence\n4. Théâtralisme\n5. Un retrait social",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46558,
+      "clinical_case": "Un jeune de 19 ans, est amené aux urgences par sa famille, pour des troubles du comportement évoluant depuis deux mois, sans antécédents psychiatriques ni organiques notables. Quant aux antécédents familiaux, mère suivie en psychiatrie. Les parents rapporte qu'il ne dort plus, très angoissé, brûle ses habits et a tenté de se poignarder. Le changement du comportement remonte à une année, après son échec au bac. Il a abandonné ses études, refuse de voir ses amis et passe ses journées à dormir et lire des revus d'astrologie. L'entretien révèle une hygiène médiocre, refus de la main tendue et par moment, ce dernier éclate en sanglot. Après la mise en confiance, il dit être possédé par un « Djin » qui l'a vidé de tout son sang et lui a ordonné de se poignarder. Les explorations biologiques et radiologiques Se sont révélées sans anomalies. Le patient refuse l'hospitalisation mais accepte de prendre un traitement pour son insomnie.",
+      "display_title": "Question 9 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "9.2",
+      "case_id": 9,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229410,
+          "text": "Une Schizophrénie",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 229411,
+          "text": "Un état de stress post traumatique",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229412,
+          "text": "Un trouble de l'adaptation avec humeur dépressive",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229413,
+          "text": "Un trouble délirant",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229414,
+          "text": "Une confusion mentale",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est le diagnostic le plus probable ?",
+      "has_media": false,
+      "statement": "Quel est le diagnostic le plus probable ?",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46559,
+      "clinical_case": "Un jeune de 19 ans, est amené aux urgences par sa famille, pour des troubles du comportement évoluant depuis deux mois, sans antécédents psychiatriques ni organiques notables. Quant aux antécédents familiaux, mère suivie en psychiatrie. Les parents rapporte qu'il ne dort plus, très angoissé, brûle ses habits et a tenté de se poignarder. Le changement du comportement remonte à une année, après son échec au bac. Il a abandonné ses études, refuse de voir ses amis et passe ses journées à dormir et lire des revus d'astrologie. L'entretien révèle une hygiène médiocre, refus de la main tendue et par moment, ce dernier éclate en sanglot. Après la mise en confiance, il dit être possédé par un « Djin » qui l'a vidé de tout son sang et lui a ordonné de se poignarder. Les explorations biologiques et radiologiques Se sont révélées sans anomalies. Le patient refuse l'hospitalisation mais accepte de prendre un traitement pour son insomnie.",
+      "display_title": "Question 9 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "9.3",
+      "case_id": 9,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229415,
+          "text": "Le début insidieux",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229416,
+          "text": "Le délire de possession",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 229417,
+          "text": "Début précoce des troubles",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229418,
+          "text": "La longue durée de psychose non traitée",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229419,
+          "text": "La présence d'antécédents psychiatriques chez la mère",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Parmi les éléments de mauvais pronostic chez ce patient, vous retenez toutes ces propositions sauf une, laquelle ?",
+      "has_media": false,
+      "statement": "Parmi les éléments de mauvais pronostic chez ce patient, vous retenez toutes ces propositions sauf une, laquelle ?",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46560,
+      "clinical_case": "Un jeune de 19 ans, est amené aux urgences par sa famille, pour des troubles du comportement évoluant depuis deux mois, sans antécédents psychiatriques ni organiques notables. Quant aux antécédents familiaux, mère suivie en psychiatrie. Les parents rapporte qu'il ne dort plus, très angoissé, brûle ses habits et a tenté de se poignarder. Le changement du comportement remonte à une année, après son échec au bac. Il a abandonné ses études, refuse de voir ses amis et passe ses journées à dormir et lire des revus d'astrologie. L'entretien révèle une hygiène médiocre, refus de la main tendue et par moment, ce dernier éclate en sanglot. Après la mise en confiance, il dit être possédé par un « Djin » qui l'a vidé de tout son sang et lui a ordonné de se poignarder. Les explorations biologiques et radiologiques Se sont révélées sans anomalies. Le patient refuse l'hospitalisation mais accepte de prendre un traitement pour son insomnie.",
+      "display_title": "Question 9 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "9.4",
+      "case_id": 9,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229420,
+          "text": "Prescrire un traitement antidépresseur en ambulatoire",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229421,
+          "text": "Prescrire un traitement neuroleptique en ambulatoire",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229422,
+          "text": "Hospitaliser le patient sans son consentement",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 229423,
+          "text": "Prescrire un traitement anxiolytique par voie intramusculaire",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229424,
+          "text": "Revoir le patient en consultation en vue d'une psychothérapie",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle conduite adoptez-vous en premier aux urgences?",
+      "has_media": false,
+      "statement": "Quelle conduite adoptez-vous en premier aux urgences?",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46561,
+      "clinical_case": "Un jeune de 19 ans, est amené aux urgences par sa famille, pour des troubles du comportement évoluant depuis deux mois, sans antécédents psychiatriques ni organiques notables. Quant aux antécédents familiaux, mère suivie en psychiatrie. Les parents rapporte qu'il ne dort plus, très angoissé, brûle ses habits et a tenté de se poignarder. Le changement du comportement remonte à une année, après son échec au bac. Il a abandonné ses études, refuse de voir ses amis et passe ses journées à dormir et lire des revus d'astrologie. L'entretien révèle une hygiène médiocre, refus de la main tendue et par moment, ce dernier éclate en sanglot. Après la mise en confiance, il dit être possédé par un « Djin » qui l'a vidé de tout son sang et lui a ordonné de se poignarder. Les explorations biologiques et radiologiques Se sont révélées sans anomalies. Le patient refuse l'hospitalisation mais accepte de prendre un traitement pour son insomnie.",
+      "display_title": "Question 9 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": 10,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 221069,
+          "text": "2.3.4",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 221070,
+          "text": "2.4.5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 221071,
+          "text": "1.2.3",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 221072,
+          "text": "1.2.5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 221073,
+          "text": "1.3.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le critère A du diagnostic de la schizophrénie est retenu devant l'une des associations, laquelle ?\n1. En présence d'un discours désorganisé et de symptômes négatifs\n2. En présence d'idées délirantes et de comportement désorganisé\n3. En présence d'un comportement désorganisé\n4. En présence de symptômes négatifs\n5. En présence d'hallucinations et de symptômes négatifs.",
+      "has_media": false,
+      "statement": "Le critère A du diagnostic de la schizophrénie est retenu devant l'une des associations, laquelle ?\n1. En présence d'un discours désorganisé et de symptômes négatifs\n2. En présence d'idées délirantes et de comportement désorganisé\n3. En présence d'un comportement désorganisé\n4. En présence de symptômes négatifs\n5. En présence d'hallucinations et de symptômes négatifs.",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44938,
+      "clinical_case": null,
+      "display_title": "Question 10",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": "11.1",
+      "case_id": 11,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 221109,
+          "text": "1.2.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 221110,
+          "text": "3.4.5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 221111,
+          "text": "1.3.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 221112,
+          "text": "1.2.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 221113,
+          "text": "2.4.5",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quels symptômes retrouvez-vous dans cet énoncé ?\n1. Symptômes dépressif\n2. Symptômes de désorganisation\n3. Symptômes confusionnels\n4. Délire de possession et mystique\n5. Un négativisme",
+      "has_media": false,
+      "statement": "Quels symptômes retrouvez-vous dans cet énoncé ?\n1. Symptômes dépressif\n2. Symptômes de désorganisation\n3. Symptômes confusionnels\n4. Délire de possession et mystique\n5. Un négativisme",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44946,
+      "clinical_case": "Patient A. 21 ans ramené de force aux urgences psychiatriques pour état agitation. Les parents rapportent que son comportement a changé durant les 8 derniers mois. En effet, il parle tout seul et parfois il sourit sans raison, refuse de voir ses amis et passe ses journées à contempler le ciel et lire des revus d'astrologie.\r\nA l'examen : son hygiène est médiocre, il refuse la main tendue et éclate par moment en sanglot. Après quelques minutes de silence, voici un extrait des propos qu'il tient : « je ne comprends pas pourquoi on m'a ramené à l'hôpital »« je suis un prophète, Dieu me parle tous les jours et m'ordonne de libérer la Palestine »\r\n« je vois des ... dans la maison, l'une d'entre eux vie à l'intérieur de moi », il passe d'une idée à autre sans enchainement et des réponses à côté. Il n'a pas d'antécédents médicaux et il ne prend aucun traitement ni de substances psychoactive",
+      "display_title": "Question 11 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "11.2",
+      "case_id": 11,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 221114,
+          "text": "Le trouble bipolaire",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 221115,
+          "text": " Le trouble dépressif caractérise",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 221116,
+          "text": "La Schizophrénie",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 221117,
+          "text": "Le trouble psychotique bref",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 221118,
+          "text": "La phobie sociale",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est le diagnostic que vous évoquez ?",
+      "has_media": false,
+      "statement": "Quel est le diagnostic que vous évoquez ?",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44947,
+      "clinical_case": "Patient A. 21 ans ramené de force aux urgences psychiatriques pour état agitation. Les parents rapportent que son comportement a changé durant les 8 derniers mois. En effet, il parle tout seul et parfois il sourit sans raison, refuse de voir ses amis et passe ses journées à contempler le ciel et lire des revus d'astrologie.\r\nA l'examen : son hygiène est médiocre, il refuse la main tendue et éclate par moment en sanglot. Après quelques minutes de silence, voici un extrait des propos qu'il tient : « je ne comprends pas pourquoi on m'a ramené à l'hôpital »« je suis un prophète, Dieu me parle tous les jours et m'ordonne de libérer la Palestine »\r\n« je vois des ... dans la maison, l'une d'entre eux vie à l'intérieur de moi », il passe d'une idée à autre sans enchainement et des réponses à côté. Il n'a pas d'antécédents médicaux et il ne prend aucun traitement ni de substances psychoactive",
+      "display_title": "Question 11 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "11.3",
+      "case_id": 11,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 221119,
+          "text": "Prescrire un traitement antidépresseur en ambulatoire",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 221120,
+          "text": "Hospitaliser le patient",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 221121,
+          "text": "Prescrire un traitement anxiolytique par voie intramusculaire",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 221122,
+          "text": "Revoir le patient en consultation en vue d'une psychothérapie",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 221123,
+          "text": "Demander un scanner cérébral en urgence",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle conduite adoptez-vous en premier aux urgences? ",
+      "has_media": false,
+      "statement": "Quelle conduite adoptez-vous en premier aux urgences? ",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44948,
+      "clinical_case": "Patient A. 21 ans ramené de force aux urgences psychiatriques pour état agitation. Les parents rapportent que son comportement a changé durant les 8 derniers mois. En effet, il parle tout seul et parfois il sourit sans raison, refuse de voir ses amis et passe ses journées à contempler le ciel et lire des revus d'astrologie.\r\nA l'examen : son hygiène est médiocre, il refuse la main tendue et éclate par moment en sanglot. Après quelques minutes de silence, voici un extrait des propos qu'il tient : « je ne comprends pas pourquoi on m'a ramené à l'hôpital »« je suis un prophète, Dieu me parle tous les jours et m'ordonne de libérer la Palestine »\r\n« je vois des ... dans la maison, l'une d'entre eux vie à l'intérieur de moi », il passe d'une idée à autre sans enchainement et des réponses à côté. Il n'a pas d'antécédents médicaux et il ne prend aucun traitement ni de substances psychoactive",
+      "display_title": "Question 11 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "11.4",
+      "case_id": 11,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 221124,
+          "text": "Les antidépresseurs tricycliques",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 221125,
+          "text": "Les antipsychotiques de deuxième génération",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 221126,
+          "text": "Les morphiniques",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 221127,
+          "text": "Thymoregulateurs",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 221128,
+          "text": "Les benzodiazepines",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quels médicaments peut-on utiliser comme traitement de fond de ce trouble? ",
+      "has_media": false,
+      "statement": "Quels médicaments peut-on utiliser comme traitement de fond de ce trouble? ",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44949,
+      "clinical_case": "Patient A. 21 ans ramené de force aux urgences psychiatriques pour état agitation. Les parents rapportent que son comportement a changé durant les 8 derniers mois. En effet, il parle tout seul et parfois il sourit sans raison, refuse de voir ses amis et passe ses journées à contempler le ciel et lire des revus d'astrologie.\r\nA l'examen : son hygiène est médiocre, il refuse la main tendue et éclate par moment en sanglot. Après quelques minutes de silence, voici un extrait des propos qu'il tient : « je ne comprends pas pourquoi on m'a ramené à l'hôpital »« je suis un prophète, Dieu me parle tous les jours et m'ordonne de libérer la Palestine »\r\n« je vois des ... dans la maison, l'une d'entre eux vie à l'intérieur de moi », il passe d'une idée à autre sans enchainement et des réponses à côté. Il n'a pas d'antécédents médicaux et il ne prend aucun traitement ni de substances psychoactive",
+      "display_title": "Question 11 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "11.5",
+      "case_id": 11,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 221129,
+          "text": "Crise d'hystérie",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 221130,
+          "text": "Crise épileptique",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 221131,
+          "text": "Dyskinésie aigue",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 221132,
+          "text": "Syndrome confusionnel",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 221133,
+          "text": "Simulation",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "A la 2eme heure après le début du traitement, on a noté l'apparition d'un torticolis, une hypertonie des membres, et des crises oculogyres. La température est normale, ainsi que le reste de l'examen clinique.\n- Dans quel cadre vous classez ces symptômes?",
+      "has_media": false,
+      "statement": "A la 2eme heure après le début du traitement, on a noté l'apparition d'un torticolis, une hypertonie des membres, et des crises oculogyres. La température est normale, ainsi que le reste de l'examen clinique.\n- Dans quel cadre vous classez ces symptômes?",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44950,
+      "clinical_case": "Patient A. 21 ans ramené de force aux urgences psychiatriques pour état agitation. Les parents rapportent que son comportement a changé durant les 8 derniers mois. En effet, il parle tout seul et parfois il sourit sans raison, refuse de voir ses amis et passe ses journées à contempler le ciel et lire des revus d'astrologie.\r\nA l'examen : son hygiène est médiocre, il refuse la main tendue et éclate par moment en sanglot. Après quelques minutes de silence, voici un extrait des propos qu'il tient : « je ne comprends pas pourquoi on m'a ramené à l'hôpital »« je suis un prophète, Dieu me parle tous les jours et m'ordonne de libérer la Palestine »\r\n« je vois des ... dans la maison, l'une d'entre eux vie à l'intérieur de moi », il passe d'une idée à autre sans enchainement et des réponses à côté. Il n'a pas d'antécédents médicaux et il ne prend aucun traitement ni de substances psychoactive",
+      "display_title": "Question 11 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "11.6",
+      "case_id": 11,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 221134,
+          "text": "Clomipramine (Anafranil®)",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 221135,
+          "text": "Trihexyphenidyle (Parkinane®)",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 221136,
+          "text": "Carbamazepine (Tegretol®)",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 221137,
+          "text": "Olanzapine (Zyprexa®)",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 221138,
+          "text": "Amitriptyline (Laroxyl®)",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est le médicament à prescrire en urgence? \n",
+      "has_media": false,
+      "statement": "Quel est le médicament à prescrire en urgence? \n",
+      "sub_index": 6,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44951,
+      "clinical_case": "Patient A. 21 ans ramené de force aux urgences psychiatriques pour état agitation. Les parents rapportent que son comportement a changé durant les 8 derniers mois. En effet, il parle tout seul et parfois il sourit sans raison, refuse de voir ses amis et passe ses journées à contempler le ciel et lire des revus d'astrologie.\r\nA l'examen : son hygiène est médiocre, il refuse la main tendue et éclate par moment en sanglot. Après quelques minutes de silence, voici un extrait des propos qu'il tient : « je ne comprends pas pourquoi on m'a ramené à l'hôpital »« je suis un prophète, Dieu me parle tous les jours et m'ordonne de libérer la Palestine »\r\n« je vois des ... dans la maison, l'une d'entre eux vie à l'intérieur de moi », il passe d'une idée à autre sans enchainement et des réponses à côté. Il n'a pas d'antécédents médicaux et il ne prend aucun traitement ni de substances psychoactive",
+      "display_title": "Question 11 - Question 6",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "11.7",
+      "case_id": 11,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 221139,
+          "text": "Thrombophlébite cérébrale",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 221140,
+          "text": "Septicémie",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 221141,
+          "text": "Syndrome malin des neuroleptiques",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 221142,
+          "text": "Covid19",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 221143,
+          "text": "Encéphalite",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Un mois après, et suite à une mauvaise observance thérapeutique, le patient a été mis sous neuroleptique à action prolongée. Un matin, il est retrouvé avec une température à 39°C, une désorientation temporospatiale, une hypertonie importante extrapyramidale et des sueurs généralisées\n- Quel est votre premier diagnostic?",
+      "has_media": false,
+      "statement": "Un mois après, et suite à une mauvaise observance thérapeutique, le patient a été mis sous neuroleptique à action prolongée. Un matin, il est retrouvé avec une température à 39°C, une désorientation temporospatiale, une hypertonie importante extrapyramidale et des sueurs généralisées\n- Quel est votre premier diagnostic?",
+      "sub_index": 7,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44952,
+      "clinical_case": "Patient A. 21 ans ramené de force aux urgences psychiatriques pour état agitation. Les parents rapportent que son comportement a changé durant les 8 derniers mois. En effet, il parle tout seul et parfois il sourit sans raison, refuse de voir ses amis et passe ses journées à contempler le ciel et lire des revus d'astrologie.\r\nA l'examen : son hygiène est médiocre, il refuse la main tendue et éclate par moment en sanglot. Après quelques minutes de silence, voici un extrait des propos qu'il tient : « je ne comprends pas pourquoi on m'a ramené à l'hôpital »« je suis un prophète, Dieu me parle tous les jours et m'ordonne de libérer la Palestine »\r\n« je vois des ... dans la maison, l'une d'entre eux vie à l'intérieur de moi », il passe d'une idée à autre sans enchainement et des réponses à côté. Il n'a pas d'antécédents médicaux et il ne prend aucun traitement ni de substances psychoactive",
+      "display_title": "Question 11 - Question 7",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "11.8",
+      "case_id": 11,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 221144,
+          "text": "Adresser le patient en réanimation",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 221145,
+          "text": "Augmentation des doses du neuroleptique à action prolongée",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 221146,
+          "text": " Prescription d'un antipyrétique",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 221147,
+          "text": "Prescription Thymorégulateurs",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 221148,
+          "text": " Prescription d'un antidépresseur",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle serait votre conduite à tenir immédiate ?",
+      "has_media": false,
+      "statement": "Quelle serait votre conduite à tenir immédiate ?",
+      "sub_index": 8,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44953,
+      "clinical_case": "Patient A. 21 ans ramené de force aux urgences psychiatriques pour état agitation. Les parents rapportent que son comportement a changé durant les 8 derniers mois. En effet, il parle tout seul et parfois il sourit sans raison, refuse de voir ses amis et passe ses journées à contempler le ciel et lire des revus d'astrologie.\r\nA l'examen : son hygiène est médiocre, il refuse la main tendue et éclate par moment en sanglot. Après quelques minutes de silence, voici un extrait des propos qu'il tient : « je ne comprends pas pourquoi on m'a ramené à l'hôpital »« je suis un prophète, Dieu me parle tous les jours et m'ordonne de libérer la Palestine »\r\n« je vois des ... dans la maison, l'une d'entre eux vie à l'intérieur de moi », il passe d'une idée à autre sans enchainement et des réponses à côté. Il n'a pas d'antécédents médicaux et il ne prend aucun traitement ni de substances psychoactive",
+      "display_title": "Question 11 - Question 8",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": 12,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219533,
+          "text": "1+2+3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219534,
+          "text": "1+3+4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219535,
+          "text": "2+3+4",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 219536,
+          "text": "2+4+5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219537,
+          "text": "3+4+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les symptômes négatifs se manifeste par l’une des associations, laquelle ?\n\n1 Au niveau du comportement par une excitation\n2 Le patient participe peu ou pas aux activités sociales\n3 Pauvreté intellectuelle\n4 Troubles cognitifs\n5 Humeur expansive",
+      "has_media": false,
+      "statement": "Les symptômes négatifs se manifeste par l’une des associations, laquelle ?\n\n1 Au niveau du comportement par une excitation\n2 Le patient participe peu ou pas aux activités sociales\n3 Pauvreté intellectuelle\n4 Troubles cognitifs\n5 Humeur expansive",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44631,
+      "clinical_case": null,
+      "display_title": "Question 12",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 13,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219613,
+          "text": "Clozapine est en 1ère intention.",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 219614,
+          "text": "Antipsychotique atypique en 1ère intention.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219615,
+          "text": "Antipsychotique à action prolongé lors d'un 1er épisode.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 219616,
+          "text": "Privilégier la monothérapie.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219617,
+          "text": "Privilégier la voie orale.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P4 2022"
+        ],
+        "type": "QCM",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans le traitement de la schizophrénie : (la ou les RF)",
+      "has_media": false,
+      "statement": "Dans le traitement de la schizophrénie : (la ou les RF)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44647,
+      "clinical_case": null,
+      "display_title": "Question 13",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 14,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219618,
+          "text": "Résistance thérapeutique.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219619,
+          "text": "Adhérence au traitement.",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 219620,
+          "text": "Risque de suicide.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219621,
+          "text": "Déni de la maladie.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219622,
+          "text": "Environnement pathogène.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P4 2022"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "L’hospitalisation d'un malade schizophrène est indiquée dans la ou les situations suivantes : (la ou les RF)",
+      "has_media": false,
+      "statement": "L’hospitalisation d'un malade schizophrène est indiquée dans la ou les situations suivantes : (la ou les RF)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44648,
+      "clinical_case": null,
+      "display_title": "Question 14",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": "15.1",
+      "case_id": 15,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219563,
+          "text": " Trouble schizophrénique",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 219564,
+          "text": " Trouble hypochondriaque",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219565,
+          "text": " Trouble délirant",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219566,
+          "text": "Épisode maniaque",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219567,
+          "text": "Épisode dégressif caractérisé",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "A quel diagnostic pensez-vous ? (RJ)",
+      "has_media": false,
+      "statement": "A quel diagnostic pensez-vous ? (RJ)",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44637,
+      "clinical_case": "Mohamed âgé de 26 ans, est ramené de force par ses parents aux urgences psychiatriques parce que son état les inquiète. En effet depuis environ 2 mois, il a arrêté son traitement qu’il prenait depuis des années et refuse catégoriquement de consulter, disant qu’il n’est pas malade. Il ne dort plus, refuse de manger avec ses proches qu’ils accusent de sorcellerie, dit qu’il est <<le message de dieu >> que les anges lui parlent et lui disent qu’il doit partir libérer Palestine et depuis, il économise de l’argent pour aller combattre auprès des Palestiniens. Il passe ses journées isolé dans sa chambre à parler seul et pleurer. Il refuse même de se laver ou de changer ses vêtements",
+      "display_title": "Question 15 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "15.2",
+      "case_id": 15,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219568,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219569,
+          "text": "1.3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219570,
+          "text": "2.3",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219571,
+          "text": "3.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219572,
+          "text": "3.5",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Parmi les propositions suivantes, quels sont les éléments sémiologiques dont souffre Mohamed ? (RJ)\n\n1 Hypersomnie\n2 Délire de gradeur\n3 Soliloquie\n4 Tachypsychie\n5 Syndrome d’influence",
+      "has_media": false,
+      "statement": "Parmi les propositions suivantes, quels sont les éléments sémiologiques dont souffre Mohamed ? (RJ)\n\n1 Hypersomnie\n2 Délire de gradeur\n3 Soliloquie\n4 Tachypsychie\n5 Syndrome d’influence",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44638,
+      "clinical_case": "Mohamed âgé de 26 ans, est ramené de force par ses parents aux urgences psychiatriques parce que son état les inquiète. En effet depuis environ 2 mois, il a arrêté son traitement qu’il prenait depuis des années et refuse catégoriquement de consulter, disant qu’il n’est pas malade. Il ne dort plus, refuse de manger avec ses proches qu’ils accusent de sorcellerie, dit qu’il est <<le message de dieu >> que les anges lui parlent et lui disent qu’il doit partir libérer Palestine et depuis, il économise de l’argent pour aller combattre auprès des Palestiniens. Il passe ses journées isolé dans sa chambre à parler seul et pleurer. Il refuse même de se laver ou de changer ses vêtements",
+      "display_title": "Question 15 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "15.3",
+      "case_id": 15,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219573,
+          "text": "1.2.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219574,
+          "text": "2.4.5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219575,
+          "text": "1.3.4",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 219576,
+          "text": "1.4.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219577,
+          "text": "3.4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quels sont les thèmes délirants suscités ? (RJ)\n\n1\n ersécution\n2 Filiation\n3 Influence\n4 Religieux\n5 Hypochondriaque",
+      "has_media": false,
+      "statement": "Quels sont les thèmes délirants suscités ? (RJ)\n\n1\n ersécution\n2 Filiation\n3 Influence\n4 Religieux\n5 Hypochondriaque",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44639,
+      "clinical_case": "Mohamed âgé de 26 ans, est ramené de force par ses parents aux urgences psychiatriques parce que son état les inquiète. En effet depuis environ 2 mois, il a arrêté son traitement qu’il prenait depuis des années et refuse catégoriquement de consulter, disant qu’il n’est pas malade. Il ne dort plus, refuse de manger avec ses proches qu’ils accusent de sorcellerie, dit qu’il est <<le message de dieu >> que les anges lui parlent et lui disent qu’il doit partir libérer Palestine et depuis, il économise de l’argent pour aller combattre auprès des Palestiniens. Il passe ses journées isolé dans sa chambre à parler seul et pleurer. Il refuse même de se laver ou de changer ses vêtements",
+      "display_title": "Question 15 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "15.4",
+      "case_id": 15,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219578,
+          "text": "1.2.5",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219579,
+          "text": "1.3.5",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 219580,
+          "text": "1.4.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219581,
+          "text": "2.4.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219582,
+          "text": "2.4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quels sont les caractéristiques de délire présenté par Mohamed ? (RJ)\n\n1 Polythématique\n2 A mécanisme intuitif uniquement\n3 Mal systématisé\n4 Avec adhésion partielle\n5 Avec adhésion totale",
+      "has_media": false,
+      "statement": "Quels sont les caractéristiques de délire présenté par Mohamed ? (RJ)\n\n1 Polythématique\n2 A mécanisme intuitif uniquement\n3 Mal systématisé\n4 Avec adhésion partielle\n5 Avec adhésion totale",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44640,
+      "clinical_case": "Mohamed âgé de 26 ans, est ramené de force par ses parents aux urgences psychiatriques parce que son état les inquiète. En effet depuis environ 2 mois, il a arrêté son traitement qu’il prenait depuis des années et refuse catégoriquement de consulter, disant qu’il n’est pas malade. Il ne dort plus, refuse de manger avec ses proches qu’ils accusent de sorcellerie, dit qu’il est <<le message de dieu >> que les anges lui parlent et lui disent qu’il doit partir libérer Palestine et depuis, il économise de l’argent pour aller combattre auprès des Palestiniens. Il passe ses journées isolé dans sa chambre à parler seul et pleurer. Il refuse même de se laver ou de changer ses vêtements",
+      "display_title": "Question 15 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "15.5",
+      "case_id": 15,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219583,
+          "text": " Une fugue",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219584,
+          "text": " Une prise de toxique",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219585,
+          "text": " Un refus alimentaire",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219586,
+          "text": "Un passage à l’acte hétéro agressif",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 219587,
+          "text": "Un isolement",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "La mère rapporte que son fils passe son temps à surveiller leur voisin qu’il accuse de lui vouloir du mal. Questionné sur son voisin, Mohamed nous dit qu’il doit le tuer. Que doit-on craindre en premier ? (RJ)",
+      "has_media": false,
+      "statement": "La mère rapporte que son fils passe son temps à surveiller leur voisin qu’il accuse de lui vouloir du mal. Questionné sur son voisin, Mohamed nous dit qu’il doit le tuer. Que doit-on craindre en premier ? (RJ)",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44641,
+      "clinical_case": "Mohamed âgé de 26 ans, est ramené de force par ses parents aux urgences psychiatriques parce que son état les inquiète. En effet depuis environ 2 mois, il a arrêté son traitement qu’il prenait depuis des années et refuse catégoriquement de consulter, disant qu’il n’est pas malade. Il ne dort plus, refuse de manger avec ses proches qu’ils accusent de sorcellerie, dit qu’il est <<le message de dieu >> que les anges lui parlent et lui disent qu’il doit partir libérer Palestine et depuis, il économise de l’argent pour aller combattre auprès des Palestiniens. Il passe ses journées isolé dans sa chambre à parler seul et pleurer. Il refuse même de se laver ou de changer ses vêtements",
+      "display_title": "Question 15 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "15.6",
+      "case_id": 15,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219588,
+          "text": "1.3.4.5",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219589,
+          "text": "2.3.5",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 219590,
+          "text": "2.3.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219591,
+          "text": "1.4.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219592,
+          "text": "2.4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle sera votre conduite à tenir ? (RJ)\n\n1 Suivi en ambulatoire\n2 Hospitalisation\n3 Mise sous antipsychotiques\n4 Mise sous antidépresseurs\n5 Surveillance de la tolérance et de l’efficacité du traitement",
+      "has_media": false,
+      "statement": "Quelle sera votre conduite à tenir ? (RJ)\n\n1 Suivi en ambulatoire\n2 Hospitalisation\n3 Mise sous antipsychotiques\n4 Mise sous antidépresseurs\n5 Surveillance de la tolérance et de l’efficacité du traitement",
+      "sub_index": 6,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44642,
+      "clinical_case": "Mohamed âgé de 26 ans, est ramené de force par ses parents aux urgences psychiatriques parce que son état les inquiète. En effet depuis environ 2 mois, il a arrêté son traitement qu’il prenait depuis des années et refuse catégoriquement de consulter, disant qu’il n’est pas malade. Il ne dort plus, refuse de manger avec ses proches qu’ils accusent de sorcellerie, dit qu’il est <<le message de dieu >> que les anges lui parlent et lui disent qu’il doit partir libérer Palestine et depuis, il économise de l’argent pour aller combattre auprès des Palestiniens. Il passe ses journées isolé dans sa chambre à parler seul et pleurer. Il refuse même de se laver ou de changer ses vêtements",
+      "display_title": "Question 15 - Question 6",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "15.7",
+      "case_id": 15,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219593,
+          "text": "06 mois",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219594,
+          "text": "06 mois",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219595,
+          "text": "02 ans",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 219596,
+          "text": " 03 ans",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219597,
+          "text": " 05 ans",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "S’il s’agissait du 1er accès psychotique que fait Mohamed combien de temps devrons-nous maintenir le traitement pharmacologique selon les recommandations ? (RJ)",
+      "has_media": false,
+      "statement": "S’il s’agissait du 1er accès psychotique que fait Mohamed combien de temps devrons-nous maintenir le traitement pharmacologique selon les recommandations ? (RJ)",
+      "sub_index": 7,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44643,
+      "clinical_case": "Mohamed âgé de 26 ans, est ramené de force par ses parents aux urgences psychiatriques parce que son état les inquiète. En effet depuis environ 2 mois, il a arrêté son traitement qu’il prenait depuis des années et refuse catégoriquement de consulter, disant qu’il n’est pas malade. Il ne dort plus, refuse de manger avec ses proches qu’ils accusent de sorcellerie, dit qu’il est <<le message de dieu >> que les anges lui parlent et lui disent qu’il doit partir libérer Palestine et depuis, il économise de l’argent pour aller combattre auprès des Palestiniens. Il passe ses journées isolé dans sa chambre à parler seul et pleurer. Il refuse même de se laver ou de changer ses vêtements",
+      "display_title": "Question 15 - Question 7",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "15.8",
+      "case_id": 15,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219598,
+          "text": " Signes positifs",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219599,
+          "text": " Signes négatifs",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219600,
+          "text": " Signes de désorganisation",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219601,
+          "text": " Signes cognitifs",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 219602,
+          "text": " Signes maniformes",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Une fois stabilisé Mohamed nous rapporte qu’il a du mal à se concentrer et oubli des choses du quotidien. Comment sont appelé ce type de symptômes ? (RJ)",
+      "has_media": false,
+      "statement": "Une fois stabilisé Mohamed nous rapporte qu’il a du mal à se concentrer et oubli des choses du quotidien. Comment sont appelé ce type de symptômes ? (RJ)",
+      "sub_index": 8,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44644,
+      "clinical_case": "Mohamed âgé de 26 ans, est ramené de force par ses parents aux urgences psychiatriques parce que son état les inquiète. En effet depuis environ 2 mois, il a arrêté son traitement qu’il prenait depuis des années et refuse catégoriquement de consulter, disant qu’il n’est pas malade. Il ne dort plus, refuse de manger avec ses proches qu’ils accusent de sorcellerie, dit qu’il est <<le message de dieu >> que les anges lui parlent et lui disent qu’il doit partir libérer Palestine et depuis, il économise de l’argent pour aller combattre auprès des Palestiniens. Il passe ses journées isolé dans sa chambre à parler seul et pleurer. Il refuse même de se laver ou de changer ses vêtements",
+      "display_title": "Question 15 - Question 8",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "15.9",
+      "case_id": 15,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219603,
+          "text": "Augmenter les doses d’antipsychotiques",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219604,
+          "text": "Augmenter les antidépresseurs",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219605,
+          "text": "Mettre sous traitement anxiolytique",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219606,
+          "text": " Remédiation cognitive",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 219607,
+          "text": "Pas de prise en charge à proposer",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle prise en charge proposez-vous pour ces symptômes ? (RJ)",
+      "has_media": false,
+      "statement": "Quelle prise en charge proposez-vous pour ces symptômes ? (RJ)",
+      "sub_index": 9,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44645,
+      "clinical_case": "Mohamed âgé de 26 ans, est ramené de force par ses parents aux urgences psychiatriques parce que son état les inquiète. En effet depuis environ 2 mois, il a arrêté son traitement qu’il prenait depuis des années et refuse catégoriquement de consulter, disant qu’il n’est pas malade. Il ne dort plus, refuse de manger avec ses proches qu’ils accusent de sorcellerie, dit qu’il est <<le message de dieu >> que les anges lui parlent et lui disent qu’il doit partir libérer Palestine et depuis, il économise de l’argent pour aller combattre auprès des Palestiniens. Il passe ses journées isolé dans sa chambre à parler seul et pleurer. Il refuse même de se laver ou de changer ses vêtements",
+      "display_title": "Question 15 - Question 9",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "15.10",
+      "case_id": 15,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219608,
+          "text": "Psychoéducation pour le patient et sa famille",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219609,
+          "text": "Psychoéducation uniquement pour le patient seulement",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 219610,
+          "text": " Gestion de stress",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219611,
+          "text": " Thérapie cognitive et comportementale",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219612,
+          "text": "Réhabilitation psychosociale",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quels autres moyens thérapeutiques pouvez-vous proposer pour la prise en charge de Mohamed ? (RF)",
+      "has_media": false,
+      "statement": "Quels autres moyens thérapeutiques pouvez-vous proposer pour la prise en charge de Mohamed ? (RF)",
+      "sub_index": 10,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44646,
+      "clinical_case": "Mohamed âgé de 26 ans, est ramené de force par ses parents aux urgences psychiatriques parce que son état les inquiète. En effet depuis environ 2 mois, il a arrêté son traitement qu’il prenait depuis des années et refuse catégoriquement de consulter, disant qu’il n’est pas malade. Il ne dort plus, refuse de manger avec ses proches qu’ils accusent de sorcellerie, dit qu’il est <<le message de dieu >> que les anges lui parlent et lui disent qu’il doit partir libérer Palestine et depuis, il économise de l’argent pour aller combattre auprès des Palestiniens. Il passe ses journées isolé dans sa chambre à parler seul et pleurer. Il refuse même de se laver ou de changer ses vêtements",
+      "display_title": "Question 15 - Question 10",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "16.1",
+      "case_id": 16,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219538,
+          "text": " Psychose transitoire",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219539,
+          "text": "Délire chronique",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219540,
+          "text": " Délire de jalousie",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219541,
+          "text": " Schizophrénie",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 219542,
+          "text": " Épisode dépressif caractérisé",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est le diagnostic le plus probable ? (RJ)",
+      "has_media": false,
+      "statement": "Quel est le diagnostic le plus probable ? (RJ)",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44632,
+      "clinical_case": "Une jeune femme de 30 ans, est accompagnée par son époux à la consultation dans un tableau fait de retrait, isolement social désinvestissement des taches ménagères, désinvestissement corporel et vestimentaire. L’époux a remarqué que ces symptômes évoluent progressivement depuis une année. A l’entretien on retrouve une personne peu soucieuse de son apparence. Vêtue d’une djellaba et mal coiffée. Le contact est peu aisé. Elle nous dit qu’elle ne comprend pas le sens de la consultation, et nous dit que sa belle-famille lui veut de mal et l’a ensorcelé pour qu’elle ne puisse pas s’occuper de sa maison. Elle attribue ses voix aux voisins.",
+      "display_title": "Question 16 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "16.2",
+      "case_id": 16,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219543,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219544,
+          "text": "3.4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219545,
+          "text": "3.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219546,
+          "text": "1.3.4",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 219547,
+          "text": "1.2.3.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelles sont les critères qui vous ont permis d’établir ce diagnostic ? (RJ)\n\n1 Délire polymorphe\n2 Idéation obsessionnelle\n3 Hallucination\n4 Émoussement affectif\n5 Tachypsychie",
+      "has_media": false,
+      "statement": "Quelles sont les critères qui vous ont permis d’établir ce diagnostic ? (RJ)\n\n1 Délire polymorphe\n2 Idéation obsessionnelle\n3 Hallucination\n4 Émoussement affectif\n5 Tachypsychie",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44633,
+      "clinical_case": "Une jeune femme de 30 ans, est accompagnée par son époux à la consultation dans un tableau fait de retrait, isolement social désinvestissement des taches ménagères, désinvestissement corporel et vestimentaire. L’époux a remarqué que ces symptômes évoluent progressivement depuis une année. A l’entretien on retrouve une personne peu soucieuse de son apparence. Vêtue d’une djellaba et mal coiffée. Le contact est peu aisé. Elle nous dit qu’elle ne comprend pas le sens de la consultation, et nous dit que sa belle-famille lui veut de mal et l’a ensorcelé pour qu’elle ne puisse pas s’occuper de sa maison. Elle attribue ses voix aux voisins.",
+      "display_title": "Question 16 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "16.3",
+      "case_id": 16,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219548,
+          "text": " Antidépresseur",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219549,
+          "text": " Neuroleptique",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 219550,
+          "text": " Benzodiazépine",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219551,
+          "text": " Thymorégulateur",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219552,
+          "text": "Inhibiteur de la recapture de la sérotonine",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est le traitement préconisé ? (RJ)",
+      "has_media": false,
+      "statement": "Quel est le traitement préconisé ? (RJ)",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44634,
+      "clinical_case": "Une jeune femme de 30 ans, est accompagnée par son époux à la consultation dans un tableau fait de retrait, isolement social désinvestissement des taches ménagères, désinvestissement corporel et vestimentaire. L’époux a remarqué que ces symptômes évoluent progressivement depuis une année. A l’entretien on retrouve une personne peu soucieuse de son apparence. Vêtue d’une djellaba et mal coiffée. Le contact est peu aisé. Elle nous dit qu’elle ne comprend pas le sens de la consultation, et nous dit que sa belle-famille lui veut de mal et l’a ensorcelé pour qu’elle ne puisse pas s’occuper de sa maison. Elle attribue ses voix aux voisins.",
+      "display_title": "Question 16 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "16.4",
+      "case_id": 16,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219553,
+          "text": " 1 mois",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219554,
+          "text": "3 mois",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219555,
+          "text": " 6 mois",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219556,
+          "text": " 1 an",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219557,
+          "text": " Indéterminé",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est la durée du traitement ? (RJ)",
+      "has_media": false,
+      "statement": "Quel est la durée du traitement ? (RJ)",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44635,
+      "clinical_case": "Une jeune femme de 30 ans, est accompagnée par son époux à la consultation dans un tableau fait de retrait, isolement social désinvestissement des taches ménagères, désinvestissement corporel et vestimentaire. L’époux a remarqué que ces symptômes évoluent progressivement depuis une année. A l’entretien on retrouve une personne peu soucieuse de son apparence. Vêtue d’une djellaba et mal coiffée. Le contact est peu aisé. Elle nous dit qu’elle ne comprend pas le sens de la consultation, et nous dit que sa belle-famille lui veut de mal et l’a ensorcelé pour qu’elle ne puisse pas s’occuper de sa maison. Elle attribue ses voix aux voisins.",
+      "display_title": "Question 16 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "16.5",
+      "case_id": 16,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219558,
+          "text": "1.3.5",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219559,
+          "text": "2.3.4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219560,
+          "text": "3.4.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219561,
+          "text": "1.2.4.5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 219562,
+          "text": "2.3.4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quels sont les psychothérapies possibles ? (RJ)\n\n1 Thérapie comportementale\n2 Remédiation cognitive\n3 Thérapie analytique\n4 Thérapie familiale\n5 Psychoéducation",
+      "has_media": false,
+      "statement": "Quels sont les psychothérapies possibles ? (RJ)\n\n1 Thérapie comportementale\n2 Remédiation cognitive\n3 Thérapie analytique\n4 Thérapie familiale\n5 Psychoéducation",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44636,
+      "clinical_case": "Une jeune femme de 30 ans, est accompagnée par son époux à la consultation dans un tableau fait de retrait, isolement social désinvestissement des taches ménagères, désinvestissement corporel et vestimentaire. L’époux a remarqué que ces symptômes évoluent progressivement depuis une année. A l’entretien on retrouve une personne peu soucieuse de son apparence. Vêtue d’une djellaba et mal coiffée. Le contact est peu aisé. Elle nous dit qu’elle ne comprend pas le sens de la consultation, et nous dit que sa belle-famille lui veut de mal et l’a ensorcelé pour qu’elle ne puisse pas s’occuper de sa maison. Elle attribue ses voix aux voisins.",
+      "display_title": "Question 16 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": 17,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219623,
+          "text": "1+2+3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219624,
+          "text": "1+2+4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219625,
+          "text": "1+2+5",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 219626,
+          "text": "1+3+5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219627,
+          "text": "1+4+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Résidanat Alger 2018"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "La schizophrénie est une pathologie cosmopolite : (Cocher la réponse juste)\n\n1 Elle touche essentiellement l'adulte jeune\n2 Sa prévalence dans la population générale est de 1%\n3 Elle est obligatoirement accompagnée d'hallucinations\n4 Une perturbation du bilan sanguin permet de poser le diagnostic\n5 Son évolution est tributaire de la bonne compliance thérapeutique",
+      "has_media": false,
+      "statement": "La schizophrénie est une pathologie cosmopolite : (Cocher la réponse juste)\n\n1 Elle touche essentiellement l'adulte jeune\n2 Sa prévalence dans la population générale est de 1%\n3 Elle est obligatoirement accompagnée d'hallucinations\n4 Une perturbation du bilan sanguin permet de poser le diagnostic\n5 Son évolution est tributaire de la bonne compliance thérapeutique",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44649,
+      "clinical_case": null,
+      "display_title": "Question 17",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 18,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219628,
+          "text": "La mélancolie.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219629,
+          "text": "La névrose obsessionnelle.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219630,
+          "text": "La schizophrénie.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 219631,
+          "text": "Le trouble bi-polaire.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219632,
+          "text": "Le délire d'interprétation de Sérieux et Capgras.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Résidanat Alger 2012"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Devant un trouble du comportement marqué par des rires immotivés, le diagnostic est : (Cochez la réponse juste)",
+      "has_media": false,
+      "statement": "Devant un trouble du comportement marqué par des rires immotivés, le diagnostic est : (Cochez la réponse juste)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44650,
+      "clinical_case": null,
+      "display_title": "Question 18",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": "19.1",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219633,
+          "text": "Attaque de panique.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219634,
+          "text": "Dyskénésies aiguës.",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 219635,
+          "text": "Œdème de Quincke.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219636,
+          "text": "Conversion somatique,",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219637,
+          "text": "Syndrome malin des neuroleptiques.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Résidanat Alger 2008"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les symptômes rapportés correspondent probablement à: (Cochez la réponse juste)",
+      "has_media": false,
+      "statement": "Les symptômes rapportés correspondent probablement à: (Cochez la réponse juste)",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44651,
+      "clinical_case": "Vous êtes de garde aux urgences médicales et vous recevez un jeune homme de 23 ans, qui se présente accompagné de son père dans une attitude affolée, car depuis quelques heures il n'arrive plus à fermer sa bouche et sa langue a tendance à sortir de celle-ci malgré les efforts qu'il fait pour la retenir. Après interrogatoire, vous apprenez qu’il est sous le traitement suivant: Halopéridol et Lévomepromazone depuis 03 jours.",
+      "display_title": "Question 19 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "19.2",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219638,
+          "text": " Elle est de type conventionnel.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219639,
+          "text": "Action sous-corticale dominante.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219640,
+          "text": "Elle n'a pas d'effet anxiolytique et hypnotique.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 219641,
+          "text": "Sédation progressive de l'agitation.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219642,
+          "text": "Elle induit un état d’indifférence psychomotrice",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Résidanat Alger 2008"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "La médication neuroleptique que prend ce patient est caractérisée par tous ce qui suit, sauf: (Cochez ta réponse juste)",
+      "has_media": false,
+      "statement": "La médication neuroleptique que prend ce patient est caractérisée par tous ce qui suit, sauf: (Cochez ta réponse juste)",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44652,
+      "clinical_case": "Vous êtes de garde aux urgences médicales et vous recevez un jeune homme de 23 ans, qui se présente accompagné de son père dans une attitude affolée, car depuis quelques heures il n'arrive plus à fermer sa bouche et sa langue a tendance à sortir de celle-ci malgré les efforts qu'il fait pour la retenir. Après interrogatoire, vous apprenez qu’il est sous le traitement suivant: Halopéridol et Lévomepromazone depuis 03 jours.",
+      "display_title": "Question 19 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "19.3",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219643,
+          "text": "Chlorpromazine 100 mg per os.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219644,
+          "text": "Bromazépam 06 mg per os.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219645,
+          "text": " Amitriptylline 50 mg per os.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219646,
+          "text": " Trihexyphénidyle 05 mg per os.",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 219647,
+          "text": " Olanzapine 10 mg per os.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Résidanat Alger 2008"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le traitement le plus adéquat pour cette urgence est: (Cochez la réponse Juste)",
+      "has_media": false,
+      "statement": "Le traitement le plus adéquat pour cette urgence est: (Cochez la réponse Juste)",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44653,
+      "clinical_case": "Vous êtes de garde aux urgences médicales et vous recevez un jeune homme de 23 ans, qui se présente accompagné de son père dans une attitude affolée, car depuis quelques heures il n'arrive plus à fermer sa bouche et sa langue a tendance à sortir de celle-ci malgré les efforts qu'il fait pour la retenir. Après interrogatoire, vous apprenez qu’il est sous le traitement suivant: Halopéridol et Lévomepromazone depuis 03 jours.",
+      "display_title": "Question 19 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "19.4",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219648,
+          "text": " Délire de persécution.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219649,
+          "text": "Soliloquie.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219650,
+          "text": "Dépersonnalisation.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 219651,
+          "text": " Retrait et isolement.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219652,
+          "text": "Délire mystique.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Résidanat Alger 2008"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Après avoir jugulé l’urgence, vous apprenez que ce jeune homme ne sort, pratiquement plus de sa chambre depuis près de 07 mois, délaisse ses études, parle souvent seul dans sa chambre et croit que ses voisins le surveillent et veulent l’empoisonner car il est le prophète. Tous ces symptômes sont présents dans le tableau clinique sauf un, lequel?",
+      "has_media": false,
+      "statement": "Après avoir jugulé l’urgence, vous apprenez que ce jeune homme ne sort, pratiquement plus de sa chambre depuis près de 07 mois, délaisse ses études, parle souvent seul dans sa chambre et croit que ses voisins le surveillent et veulent l’empoisonner car il est le prophète. Tous ces symptômes sont présents dans le tableau clinique sauf un, lequel?",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44654,
+      "clinical_case": "Vous êtes de garde aux urgences médicales et vous recevez un jeune homme de 23 ans, qui se présente accompagné de son père dans une attitude affolée, car depuis quelques heures il n'arrive plus à fermer sa bouche et sa langue a tendance à sortir de celle-ci malgré les efforts qu'il fait pour la retenir. Après interrogatoire, vous apprenez qu’il est sous le traitement suivant: Halopéridol et Lévomepromazone depuis 03 jours.",
+      "display_title": "Question 19 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "19.5",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219653,
+          "text": "Une bouffée délirante.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219654,
+          "text": " Une psychose délirante chronique.",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 219655,
+          "text": " Un trouble de la personnalité.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219656,
+          "text": " Un trouble anxieux.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219657,
+          "text": " Un trouble induit par une substance.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Résidanat Alger 2008"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel trouble ce tableau évoque-t’il? (Cochez la réponse juste)",
+      "has_media": false,
+      "statement": "Quel trouble ce tableau évoque-t’il? (Cochez la réponse juste)",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44655,
+      "clinical_case": "Vous êtes de garde aux urgences médicales et vous recevez un jeune homme de 23 ans, qui se présente accompagné de son père dans une attitude affolée, car depuis quelques heures il n'arrive plus à fermer sa bouche et sa langue a tendance à sortir de celle-ci malgré les efforts qu'il fait pour la retenir. Après interrogatoire, vous apprenez qu’il est sous le traitement suivant: Halopéridol et Lévomepromazone depuis 03 jours.",
+      "display_title": "Question 19 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "19.6",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219658,
+          "text": " Syndrome malin des neuroleptiques.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219659,
+          "text": " Constipation.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219660,
+          "text": " Hypertension artérielle.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 219661,
+          "text": " Trouble de l’accommodation.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219662,
+          "text": " Photosensibilité.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Résidanat Alger 2008"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le père de votre patient vous apprend que c’est le troisième épisode que présente son fils. Le 1er remonte à l’âge de 20 ans, mis sous traitement maïs ce dernier arrête à chaque fois ses médicaments à cause des effets secondaires gênant pour lui. Parmi les propositions suivantes, laquelle n’est pas un effet secondaire des neuroleptiques?",
+      "has_media": false,
+      "statement": "Le père de votre patient vous apprend que c’est le troisième épisode que présente son fils. Le 1er remonte à l’âge de 20 ans, mis sous traitement maïs ce dernier arrête à chaque fois ses médicaments à cause des effets secondaires gênant pour lui. Parmi les propositions suivantes, laquelle n’est pas un effet secondaire des neuroleptiques?",
+      "sub_index": 6,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44656,
+      "clinical_case": "Vous êtes de garde aux urgences médicales et vous recevez un jeune homme de 23 ans, qui se présente accompagné de son père dans une attitude affolée, car depuis quelques heures il n'arrive plus à fermer sa bouche et sa langue a tendance à sortir de celle-ci malgré les efforts qu'il fait pour la retenir. Après interrogatoire, vous apprenez qu’il est sous le traitement suivant: Halopéridol et Lévomepromazone depuis 03 jours.",
+      "display_title": "Question 19 - Question 6",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "19.7",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219663,
+          "text": " Arrêt définitif des neuroleptiques.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219664,
+          "text": " EEG.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219665,
+          "text": " Prescription de neuroleptiques atypiques.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 219666,
+          "text": "Prescription d’antidépresseurs.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219667,
+          "text": " Prescription d'un antiépileptique.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Résidanat Alger 2008"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Devant la mauvaise complaisance thérapeutique, quelle est votre conduite à tenir? (Cochez la réponse juste)",
+      "has_media": false,
+      "statement": "Devant la mauvaise complaisance thérapeutique, quelle est votre conduite à tenir? (Cochez la réponse juste)",
+      "sub_index": 7,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44657,
+      "clinical_case": "Vous êtes de garde aux urgences médicales et vous recevez un jeune homme de 23 ans, qui se présente accompagné de son père dans une attitude affolée, car depuis quelques heures il n'arrive plus à fermer sa bouche et sa langue a tendance à sortir de celle-ci malgré les efforts qu'il fait pour la retenir. Après interrogatoire, vous apprenez qu’il est sous le traitement suivant: Halopéridol et Lévomepromazone depuis 03 jours.",
+      "display_title": "Question 19 - Question 7",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "19.8",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219668,
+          "text": "03 mois après chaque rechute.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219669,
+          "text": " 08 mois.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219670,
+          "text": "02 ans.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219671,
+          "text": " 05 ans.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219672,
+          "text": "A vie.",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Résidanat Alger 2008"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": " Le traitement que vous avez proposé doit être maintenu pendant une des durées suivantes: (Cochez la réponse juste)",
+      "has_media": false,
+      "statement": " Le traitement que vous avez proposé doit être maintenu pendant une des durées suivantes: (Cochez la réponse juste)",
+      "sub_index": 8,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44658,
+      "clinical_case": "Vous êtes de garde aux urgences médicales et vous recevez un jeune homme de 23 ans, qui se présente accompagné de son père dans une attitude affolée, car depuis quelques heures il n'arrive plus à fermer sa bouche et sa langue a tendance à sortir de celle-ci malgré les efforts qu'il fait pour la retenir. Après interrogatoire, vous apprenez qu’il est sous le traitement suivant: Halopéridol et Lévomepromazone depuis 03 jours.",
+      "display_title": "Question 19 - Question 8",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "19.9",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219673,
+          "text": "État dépressif majeur.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219674,
+          "text": "Trouble compulsif.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219675,
+          "text": " Paranoïa.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219676,
+          "text": " Schizophrénie paranoïde.",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 219677,
+          "text": " Psychose hallucinatoire chronique.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Résidanat Alger 2008"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est le diagnostic nosologique exact que vous retenez: (Cochez la réponse juste)",
+      "has_media": false,
+      "statement": "Quel est le diagnostic nosologique exact que vous retenez: (Cochez la réponse juste)",
+      "sub_index": 9,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44659,
+      "clinical_case": "Vous êtes de garde aux urgences médicales et vous recevez un jeune homme de 23 ans, qui se présente accompagné de son père dans une attitude affolée, car depuis quelques heures il n'arrive plus à fermer sa bouche et sa langue a tendance à sortir de celle-ci malgré les efforts qu'il fait pour la retenir. Après interrogatoire, vous apprenez qu’il est sous le traitement suivant: Halopéridol et Lévomepromazone depuis 03 jours.",
+      "display_title": "Question 19 - Question 9",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "19.10",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219678,
+          "text": " La détermination dégénérative.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219679,
+          "text": "La détermination génétique.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219680,
+          "text": " La détermination multifactorielle.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 219681,
+          "text": " La détermination sociale.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219682,
+          "text": " Toutes ces réponses sont fausses.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Résidanat Alger 2008"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Schizophrénies",
+        "series": "Mystidia Exams"
+      },
+      "question": "Laquelle de ces propositions est la plus conforme aux données étiopathogéniques actuelles? (Cochez la réponse juste)",
+      "has_media": false,
+      "statement": "Laquelle de ces propositions est la plus conforme aux données étiopathogéniques actuelles? (Cochez la réponse juste)",
+      "sub_index": 10,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44660,
+      "clinical_case": "Vous êtes de garde aux urgences médicales et vous recevez un jeune homme de 23 ans, qui se présente accompagné de son père dans une attitude affolée, car depuis quelques heures il n'arrive plus à fermer sa bouche et sa langue a tendance à sortir de celle-ci malgré les efforts qu'il fait pour la retenir. Après interrogatoire, vous apprenez qu’il est sous le traitement suivant: Halopéridol et Lévomepromazone depuis 03 jours.",
+      "display_title": "Question 19 - Question 10",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    }
+  ]
+}

@@ -74,11 +74,22 @@ if (!chaptersMatch || !questionsMatch) {
   process.exit(1);
 }
 
+const psyChaptersJs = fs.existsSync(path.join(__dirname, 'src', 'data', 'psy_chapters.js'))
+  ? fs.readFileSync(path.join(__dirname, 'src', 'data', 'psy_chapters.js'), 'utf8')
+  : '';
+const psyQuestionsJs = fs.existsSync(path.join(__dirname, 'src', 'data', 'psy_questions.js'))
+  ? fs.readFileSync(path.join(__dirname, 'src', 'data', 'psy_questions.js'), 'utf8')
+  : '';
+
 // Build final standalone index.html
 const updatedIndex = `${templateHtml.replace('</body>', '')}
   ${chaptersMatch[0]}
 
   ${questionsMatch[0]}
+
+  ${psyChaptersJs ? `<script>\n${psyChaptersJs}\n</script>` : ''}
+
+  ${psyQuestionsJs ? `<script>\n${psyQuestionsJs}\n</script>` : ''}
 
   <script>
 ${bundle}

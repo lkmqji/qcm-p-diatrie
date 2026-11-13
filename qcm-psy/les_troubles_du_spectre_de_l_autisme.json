@@ -1,0 +1,2741 @@
+{
+  "version": "2.0",
+  "exported_at": "2026-11-13T09:30:30.708Z",
+  "app": "Mystidia Cursus Medical Explorer",
+  "course": {
+    "title": "Les troubles du spectre de l'autisme",
+    "module": "Psychiatrie",
+    "year": "5ème Année (DFASM2)",
+    "session_id": "session_1792187399109_i3fhibh",
+    "questions_count": 47
+  },
+  "questions": [
+    {
+      "id": 1,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 315796,
+          "text": "1+2+3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 315797,
+          "text": "1+3+4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 315798,
+          "text": "1+2+3+4+5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 315799,
+          "text": "2+3+4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 315800,
+          "text": "2+3+5",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Concernant les traitements médicamenteux du TSA, l'une des associations est juste :\n 1. Ils permettent de traiter les déficits de communication sociale du TSA. \n2. Ils peuvent être utilisés pour certaines comorbidités associées. \n3. Ils peuvent être indiqués en cas d'agitation sévère ou d'agressivité. \n4. Ils remplacent les interventions éducatives et rééducatives.\n5. Ils ne constituent pas le traitement de base du TSA.",
+      "has_media": false,
+      "statement": "Concernant les traitements médicamenteux du TSA, l'une des associations est juste :\n 1. Ils permettent de traiter les déficits de communication sociale du TSA. \n2. Ils peuvent être utilisés pour certaines comorbidités associées. \n3. Ils peuvent être indiqués en cas d'agitation sévère ou d'agressivité. \n4. Ils remplacent les interventions éducatives et rééducatives.\n5. Ils ne constituent pas le traitement de base du TSA.",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A.Fausse, Il n'existe actuellement aucun traitement pharmacologique capable de corriger ou de guérir les symptômes du TSA.D.Fausse, Les interventions éducatives, comportementales et rééducatives constituent la prise en charge de première intention et les médicaments ne les remplacent jamais.",
+      "original_id": 64662,
+      "clinical_case": null,
+      "display_title": "Question 1",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">A.Fausse, </strong>Il n'existe actuellement aucun traitement pharmacologique capable de corriger ou de guérir les symptômes du TSA.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">D.Fausse, </strong>Les interventions éducatives, comportementales et rééducatives constituent la prise en charge de première intention et les médicaments ne les remplacent jamais.</p><p><br></p>"
+    },
+    {
+      "id": 2,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 315791,
+          "text": "Le jeu symbolique est souvent altéré.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 315792,
+          "text": "L'enfant peut aligner les objets plutôt que jouer avec leur fonction.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 315793,
+          "text": "Le jeu d'imitation est souvent préservé.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 315794,
+          "text": "Les intérêts peuvent être inhabituels par leur intensité.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 315795,
+          "text": "L'utilisation répétitive et stéréotypée des jouets est évocatrice.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les propositions suivantes concernent les particularités du jeu dans le TSA, sauf une :",
+      "has_media": true,
+      "statement": "Les propositions suivantes concernent les particularités du jeu dans le TSA, sauf une :",
+      "sub_index": null,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187399109_i3fhibh/session_1792187399109_i3fhibh_q_1_1792187439643_img_0.jpg",
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187399109_i3fhibh/session_1792187399109_i3fhibh_q_1_1792187439643_img_1.jpg"
+      ],
+      "croq_answer": null,
+      "explanation": "C.Fausse, chez une personne souffrante de TSA le jeu d’imitation est souvent altéré.",
+      "original_id": 64661,
+      "clinical_case": null,
+      "display_title": "Question 2",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">C.Fausse,</strong> chez une personne souffrante de TSA le jeu d’imitation est souvent altéré.</p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187399109_i3fhibh/session_1792187399109_i3fhibh_q_1_1792187439643_img_0.jpg\"><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187399109_i3fhibh/session_1792187399109_i3fhibh_q_1_1792187439643_img_1.jpg\"></p>"
+    },
+    {
+      "id": 3,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 315786,
+          "text": "1+2+3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 315787,
+          "text": "1+2+4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 315788,
+          "text": "2+3+4",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 315789,
+          "text": "1+2+5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 315790,
+          "text": "1+2+3+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Parmi les signes suivants observés à 18 mois, lesquels sont les plus évocateurs d'un TSA ?\n1. Retard isolé du langage expressif. \n2. Absence d'attention conjointe.\n3. Absence de pointage proto-déclaratif.\n4. Déficit de réciprocité sociale. \n5. Retard de la marche.",
+      "has_media": true,
+      "statement": "Parmi les signes suivants observés à 18 mois, lesquels sont les plus évocateurs d'un TSA ?\n1. Retard isolé du langage expressif. \n2. Absence d'attention conjointe.\n3. Absence de pointage proto-déclaratif.\n4. Déficit de réciprocité sociale. \n5. Retard de la marche.",
+      "sub_index": null,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187399109_i3fhibh/session_1792187399109_i3fhibh_q_2_1792187439643_img_0.jpg"
+      ],
+      "croq_answer": null,
+      "explanation": "A.Fausse, Un retard de langage seul n’est pas spécifique du TSA.Il peut être lié à un simple retard de langage, une surdité ou à un trouble développemental du langage..E.Fausse, un retard isolé de la marche à 18 mois oriente d'abord vers des causes neurologiques, neuromusculaires ou orthopédiques, et non spécifiquement vers un TSA.",
+      "original_id": 64660,
+      "clinical_case": null,
+      "display_title": "Question 3",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">A.Fausse, </strong>Un retard de langage seul n’est pas spécifique du TSA.Il peut être lié à un simple retard de langage, une surdité ou à un trouble développemental du langage..</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Fausse, </strong>un retard isolé de la marche à 18 mois oriente d'abord vers des causes neurologiques, neuromusculaires ou orthopédiques, et non spécifiquement vers un TSA.</p><p><br></p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187399109_i3fhibh/session_1792187399109_i3fhibh_q_2_1792187439643_img_0.jpg\"></p>"
+    },
+    {
+      "id": 4,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 315781,
+          "text": "Une difficulté à comprendre les émotions d'autrui.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 315782,
+          "text": "Une difficulté à maintenir une conversation réciproque.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 315783,
+          "text": "Adaptation du langage au contexte social",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 315784,
+          "text": "Un déficit du contact visuel.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 315785,
+          "text": "Une altération de l'utilisation des gestes sociaux.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans le TSA, on peut observer toutes ces propositions sauf une :",
+      "has_media": false,
+      "statement": "Dans le TSA, on peut observer toutes ces propositions sauf une :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "C.Fausse, Chez une personne souffrante de TSA on aura des difficultés d’adaptation du langage au contexte social.﻿﻿Source : ﻿https://mystidia.com/lecture?uId=1v9s_4CoUYM0I7wJWTjpSirCiITz0ycCd",
+      "original_id": 64659,
+      "clinical_case": null,
+      "display_title": "Question 4",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">C.Fausse, </strong>Chez une personne souffrante de TSA on aura des difficultés d’adaptation du langage au contexte social.</p><p><br></p><p><span class=\"ql-cursor\">﻿﻿Source : ﻿</span><a href=\"https://mystidia.com/lecture?uId=1v9s_4CoUYM0I7wJWTjpSirCiITz0ycCd\" rel=\"noopener noreferrer\" target=\"_blank\">https://mystidia.com/lecture?uId=1v9s_4CoUYM0I7wJWTjpSirCiITz0ycCd</a></p>"
+    },
+    {
+      "id": 5,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 308448,
+          "text": "Absence de sourire social",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 308449,
+          "text": "Manque de contact visuel",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 308450,
+          "text": "Retard du langage",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 308451,
+          "text": "Hyperactivité motrice isolée",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 308452,
+          "text": "Absence de pointing protodéclaratif",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "S1 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Toutes ces propositions peuvent évoquer précocement un TSA chez le nourrisson sauf une, laquelle ?",
+      "has_media": false,
+      "statement": "Toutes ces propositions peuvent évoquer précocement un TSA chez le nourrisson sauf une, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A-Faux L'absence de sourire social vers 3 mois est un signe précoce de TSA.B-FauxL'évitement du regard est un signe précoce caractéristique.C-Faux Le retard de langage est un signe d'alerte mais souvent plus tardif (après 18 mois).D-VraiL'hyperactivité motrice isolée n'est pas spécifique du TSA; elle peut évoquer un TDAH ou être dans la norme.E-FauxL'absence de pointing protodéclaratif (vers 12 mois) est un signe précoce majeur de TSA.",
+      "original_id": 63094,
+      "clinical_case": null,
+      "display_title": "Question 5",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(250, 204, 204);\">A-</strong><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;L'absence de sourire social vers </span><strong style=\"color: rgb(15, 17, 21);\">3 mois </strong><span style=\"color: rgb(15, 17, 21);\">est un signe précoce de TSA.</span></p><p><br></p><p><span style=\"border-color: rgb(229, 231, 235); --tw-shadow: 0 0 transparent; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgba(59,130,246,0.5); --tw-ring-offset-shadow: 0 0 transparent; --tw-ring-shadow: 0 0 transparent; font-weight: bolder; background-color: rgb(250, 204, 204);\">B-</span><span style=\"border-color: rgb(229, 231, 235); --tw-shadow: 0 0 transparent; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgba(59,130,246,0.5); --tw-ring-offset-shadow: 0 0 transparent; --tw-ring-shadow: 0 0 transparent; font-weight: bolder; background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">Faux</span></p><p><span style=\"color: rgb(15, 17, 21);\">L'évitement du regard est un signe précoce caractéristique.</span></p><p><br></p><p><strong style=\"background-color: rgb(250, 204, 204);\">C-</strong><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Le retard de langage est un signe d'alerte mais souvent</span><strong style=\"color: rgb(15, 17, 21);\"> plus tardif (après 18 mois).</strong></p><p><br></p><p><span style=\"border-color: rgb(229, 231, 235); --tw-shadow: 0 0 transparent; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgba(59,130,246,0.5); --tw-ring-offset-shadow: 0 0 transparent; --tw-ring-shadow: 0 0 transparent; font-weight: bolder; background-color: rgb(204, 232, 204);\">D-</span><span style=\"border-color: rgb(229, 231, 235); --tw-shadow: 0 0 transparent; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgba(59,130,246,0.5); --tw-ring-offset-shadow: 0 0 transparent; --tw-ring-shadow: 0 0 transparent; font-weight: bolder; background-color: rgb(204, 232, 204); color: rgb(0, 138, 0);\">Vrai</span></p><p><span style=\"color: rgb(15, 17, 21);\">L'hyperactivité motrice isolée n'est </span><strong style=\"color: rgb(15, 17, 21);\">pas spécifique du TSA</strong><span style=\"color: rgb(15, 17, 21);\">; elle peut évoquer un TDAH ou être dans la norme.</span></p><p><br></p><p><strong style=\"background-color: rgb(250, 204, 204);\">E-</strong><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">L'absence de</span><strong style=\"color: rgb(15, 17, 21);\"> pointing protodéclaratif (vers 12 mois)</strong><span style=\"color: rgb(15, 17, 21);\"> est un signe précoce majeur de TSA.</span></p>"
+    },
+    {
+      "id": "6.1",
+      "case_id": 6,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295332,
+          "text": "1+2                        ",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 295333,
+          "text": "1+3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 295334,
+          "text": "1+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 295335,
+          "text": "1+5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 295336,
+          "text": "1+2+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026 "
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": " Quels sont les symptômes retrouvés chez Salim ?\n1- Un déficit de la réciprocité sociale\n2- Des stéréotypies verbales\n3-Une altération des fonctions intellectuelles\n4- Des compulsions \n5- Une hyperréactivité sensorielle\n",
+      "has_media": false,
+      "statement": " Quels sont les symptômes retrouvés chez Salim ?\n1- Un déficit de la réciprocité sociale\n2- Des stéréotypies verbales\n3-Une altération des fonctions intellectuelles\n4- Des compulsions \n5- Une hyperréactivité sensorielle\n",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Question 11-Vrai: Salim ne regarde pas ses camarades dans les yeux , ne montre aucune empathie et ne comprend pas les règles sociales,2- Faux :pas de stéréotypies verbales décrites ( écholalie / repetitions des phrases .. etc3-Faux:  ses bonnes notes indiquent des capacités cognitives préservées.4-Faux : l'alignement d'affaires évoque un rituel ou un comprtement repetitif autistique plutôt qu'une compulsion5- Vrai l’évitement systématique du regard est une forme de réactivité sensorielle aux stimulations visuelles et sociales Question 21-Vrai ; intérêts restreints et fixes2-Faux ; Ça relève du déficit de communication sociale, pas du caractère restreint et répétitif.3-Faux ; C’est un déficit socio-émotionnel, pas un comportement ritualisé ou répétitif.4-Faux ; C’est un trouble de compréhension sociale5-Juste c'est un comportement ritualisé et répétitifQuestion 3 1-Faux ; Langage peut être Absent ou présent avec ou sans anomalie ( cas de salim) pas 2-Faux ; Les symptômes doivent être présents dans la période développementale précoce donc avant 3 ans  meme si le dg est tard ,3-Faux: bien que fréquentes, elles ne sont  pas suffisant pour confirmer le TSA5-Vrai :toutes les réponses sont fausses, car le diagnostic nécessite une évaluation plus complète (les criteres abcde   (cde manquent) le diagnostic du trouble du spectre de l’autisme repose sur ·  A : Déficits persistants de la communication et des interactions sociales (presents ici)·  B : Comportements, intérêts ou activités restreints et répétitifs (presents)·  C : Symptômes présents dès les étapes précoces du développement·  D : Retentissement cliniquement significatif dans le fonctionnement actuel·  E : Non expliqué par un handicap intellectuel ou retard globalQuestion 41-Vrai ; Les personnes avec TSA ont souvent du mal à partager intérêts, émotions ou affects.2-Vrai ; fait partie des altérations de la communication non verbale 3-Vrai ; il existe souvent un manque de recherche de partage avec les autres enfants du même âge est un signe fréquent d'altération des interactions4 ;Faux au contraire, des difficultés marquées persistent malgré les efforts5 ;faux  les personnes avec TSA ont une intolérance au changement et une adhésion rigide aux routines et rituels   Question 51-Faux: interventions globales et coordonnées multidisciplinaires2-Vrai: C’est une approche éducative comportementale validée pour aider aux apprentissages et aux compétences sociales. Les méthodes globales:-ABA (analyse appliquée du comportement)-ESDM (early start denver model)-TEACCH (Traitement et éducation des enfants autistes ou       atteints de troubles de la communication apparentés)3-Faux : y’a pas de médicament curatif5-Vrai: L’intégration scolaire et sociales adapté est l’un des objectif du projet individualisé  ( je pense qu'ils voulaient dire integration sociale mais les deux sont justes )sources : Diapo 2026 - Dr Feroukhi Troubles du spectre de l’autisme.pptx - Google SlidesDsm Iv ",
+      "original_id": 60399,
+      "clinical_case": "Salim est un adolescent âgé de 14 ans, scolarisé en 3e année moyenne. Ses camarades sont agacés par ses longs discours sur l'espace et les planètes et ne veulent pas être amis avec lui, ils le trouvent également bizarre parce car il ne les regarde jamais lorsqu'il leur parle et ne montre aucune empathie à leur égard. Bien qu'il ait de bonnes notes, ses enseignants se plaignent de ses comportements en classe car il ne comprend pas les règles et il aligne ses affaires sur la table.",
+      "display_title": "Question 6 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);\">Question 1</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai: </strong>Salim ne regarde pas ses camarades dans les yeux , ne montre aucune empathie et ne comprend pas les règles sociales,</p><p><strong style=\"color: rgb(230, 0, 0);\">2- Faux </strong>:pas de stéréotypies verbales décrites ( écholalie / repetitions des phrases .. etc</p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux: </strong>&nbsp;ses bonnes notes indiquent des capacités cognitives préservées.</p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux :</strong> l'alignement d'affaires évoque un rituel ou un comprtement repetitif autistique plutôt qu'une compulsion</p><p><strong style=\"color: rgb(0, 138, 0);\">5- Vrai</strong> l’évitement systématique du regard est une forme de réactivité sensorielle aux stimulations visuelles et sociales&nbsp;</p><p><br></p><p><strong>Question 2</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai&nbsp;;</strong> intérêts restreints et fixes</p><p><strong style=\"color: rgb(230, 0, 0);\">2-Faux&nbsp;; </strong>Ça relève du déficit de communication sociale, pas du caractère restreint et répétitif.</p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux&nbsp;;</strong> C’est un <strong>déficit socio-émotionnel</strong>, pas un comportement ritualisé ou répétitif.</p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux&nbsp;;</strong><span style=\"color: rgb(230, 0, 0);\"> </span>C’est un trouble de <strong>compréhension sociale</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">5-Juste</strong><strong> c'est </strong>un comportement <strong>ritualisé et répétitif</strong></p><p><br></p><p><strong>Question 3</strong></p><p><strong style=\"color: rgb(230, 0, 0);\"> 1-Faux&nbsp;;</strong><strong> </strong>Langage peut être Absent ou présent avec ou sans anomalie ( cas de salim) pas </p><p><strong style=\"color: rgb(230, 0, 0);\">2-Faux&nbsp;;</strong> Les symptômes doivent être présents dans la période développementale précoce donc <strong style=\"background-color: rgb(240, 102, 102);\">avant 3 ans </strong>&nbsp;meme si le dg est tard ,</p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux:</strong> bien que fréquentes, elles ne sont <strong>&nbsp;pas suffisant</strong> pour confirmer le TSA</p><p><strong style=\"color: rgb(0, 138, 0);\">5-Vrai :</strong><strong>toutes les réponses sont fausses</strong>, car <strong>l</strong><strong style=\"background-color: rgb(255, 194, 102);\">e diagnostic nécessite une évaluation plus complète</strong><strong>&nbsp;(les criteres abcde   (cde manquent) </strong></p><p><br></p><p><strong style=\"background-color: rgb(102, 163, 224);\">le diagnostic du trouble du spectre de l’autisme repose sur</strong><strong> </strong></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">A</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Déficits persistants de la communication et des interactions sociales (presents ici)</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">B</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Comportements, intérêts ou activités restreints et répétitifs (presents)</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">C</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Symptômes présents dès les étapes précoces du développement</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">D</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Retentissement cliniquement significatif dans le fonctionnement actuel</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">E</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Non expliqué par un handicap intellectuel ou retard global</span></p><p><br></p><p><strong>Question 4</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai&nbsp;;</strong> Les personnes avec TSA ont souvent du mal à partager intérêts, émotions ou affects.</p><p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai&nbsp;;</strong> fait partie des altérations de la communication non verbale&nbsp;</p><p><strong style=\"color: rgb(0, 138, 0);\">3-Vrai&nbsp;;</strong>&nbsp;il existe souvent un manque de recherche de partage avec les autres enfants du même âge est un signe fréquent d'altération des interactions</p><p><strong style=\"color: rgb(230, 0, 0);\">4&nbsp;;Faux </strong>au contraire, des difficultés marquées persistent malgré les efforts</p><p><strong style=\"color: rgb(230, 0, 0);\">5&nbsp;;faux </strong> les personnes avec TSA ont une intolérance au changement et une adhésion rigide aux routines et rituels </p><p> </p><p> </p><p><strong>Question 5</strong></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux: </strong>interventions globales et coordonnées multidisciplinaires</p><p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai: </strong>C’est une approche éducative comportementale validée pour aider aux apprentissages et aux compétences sociales.</p><p><strong style=\"background-color: rgb(204, 224, 245);\"> <u>Les méthodes globales:</u></strong></p><p><strong style=\"background-color: rgb(204, 224, 245);\">-ABA </strong><span style=\"background-color: rgb(204, 224, 245);\">(analyse appliquée du comportement)</span></p><p><strong style=\"background-color: rgb(204, 224, 245);\">-ESDM</strong><span style=\"background-color: rgb(204, 224, 245);\"> (early start denver model)</span></p><p><strong style=\"background-color: rgb(204, 224, 245);\">-TEACCH</strong><span style=\"background-color: rgb(204, 224, 245);\"> (Traitement et éducation des enfants autistes ou       atteints de troubles de la communication apparentés)</span></p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux : </strong>y’a pas de médicament curatif</p><p><strong style=\"color: rgb(0, 138, 0);\">5-Vrai: </strong>L’intégration scolaire et sociales adapté est l’un des objectif du projet individualisé&nbsp; ( je pense qu'ils voulaient dire integration sociale mais les deux sont justes )</p><p><br></p><p><br></p><p><br></p><p><span style=\"color: rgb(102, 163, 224);\">sources : Diapo 2026 - Dr Feroukhi </span></p><p><a href=\"https://docs.google.com/presentation/d/1DSsnaKaA2WlTKejsXX9XiMqkLisJCNDH/edit?slide=id.p1#slide=id.p1\" rel=\"noopener noreferrer\" target=\"_blank\">Troubles du spectre de l’autisme.pptx - Google Slides</a></p><p>Dsm Iv </p>"
+    },
+    {
+      "id": "6.2",
+      "case_id": 6,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295337,
+          "text": "1+2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 295338,
+          "text": "1+3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 295339,
+          "text": "1+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 295340,
+          "text": "1+5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 295341,
+          "text": "3+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026 "
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le caractère restreint et répétitif des comportements, des intérêts ou des activités apparaît chez cet adolescent dans les descriptions suivantes :\n1-Ses longs discours sur l'espace et les planètes\n2. Il ne regarde jamais ses camarades en leur parlant \n3-Il ne montre pas d'empathie envers ses camarades\n4-Il ne comprend pas les règles en classe\n5-Il aligne ses affaires sur la table\n",
+      "has_media": false,
+      "statement": "Le caractère restreint et répétitif des comportements, des intérêts ou des activités apparaît chez cet adolescent dans les descriptions suivantes :\n1-Ses longs discours sur l'espace et les planètes\n2. Il ne regarde jamais ses camarades en leur parlant \n3-Il ne montre pas d'empathie envers ses camarades\n4-Il ne comprend pas les règles en classe\n5-Il aligne ses affaires sur la table\n",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Question 11-Vrai: Salim ne regarde pas ses camarades dans les yeux , ne montre aucune empathie et ne comprend pas les règles sociales,2- Faux :pas de stéréotypies verbales décrites ( écholalie / repetitions des phrases .. etc3-Faux:  ses bonnes notes indiquent des capacités cognitives préservées.4-Faux : l'alignement d'affaires évoque un rituel ou un comprtement repetitif autistique plutôt qu'une compulsion5- Vrai l’évitement systématique du regard est une forme de réactivité sensorielle aux stimulations visuelles et sociales Question 21-Vrai ; intérêts restreints et fixes2-Faux ; Ça relève du déficit de communication sociale, pas du caractère restreint et répétitif.3-Faux ; C’est un déficit socio-émotionnel, pas un comportement ritualisé ou répétitif.4-Faux ; C’est un trouble de compréhension sociale5-Juste c'est un comportement ritualisé et répétitifQuestion 3 1-Faux ; Langage peut être Absent ou présent avec ou sans anomalie ( cas de salim) pas 2-Faux ; Les symptômes doivent être présents dans la période développementale précoce donc avant 3 ans  meme si le dg est tard ,3-Faux: bien que fréquentes, elles ne sont  pas suffisant pour confirmer le TSA5-Vrai :toutes les réponses sont fausses, car le diagnostic nécessite une évaluation plus complète (les criteres abcde   (cde manquent) le diagnostic du trouble du spectre de l’autisme repose sur ·  A : Déficits persistants de la communication et des interactions sociales (presents ici)·  B : Comportements, intérêts ou activités restreints et répétitifs (presents)·  C : Symptômes présents dès les étapes précoces du développement·  D : Retentissement cliniquement significatif dans le fonctionnement actuel·  E : Non expliqué par un handicap intellectuel ou retard globalQuestion 41-Vrai ; Les personnes avec TSA ont souvent du mal à partager intérêts, émotions ou affects.2-Vrai ; fait partie des altérations de la communication non verbale 3-Vrai ; il existe souvent un manque de recherche de partage avec les autres enfants du même âge est un signe fréquent d'altération des interactions4 ;Faux au contraire, des difficultés marquées persistent malgré les efforts5 ;faux  les personnes avec TSA ont une intolérance au changement et une adhésion rigide aux routines et rituels   Question 51-Faux: interventions globales et coordonnées multidisciplinaires2-Vrai: C’est une approche éducative comportementale validée pour aider aux apprentissages et aux compétences sociales. Les méthodes globales:-ABA (analyse appliquée du comportement)-ESDM (early start denver model)-TEACCH (Traitement et éducation des enfants autistes ou       atteints de troubles de la communication apparentés)3-Faux : y’a pas de médicament curatif5-Vrai: L’intégration scolaire et sociales adapté est l’un des objectif du projet individualisé  ( je pense qu'ils voulaient dire integration sociale mais les deux sont justes )sources : Diapo 2026 - Dr Feroukhi Troubles du spectre de l’autisme.pptx - Google SlidesDsm Iv ",
+      "original_id": 60400,
+      "clinical_case": "Salim est un adolescent âgé de 14 ans, scolarisé en 3e année moyenne. Ses camarades sont agacés par ses longs discours sur l'espace et les planètes et ne veulent pas être amis avec lui, ils le trouvent également bizarre parce car il ne les regarde jamais lorsqu'il leur parle et ne montre aucune empathie à leur égard. Bien qu'il ait de bonnes notes, ses enseignants se plaignent de ses comportements en classe car il ne comprend pas les règles et il aligne ses affaires sur la table.",
+      "display_title": "Question 6 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);\">Question 1</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai: </strong>Salim ne regarde pas ses camarades dans les yeux , ne montre aucune empathie et ne comprend pas les règles sociales,</p><p><strong style=\"color: rgb(230, 0, 0);\">2- Faux </strong>:pas de stéréotypies verbales décrites ( écholalie / repetitions des phrases .. etc</p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux: </strong>&nbsp;ses bonnes notes indiquent des capacités cognitives préservées.</p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux :</strong> l'alignement d'affaires évoque un rituel ou un comprtement repetitif autistique plutôt qu'une compulsion</p><p><strong style=\"color: rgb(0, 138, 0);\">5- Vrai</strong> l’évitement systématique du regard est une forme de réactivité sensorielle aux stimulations visuelles et sociales&nbsp;</p><p><br></p><p><strong>Question 2</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai&nbsp;;</strong> intérêts restreints et fixes</p><p><strong style=\"color: rgb(230, 0, 0);\">2-Faux&nbsp;; </strong>Ça relève du déficit de communication sociale, pas du caractère restreint et répétitif.</p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux&nbsp;;</strong> C’est un <strong>déficit socio-émotionnel</strong>, pas un comportement ritualisé ou répétitif.</p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux&nbsp;;</strong><span style=\"color: rgb(230, 0, 0);\"> </span>C’est un trouble de <strong>compréhension sociale</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">5-Juste</strong><strong> c'est </strong>un comportement <strong>ritualisé et répétitif</strong></p><p><br></p><p><strong>Question 3</strong></p><p><strong style=\"color: rgb(230, 0, 0);\"> 1-Faux&nbsp;;</strong><strong> </strong>Langage peut être Absent ou présent avec ou sans anomalie ( cas de salim) pas </p><p><strong style=\"color: rgb(230, 0, 0);\">2-Faux&nbsp;;</strong> Les symptômes doivent être présents dans la période développementale précoce donc <strong style=\"background-color: rgb(240, 102, 102);\">avant 3 ans </strong>&nbsp;meme si le dg est tard ,</p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux:</strong> bien que fréquentes, elles ne sont <strong>&nbsp;pas suffisant</strong> pour confirmer le TSA</p><p><strong style=\"color: rgb(0, 138, 0);\">5-Vrai :</strong><strong>toutes les réponses sont fausses</strong>, car <strong>l</strong><strong style=\"background-color: rgb(255, 194, 102);\">e diagnostic nécessite une évaluation plus complète</strong><strong>&nbsp;(les criteres abcde   (cde manquent) </strong></p><p><br></p><p><strong style=\"background-color: rgb(102, 163, 224);\">le diagnostic du trouble du spectre de l’autisme repose sur</strong><strong> </strong></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">A</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Déficits persistants de la communication et des interactions sociales (presents ici)</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">B</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Comportements, intérêts ou activités restreints et répétitifs (presents)</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">C</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Symptômes présents dès les étapes précoces du développement</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">D</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Retentissement cliniquement significatif dans le fonctionnement actuel</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">E</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Non expliqué par un handicap intellectuel ou retard global</span></p><p><br></p><p><strong>Question 4</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai&nbsp;;</strong> Les personnes avec TSA ont souvent du mal à partager intérêts, émotions ou affects.</p><p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai&nbsp;;</strong> fait partie des altérations de la communication non verbale&nbsp;</p><p><strong style=\"color: rgb(0, 138, 0);\">3-Vrai&nbsp;;</strong>&nbsp;il existe souvent un manque de recherche de partage avec les autres enfants du même âge est un signe fréquent d'altération des interactions</p><p><strong style=\"color: rgb(230, 0, 0);\">4&nbsp;;Faux </strong>au contraire, des difficultés marquées persistent malgré les efforts</p><p><strong style=\"color: rgb(230, 0, 0);\">5&nbsp;;faux </strong> les personnes avec TSA ont une intolérance au changement et une adhésion rigide aux routines et rituels </p><p> </p><p> </p><p><strong>Question 5</strong></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux: </strong>interventions globales et coordonnées multidisciplinaires</p><p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai: </strong>C’est une approche éducative comportementale validée pour aider aux apprentissages et aux compétences sociales.</p><p><strong style=\"background-color: rgb(204, 224, 245);\"> <u>Les méthodes globales:</u></strong></p><p><strong style=\"background-color: rgb(204, 224, 245);\">-ABA </strong><span style=\"background-color: rgb(204, 224, 245);\">(analyse appliquée du comportement)</span></p><p><strong style=\"background-color: rgb(204, 224, 245);\">-ESDM</strong><span style=\"background-color: rgb(204, 224, 245);\"> (early start denver model)</span></p><p><strong style=\"background-color: rgb(204, 224, 245);\">-TEACCH</strong><span style=\"background-color: rgb(204, 224, 245);\"> (Traitement et éducation des enfants autistes ou       atteints de troubles de la communication apparentés)</span></p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux : </strong>y’a pas de médicament curatif</p><p><strong style=\"color: rgb(0, 138, 0);\">5-Vrai: </strong>L’intégration scolaire et sociales adapté est l’un des objectif du projet individualisé&nbsp; ( je pense qu'ils voulaient dire integration sociale mais les deux sont justes )</p><p><br></p><p><br></p><p><br></p><p><span style=\"color: rgb(102, 163, 224);\">sources : Diapo 2026 - Dr Feroukhi </span></p><p><a href=\"https://docs.google.com/presentation/d/1DSsnaKaA2WlTKejsXX9XiMqkLisJCNDH/edit?slide=id.p1#slide=id.p1\" rel=\"noopener noreferrer\" target=\"_blank\">Troubles du spectre de l’autisme.pptx - Google Slides</a></p><p>Dsm Iv </p>"
+    },
+    {
+      "id": "6.3",
+      "case_id": 6,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295342,
+          "text": "L'absence du langage ",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 295343,
+          "text": "Le début des troubles après l'âge de 3 ans  ",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 295344,
+          "text": " Les particularités sensorielles",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 295345,
+          "text": "Aucun élément ne manque",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 295346,
+          "text": "Toutes ses propositions sont fausses",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026 "
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": " Pour confirmer le diagnostic du trouble du spectre de l'autisme, il manque les éléments suivants:",
+      "has_media": false,
+      "statement": " Pour confirmer le diagnostic du trouble du spectre de l'autisme, il manque les éléments suivants:",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Question 11-Vrai: Salim ne regarde pas ses camarades dans les yeux , ne montre aucune empathie et ne comprend pas les règles sociales,2- Faux :pas de stéréotypies verbales décrites ( écholalie / repetitions des phrases .. etc3-Faux:  ses bonnes notes indiquent des capacités cognitives préservées.4-Faux : l'alignement d'affaires évoque un rituel ou un comprtement repetitif autistique plutôt qu'une compulsion5- Vrai l’évitement systématique du regard est une forme de réactivité sensorielle aux stimulations visuelles et sociales Question 21-Vrai ; intérêts restreints et fixes2-Faux ; Ça relève du déficit de communication sociale, pas du caractère restreint et répétitif.3-Faux ; C’est un déficit socio-émotionnel, pas un comportement ritualisé ou répétitif.4-Faux ; C’est un trouble de compréhension sociale5-Juste c'est un comportement ritualisé et répétitifQuestion 3 1-Faux ; Langage peut être Absent ou présent avec ou sans anomalie ( cas de salim) pas 2-Faux ; Les symptômes doivent être présents dans la période développementale précoce donc avant 3 ans  meme si le dg est tard ,3-Faux: bien que fréquentes, elles ne sont  pas suffisant pour confirmer le TSA5-Vrai :toutes les réponses sont fausses, car le diagnostic nécessite une évaluation plus complète (les criteres abcde   (cde manquent) le diagnostic du trouble du spectre de l’autisme repose sur ·  A : Déficits persistants de la communication et des interactions sociales (presents ici)·  B : Comportements, intérêts ou activités restreints et répétitifs (presents)·  C : Symptômes présents dès les étapes précoces du développement·  D : Retentissement cliniquement significatif dans le fonctionnement actuel·  E : Non expliqué par un handicap intellectuel ou retard globalQuestion 41-Vrai ; Les personnes avec TSA ont souvent du mal à partager intérêts, émotions ou affects.2-Vrai ; fait partie des altérations de la communication non verbale 3-Vrai ; il existe souvent un manque de recherche de partage avec les autres enfants du même âge est un signe fréquent d'altération des interactions4 ;Faux au contraire, des difficultés marquées persistent malgré les efforts5 ;faux  les personnes avec TSA ont une intolérance au changement et une adhésion rigide aux routines et rituels   Question 51-Faux: interventions globales et coordonnées multidisciplinaires2-Vrai: C’est une approche éducative comportementale validée pour aider aux apprentissages et aux compétences sociales. Les méthodes globales:-ABA (analyse appliquée du comportement)-ESDM (early start denver model)-TEACCH (Traitement et éducation des enfants autistes ou       atteints de troubles de la communication apparentés)3-Faux : y’a pas de médicament curatif5-Vrai: L’intégration scolaire et sociales adapté est l’un des objectif du projet individualisé  ( je pense qu'ils voulaient dire integration sociale mais les deux sont justes )sources : Diapo 2026 - Dr Feroukhi Troubles du spectre de l’autisme.pptx - Google SlidesDsm Iv ",
+      "original_id": 60401,
+      "clinical_case": "Salim est un adolescent âgé de 14 ans, scolarisé en 3e année moyenne. Ses camarades sont agacés par ses longs discours sur l'espace et les planètes et ne veulent pas être amis avec lui, ils le trouvent également bizarre parce car il ne les regarde jamais lorsqu'il leur parle et ne montre aucune empathie à leur égard. Bien qu'il ait de bonnes notes, ses enseignants se plaignent de ses comportements en classe car il ne comprend pas les règles et il aligne ses affaires sur la table.",
+      "display_title": "Question 6 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);\">Question 1</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai: </strong>Salim ne regarde pas ses camarades dans les yeux , ne montre aucune empathie et ne comprend pas les règles sociales,</p><p><strong style=\"color: rgb(230, 0, 0);\">2- Faux </strong>:pas de stéréotypies verbales décrites ( écholalie / repetitions des phrases .. etc</p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux: </strong>&nbsp;ses bonnes notes indiquent des capacités cognitives préservées.</p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux :</strong> l'alignement d'affaires évoque un rituel ou un comprtement repetitif autistique plutôt qu'une compulsion</p><p><strong style=\"color: rgb(0, 138, 0);\">5- Vrai</strong> l’évitement systématique du regard est une forme de réactivité sensorielle aux stimulations visuelles et sociales&nbsp;</p><p><br></p><p><strong>Question 2</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai&nbsp;;</strong> intérêts restreints et fixes</p><p><strong style=\"color: rgb(230, 0, 0);\">2-Faux&nbsp;; </strong>Ça relève du déficit de communication sociale, pas du caractère restreint et répétitif.</p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux&nbsp;;</strong> C’est un <strong>déficit socio-émotionnel</strong>, pas un comportement ritualisé ou répétitif.</p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux&nbsp;;</strong><span style=\"color: rgb(230, 0, 0);\"> </span>C’est un trouble de <strong>compréhension sociale</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">5-Juste</strong><strong> c'est </strong>un comportement <strong>ritualisé et répétitif</strong></p><p><br></p><p><strong>Question 3</strong></p><p><strong style=\"color: rgb(230, 0, 0);\"> 1-Faux&nbsp;;</strong><strong> </strong>Langage peut être Absent ou présent avec ou sans anomalie ( cas de salim) pas </p><p><strong style=\"color: rgb(230, 0, 0);\">2-Faux&nbsp;;</strong> Les symptômes doivent être présents dans la période développementale précoce donc <strong style=\"background-color: rgb(240, 102, 102);\">avant 3 ans </strong>&nbsp;meme si le dg est tard ,</p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux:</strong> bien que fréquentes, elles ne sont <strong>&nbsp;pas suffisant</strong> pour confirmer le TSA</p><p><strong style=\"color: rgb(0, 138, 0);\">5-Vrai :</strong><strong>toutes les réponses sont fausses</strong>, car <strong>l</strong><strong style=\"background-color: rgb(255, 194, 102);\">e diagnostic nécessite une évaluation plus complète</strong><strong>&nbsp;(les criteres abcde   (cde manquent) </strong></p><p><br></p><p><strong style=\"background-color: rgb(102, 163, 224);\">le diagnostic du trouble du spectre de l’autisme repose sur</strong><strong> </strong></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">A</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Déficits persistants de la communication et des interactions sociales (presents ici)</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">B</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Comportements, intérêts ou activités restreints et répétitifs (presents)</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">C</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Symptômes présents dès les étapes précoces du développement</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">D</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Retentissement cliniquement significatif dans le fonctionnement actuel</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">E</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Non expliqué par un handicap intellectuel ou retard global</span></p><p><br></p><p><strong>Question 4</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai&nbsp;;</strong> Les personnes avec TSA ont souvent du mal à partager intérêts, émotions ou affects.</p><p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai&nbsp;;</strong> fait partie des altérations de la communication non verbale&nbsp;</p><p><strong style=\"color: rgb(0, 138, 0);\">3-Vrai&nbsp;;</strong>&nbsp;il existe souvent un manque de recherche de partage avec les autres enfants du même âge est un signe fréquent d'altération des interactions</p><p><strong style=\"color: rgb(230, 0, 0);\">4&nbsp;;Faux </strong>au contraire, des difficultés marquées persistent malgré les efforts</p><p><strong style=\"color: rgb(230, 0, 0);\">5&nbsp;;faux </strong> les personnes avec TSA ont une intolérance au changement et une adhésion rigide aux routines et rituels </p><p> </p><p> </p><p><strong>Question 5</strong></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux: </strong>interventions globales et coordonnées multidisciplinaires</p><p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai: </strong>C’est une approche éducative comportementale validée pour aider aux apprentissages et aux compétences sociales.</p><p><strong style=\"background-color: rgb(204, 224, 245);\"> <u>Les méthodes globales:</u></strong></p><p><strong style=\"background-color: rgb(204, 224, 245);\">-ABA </strong><span style=\"background-color: rgb(204, 224, 245);\">(analyse appliquée du comportement)</span></p><p><strong style=\"background-color: rgb(204, 224, 245);\">-ESDM</strong><span style=\"background-color: rgb(204, 224, 245);\"> (early start denver model)</span></p><p><strong style=\"background-color: rgb(204, 224, 245);\">-TEACCH</strong><span style=\"background-color: rgb(204, 224, 245);\"> (Traitement et éducation des enfants autistes ou       atteints de troubles de la communication apparentés)</span></p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux : </strong>y’a pas de médicament curatif</p><p><strong style=\"color: rgb(0, 138, 0);\">5-Vrai: </strong>L’intégration scolaire et sociales adapté est l’un des objectif du projet individualisé&nbsp; ( je pense qu'ils voulaient dire integration sociale mais les deux sont justes )</p><p><br></p><p><br></p><p><br></p><p><span style=\"color: rgb(102, 163, 224);\">sources : Diapo 2026 - Dr Feroukhi </span></p><p><a href=\"https://docs.google.com/presentation/d/1DSsnaKaA2WlTKejsXX9XiMqkLisJCNDH/edit?slide=id.p1#slide=id.p1\" rel=\"noopener noreferrer\" target=\"_blank\">Troubles du spectre de l’autisme.pptx - Google Slides</a></p><p>Dsm Iv </p>"
+    },
+    {
+      "id": "6.4",
+      "case_id": 6,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295347,
+          "text": "1+2+3",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 295348,
+          "text": "1+3+4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 295349,
+          "text": "2+3+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 295350,
+          "text": "2+4+5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 295351,
+          "text": "3+4+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026 "
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quels signes comportementaux peuvent être associés à un trouble du spectre de l'autisme ?\n1-Difficultés à partager les émotions\n2. Déficits dans l'utilisation des gestes\n\n\n3-Absence d'intérêt pour les pairs\n4-Facilité à établir des relations sociales\n5-Tolérance au changement\n",
+      "has_media": false,
+      "statement": "Quels signes comportementaux peuvent être associés à un trouble du spectre de l'autisme ?\n1-Difficultés à partager les émotions\n2. Déficits dans l'utilisation des gestes\n\n\n3-Absence d'intérêt pour les pairs\n4-Facilité à établir des relations sociales\n5-Tolérance au changement\n",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Question 11-Vrai: Salim ne regarde pas ses camarades dans les yeux , ne montre aucune empathie et ne comprend pas les règles sociales,2- Faux :pas de stéréotypies verbales décrites ( écholalie / repetitions des phrases .. etc3-Faux:  ses bonnes notes indiquent des capacités cognitives préservées.4-Faux : l'alignement d'affaires évoque un rituel ou un comprtement repetitif autistique plutôt qu'une compulsion5- Vrai l’évitement systématique du regard est une forme de réactivité sensorielle aux stimulations visuelles et sociales Question 21-Vrai ; intérêts restreints et fixes2-Faux ; Ça relève du déficit de communication sociale, pas du caractère restreint et répétitif.3-Faux ; C’est un déficit socio-émotionnel, pas un comportement ritualisé ou répétitif.4-Faux ; C’est un trouble de compréhension sociale5-Juste c'est un comportement ritualisé et répétitifQuestion 3 1-Faux ; Langage peut être Absent ou présent avec ou sans anomalie ( cas de salim) pas 2-Faux ; Les symptômes doivent être présents dans la période développementale précoce donc avant 3 ans  meme si le dg est tard ,3-Faux: bien que fréquentes, elles ne sont  pas suffisant pour confirmer le TSA5-Vrai :toutes les réponses sont fausses, car le diagnostic nécessite une évaluation plus complète (les criteres abcde   (cde manquent) le diagnostic du trouble du spectre de l’autisme repose sur ·  A : Déficits persistants de la communication et des interactions sociales (presents ici)·  B : Comportements, intérêts ou activités restreints et répétitifs (presents)·  C : Symptômes présents dès les étapes précoces du développement·  D : Retentissement cliniquement significatif dans le fonctionnement actuel·  E : Non expliqué par un handicap intellectuel ou retard globalQuestion 41-Vrai ; Les personnes avec TSA ont souvent du mal à partager intérêts, émotions ou affects.2-Vrai ; fait partie des altérations de la communication non verbale 3-Vrai ; il existe souvent un manque de recherche de partage avec les autres enfants du même âge est un signe fréquent d'altération des interactions4 ;Faux au contraire, des difficultés marquées persistent malgré les efforts5 ;faux  les personnes avec TSA ont une intolérance au changement et une adhésion rigide aux routines et rituels   Question 51-Faux: interventions globales et coordonnées multidisciplinaires2-Vrai: C’est une approche éducative comportementale validée pour aider aux apprentissages et aux compétences sociales. Les méthodes globales:-ABA (analyse appliquée du comportement)-ESDM (early start denver model)-TEACCH (Traitement et éducation des enfants autistes ou       atteints de troubles de la communication apparentés)3-Faux : y’a pas de médicament curatif5-Vrai: L’intégration scolaire et sociales adapté est l’un des objectif du projet individualisé  ( je pense qu'ils voulaient dire integration sociale mais les deux sont justes )sources : Diapo 2026 - Dr Feroukhi Troubles du spectre de l’autisme.pptx - Google SlidesDsm Iv ",
+      "original_id": 60402,
+      "clinical_case": "Salim est un adolescent âgé de 14 ans, scolarisé en 3e année moyenne. Ses camarades sont agacés par ses longs discours sur l'espace et les planètes et ne veulent pas être amis avec lui, ils le trouvent également bizarre parce car il ne les regarde jamais lorsqu'il leur parle et ne montre aucune empathie à leur égard. Bien qu'il ait de bonnes notes, ses enseignants se plaignent de ses comportements en classe car il ne comprend pas les règles et il aligne ses affaires sur la table.",
+      "display_title": "Question 6 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);\">Question 1</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai: </strong>Salim ne regarde pas ses camarades dans les yeux , ne montre aucune empathie et ne comprend pas les règles sociales,</p><p><strong style=\"color: rgb(230, 0, 0);\">2- Faux </strong>:pas de stéréotypies verbales décrites ( écholalie / repetitions des phrases .. etc</p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux: </strong>&nbsp;ses bonnes notes indiquent des capacités cognitives préservées.</p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux :</strong> l'alignement d'affaires évoque un rituel ou un comprtement repetitif autistique plutôt qu'une compulsion</p><p><strong style=\"color: rgb(0, 138, 0);\">5- Vrai</strong> l’évitement systématique du regard est une forme de réactivité sensorielle aux stimulations visuelles et sociales&nbsp;</p><p><br></p><p><strong>Question 2</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai&nbsp;;</strong> intérêts restreints et fixes</p><p><strong style=\"color: rgb(230, 0, 0);\">2-Faux&nbsp;; </strong>Ça relève du déficit de communication sociale, pas du caractère restreint et répétitif.</p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux&nbsp;;</strong> C’est un <strong>déficit socio-émotionnel</strong>, pas un comportement ritualisé ou répétitif.</p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux&nbsp;;</strong><span style=\"color: rgb(230, 0, 0);\"> </span>C’est un trouble de <strong>compréhension sociale</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">5-Juste</strong><strong> c'est </strong>un comportement <strong>ritualisé et répétitif</strong></p><p><br></p><p><strong>Question 3</strong></p><p><strong style=\"color: rgb(230, 0, 0);\"> 1-Faux&nbsp;;</strong><strong> </strong>Langage peut être Absent ou présent avec ou sans anomalie ( cas de salim) pas </p><p><strong style=\"color: rgb(230, 0, 0);\">2-Faux&nbsp;;</strong> Les symptômes doivent être présents dans la période développementale précoce donc <strong style=\"background-color: rgb(240, 102, 102);\">avant 3 ans </strong>&nbsp;meme si le dg est tard ,</p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux:</strong> bien que fréquentes, elles ne sont <strong>&nbsp;pas suffisant</strong> pour confirmer le TSA</p><p><strong style=\"color: rgb(0, 138, 0);\">5-Vrai :</strong><strong>toutes les réponses sont fausses</strong>, car <strong>l</strong><strong style=\"background-color: rgb(255, 194, 102);\">e diagnostic nécessite une évaluation plus complète</strong><strong>&nbsp;(les criteres abcde   (cde manquent) </strong></p><p><br></p><p><strong style=\"background-color: rgb(102, 163, 224);\">le diagnostic du trouble du spectre de l’autisme repose sur</strong><strong> </strong></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">A</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Déficits persistants de la communication et des interactions sociales (presents ici)</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">B</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Comportements, intérêts ou activités restreints et répétitifs (presents)</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">C</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Symptômes présents dès les étapes précoces du développement</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">D</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Retentissement cliniquement significatif dans le fonctionnement actuel</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">E</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Non expliqué par un handicap intellectuel ou retard global</span></p><p><br></p><p><strong>Question 4</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai&nbsp;;</strong> Les personnes avec TSA ont souvent du mal à partager intérêts, émotions ou affects.</p><p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai&nbsp;;</strong> fait partie des altérations de la communication non verbale&nbsp;</p><p><strong style=\"color: rgb(0, 138, 0);\">3-Vrai&nbsp;;</strong>&nbsp;il existe souvent un manque de recherche de partage avec les autres enfants du même âge est un signe fréquent d'altération des interactions</p><p><strong style=\"color: rgb(230, 0, 0);\">4&nbsp;;Faux </strong>au contraire, des difficultés marquées persistent malgré les efforts</p><p><strong style=\"color: rgb(230, 0, 0);\">5&nbsp;;faux </strong> les personnes avec TSA ont une intolérance au changement et une adhésion rigide aux routines et rituels </p><p> </p><p> </p><p><strong>Question 5</strong></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux: </strong>interventions globales et coordonnées multidisciplinaires</p><p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai: </strong>C’est une approche éducative comportementale validée pour aider aux apprentissages et aux compétences sociales.</p><p><strong style=\"background-color: rgb(204, 224, 245);\"> <u>Les méthodes globales:</u></strong></p><p><strong style=\"background-color: rgb(204, 224, 245);\">-ABA </strong><span style=\"background-color: rgb(204, 224, 245);\">(analyse appliquée du comportement)</span></p><p><strong style=\"background-color: rgb(204, 224, 245);\">-ESDM</strong><span style=\"background-color: rgb(204, 224, 245);\"> (early start denver model)</span></p><p><strong style=\"background-color: rgb(204, 224, 245);\">-TEACCH</strong><span style=\"background-color: rgb(204, 224, 245);\"> (Traitement et éducation des enfants autistes ou       atteints de troubles de la communication apparentés)</span></p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux : </strong>y’a pas de médicament curatif</p><p><strong style=\"color: rgb(0, 138, 0);\">5-Vrai: </strong>L’intégration scolaire et sociales adapté est l’un des objectif du projet individualisé&nbsp; ( je pense qu'ils voulaient dire integration sociale mais les deux sont justes )</p><p><br></p><p><br></p><p><br></p><p><span style=\"color: rgb(102, 163, 224);\">sources : Diapo 2026 - Dr Feroukhi </span></p><p><a href=\"https://docs.google.com/presentation/d/1DSsnaKaA2WlTKejsXX9XiMqkLisJCNDH/edit?slide=id.p1#slide=id.p1\" rel=\"noopener noreferrer\" target=\"_blank\">Troubles du spectre de l’autisme.pptx - Google Slides</a></p><p>Dsm Iv </p>"
+    },
+    {
+      "id": "6.5",
+      "case_id": 6,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295352,
+          "text": "1+2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 295353,
+          "text": "1+3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 295354,
+          "text": "2+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 295355,
+          "text": "3+5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 295356,
+          "text": "2+5",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026 "
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "La prise en charge du trouble du spectre de l'autisme se base sur:\n1-Une intervention unidisciplinaire\n2-Le programme ABA (Applied Behaviour Analysis)\n3-Un traitement antidépresseur\n4-Un régime pauvre en gluten\n5-L'intégration sensorielle\n",
+      "has_media": false,
+      "statement": "La prise en charge du trouble du spectre de l'autisme se base sur:\n1-Une intervention unidisciplinaire\n2-Le programme ABA (Applied Behaviour Analysis)\n3-Un traitement antidépresseur\n4-Un régime pauvre en gluten\n5-L'intégration sensorielle\n",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Question 11-Vrai: Salim ne regarde pas ses camarades dans les yeux , ne montre aucune empathie et ne comprend pas les règles sociales,2- Faux :pas de stéréotypies verbales décrites ( écholalie / repetitions des phrases .. etc3-Faux:  ses bonnes notes indiquent des capacités cognitives préservées.4-Faux : l'alignement d'affaires évoque un rituel ou un comprtement repetitif autistique plutôt qu'une compulsion5- Vrai l’évitement systématique du regard est une forme de réactivité sensorielle aux stimulations visuelles et sociales Question 21-Vrai ; intérêts restreints et fixes2-Faux ; Ça relève du déficit de communication sociale, pas du caractère restreint et répétitif.3-Faux ; C’est un déficit socio-émotionnel, pas un comportement ritualisé ou répétitif.4-Faux ; C’est un trouble de compréhension sociale5-Juste c'est un comportement ritualisé et répétitifQuestion 3 1-Faux ; Langage peut être Absent ou présent avec ou sans anomalie ( cas de salim) pas 2-Faux ; Les symptômes doivent être présents dans la période développementale précoce donc avant 3 ans  meme si le dg est tard ,3-Faux: bien que fréquentes, elles ne sont  pas suffisant pour confirmer le TSA5-Vrai :toutes les réponses sont fausses, car le diagnostic nécessite une évaluation plus complète (les criteres abcde   (cde manquent) le diagnostic du trouble du spectre de l’autisme repose sur ·  A : Déficits persistants de la communication et des interactions sociales (presents ici)·  B : Comportements, intérêts ou activités restreints et répétitifs (presents)·  C : Symptômes présents dès les étapes précoces du développement·  D : Retentissement cliniquement significatif dans le fonctionnement actuel·  E : Non expliqué par un handicap intellectuel ou retard globalQuestion 41-Vrai ; Les personnes avec TSA ont souvent du mal à partager intérêts, émotions ou affects.2-Vrai ; fait partie des altérations de la communication non verbale 3-Vrai ; il existe souvent un manque de recherche de partage avec les autres enfants du même âge est un signe fréquent d'altération des interactions4 ;Faux au contraire, des difficultés marquées persistent malgré les efforts5 ;faux  les personnes avec TSA ont une intolérance au changement et une adhésion rigide aux routines et rituels   Question 51-Faux: interventions globales et coordonnées multidisciplinaires2-Vrai: C’est une approche éducative comportementale validée pour aider aux apprentissages et aux compétences sociales. Les méthodes globales:-ABA (analyse appliquée du comportement)-ESDM (early start denver model)-TEACCH (Traitement et éducation des enfants autistes ou       atteints de troubles de la communication apparentés)3-Faux : y’a pas de médicament curatif5-Vrai: L’intégration scolaire et sociales adapté est l’un des objectif du projet individualisé  ( je pense qu'ils voulaient dire integration sociale mais les deux sont justes )sources : Diapo 2026 - Dr Feroukhi Troubles du spectre de l’autisme.pptx - Google SlidesDsm Iv ",
+      "original_id": 60403,
+      "clinical_case": "Salim est un adolescent âgé de 14 ans, scolarisé en 3e année moyenne. Ses camarades sont agacés par ses longs discours sur l'espace et les planètes et ne veulent pas être amis avec lui, ils le trouvent également bizarre parce car il ne les regarde jamais lorsqu'il leur parle et ne montre aucune empathie à leur égard. Bien qu'il ait de bonnes notes, ses enseignants se plaignent de ses comportements en classe car il ne comprend pas les règles et il aligne ses affaires sur la table.",
+      "display_title": "Question 6 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);\">Question 1</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai: </strong>Salim ne regarde pas ses camarades dans les yeux , ne montre aucune empathie et ne comprend pas les règles sociales,</p><p><strong style=\"color: rgb(230, 0, 0);\">2- Faux </strong>:pas de stéréotypies verbales décrites ( écholalie / repetitions des phrases .. etc</p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux: </strong>&nbsp;ses bonnes notes indiquent des capacités cognitives préservées.</p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux :</strong> l'alignement d'affaires évoque un rituel ou un comprtement repetitif autistique plutôt qu'une compulsion</p><p><strong style=\"color: rgb(0, 138, 0);\">5- Vrai</strong> l’évitement systématique du regard est une forme de réactivité sensorielle aux stimulations visuelles et sociales&nbsp;</p><p><br></p><p><strong>Question 2</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai&nbsp;;</strong> intérêts restreints et fixes</p><p><strong style=\"color: rgb(230, 0, 0);\">2-Faux&nbsp;; </strong>Ça relève du déficit de communication sociale, pas du caractère restreint et répétitif.</p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux&nbsp;;</strong> C’est un <strong>déficit socio-émotionnel</strong>, pas un comportement ritualisé ou répétitif.</p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux&nbsp;;</strong><span style=\"color: rgb(230, 0, 0);\"> </span>C’est un trouble de <strong>compréhension sociale</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">5-Juste</strong><strong> c'est </strong>un comportement <strong>ritualisé et répétitif</strong></p><p><br></p><p><strong>Question 3</strong></p><p><strong style=\"color: rgb(230, 0, 0);\"> 1-Faux&nbsp;;</strong><strong> </strong>Langage peut être Absent ou présent avec ou sans anomalie ( cas de salim) pas </p><p><strong style=\"color: rgb(230, 0, 0);\">2-Faux&nbsp;;</strong> Les symptômes doivent être présents dans la période développementale précoce donc <strong style=\"background-color: rgb(240, 102, 102);\">avant 3 ans </strong>&nbsp;meme si le dg est tard ,</p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux:</strong> bien que fréquentes, elles ne sont <strong>&nbsp;pas suffisant</strong> pour confirmer le TSA</p><p><strong style=\"color: rgb(0, 138, 0);\">5-Vrai :</strong><strong>toutes les réponses sont fausses</strong>, car <strong>l</strong><strong style=\"background-color: rgb(255, 194, 102);\">e diagnostic nécessite une évaluation plus complète</strong><strong>&nbsp;(les criteres abcde   (cde manquent) </strong></p><p><br></p><p><strong style=\"background-color: rgb(102, 163, 224);\">le diagnostic du trouble du spectre de l’autisme repose sur</strong><strong> </strong></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">A</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Déficits persistants de la communication et des interactions sociales (presents ici)</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">B</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Comportements, intérêts ou activités restreints et répétitifs (presents)</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">C</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Symptômes présents dès les étapes précoces du développement</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">D</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Retentissement cliniquement significatif dans le fonctionnement actuel</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">· &nbsp;</span><strong style=\"background-color: rgb(204, 224, 245);\">E</strong><span style=\"background-color: rgb(204, 224, 245);\"> : Non expliqué par un handicap intellectuel ou retard global</span></p><p><br></p><p><strong>Question 4</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai&nbsp;;</strong> Les personnes avec TSA ont souvent du mal à partager intérêts, émotions ou affects.</p><p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai&nbsp;;</strong> fait partie des altérations de la communication non verbale&nbsp;</p><p><strong style=\"color: rgb(0, 138, 0);\">3-Vrai&nbsp;;</strong>&nbsp;il existe souvent un manque de recherche de partage avec les autres enfants du même âge est un signe fréquent d'altération des interactions</p><p><strong style=\"color: rgb(230, 0, 0);\">4&nbsp;;Faux </strong>au contraire, des difficultés marquées persistent malgré les efforts</p><p><strong style=\"color: rgb(230, 0, 0);\">5&nbsp;;faux </strong> les personnes avec TSA ont une intolérance au changement et une adhésion rigide aux routines et rituels </p><p> </p><p> </p><p><strong>Question 5</strong></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux: </strong>interventions globales et coordonnées multidisciplinaires</p><p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai: </strong>C’est une approche éducative comportementale validée pour aider aux apprentissages et aux compétences sociales.</p><p><strong style=\"background-color: rgb(204, 224, 245);\"> <u>Les méthodes globales:</u></strong></p><p><strong style=\"background-color: rgb(204, 224, 245);\">-ABA </strong><span style=\"background-color: rgb(204, 224, 245);\">(analyse appliquée du comportement)</span></p><p><strong style=\"background-color: rgb(204, 224, 245);\">-ESDM</strong><span style=\"background-color: rgb(204, 224, 245);\"> (early start denver model)</span></p><p><strong style=\"background-color: rgb(204, 224, 245);\">-TEACCH</strong><span style=\"background-color: rgb(204, 224, 245);\"> (Traitement et éducation des enfants autistes ou       atteints de troubles de la communication apparentés)</span></p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux : </strong>y’a pas de médicament curatif</p><p><strong style=\"color: rgb(0, 138, 0);\">5-Vrai: </strong>L’intégration scolaire et sociales adapté est l’un des objectif du projet individualisé&nbsp; ( je pense qu'ils voulaient dire integration sociale mais les deux sont justes )</p><p><br></p><p><br></p><p><br></p><p><span style=\"color: rgb(102, 163, 224);\">sources : Diapo 2026 - Dr Feroukhi </span></p><p><a href=\"https://docs.google.com/presentation/d/1DSsnaKaA2WlTKejsXX9XiMqkLisJCNDH/edit?slide=id.p1#slide=id.p1\" rel=\"noopener noreferrer\" target=\"_blank\">Troubles du spectre de l’autisme.pptx - Google Slides</a></p><p>Dsm Iv </p>"
+    },
+    {
+      "id": 7,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284801,
+          "text": "Radiologique",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284802,
+          "text": "Biologique",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 284803,
+          "text": "Radiologique et biologique",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 284804,
+          "text": "Clinique",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284805,
+          "text": "Clinique + échelles d'évaluation",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le diagnostic de l'autisme est base sur la :",
+      "has_media": true,
+      "statement": "Le diagnostic de l'autisme est base sur la :",
+      "sub_index": null,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187399109_i3fhibh/session_1792187399109_i3fhibh_q_10_1792187439643_img_0.jpg"
+      ],
+      "croq_answer": null,
+      "explanation": "le diagnostic des Troubles du Spectre de l'Autisme repose sur I'identification d'une Dyade Autistique de déficits persistants.Le diagnostic des TSA n'est pas basé sur un seul examen biologique ou génétique, mais est strictement clinique et développemental. I exige la présence de déficits dans deux domaines fondamentaux qui doivent être présents dès les étapes précoces du développement et entraîner un retentissement fonctionnel significatif.",
+      "original_id": 58160,
+      "clinical_case": null,
+      "display_title": "Question 7",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>le diagnostic des Troubles du Spectre de l'Autisme repose sur I'identification d'une Dyade Autistique de déficits persistants.</p><p>Le diagnostic des TSA n'est pas basé sur un seul examen biologique ou génétique, mais est strictement clinique et développemental. I exige la présence de déficits dans deux domaines fondamentaux qui doivent être présents dès les étapes précoces du développement et entraîner un retentissement fonctionnel significatif.</p><p><br></p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187399109_i3fhibh/session_1792187399109_i3fhibh_q_10_1792187439643_img_0.jpg\"></p>"
+    },
+    {
+      "id": 8,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284806,
+          "text": "1.3.4",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284807,
+          "text": "1.4.5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 284808,
+          "text": "2.3.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 284809,
+          "text": "2.4.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284810,
+          "text": "3.4.5",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des associations concerne les signes d'alerte absolue de l'autisme, laquelle ? \n1. Absence de babillage à l'âge de 9 mois. \n2. Absence d'association de mots à l'âge de 03 ans.\n3. Absence de mots à 18 mois. \n4. Absence de gestes sociaux à 12 mois.\n5. Perte des compétences sociales, quel que soit l'âge.",
+      "has_media": false,
+      "statement": "L'une des associations concerne les signes d'alerte absolue de l'autisme, laquelle ? \n1. Absence de babillage à l'âge de 9 mois. \n2. Absence d'association de mots à l'âge de 03 ans.\n3. Absence de mots à 18 mois. \n4. Absence de gestes sociaux à 12 mois.\n5. Perte des compétences sociales, quel que soit l'âge.",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Les signes précoces : Anomalie dans le développement du langage: Absence de babillage à 12 mois Absence de mots à 18 mois et au-delàAbsence d'association de mots à 24 mois et au-delà. Absence du pointage à distance ou d'autres gestes sociaux pour communiquer à 12 mois et au-delà (faire coucou, au revoir...). Absence du jeu de faire semblantRégression des habiletés langagières ou relationnelles,Il ne faut jamais ignoré l'inquiétude des parents concernant le développement de leur enfant, notamment en termes de communication sociale et de langage.",
+      "original_id": 58161,
+      "clinical_case": null,
+      "display_title": "Question 8",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>Les signes précoces : </p><ul><li>Anomalie dans le développement du langage: </li><li class=\"ql-indent-1\">Absence de babillage à 12 mois </li><li class=\"ql-indent-1\">Absence de mots à 18 mois et au-delà</li><li class=\"ql-indent-1\">Absence d'association de mots à 24 mois et au-delà.</li><li> Absence du pointage à distance ou d'autres gestes sociaux pour communiquer à 12 mois et au-delà (faire coucou, au revoir...).</li><li> Absence du jeu de faire semblant</li><li>Régression des habiletés langagières ou relationnelles,</li></ul><p>Il ne faut jamais ignoré l'inquiétude des parents concernant le développement de leur enfant, notamment en termes de communication sociale et de langage.</p>"
+    },
+    {
+      "id": 9,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266002,
+          "text": "Carence affective",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266003,
+          "text": "Phénylcétonurie",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 266004,
+          "text": "Accès maniaque",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 266005,
+          "text": "Mutisme",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266006,
+          "text": "Retard mental",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les diagnostics différentiels du trouble du spectre autistique sont : (RF)",
+      "has_media": false,
+      "statement": "Les diagnostics différentiels du trouble du spectre autistique sont : (RF)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Plusieurs diagnostics différentiels : Surdité  : l’adaptation de l’enfant à l’appareillage, le développement de son appétence pour le contact, son évolution dans le domaine relationnel ,montrent que les symptomes etaient dus à la déprivation sensorielle, mais non un véritable autismeCécité : elle peut s’accompagner de retrait autistique avec stéréotypies et mouvements d’autostimulation.Carences affectives et dépression infantile : peuvent s’accompagner de symptômes d’allure autistique, amélioration apres PEC.Retard mental : distinction entre le TSA et RM peut etre difficile, les stéréotypies d’allure autistique peuvent etre retrouvés dans le RM mais les interactions sociales sont bonnesTrouble du langage : maintien des compétences relationnellesMutisme: absence de comportements repetitifs et interets restreintsSyndormes neurologiques d’origine génétique et maladies neurodégéneratives (ex: syndrome de RETT, x fragile…)Phénylcétonurie: maladie métabolique causée par l'accumulation de phénylalanine dans le cerveau est cause de retard mental,d’anomalies cérébrales et de TSA .",
+      "original_id": 54106,
+      "clinical_case": null,
+      "display_title": "Question 9",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong>Plusieurs diagnostics différentiels&nbsp;: </strong></p><ul><li><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><u>Surdité&nbsp; </u></strong><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">: l’adaptation de l’enfant à l’appareillage, le développement de son appétence pour le contact, son évolution dans le domaine relationnel ,montrent que les symptomes etaient dus à la déprivation sensorielle, mais non un véritable autisme</span></li><li><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><u>Cécité </u></strong><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">: elle peut s’accompagner de retrait autistique avec stéréotypies et mouvements d’autostimulation.</span></li><li><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><u>Carences affectives et dépression infantile</u></strong><span style=\"background-color: transparent; color: rgb(0, 0, 0);\"> : peuvent s’accompagner de symptômes d’allure autistique, amélioration apres PEC.</span></li><li><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><u>Retard mental</u></strong><span style=\"background-color: transparent; color: rgb(0, 0, 0);\"> : distinction entre le TSA et RM peut etre difficile, les stéréotypies d’allure autistique peuvent etre retrouvés dans le RM mais les interactions sociales sont bonnes</span></li><li><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><u>Trouble du langage</u></strong><span style=\"background-color: transparent; color: rgb(0, 0, 0);\"> : maintien des compétences relationnelles</span></li><li><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><u>Mutisme</u></strong><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">: absence de comportements repetitifs et interets restreints</span></li><li><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><u>Syndormes neurologiques d’origine génétique et maladies neurodégéneratives</u></strong><span style=\"background-color: transparent; color: rgb(0, 0, 0);\"> (ex: syndrome de RETT, x fragile…)</span></li><li><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><u>Phénylcétonurie</u></strong><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">: maladie métabolique causée par l'accumulation de phénylalanine dans le cerveau est cause de retard mental,d’anomalies cérébrales et de TSA .</span></li></ul><p><br></p>"
+    },
+    {
+      "id": 10,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266007,
+          "text": "ADI-R",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266008,
+          "text": "ADOS",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 266009,
+          "text": "CARS",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266010,
+          "text": "PANSS",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 266011,
+          "text": "PEP 3",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Parmi les outils diagnostiques et d’évaluation de l’autisme : (cochez la réponse fausse)",
+      "has_media": false,
+      "statement": "Parmi les outils diagnostiques et d’évaluation de l’autisme : (cochez la réponse fausse)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A- Vrai, ADI-R (Autism Diagnostic Interview – Revised) : Outil standardisé d’entretien avec les parents pour le diagnostic de l’autisme.B- Vrai, ADOS (Autism Diagnostic Observation Schedule) Échelle d’observation directe des comportements liés à l’autisme.C- Vrai, CARS (Childhood Autism Rating Scale) Outil de cotation clinique permettant d’évaluer la sévérité de l’autisme.D- Faux, PANSS (Positive and Negative Syndrome Scale) Utilisé pour évaluer les symptômes positifs et négatifs de la schizophrénie, pas de l’autisme.E- Vrai, PEP-3 (Psychoeducational Profile – Third edition) Utilisé pour évaluer le développement des enfants avec des troubles du spectre de l’autisme, utile pour orienter la prise en charge éducative.",
+      "original_id": 54107,
+      "clinical_case": null,
+      "display_title": "Question 10",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(0, 138, 0);\">A- Vrai,</strong> ADI-R (Autism Diagnostic Interview – Revised) : Outil standardisé d’entretien avec les parents pour le diagnostic de l’autisme.</p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> ADOS (Autism Diagnostic Observation Schedule) Échelle d’observation directe des comportements liés à l’autisme.</p><p><strong style=\"color: rgb(0, 138, 0);\">C- Vrai,</strong> CARS (Childhood Autism Rating Scale) Outil de cotation clinique permettant d’évaluer la sévérité de l’autisme.</p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> PANSS (Positive and Negative Syndrome Scale) Utilisé pour évaluer les symptômes positifs et négatifs de <strong style=\"background-color: rgb(240, 102, 102);\">la schizophrénie</strong>, pas de l’autisme.</p><p><strong style=\"color: rgb(0, 138, 0);\">E- Vrai,</strong> PEP-3 (Psychoeducational Profile – Third edition) Utilisé pour évaluer le développement des enfants avec des troubles du spectre de l’autisme, utile pour orienter la prise en charge éducative.</p>"
+    },
+    {
+      "id": 11,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266192,
+          "text": "Basé sur la structuration du temps et de l'espace",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 266193,
+          "text": "Ne nécessite pas la collaboration des parents",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 266194,
+          "text": "Travaille uniquement les relations et les interactions sociales",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266195,
+          "text": "Toutes les réponses sont justes.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266196,
+          "text": "Toutes les réponses sont fausses",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les Principes de la méthode psychoéducative TEAACH : (RJ)",
+      "has_media": false,
+      "statement": "Les Principes de la méthode psychoéducative TEAACH : (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "La méthode TEACCH (Treatment and Education of Autistic and Communication Handicapped Children), développée en Caroline du Nord, est une approche éducative structurée destinée aux personnes présentant des troubles du spectre de l’autisme (TSA).TEACCH est une approche structurée, visuelle et individualisée, qui mise sur la prévisibilité et la compréhension de l’environnement pour améliorer l’autonomie et réduire l’anxiété des personnes TSA.",
+      "original_id": 54144,
+      "clinical_case": null,
+      "display_title": "Question 11",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>La méthode TEACCH (Treatment and Education of Autistic and Communication Handicapped Children), développée en Caroline du Nord, est une approche éducative structurée destinée aux personnes présentant des troubles du spectre de l’autisme (TSA).</p><p>TEACCH est une approche structurée, visuelle et individualisée, qui mise sur la prévisibilité et la compréhension de l’environnement pour améliorer l’autonomie et réduire l’anxiété des personnes TSA.</p>"
+    },
+    {
+      "id": 12,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266187,
+          "text": "Absence de mots à 07 mois.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266188,
+          "text": "Absence d'association de mots à 12 mois.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 266189,
+          "text": "Absence de gestes sociaux à 12 mois.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 266190,
+          "text": "Toutes les réponses sont justes",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266191,
+          "text": "Toutes les réponses sont fausses",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les signes d'alerte absolue de l'autisme : (RJ)",
+      "has_media": false,
+      "statement": "Les signes d'alerte absolue de l'autisme : (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Les signes d'alerte de l'autisme sont  : Absence de babillage à 12 mois  Absence de mots à 18 mois et au delà Absence d’association de mots à 24 mois et au-delà Absence du pointage à distance ou d’autres gestes sociaux pour communiquer à 12 mois et au-delà  Absence du jeu de faire semblant Régression des habiletés langagières ou relationnellesPerte de langage ou des compétences sociales, quel que soit l'âge.",
+      "original_id": 54143,
+      "clinical_case": null,
+      "display_title": "Question 12",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong><u>Les signes d'alerte de l'autisme sont  :</u></strong></p><ol><li> Absence de babillage à 12 mois </li><li> Absence de mots à 18 mois et au delà</li><li> Absence d’association de mots à 24 mois et au-delà</li><li> <strong style=\"background-color: rgb(255, 255, 102);\">Absence du pointage à distance ou d’autres gestes sociaux pour communiquer à 12 mois et au-delà</strong> </li><li> Absence du jeu de faire semblant </li><li>Régression des habiletés langagières ou relationnelles</li><li>Perte de langage ou des compétences sociales, quel que soit l'âge.</li></ol><p><br></p>"
+    },
+    {
+      "id": 13,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266182,
+          "text": "Plus fréquent chez la fille que chez le garçon",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266183,
+          "text": "Peut être associé à un handicap intellectuel",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 266184,
+          "text": "Les premiers signes apparaissent après l'âge de 3 ans",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266185,
+          "text": "Toutes les réponses sont justes",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266186,
+          "text": "Toutes les réponses sont fausses",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le trouble du spectre autistique est : (RJ)",
+      "has_media": false,
+      "statement": "Le trouble du spectre autistique est : (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A. Faux, il est plus fréquent chez le garçon avec un sexe ratio de 4/1. B. Vrai, l'association avec un handicap intellectuel est très fréquente (75% des cas). C. Faux, les premiers signes du TSA apparaissent avant l'âge de 3 ans .",
+      "original_id": 54142,
+      "clinical_case": null,
+      "display_title": "Question 13",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">A. Faux,</strong> il est plus fréquent chez le <strong>garçon </strong>avec un sexe ratio de 4/1. </p><p><strong style=\"color: rgb(0, 138, 0);\">B. Vrai,</strong> l'association avec un handicap intellectuel est très fréquente (<strong>75% des cas</strong>). </p><p><strong style=\"color: rgb(230, 0, 0);\">C. Faux,</strong> les premiers signes du TSA apparaissent&nbsp;<strong>avant </strong>l'âge de 3 ans .</p>"
+    },
+    {
+      "id": 14,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252937,
+          "text": "1.3.4",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252938,
+          "text": "1.4.5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252939,
+          "text": "2.3.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252940,
+          "text": "2.4.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252941,
+          "text": "3.4.5",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des associations concerne les signes d'alerte absolue de l'autisme, laquelle ?\n1- Absence de babillage à l'âge de 9 mois\n2- Absence d'association de mots à l'âge de 03 ans\n3- Absence de mots à 18 mois\n4- Absence de gestes sociaux à 12 mois\n5- Perte des compétences sociales, quel que soit l'âge",
+      "has_media": false,
+      "statement": "L'une des associations concerne les signes d'alerte absolue de l'autisme, laquelle ?\n1- Absence de babillage à l'âge de 9 mois\n2- Absence d'association de mots à l'âge de 03 ans\n3- Absence de mots à 18 mois\n4- Absence de gestes sociaux à 12 mois\n5- Perte des compétences sociales, quel que soit l'âge",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Anomalie dans le développement du langage :• Absence de babillage à 12 mois• Absence de mots à 18 mois et au-delà.• Absence d’association de mots à 24 mois et au-delà.",
+      "original_id": 51084,
+      "clinical_case": null,
+      "display_title": "Question 14",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><span style=\"background-color: transparent; color: rgb(63, 63, 63);\">Anomalie dans le développement du langage :</span></p><p><span style=\"background-color: transparent; color: rgb(63, 63, 63);\">• Absence de </span><strong style=\"background-color: rgb(240, 102, 102); color: rgb(63, 63, 63);\">babillage à 12 mois</strong></p><p><span style=\"background-color: transparent; color: rgb(63, 63, 63);\">•&nbsp;Absence de </span><strong style=\"background-color: rgb(102, 185, 102); color: rgb(63, 63, 63);\">mots à 18 mois</strong><span style=\"background-color: transparent; color: rgb(63, 63, 63);\"> et au-delà.</span></p><p><span style=\"background-color: transparent; color: rgb(63, 63, 63);\">•&nbsp;Absence </span><strong style=\"background-color: rgb(240, 102, 102); color: rgb(63, 63, 63);\">d’association de mots à 24 mois</strong><span style=\"background-color: transparent; color: rgb(63, 63, 63);\"> et au-delà.</span></p><p><br></p>"
+    },
+    {
+      "id": "15.1",
+      "case_id": 15,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229263,
+          "text": "1.2.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229264,
+          "text": "1.4.5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229265,
+          "text": "1.4",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 229266,
+          "text": "3.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229267,
+          "text": "4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les difficultés de communication peuvent être :\n1. Absence de partage de jeu avec sa sœur.\n2. Présence de stéréotypies gestuelles.\n3. Un contact par le regard présent.\n4. Une altération de la communication verbale.\n5. La présence d'une hyper ou hyposensorialité auditive.",
+      "has_media": false,
+      "statement": "Les difficultés de communication peuvent être :\n1. Absence de partage de jeu avec sa sœur.\n2. Présence de stéréotypies gestuelles.\n3. Un contact par le regard présent.\n4. Une altération de la communication verbale.\n5. La présence d'une hyper ou hyposensorialité auditive.",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46526,
+      "clinical_case": "Anes est un enfant âgé de 2 ans, il a une sœur jumelle. Selon les parents le déroulement de la grossesse ainsi que la période néonatale étaient sans particularité. Le développement psychomoteur était dans les normes sauf le langage qui s'est développé tardivement par rapport à sa sœur. Les parents sont inquiets car Anes fonctionne différemment de sa sœur, fait de très grosses colères et présente des difficultés de communication.",
+      "display_title": "Question 15 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "15.2",
+      "case_id": 15,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229268,
+          "text": "1.3",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 229269,
+          "text": "2.3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229270,
+          "text": "2.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229271,
+          "text": "3.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229272,
+          "text": "4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'examen pédopsychiatrique a objectivé: un contact avec l'enfant difficile, contact par le regard fuyant, absence de pointing proto-déclaratif et proto-impératif, le langage verbal se limite à quelques mots, un\ndésintérêt pour les jouets, refus des jeux proposés, réaction violente à la frustration, colères spectaculaires avec besoin de se jeter par terre et de se frapper la tête, peu de demandes\n- Il peut s'agir d'un :\n1. Handicap Intellectuel.\n2. Trouble déficit de l'attention avec hyperactivité.\n3. Trouble du spectre de l'autisme\n4. Trouble du langage seulement.\n5. Un trouble sensoriel.",
+      "has_media": false,
+      "statement": "L'examen pédopsychiatrique a objectivé: un contact avec l'enfant difficile, contact par le regard fuyant, absence de pointing proto-déclaratif et proto-impératif, le langage verbal se limite à quelques mots, un\ndésintérêt pour les jouets, refus des jeux proposés, réaction violente à la frustration, colères spectaculaires avec besoin de se jeter par terre et de se frapper la tête, peu de demandes\n- Il peut s'agir d'un :\n1. Handicap Intellectuel.\n2. Trouble déficit de l'attention avec hyperactivité.\n3. Trouble du spectre de l'autisme\n4. Trouble du langage seulement.\n5. Un trouble sensoriel.",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46527,
+      "clinical_case": "Anes est un enfant âgé de 2 ans, il a une sœur jumelle. Selon les parents le déroulement de la grossesse ainsi que la période néonatale étaient sans particularité. Le développement psychomoteur était dans les normes sauf le langage qui s'est développé tardivement par rapport à sa sœur. Les parents sont inquiets car Anes fonctionne différemment de sa sœur, fait de très grosses colères et présente des difficultés de communication.",
+      "display_title": "Question 15 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "15.3",
+      "case_id": 15,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229273,
+          "text": "1.3",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 229274,
+          "text": "1.5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229275,
+          "text": "2.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229276,
+          "text": "4.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229277,
+          "text": "2.4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le médecin traitant a demandé quelques examens complémentaires pour :\n1. Eliminer un trouble organique.\n2. Pour confirmer le diagnostic.\n3. À la recherche d'une comorbidité.\n4. Dans un cadre systématique.\n5. Pour répondre à la demande des parents",
+      "has_media": false,
+      "statement": "Le médecin traitant a demandé quelques examens complémentaires pour :\n1. Eliminer un trouble organique.\n2. Pour confirmer le diagnostic.\n3. À la recherche d'une comorbidité.\n4. Dans un cadre systématique.\n5. Pour répondre à la demande des parents",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46528,
+      "clinical_case": "Anes est un enfant âgé de 2 ans, il a une sœur jumelle. Selon les parents le déroulement de la grossesse ainsi que la période néonatale étaient sans particularité. Le développement psychomoteur était dans les normes sauf le langage qui s'est développé tardivement par rapport à sa sœur. Les parents sont inquiets car Anes fonctionne différemment de sa sœur, fait de très grosses colères et présente des difficultés de communication.",
+      "display_title": "Question 15 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "15.4",
+      "case_id": 15,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229278,
+          "text": "1.2.5",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 229279,
+          "text": "2.4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229280,
+          "text": "3.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229281,
+          "text": "3.4.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229282,
+          "text": "4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "En attendant les résultats des examens complémentaires, le médecin traitant a conseillé les parents de:\n1. Jouer avec l'enfant quotidiennement.\n2. D'intégrer l'enfant dans une crèche.\n3. De ne rien faire jusqu'à la confirmation du diagnostic.\n4. De stimuler le langage seulement.\n5. De se concentrer sur la sociabilité à cet âge.",
+      "has_media": false,
+      "statement": "En attendant les résultats des examens complémentaires, le médecin traitant a conseillé les parents de:\n1. Jouer avec l'enfant quotidiennement.\n2. D'intégrer l'enfant dans une crèche.\n3. De ne rien faire jusqu'à la confirmation du diagnostic.\n4. De stimuler le langage seulement.\n5. De se concentrer sur la sociabilité à cet âge.",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46529,
+      "clinical_case": "Anes est un enfant âgé de 2 ans, il a une sœur jumelle. Selon les parents le déroulement de la grossesse ainsi que la période néonatale étaient sans particularité. Le développement psychomoteur était dans les normes sauf le langage qui s'est développé tardivement par rapport à sa sœur. Les parents sont inquiets car Anes fonctionne différemment de sa sœur, fait de très grosses colères et présente des difficultés de communication.",
+      "display_title": "Question 15 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "15.5",
+      "case_id": 15,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229283,
+          "text": "1.2.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229284,
+          "text": "2.3.4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229285,
+          "text": "2.4.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229286,
+          "text": "4.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229287,
+          "text": "1.2.3.4",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Avant de mettre en place un projet thérapeutique il faut :\n1. Annoncer le diagnostic aux parents.\n2. Faire une évaluation globale de l'enfant.\n3. Présenter l'enfant à l'équipe pluridisciplinaire.\n4. Passer les différentes échelles d'évaluation.\n5. L'examen clinique seul suffira pour la prise en charge de l'enfant.",
+      "has_media": false,
+      "statement": "Avant de mettre en place un projet thérapeutique il faut :\n1. Annoncer le diagnostic aux parents.\n2. Faire une évaluation globale de l'enfant.\n3. Présenter l'enfant à l'équipe pluridisciplinaire.\n4. Passer les différentes échelles d'évaluation.\n5. L'examen clinique seul suffira pour la prise en charge de l'enfant.",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46530,
+      "clinical_case": "Anes est un enfant âgé de 2 ans, il a une sœur jumelle. Selon les parents le déroulement de la grossesse ainsi que la période néonatale étaient sans particularité. Le développement psychomoteur était dans les normes sauf le langage qui s'est développé tardivement par rapport à sa sœur. Les parents sont inquiets car Anes fonctionne différemment de sa sœur, fait de très grosses colères et présente des difficultés de communication.",
+      "display_title": "Question 15 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "16.1",
+      "case_id": 16,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220949,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220950,
+          "text": "1.3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220951,
+          "text": "1.2.3",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220952,
+          "text": "1.3.4",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220953,
+          "text": "1.2.3.4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quels symptômes présente l'enfant ?\n1. Absence du langage.\n2. Stéréotypies verbales.\n3. Stéréotypies gestuelles.\n4. Absence du pointage proto-impératif.",
+      "has_media": false,
+      "statement": "Quels symptômes présente l'enfant ?\n1. Absence du langage.\n2. Stéréotypies verbales.\n3. Stéréotypies gestuelles.\n4. Absence du pointage proto-impératif.",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44914,
+      "clinical_case": "Mme Amina consulte avec son fils Nadjib, âgé de 2 ans, car il ne parle pas et pleure beaucoup. En crèche, Nadjib ne joue pas avec les autres enfants et préfère tourner au tour de son axe. Au bureau, l'enfant ne se retourne pas à l'appel par son prénom et évite notre regard. Il ne parle pas et ne pointe pas pour exprimer ses demandes. L'enfant ne fait pas un jeu adéquat, Il tient la voiture et s'intéresse aux roues en les faisant tourner.",
+      "display_title": "Question 16 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "16.2",
+      "case_id": 16,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220954,
+          "text": "Trouble du spectre de l'autisme",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 220955,
+          "text": "Trouble factice",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220956,
+          "text": "Déficit intellectuel",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220957,
+          "text": "Retard global du développement",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220958,
+          "text": "Surdité",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est le diagnostic le plus probable?",
+      "has_media": false,
+      "statement": "Quel est le diagnostic le plus probable?",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44915,
+      "clinical_case": "Mme Amina consulte avec son fils Nadjib, âgé de 2 ans, car il ne parle pas et pleure beaucoup. En crèche, Nadjib ne joue pas avec les autres enfants et préfère tourner au tour de son axe. Au bureau, l'enfant ne se retourne pas à l'appel par son prénom et évite notre regard. Il ne parle pas et ne pointe pas pour exprimer ses demandes. L'enfant ne fait pas un jeu adéquat, Il tient la voiture et s'intéresse aux roues en les faisant tourner.",
+      "display_title": "Question 16 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "16.3",
+      "case_id": 16,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220959,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 220960,
+          "text": "2.3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220961,
+          "text": "1.2.3",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220962,
+          "text": "1.2.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220963,
+          "text": "2.3.4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le déficit des comportements de communication non verbaux se traduit par :\n1. Un évitement du regard.\n2. L'absence du pointage.\n3. L'absence du langage.\n4. Pleure excessif.",
+      "has_media": false,
+      "statement": "Le déficit des comportements de communication non verbaux se traduit par :\n1. Un évitement du regard.\n2. L'absence du pointage.\n3. L'absence du langage.\n4. Pleure excessif.",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44916,
+      "clinical_case": "Mme Amina consulte avec son fils Nadjib, âgé de 2 ans, car il ne parle pas et pleure beaucoup. En crèche, Nadjib ne joue pas avec les autres enfants et préfère tourner au tour de son axe. Au bureau, l'enfant ne se retourne pas à l'appel par son prénom et évite notre regard. Il ne parle pas et ne pointe pas pour exprimer ses demandes. L'enfant ne fait pas un jeu adéquat, Il tient la voiture et s'intéresse aux roues en les faisant tourner.",
+      "display_title": "Question 16 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "16.4",
+      "case_id": 16,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220964,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220965,
+          "text": "1.2.3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220966,
+          "text": "2.3",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220967,
+          "text": "1.3.4",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220968,
+          "text": "2.3.4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quels sont les spécificités diagnostic à préciser ?\n1. Le degré de sévérité.\n2. L'âge de diagnostic.\n3. Les comorbidités.\n4. Le niveau du langage",
+      "has_media": false,
+      "statement": "Quels sont les spécificités diagnostic à préciser ?\n1. Le degré de sévérité.\n2. L'âge de diagnostic.\n3. Les comorbidités.\n4. Le niveau du langage",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44917,
+      "clinical_case": "Mme Amina consulte avec son fils Nadjib, âgé de 2 ans, car il ne parle pas et pleure beaucoup. En crèche, Nadjib ne joue pas avec les autres enfants et préfère tourner au tour de son axe. Au bureau, l'enfant ne se retourne pas à l'appel par son prénom et évite notre regard. Il ne parle pas et ne pointe pas pour exprimer ses demandes. L'enfant ne fait pas un jeu adéquat, Il tient la voiture et s'intéresse aux roues en les faisant tourner.",
+      "display_title": "Question 16 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "16.5",
+      "case_id": 16,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220969,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220970,
+          "text": "2.3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220971,
+          "text": "1.2.3",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 220972,
+          "text": "1.2.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220973,
+          "text": "1.2.3.4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quels sont les choix thérapeutiques?\n1. La méthode TEACCH\n2. La méthode ABA.\n3. ESDM.\n4. EMDR.",
+      "has_media": false,
+      "statement": "Quels sont les choix thérapeutiques?\n1. La méthode TEACCH\n2. La méthode ABA.\n3. ESDM.\n4. EMDR.",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44918,
+      "clinical_case": "Mme Amina consulte avec son fils Nadjib, âgé de 2 ans, car il ne parle pas et pleure beaucoup. En crèche, Nadjib ne joue pas avec les autres enfants et préfère tourner au tour de son axe. Au bureau, l'enfant ne se retourne pas à l'appel par son prénom et évite notre regard. Il ne parle pas et ne pointe pas pour exprimer ses demandes. L'enfant ne fait pas un jeu adéquat, Il tient la voiture et s'intéresse aux roues en les faisant tourner.",
+      "display_title": "Question 16 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": 17,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220512,
+          "text": "1+3+4",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220513,
+          "text": "1+4+5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220514,
+          "text": "2+3+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220515,
+          "text": "2 4+5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220516,
+          "text": "3+4+5",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des associations concerne les signes d'alerte absolue de l'autisme, laquelle ?\n\n1 Absence de babillage à l'âge de 9 mois\n2 Absence d'association de mots à l'âge de 03 ans\n3 Absence de mots à 18 mois\n4 Absence de gestes sociaux à 12 mois\n5 Perte des compétences sociales, quel que soit l'âge",
+      "has_media": false,
+      "statement": "L'une des associations concerne les signes d'alerte absolue de l'autisme, laquelle ?\n\n1 Absence de babillage à l'âge de 9 mois\n2 Absence d'association de mots à l'âge de 03 ans\n3 Absence de mots à 18 mois\n4 Absence de gestes sociaux à 12 mois\n5 Perte des compétences sociales, quel que soit l'âge",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44826,
+      "clinical_case": null,
+      "display_title": "Question 17",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 18,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220517,
+          "text": "Radiologique",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220518,
+          "text": "Biologique",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220519,
+          "text": "Radiologique et biologique",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220520,
+          "text": "Clinique",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220521,
+          "text": "Clinique + échelles d'évaluation",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le diagnostic de l'autisme est basé sur la :",
+      "has_media": false,
+      "statement": "Le diagnostic de l'autisme est basé sur la :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44827,
+      "clinical_case": null,
+      "display_title": "Question 18",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": "19.1",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220527,
+          "text": "1+3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220528,
+          "text": " 2+3+4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220529,
+          "text": " 3+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220530,
+          "text": "1+3+4",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220531,
+          "text": " 1+2+3+4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": " Quel sera votre attitude ?\n\n1 Rassurer la maman\n2 Annoncer un trouble du spectre autistique\n3 Retracer le développement socio-communicatif\n4 Retracer le développement psychomoteur",
+      "has_media": false,
+      "statement": " Quel sera votre attitude ?\n\n1 Rassurer la maman\n2 Annoncer un trouble du spectre autistique\n3 Retracer le développement socio-communicatif\n4 Retracer le développement psychomoteur",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44829,
+      "clinical_case": "Madame C, vient vous voir en consultation avec Yanis, son fils de 18 mois. Elle s'inquiète sur son développement socio-communicatif. À l'examen pédopsychiatrique vous objectiver un langage absent, l'enfant ne fait pas de demande par le geste, il tient une voiture et la fait rouler un peu",
+      "display_title": "Question 19 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "19.2",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220532,
+          "text": " 1+2",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 220533,
+          "text": " 2+3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220534,
+          "text": " 1+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220535,
+          "text": "2+4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220536,
+          "text": " 1+2+3+4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "A l’âge de 18 mois quels sont les signes en faveur d’un diagnostic de trouble du spectre autistique :\n\n1 L'absence du langage\n2 L'absence du pointage\n3 La présence d'un jeu faire semblant\n4 L'absence d’imitation",
+      "has_media": false,
+      "statement": "A l’âge de 18 mois quels sont les signes en faveur d’un diagnostic de trouble du spectre autistique :\n\n1 L'absence du langage\n2 L'absence du pointage\n3 La présence d'un jeu faire semblant\n4 L'absence d’imitation",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44830,
+      "clinical_case": "Madame C, vient vous voir en consultation avec Yanis, son fils de 18 mois. Elle s'inquiète sur son développement socio-communicatif. À l'examen pédopsychiatrique vous objectiver un langage absent, l'enfant ne fait pas de demande par le geste, il tient une voiture et la fait rouler un peu",
+      "display_title": "Question 19 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "19.3",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220537,
+          "text": " 1+2+3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220538,
+          "text": " 1+2+4",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 220539,
+          "text": " 1+3+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220540,
+          "text": " 1+4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220541,
+          "text": " 2+3+4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Vous perdez de vue Madame C, elle revient en consultation alors que Yanis a 3 ans, elle est inquiète car il ne joue pas avec les autres enfants à l'école maternelle. Il porte plus d'intérêt aux objets, surtout ceux en plastique. Il parle peu et ne fait pas de phrases. À l’examen clinique Yanis fuit votre regard, il se balance sur sa chaise et répète certains de vos mots\nQuels signes identifiez-vous à l’examen clinique ?\n\n1 Écholalie\n2 Stéréotypies\n3 Langage absent\n4 Fuite du contact",
+      "has_media": false,
+      "statement": "Vous perdez de vue Madame C, elle revient en consultation alors que Yanis a 3 ans, elle est inquiète car il ne joue pas avec les autres enfants à l'école maternelle. Il porte plus d'intérêt aux objets, surtout ceux en plastique. Il parle peu et ne fait pas de phrases. À l’examen clinique Yanis fuit votre regard, il se balance sur sa chaise et répète certains de vos mots\nQuels signes identifiez-vous à l’examen clinique ?\n\n1 Écholalie\n2 Stéréotypies\n3 Langage absent\n4 Fuite du contact",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44831,
+      "clinical_case": "Madame C, vient vous voir en consultation avec Yanis, son fils de 18 mois. Elle s'inquiète sur son développement socio-communicatif. À l'examen pédopsychiatrique vous objectiver un langage absent, l'enfant ne fait pas de demande par le geste, il tient une voiture et la fait rouler un peu",
+      "display_title": "Question 19 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "19.4",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220542,
+          "text": " Déficit intellectuel",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220543,
+          "text": "Trouble autistique",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 220544,
+          "text": "Retard du langage",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220545,
+          "text": "Carences affectives",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220546,
+          "text": "Aucun de ces diagnostics",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est votre diagnostic ?",
+      "has_media": false,
+      "statement": "Quel est votre diagnostic ?",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44832,
+      "clinical_case": "Madame C, vient vous voir en consultation avec Yanis, son fils de 18 mois. Elle s'inquiète sur son développement socio-communicatif. À l'examen pédopsychiatrique vous objectiver un langage absent, l'enfant ne fait pas de demande par le geste, il tient une voiture et la fait rouler un peu",
+      "display_title": "Question 19 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "19.5",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220547,
+          "text": "1+2",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 220548,
+          "text": "1+3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220549,
+          "text": " 2+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220550,
+          "text": "1+2+3",
+          "letter": "D",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quels sont les troubles du développement qui caractérisent ce diagnostic ?\n\n1 Troubles des interactions sociales\n2 Trouble de la communication\n3 Trouble de l'alimentation\n4 Trouble du sommeil",
+      "has_media": false,
+      "statement": "Quels sont les troubles du développement qui caractérisent ce diagnostic ?\n\n1 Troubles des interactions sociales\n2 Trouble de la communication\n3 Trouble de l'alimentation\n4 Trouble du sommeil",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44833,
+      "clinical_case": "Madame C, vient vous voir en consultation avec Yanis, son fils de 18 mois. Elle s'inquiète sur son développement socio-communicatif. À l'examen pédopsychiatrique vous objectiver un langage absent, l'enfant ne fait pas de demande par le geste, il tient une voiture et la fait rouler un peu",
+      "display_title": "Question 19 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "19.6",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220551,
+          "text": " 1+3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220552,
+          "text": " 1+4",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 220553,
+          "text": " 1+2+3",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220554,
+          "text": " 2+4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220555,
+          "text": "1+3+4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel seront les grands principes de prise en charge médicale ?\n\n1 Prise en charge pluridisciplinaire\n2 Séparation mère-enfant\n3 Traitement médicamenteux précoce\n4 Sociothérapie",
+      "has_media": false,
+      "statement": "Quel seront les grands principes de prise en charge médicale ?\n\n1 Prise en charge pluridisciplinaire\n2 Séparation mère-enfant\n3 Traitement médicamenteux précoce\n4 Sociothérapie",
+      "sub_index": 6,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44834,
+      "clinical_case": "Madame C, vient vous voir en consultation avec Yanis, son fils de 18 mois. Elle s'inquiète sur son développement socio-communicatif. À l'examen pédopsychiatrique vous objectiver un langage absent, l'enfant ne fait pas de demande par le geste, il tient une voiture et la fait rouler un peu",
+      "display_title": "Question 19 - Question 6",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "19.7",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220556,
+          "text": " 1+3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220557,
+          "text": " 2+4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220558,
+          "text": " 3+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220559,
+          "text": " 1+3+4",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220560,
+          "text": " 2+3+4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quels sont les facteurs de mauvais pronostic de l'autisme ?\n\n1 Début précoce\n2 Prise en charge précoce\n3 Déficience intellectuel sévère\n4 Comorbidité épileptique",
+      "has_media": false,
+      "statement": "Quels sont les facteurs de mauvais pronostic de l'autisme ?\n\n1 Début précoce\n2 Prise en charge précoce\n3 Déficience intellectuel sévère\n4 Comorbidité épileptique",
+      "sub_index": 7,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44835,
+      "clinical_case": "Madame C, vient vous voir en consultation avec Yanis, son fils de 18 mois. Elle s'inquiète sur son développement socio-communicatif. À l'examen pédopsychiatrique vous objectiver un langage absent, l'enfant ne fait pas de demande par le geste, il tient une voiture et la fait rouler un peu",
+      "display_title": "Question 19 - Question 7",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": 20,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220580,
+          "text": "1-3-4",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220581,
+          "text": "1-4-5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220582,
+          "text": "2-3-4",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 220583,
+          "text": "2-4-5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220584,
+          "text": "3-4-5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des associations concerne les signes d'alerte absolue de l'autisme, laquelle ?\n\n1 Absence de babillage à l'âge de 9 mois\n2 Absence de mots à 18 mois\n3 Absence de gestes sociaux à 12 mois\n4 Perte des compétences sociales, quel que soit l'âge\n5 Absence d'association de mots à l'âge de 03 ans",
+      "has_media": false,
+      "statement": "L'une des associations concerne les signes d'alerte absolue de l'autisme, laquelle ?\n\n1 Absence de babillage à l'âge de 9 mois\n2 Absence de mots à 18 mois\n3 Absence de gestes sociaux à 12 mois\n4 Perte des compétences sociales, quel que soit l'âge\n5 Absence d'association de mots à l'âge de 03 ans",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44840,
+      "clinical_case": null,
+      "display_title": "Question 20",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 21,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220585,
+          "text": "1-2-3",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 220586,
+          "text": "1-3-4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220587,
+          "text": "2-3-5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220588,
+          "text": "2-4-5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220589,
+          "text": "3-4-5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des associations suivante est en faveur d'un trouble du spectre autistique, laquelle ?\n\n1 Déficits des interactions sociales\n2 Intérêts restreints et répétitifs\n3 Retard de langage\n4 Activité délirante\n5 Hallucinations auditives",
+      "has_media": false,
+      "statement": "L'une des associations suivante est en faveur d'un trouble du spectre autistique, laquelle ?\n\n1 Déficits des interactions sociales\n2 Intérêts restreints et répétitifs\n3 Retard de langage\n4 Activité délirante\n5 Hallucinations auditives",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44841,
+      "clinical_case": null,
+      "display_title": "Question 21",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 22,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220590,
+          "text": "Clinique",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220591,
+          "text": "Clinique étayé par les échelles d'évaluation",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 220592,
+          "text": "Radiologique",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220593,
+          "text": "Biologique",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220594,
+          "text": "Radiologique et biologique",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le diagnostic de l'autisme est basé sur l'une des propositions suivantes, laquelle ?",
+      "has_media": false,
+      "statement": "Le diagnostic de l'autisme est basé sur l'une des propositions suivantes, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44842,
+      "clinical_case": null,
+      "display_title": "Question 22",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 23,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220635,
+          "text": "Trouble neurodéveloppemental d’origine multifactorielle.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220636,
+          "text": "À prédominance masculine.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220637,
+          "text": "Intolérance à l’immuabilité.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 220638,
+          "text": "Prise en charge psychothérapeutique précoce, avant 6 ans.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220639,
+          "text": "Tous les modes de communication sont atteints.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P4 2022"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le trouble de spectre autistique : (La ou les RF)",
+      "has_media": false,
+      "statement": "Le trouble de spectre autistique : (La ou les RF)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44851,
+      "clinical_case": null,
+      "display_title": "Question 23",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": "24.1",
+      "case_id": 24,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220610,
+          "text": " Un simple retard de langage",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220611,
+          "text": "Un retard global de développement",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220612,
+          "text": "Un trouble du spectre autistique (TSA)",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220613,
+          "text": "Un risque autistique",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220614,
+          "text": "Trouble du déficit de l’intention et/ou hyperactivité (TDAH)",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle est la probabilité diagnostic chez se nourrisson ? (RJ)",
+      "has_media": false,
+      "statement": "Quelle est la probabilité diagnostic chez se nourrisson ? (RJ)",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44846,
+      "clinical_case": "Mohammed un nourrisson âgé de 10 mois, cadet d’une fratrie de deux enfants. Sa sœur ainée Maria âgée de 07 ans a présenté un léger retard de langage durant sa petite enfance. Actuellement, elle est scolarisée en 2ème année primaire et ne présente aucune difficulté langagière. A l’opposé, Mohamed n’a aucun antécédent personnels, un développement psychomoteur harmonieux néanmoins, il ne répond pas à l’appel par son prénom, ne joue pas avec les enfants de son âge avec un stock langagier de deux mots << mama, papa>> ces troubles ont motivé les parents à consulter chez un pédopsychiatre",
+      "display_title": "Question 24 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "24.2",
+      "case_id": 24,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220615,
+          "text": "1+2+3",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 220616,
+          "text": "1+2+5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220617,
+          "text": " 2+3+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220618,
+          "text": "2+3",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220619,
+          "text": " 3+4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelles sont les examens complémentaires à demander ? (RJ)\n\n1 Un (PEA) Potentiel Evoqué Auditif\n2 Bilan sanguin général avec un bilan thyroïdien\n3 Une IRM cérébrale\n4 Un bilan immunologique\n5 Une TDM cérébrale",
+      "has_media": false,
+      "statement": "Quelles sont les examens complémentaires à demander ? (RJ)\n\n1 Un (PEA) Potentiel Evoqué Auditif\n2 Bilan sanguin général avec un bilan thyroïdien\n3 Une IRM cérébrale\n4 Un bilan immunologique\n5 Une TDM cérébrale",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44847,
+      "clinical_case": "Mohammed un nourrisson âgé de 10 mois, cadet d’une fratrie de deux enfants. Sa sœur ainée Maria âgée de 07 ans a présenté un léger retard de langage durant sa petite enfance. Actuellement, elle est scolarisée en 2ème année primaire et ne présente aucune difficulté langagière. A l’opposé, Mohamed n’a aucun antécédent personnels, un développement psychomoteur harmonieux néanmoins, il ne répond pas à l’appel par son prénom, ne joue pas avec les enfants de son âge avec un stock langagier de deux mots << mama, papa>> ces troubles ont motivé les parents à consulter chez un pédopsychiatre",
+      "display_title": "Question 24 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "24.3",
+      "case_id": 24,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220620,
+          "text": "4+5",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220621,
+          "text": "2+3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220622,
+          "text": " 1+2+3",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 220623,
+          "text": " 1+2+4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220624,
+          "text": " 1+2+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Qu’est-ce qu’il doit proposer la pédopsychiatre à ses parents ? (RJ)\n\n1 Mettre l’enfant en observation régulière\n2 Conseiller l’intégration dans une crèche\n3 Stimuler l’enfant quotidiennement\n4 Ne rien faire et se contenter d’observer l’enfant uniquement\n5 Rassurer les parents il d’agit d’un développement ordinaire",
+      "has_media": false,
+      "statement": "Qu’est-ce qu’il doit proposer la pédopsychiatre à ses parents ? (RJ)\n\n1 Mettre l’enfant en observation régulière\n2 Conseiller l’intégration dans une crèche\n3 Stimuler l’enfant quotidiennement\n4 Ne rien faire et se contenter d’observer l’enfant uniquement\n5 Rassurer les parents il d’agit d’un développement ordinaire",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44848,
+      "clinical_case": "Mohammed un nourrisson âgé de 10 mois, cadet d’une fratrie de deux enfants. Sa sœur ainée Maria âgée de 07 ans a présenté un léger retard de langage durant sa petite enfance. Actuellement, elle est scolarisée en 2ème année primaire et ne présente aucune difficulté langagière. A l’opposé, Mohamed n’a aucun antécédent personnels, un développement psychomoteur harmonieux néanmoins, il ne répond pas à l’appel par son prénom, ne joue pas avec les enfants de son âge avec un stock langagier de deux mots << mama, papa>> ces troubles ont motivé les parents à consulter chez un pédopsychiatre",
+      "display_title": "Question 24 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "24.4",
+      "case_id": 24,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220625,
+          "text": " Attendre jusqu’à l’âge de 3 ans",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 220626,
+          "text": "La recherche de pointing",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220627,
+          "text": "La recherche de l’intention conjointe",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220628,
+          "text": "La recherche de jeu faire semblant",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220629,
+          "text": " Compléter l’examen pédopsychiatrique par les échelles d’évaluation (CARS, PEP-3)",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "L’examen pédopsychiatrique à l’âge de 2 ans retrouve : un enfant instable sur le plan psychomoteur, le contacte par le regard absent totalement, Mohamed tourne autour de son axe et n’interagit pas avec son médecin. Pour étayer le diagnostic, le médecin doit compléter son examen par : (RF)",
+      "has_media": false,
+      "statement": "L’examen pédopsychiatrique à l’âge de 2 ans retrouve : un enfant instable sur le plan psychomoteur, le contacte par le regard absent totalement, Mohamed tourne autour de son axe et n’interagit pas avec son médecin. Pour étayer le diagnostic, le médecin doit compléter son examen par : (RF)",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44849,
+      "clinical_case": "Mohammed un nourrisson âgé de 10 mois, cadet d’une fratrie de deux enfants. Sa sœur ainée Maria âgée de 07 ans a présenté un léger retard de langage durant sa petite enfance. Actuellement, elle est scolarisée en 2ème année primaire et ne présente aucune difficulté langagière. A l’opposé, Mohamed n’a aucun antécédent personnels, un développement psychomoteur harmonieux néanmoins, il ne répond pas à l’appel par son prénom, ne joue pas avec les enfants de son âge avec un stock langagier de deux mots << mama, papa>> ces troubles ont motivé les parents à consulter chez un pédopsychiatre",
+      "display_title": "Question 24 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "24.5",
+      "case_id": 24,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220630,
+          "text": "2+5",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220631,
+          "text": " 1+3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220632,
+          "text": " 1+2",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220633,
+          "text": " 1+3",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220634,
+          "text": "1+3+4",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "La conduite thérapeutique actuelle est : (RJ)\n\n1 Continuer la stimulation psychoéducative\n2 Prescrire un traitement médical à base de neuroleptique\n3 Orienter l’enfant vers une orthophoniste\n4 Evaluer tous les domaines de développement de l’enfant\n5 Arrêter la stimulation psychoéducative",
+      "has_media": false,
+      "statement": "La conduite thérapeutique actuelle est : (RJ)\n\n1 Continuer la stimulation psychoéducative\n2 Prescrire un traitement médical à base de neuroleptique\n3 Orienter l’enfant vers une orthophoniste\n4 Evaluer tous les domaines de développement de l’enfant\n5 Arrêter la stimulation psychoéducative",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44850,
+      "clinical_case": "Mohammed un nourrisson âgé de 10 mois, cadet d’une fratrie de deux enfants. Sa sœur ainée Maria âgée de 07 ans a présenté un léger retard de langage durant sa petite enfance. Actuellement, elle est scolarisée en 2ème année primaire et ne présente aucune difficulté langagière. A l’opposé, Mohamed n’a aucun antécédent personnels, un développement psychomoteur harmonieux néanmoins, il ne répond pas à l’appel par son prénom, ne joue pas avec les enfants de son âge avec un stock langagier de deux mots << mama, papa>> ces troubles ont motivé les parents à consulter chez un pédopsychiatre",
+      "display_title": "Question 24 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": 25,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220640,
+          "text": "Retard du développement psychomoteur",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 220641,
+          "text": "Les troubles doivent débuter avant l’âge de 3 ans",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220642,
+          "text": "Altération qualitative des relations sociales",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220643,
+          "text": "Altération qualitative de la communication",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220644,
+          "text": "Des intérêts restreints et répétitifs",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Résidanat Alger 2019"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles du spectre de l'autisme",
+        "series": "Mystidia Exams"
+      },
+      "question": "Un des signes suivants n’est pas retrouvé dans l’autisme typique : Cocher la réponse juste",
+      "has_media": false,
+      "statement": "Un des signes suivants n’est pas retrouvé dans l’autisme typique : Cocher la réponse juste",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44852,
+      "clinical_case": null,
+      "display_title": "Question 25",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    }
+  ]
+}

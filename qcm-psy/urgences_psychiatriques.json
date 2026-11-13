@@ -1,0 +1,1174 @@
+{
+  "version": "2.0",
+  "exported_at": "2026-11-13T09:30:27.414Z",
+  "app": "Mystidia Cursus Medical Explorer",
+  "course": {
+    "title": "Urgences psychiatriques",
+    "module": "Psychiatrie",
+    "year": "5ème Année (DFASM2)",
+    "session_id": "session_1792186824651_g27xz1t",
+    "questions_count": 20
+  },
+  "questions": [
+    {
+      "id": 1,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 308626,
+          "text": "Idées suicidaires avec plan précis",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 308627,
+          "text": "Insomnie persistante",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 308628,
+          "text": "Anxiété généralisée",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 308629,
+          "text": "Trouble obsessionnel compulsif",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 308630,
+          "text": "Consommation massive de substances psychoactives avec désorganisation",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "S2 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Urgences psychiatriques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans quelles situations impose une hospitalisation immédiate en psychiatrie ? (RJ)",
+      "has_media": false,
+      "statement": "Dans quelles situations impose une hospitalisation immédiate en psychiatrie ? (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A-VraiLe risque suicidaire avec un plan précis (quand, comment, où) et une intention claire est une URGENCE VITALE nécessitant une hospitalisation immédiate pour protéger le patient.B-FauxUne Prise en charge en ambulatoire est possible pour l'insomnie.C-Faux L'anxiété généralisée se traite en ambulatoire.D-Faux Le TOC se traite en ambulatoire (psychothérapie, médicaments)E-FauxLa consommation massive de substances avec désorganisation peut justifier une hospitalisation, mais le suicide avec plan est le plus impératif et indiscutable.",
+      "original_id": 63131,
+      "clinical_case": null,
+      "display_title": "Question 1",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><span style=\"background-color: rgb(204, 232, 204); color: rgb(0, 138, 0); font-weight: 700;\">A-Vrai</span></p><p><span style=\"color: rgb(15, 17, 21);\">Le risque suicidaire avec un plan précis (quand, comment, où) et une intention claire </span><strong style=\"color: rgb(15, 17, 21);\">est une URGENCE VITALE </strong><span style=\"color: rgb(15, 17, 21);\">nécessitant une hospitalisation immédiate pour protéger le patient.</span></p><p><br></p><p><span style=\"color: rgb(230, 0, 0); font-weight: 700; background-color: rgb(250, 204, 204);\">B-Faux</span></p><p>Une Prise en charge <strong>en ambulatoire</strong> est possible pour l'insomnie.</p><p><br></p><p><span style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0); font-weight: bolder;\">C-Faux</span></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;L'anxiété généralisée se traite en ambulatoire.</span></p><p><br></p><p><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">D-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Le TOC se traite en ambulatoire (psychothérapie, médicaments)</span></p><p><br></p><p><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">E-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">La consommation massive de substances avec désorganisation peut justifier une hospitalisation, mais le suicide avec plan est le plus impératif et indiscutable.</span></p><p><br></p>"
+    },
+    {
+      "id": 2,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 308621,
+          "text": "Administration immédiate d’un antidépresseur",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 308622,
+          "text": "Sécurisation de l’environnement",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 308623,
+          "text": "Prescription d’un traitement de fond",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 308624,
+          "text": "Orientation vers une psychothérapie",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 308625,
+          "text": "Surveillance rapprochée avec équipe soignante",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "S2 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Urgences psychiatriques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Un patient présente une agitation psychomotrice sévère, associée à un risque d’auto-agressivité et hétéro-agressivité. Quelle est la première mesure à instaurer en urgence ? (RJ)",
+      "has_media": false,
+      "statement": "Un patient présente une agitation psychomotrice sévère, associée à un risque d’auto-agressivité et hétéro-agressivité. Quelle est la première mesure à instaurer en urgence ? (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A-Faux L'antidépresseur n'est pas une mesure d'urgence (délai d'action de plusieurs semaines).B-Vrai L'isolement (contenir le patient dans un espace sécurisé) et la sécurisation de l'environnement (retirer les objets dangereux) sont des mesures de première intention pour protéger le patient et autrui.C-Faux Le traitement de fond se discute après la gestion de l'urgence.D-FauxL'orientation vers une psychothérapie n'est pas adaptée à l'urgence.E-FauxLa surveillance rapprochée par l'équipe soignante (constantes, observation) est aussi indispensable en urgence.",
+      "original_id": 63130,
+      "clinical_case": null,
+      "display_title": "Question 2",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><span style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0); font-weight: bolder;\">A-Faux</span></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;L'antidépresseur </span><strong style=\"color: rgb(15, 17, 21);\">n'est pas une mesure d'urgence </strong><span style=\"color: rgb(15, 17, 21);\">(délai d'action de plusieurs semaines).</span></p><p><br></p><p><span style=\"color: rgb(0, 138, 0); font-weight: 700; background-color: rgb(204, 232, 204);\">B-Vrai</span></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;L'isolement (</span><strong style=\"color: rgb(15, 17, 21);\">contenir le patient dans un espace sécurisé</strong><span style=\"color: rgb(15, 17, 21);\">) et la sécurisation de l'environnement (</span><strong style=\"color: rgb(15, 17, 21);\">retirer les objets dangereux</strong><span style=\"color: rgb(15, 17, 21);\">) sont des mesures de première intention pour </span><strong style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 102);\">protéger le patient et autrui.</strong></p><p><br></p><p><span style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0); font-weight: bolder;\">C-Faux</span></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Le traitement de fond se discute après la gestion de l'urgence.</span></p><p><br></p><p><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">D-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">L'orientation vers une psychothérapie n'est pas adaptée à l'urgence.</span></p><p><br></p><p><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">E-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">La surveillance rapprochée par l'équipe soignante (constantes, observation) est aussi indispensable en urgence.</span></p><p><br></p>"
+    },
+    {
+      "id": 3,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284641,
+          "text": "Velléités suicidaire simple.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284642,
+          "text": "Tentative de manipulation familiale.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 284643,
+          "text": "Dépression avec troubles oppositionnel.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 284644,
+          "text": "Passage à l’acte imminent.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284645,
+          "text": "Crise suicidaire avec syndrome pré-suicidaire.",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Urgences psychiatriques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Un jeune homme de 24 ans consiste pour des troubles du sommeil. Il décrit un isolement progressif, une imprécision de vide, et une colère intérieure qu’il ne maîtrise plus. Il rapporte qu’il se sent à bout : et qu’il pense à mettre fin à sa vie. Quelle situation décrit-il ?",
+      "has_media": false,
+      "statement": "Un jeune homme de 24 ans consiste pour des troubles du sommeil. Il décrit un isolement progressif, une imprécision de vide, et une colère intérieure qu’il ne maîtrise plus. Il rapporte qu’il se sent à bout : et qu’il pense à mettre fin à sa vie. Quelle situation décrit-il ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "la crise suicidaire est une crise psychique dont le risque majeur est le suicide. Il s'agit d'un moment dans la vie d'une personne, où celle-ci voit ses mécanismes d'adaptation dépassés, se sent donc dans une impasse et est confrontée à des idées suicidaires de plus en plus envahissantes ; le suicide apparait comme le seul moyen, face à sa souffranceLe syndrome est classiquement décrit par une triade de phénomènes psychiques (Ringel, 1953) qui représentent la progression du pprocessus  ● Le rétrécissement de la pensée : Réduction du champ de conscience et des intérêts. La pensée devient rigide, centrée exclusivement sur la souffrance et la perspective du suicide. Le sujet perd sa capacité à envisager des solutions alternatives. Perte de la flexibilité cognitive. ●L'inhibition de l'agressivité :L'agressivité et la colère initialement dirigées vers l'extérieur ou vers les causes de la souffrance sont retournées contre soi, renforçant l'auto-dévalorisation et la culpabilité ●Les fantasmes de suicide : L'idée de se suicider, s'organise en un scénario précis, actif et déterminé. ll y a une planification du moyen, du lieu et du moment. Source : Diapo Dr BELALA",
+      "original_id": 58128,
+      "clinical_case": null,
+      "display_title": "Question 3",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>la crise suicidaire est une crise psychique dont le risque majeur est le suicide. Il s'agit d'un moment dans la vie d'une personne, où celle-ci voit ses mécanismes d'adaptation dépassés, se sent donc dans une impasse et est confrontée à des idées suicidaires de plus en plus envahissantes ; le suicide apparait comme le seul moyen, face à sa souffrance</p><p><br></p><p>Le syndrome est classiquement décrit par une triade de phénomènes psychiques (Ringel, 1953) qui représentent la progression du pprocessus </p><p><br></p><p class=\"ql-indent-1\"> ● Le rétrécissement de la pensée : Réduction du champ de conscience et des intérêts. La pensée devient rigide, centrée exclusivement sur la souffrance et la perspective du suicide. Le sujet perd sa capacité à envisager des solutions alternatives. Perte de la flexibilité cognitive.</p><p class=\"ql-indent-1\"><br></p><p class=\"ql-indent-1\"> ●L'inhibition de l'agressivité :L'agressivité et la colère initialement dirigées vers l'extérieur ou vers les causes de la souffrance sont retournées contre soi, renforçant l'auto-dévalorisation et la culpabilité </p><p class=\"ql-indent-1\"><br></p><p class=\"ql-indent-1\">●Les fantasmes de suicide : L'idée de se suicider, s'organise en un scénario précis, actif et déterminé. ll y a une planification du moyen, du lieu et du moment. </p><p class=\"ql-indent-1\"><br></p><p>Source : Diapo Dr BELALA</p>"
+    },
+    {
+      "id": 4,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 253017,
+          "text": "Schizophrénie",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 253018,
+          "text": "Trouble obsessionnel compulsif",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 253019,
+          "text": "Attaque de panique",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 253020,
+          "text": "Épisode dépressif caractérisé",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 253021,
+          "text": "Psychose hallucinatoire chronique",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Urgences psychiatriques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle est l'affection qui comporte le plus de risques suicidaires ?",
+      "has_media": false,
+      "statement": "Quelle est l'affection qui comporte le plus de risques suicidaires ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "En faite le suicide et la tentative de suicide sont plus fréquents chez le bipolaire  pendant l'accès dépressif qu'en population générale. Les estimations annuelles sont de 3.9% pour la tentative de suicide et de 1.4% pour le suicide accompli chez les bipolaires, comparés à 0.5% pour les TS et 0.02% pour le suicide accompli en population générale. Le taux d''accomplissement de suicide est également plus important chez les bipolaires (ratio Suicide/TS de 1:3) comparé à la population générale (1:20 voire 1:40).",
+      "original_id": 51100,
+      "clinical_case": null,
+      "display_title": "Question 4",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>En faite le suicide et la tentative de suicide sont plus fréquents chez le <strong style=\"background-color: rgb(255, 255, 0);\"><u>bipolaire </u></strong> pendant <span style=\"background-color: rgb(255, 255, 0);\">l'accès dépressif </span>qu'en population générale. Les estimations annuelles sont de<strong style=\"color: rgb(230, 0, 0);\"> 3.9% pour la tentative de suicide </strong>et de <strong style=\"color: rgb(230, 0, 0);\">1.4% pour le suicide accompli chez les bipolaires</strong>, comparés à<strong style=\"color: rgb(230, 0, 0);\"> 0.5% pour les TS et 0.02% pour le suicide accompli en population générale. </strong></p><p>Le taux d''accomplissement de suicide est également plus important chez les bipolaires (ratio Suicide/TS de 1:3) comparé à la population générale (1:20 voire 1:40).</p>"
+    },
+    {
+      "id": 5,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252647,
+          "text": "Projet explicité à l’entretien ou de suicide.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252648,
+          "text": "La présence d'antécédents familiaux de tentatives de suicide ou de suicide",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252649,
+          "text": "L'absence d'antécédents personnels de tentatives de suicides",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 252650,
+          "text": "Isolement social et affectif",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252651,
+          "text": "Hallucinations impératives",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Urgences psychiatriques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les propositions suivantes sont des éléments évocateurs d'un risque de passage à l’acte suicidaire (RF)",
+      "has_media": true,
+      "statement": "Les propositions suivantes sont des éléments évocateurs d'un risque de passage à l’acte suicidaire (RF)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": " Les éléments suivants et leur intrication permettent l’évaluation du risque suicidaire : * Facteurs personnels :Antécédents personnels de TS;Diagnostic de trouble psychiatrique (troubles de l’humeur, troubles des conduites alimentaires, troubles de la personnalité, schizophrénie, trouble lié à l’usage de substances, troubles anxieux, etc.);Traits de personnalité : faible estime de soi, impulsivité agressivité, rigidité de la pensée, colère, propension au désespoir; expression d’idées suicidaires; santé générale: pathologie affectant la qualité de vie. * Facteurs familiaux :Antécédents familiaux de TS et de suicide. * Événements de vie et facteurs psychosociaux :Antécédents de maltraitance dans l’enfance (violences, abus physique, émotionnel ou sexuel)perte d’un parent pendant l’enfance; situation socio-économique: difficultés économiques ou professionnelles;isolement social (réseau social inexistant ou pauvre, problèmes d’intégration), séparation ou perte récente, difficultés avec la loi (infractions, délits), échecs ou événements humiliants, appartenance à ne minorité;Difficultés dans le développement: difficultés scolaires, placement durant l’enfance/adolescence en foyer d’accueil ou en détention, perte parentale précoce;Phénomène de «contagion» suite à un suicide: exposition directe ou indirecte à un suicide, soit qu’il s’agisse d’un proche, soit via les médias ou les fictions, que la personne soit célèbre ou non (avec un risque accru en cas de célébrité);élément déclencheur: élément récent entraînant un état de crise chez un sujet.D-Vrai, Sachant que c'est un facteur de risque secondaire, Observés fréquemment dans la population générale, ils n’ont qu’une faible valeur prédictive s’ils ne sont pas associés aux facteurs de risque primaires. Source : Référentiel en psychiatrie 4ème édition.",
+      "original_id": 51026,
+      "clinical_case": null,
+      "display_title": "Question 5",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1725117147.7003.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p>&nbsp;Les éléments suivants et leur intrication permettent l’évaluation du risque suicidaire :</p><p><span style=\"background-color: rgb(250, 204, 204);\">&nbsp;* Facteurs personnels :</span></p><ul><li><span style=\"background-color: rgb(255, 255, 0);\">Antécédents personnels de TS</span>;</li><li>Diagnostic de trouble psychiatrique (troubles de l’humeur, troubles des conduites alimentaires,&nbsp;troubles de la personnalité, schizophrénie, trouble lié à l’usage de substances, troubles anxieux, etc.);</li><li>Traits de personnalité : <span style=\"background-color: rgb(255, 255, 0);\">faible estime de soi</span>, impulsivité agressivité, rigidité de la pensée, colère,&nbsp;propension au désespoir; expression d’idées suicidaires; santé générale: pathologie affectant la qualité de vie.</li></ul><p><span style=\"background-color: rgb(250, 204, 204);\">&nbsp;* Facteurs familiaux :</span></p><ul><li><span style=\"background-color: rgb(255, 255, 0);\">Antécédents familiaux de TS et de suicide</span>.</li></ul><p><span style=\"background-color: rgb(250, 204, 204);\">&nbsp;* Événements de vie et facteurs psychosociaux :</span></p><ul><li>Antécédents de maltraitance dans l’enfance (violences, abus physique, émotionnel ou sexuel)</li><li>perte d’un parent pendant l’enfance; situation socio-économique: difficultés économiques ou professionnelles;</li><li><span style=\"background-color: rgb(255, 255, 0);\">isolement social</span> (réseau social inexistant ou pauvre, problèmes d’intégration), séparation ou perte&nbsp;récente, difficultés avec la loi (infractions, délits), échecs ou événements humiliants, appartenance à&nbsp;ne minorité;</li><li>Difficultés dans le développement: difficultés scolaires, placement durant l’enfance/adolescence en&nbsp;foyer d’accueil ou en détention, perte parentale précoce;</li><li>Phénomène de «contagion» suite à un suicide: exposition directe ou indirecte à un suicide, soit qu’il&nbsp;s’agisse d’un proche, soit via les médias ou les fictions, que la personne soit célèbre ou non (avec un&nbsp;risque accru en cas de célébrité);</li><li>élément déclencheur: élément récent entraînant un état de crise chez un sujet.</li></ul><p><strong style=\"color: rgb(0, 138, 0);\">D-Vrai,</strong> Sachant que c'est un facteur de risque secondaire, Observés fréquemment dans la population générale, ils n’ont qu’une faible valeur prédictive s’ils ne sont pas associés aux facteurs de risque primaires.</p><p> Source : </p><ul><li>Référentiel en psychiatrie 4ème édition.</li></ul>"
+    },
+    {
+      "id": 6,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229288,
+          "text": "Antécédents de tentative de suicide",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229289,
+          "text": "Absence de trouble psychiatrique associé",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 229290,
+          "text": "Existence d'antécédents de suicide ou de tentatives dans la famille",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229291,
+          "text": "Communication claire d'une intention suicidaire",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229292,
+          "text": "Caractère très impulsif de la personnalité",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Urgences psychiatriques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les facteurs de risques suicidaires primaires inclus les éléments suivants sauf un, lequel?",
+      "has_media": false,
+      "statement": "Les facteurs de risques suicidaires primaires inclus les éléments suivants sauf un, lequel?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": " Les éléments suivants et leur intrication permettent l’évaluation du risque suicidaire : * Facteurs personnels :Antécédents personnels de TS;Diagnostic de trouble psychiatrique (troubles de l’humeur, troubles des conduites alimentaires, troubles de la personnalité, schizophrénie, trouble lié à l’usage de substances, troubles anxieux, etc.);Traits de personnalité : faible estime de soi, impulsivité agressivité, rigidité de la pensée, colère, propension au désespoir; expression d’idées suicidaires; santé générale: pathologie affectant la qualité de vie. * Facteurs familiaux :Antécédents familiaux de TS et de suicide. * Événements de vie et facteurs psychosociaux :Antécédents de maltraitance dans l’enfance (violences, abus physique, émotionnel ou sexuel)perte d’un parent pendant l’enfance; situation socio-économique: difficultés économiques ou professionnelles;isolement social (réseau social inexistant ou pauvre, problèmes d’intégration), séparation ou perte récente, difficultés avec la loi (infractions, délits), échecs ou événements humiliants, appartenance à ne minorité;Difficultés dans le développement: difficultés scolaires, placement durant l’enfance/adolescence en foyer d’accueil ou en détention, perte parentale précoce;Phénomène de «contagion» suite à un suicide: exposition directe ou indirecte à un suicide, soit qu’il s’agisse d’un proche, soit via les médias ou les fictions, que la personne soit célèbre ou non (avec un risque accru en cas de célébrité);élément déclencheur: élément récent entraînant un état de crise chez un sujet. Source : Référentiel en psychiatrie 4ème édition.",
+      "original_id": 46531,
+      "clinical_case": null,
+      "display_title": "Question 6",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>&nbsp;Les éléments suivants et leur intrication permettent l’évaluation du risque suicidaire :</p><p><span style=\"background-color: rgb(250, 204, 204);\">&nbsp;* Facteurs personnels :</span></p><ul><li><span style=\"background-color: rgb(255, 255, 0);\">Antécédents personnels de TS</span>;</li><li>Diagnostic de trouble psychiatrique (troubles de l’humeur, troubles des conduites alimentaires,&nbsp;troubles de la personnalité, schizophrénie, trouble lié à l’usage de substances, troubles anxieux, etc.);</li><li>Traits de personnalité : <span style=\"background-color: rgb(255, 255, 0);\">faible estime de soi</span>, <span style=\"background-color: rgb(255, 255, 0);\">impulsivité agressivité</span>, <span style=\"background-color: rgb(255, 255, 0);\">rigidité de la pensée</span>, colère,&nbsp;propension au désespoir; expression d’idées suicidaires; santé générale: pathologie affectant la qualité de vie.</li></ul><p><span style=\"background-color: rgb(250, 204, 204);\">&nbsp;* Facteurs familiaux :</span></p><ul><li><span style=\"background-color: rgb(255, 255, 0);\">Antécédents familiaux de TS et de suicide</span>.</li></ul><p><span style=\"background-color: rgb(250, 204, 204);\">&nbsp;* Événements de vie et facteurs psychosociaux :</span></p><ul><li>Antécédents de maltraitance dans l’enfance (violences, abus physique, émotionnel ou sexuel)</li><li>perte d’un parent pendant l’enfance; situation socio-économique: difficultés économiques ou professionnelles;</li><li><span style=\"background-color: rgb(255, 255, 0);\">isolement social</span> (réseau social inexistant ou pauvre, problèmes d’intégration), séparation ou perte&nbsp;récente, difficultés avec la loi (infractions, délits), échecs ou événements humiliants, appartenance à&nbsp;ne minorité;</li><li>Difficultés dans le développement: difficultés scolaires, placement durant l’enfance/adolescence en&nbsp;foyer d’accueil ou en détention, perte parentale précoce;</li><li>Phénomène de «contagion» suite à un suicide: exposition directe ou indirecte à un suicide, soit qu’il&nbsp;s’agisse d’un proche, soit via les médias ou les fictions, que la personne soit célèbre ou non (avec un&nbsp;risque accru en cas de célébrité);</li><li>élément déclencheur: élément récent entraînant un état de crise chez un sujet.</li></ul><p> Source : </p><ul><li>Référentiel en psychiatrie 4ème édition.</li></ul><p><br></p>"
+    },
+    {
+      "id": 7,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229293,
+          "text": "Perte parentale précoce",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229294,
+          "text": "Isolement social",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229295,
+          "text": "Bonne adaptation professionnelle",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 229296,
+          "text": "Evènements de vie négatifs",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229297,
+          "text": "Faible valeur prédictive s'ils ne sont pas associés aux facteurs de risque primaires.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Urgences psychiatriques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les facteurs de risques suicidaires secondaires inclus les éléments suivants sauf un, lequel ?",
+      "has_media": false,
+      "statement": "Les facteurs de risques suicidaires secondaires inclus les éléments suivants sauf un, lequel ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Les éléments suivants et leur intrication permettent l’évaluation du risque suicidaire : * Facteurs personnels :Antécédents personnels de TS;Diagnostic de trouble psychiatrique (troubles de l’humeur, troubles des conduites alimentaires, troubles de la personnalité, schizophrénie, trouble lié à l’usage de substances, troubles anxieux, etc.);Traits de personnalité : faible estime de soi, impulsivité agressivité, rigidité de la pensée, colère, propension au désespoir; expression d’idées suicidaires; santé générale: pathologie affectant la qualité de vie. * Facteurs familiaux :Antécédents familiaux de TS et de suicide. * Événements de vie et facteurs psychosociaux :Antécédents de maltraitance dans l’enfance (violences, abus physique, émotionnel ou sexuel)perte d’un parent pendant l’enfance; situation socio-économique: difficultés économiques ou professionnelles;isolement social (réseau social inexistant ou pauvre, problèmes d’intégration), séparation ou perte récente, difficultés avec la loi (infractions, délits), échecs ou événements humiliants, appartenance à ne minorité;Difficultés dans le développement: difficultés scolaires, placement durant l’enfance/adolescence en foyer d’accueil ou en détention, perte parentale précoce;Phénomène de «contagion» suite à un suicide: exposition directe ou indirecte à un suicide, soit qu’il s’agisse d’un proche, soit via les médias ou les fictions, que la personne soit célèbre ou non (avec un risque accru en cas de célébrité);élément déclencheur: élément récent entraînant un état de crise chez un sujet.Source :Référentiel en psychiatrie 4ème édition.",
+      "original_id": 46532,
+      "clinical_case": null,
+      "display_title": "Question 7",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>Les éléments suivants et leur intrication permettent l’évaluation du risque suicidaire :</p><p><span style=\"background-color: rgb(250, 204, 204);\">&nbsp;* Facteurs personnels :</span></p><ul><li><span style=\"background-color: rgb(255, 255, 0);\">Antécédents personnels de TS</span>;</li><li>Diagnostic de trouble psychiatrique (troubles de l’humeur, troubles des conduites alimentaires,&nbsp;troubles de la personnalité, schizophrénie, trouble lié à l’usage de substances, troubles anxieux, etc.);</li><li>Traits de personnalité : <span style=\"background-color: rgb(255, 255, 0);\">faible estime de soi</span>, <span style=\"background-color: rgb(255, 255, 0);\">impulsivité agressivité</span>, <span style=\"background-color: rgb(255, 255, 0);\">rigidité de la pensée</span>, colère,&nbsp;propension au désespoir; expression d’idées suicidaires; santé générale: pathologie affectant la qualité de vie.</li></ul><p><span style=\"background-color: rgb(250, 204, 204);\">&nbsp;* Facteurs familiaux :</span></p><ul><li><span style=\"background-color: rgb(255, 255, 0);\">Antécédents familiaux de TS et de suicide</span>.</li></ul><p><span style=\"background-color: rgb(250, 204, 204);\">&nbsp;* Événements de vie et facteurs psychosociaux :</span></p><ul><li>Antécédents de maltraitance dans l’enfance (violences, abus physique, émotionnel ou sexuel)</li><li><span style=\"background-color: rgb(255, 255, 0);\">perte d’un parent pendant l’enfance</span>; situation socio-économique: difficultés économiques ou professionnelles;</li><li><span style=\"background-color: rgb(255, 255, 0);\">isolement social</span> (réseau social inexistant ou pauvre, problèmes d’intégration), séparation ou perte&nbsp;récente, difficultés avec la loi (infractions, délits), échecs ou événements humiliants, appartenance à&nbsp;ne minorité;</li><li>Difficultés dans le développement: difficultés scolaires, placement durant l’enfance/adolescence en&nbsp;foyer d’accueil ou en détention, perte parentale précoce;</li><li>Phénomène de «contagion» suite à un suicide: exposition directe ou indirecte à un suicide, soit qu’il&nbsp;s’agisse d’un proche, soit via les médias ou les fictions, que la personne soit célèbre ou non (avec un&nbsp;risque accru en cas de célébrité);</li><li>élément déclencheur: élément récent entraînant un état de crise chez un sujet.</li></ul><p>Source :</p><ul><li>Référentiel en psychiatrie 4ème édition.</li></ul><p><br></p>"
+    },
+    {
+      "id": 8,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 221014,
+          "text": "1.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 221015,
+          "text": "2.3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 221016,
+          "text": "1.2.3",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 221017,
+          "text": "1.2.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 221018,
+          "text": "1.2.3.4",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Urgences psychiatriques",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des associations représente les facteurs de risque d'un passage à l'acte suicidaire devant un patient présentant des idées suicidaires, laquelle ? \n1. La présence d'antécédents de tentative de suicide ou de suicide dans la famille.\n2. La présence d'antécédents personnels de tentative de suicide.\n3. L'isolement social.\n4. La présence d'un automatisme mentale.",
+      "has_media": false,
+      "statement": "L'une des associations représente les facteurs de risque d'un passage à l'acte suicidaire devant un patient présentant des idées suicidaires, laquelle ? \n1. La présence d'antécédents de tentative de suicide ou de suicide dans la famille.\n2. La présence d'antécédents personnels de tentative de suicide.\n3. L'isolement social.\n4. La présence d'un automatisme mentale.",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": " Les éléments suivants et leur intrication permettent l’évaluation du risque suicidaire : * Facteurs personnels :Antécédents personnels de TS;Diagnostic de trouble psychiatrique (troubles de l’humeur, troubles des conduites alimentaires, troubles de la personnalité, schizophrénie, trouble lié à l’usage de substances, troubles anxieux, etc.);Traits de personnalité : faible estime de soi, impulsivité agressivité, rigidité de la pensée, colère, propension au désespoir; expression d’idées suicidaires; santé générale: pathologie affectant la qualité de vie. * Facteurs familiaux :Antécédents familiaux de TS et de suicide. * Événements de vie et facteurs psychosociaux :Antécédents de maltraitance dans l’enfance (violences, abus physique, émotionnel ou sexuel)perte d’un parent pendant l’enfance; situation socio-économique: difficultés économiques ou professionnelles;isolement social (réseau social inexistant ou pauvre, problèmes d’intégration), séparation ou perte récente, difficultés avec la loi (infractions, délits), échecs ou événements humiliants, appartenance à ne minorité;Difficultés dans le développement: difficultés scolaires, placement durant l’enfance/adolescence en foyer d’accueil ou en détention, perte parentale précoce;Phénomène de «contagion» suite à un suicide: exposition directe ou indirecte à un suicide, soit qu’il s’agisse d’un proche, soit via les médias ou les fictions, que la personne soit célèbre ou non (avec un risque accru en cas de célébrité);élément déclencheur: élément récent entraînant un état de crise chez un sujet. Source : Référentiel en psychiatrie 4ème édition.",
+      "original_id": 44927,
+      "clinical_case": null,
+      "display_title": "Question 8",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>&nbsp;Les éléments suivants et leur intrication permettent l’évaluation du risque suicidaire :</p><p><span style=\"background-color: rgb(250, 204, 204);\">&nbsp;* Facteurs personnels :</span></p><ul><li><span style=\"background-color: rgb(255, 255, 0);\">Antécédents personnels de TS</span>;</li><li><span style=\"background-color: rgb(255, 255, 0);\">Diagnostic de trouble psychiatrique</span> (troubles de l’humeur, troubles des conduites alimentaires,&nbsp;troubles de la personnalité, schizophrénie, trouble lié à l’usage de substances, troubles anxieux, etc.);</li><li>Traits de personnalité : <span style=\"background-color: rgb(255, 255, 0);\">faible estime de soi</span>, <span style=\"background-color: rgb(255, 255, 0);\">impulsivité agressivité</span>, <span style=\"background-color: rgb(255, 255, 0);\">rigidité de la pensée</span>, colère,&nbsp;propension au désespoir; expression d’idées suicidaires; santé générale: pathologie affectant la qualité de vie.</li></ul><p><span style=\"background-color: rgb(250, 204, 204);\">&nbsp;* Facteurs familiaux :</span></p><ul><li><span style=\"background-color: rgb(255, 255, 0);\">Antécédents familiaux de TS et de suicide</span>.</li></ul><p><span style=\"background-color: rgb(250, 204, 204);\">&nbsp;* Événements de vie et facteurs psychosociaux :</span></p><ul><li>Antécédents de maltraitance dans l’enfance (violences, abus physique, émotionnel ou sexuel)</li><li>perte d’un parent pendant l’enfance; situation socio-économique: difficultés économiques ou professionnelles;</li><li><span style=\"background-color: rgb(255, 255, 0);\">isolement social</span> (réseau social inexistant ou pauvre, problèmes d’intégration), séparation ou perte&nbsp;récente, difficultés avec la loi (infractions, délits), échecs ou événements humiliants, appartenance à&nbsp;ne minorité;</li><li>Difficultés dans le développement: difficultés scolaires, placement durant l’enfance/adolescence en&nbsp;foyer d’accueil ou en détention, perte parentale précoce;</li><li>Phénomène de «contagion» suite à un suicide: exposition directe ou indirecte à un suicide, soit qu’il&nbsp;s’agisse d’un proche, soit via les médias ou les fictions, que la personne soit célèbre ou non (avec un&nbsp;risque accru en cas de célébrité);</li><li>élément déclencheur: élément récent entraînant un état de crise chez un sujet.</li></ul><p> Source : </p><ul><li>Référentiel en psychiatrie 4ème édition.</li></ul><p><br></p>"
+    },
+    {
+      "id": 9,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 221009,
+          "text": "Il constitue une urgence psychiatrique et parfois médicale.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 221010,
+          "text": "Il peut être en rapport avec une situation de crise.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 221011,
+          "text": "Il peut résulter d'un automatisme mental, dans ce cas l'hospitalisation est judicieuse",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 221012,
+          "text": "Il résulte obligatoirement d'une décompensation psychiatrique.",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 221013,
+          "text": "En plus du traitement étiologique, un accompagnement psychothérapeutique s’impose.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Urgences psychiatriques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Toutes ces propositions caractérisent le suicide sauf une, laquelle ?",
+      "has_media": false,
+      "statement": "Toutes ces propositions caractérisent le suicide sauf une, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "D- Faux : Le suicide ne résulte pas obligatoirement d'une décompensation psychiatrique. Il peut survenir dans différents contextes :Trouble psychiatrique décompensé (comme une dépression majeure, une schizophrénie, etc.)Situation de crise existentielle ou sociale, sans trouble psychiatrique avéréImpulsivité, troubles de la personnalité, ou événements de vie particulièrement stressants",
+      "original_id": 44926,
+      "clinical_case": null,
+      "display_title": "Question 9",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>D- <span style=\"background-color: rgb(230, 0, 0);\">Faux </span>: Le suicide <strong style=\"background-color: rgb(255, 255, 0);\">ne résulte pas obligatoirement d'une décompensation psychiatrique.</strong></p><p> Il peut survenir dans différents contextes :</p><ul><li><strong>Trouble psychiatrique décompensé</strong> (comme une dépression majeure, une schizophrénie, etc.)</li><li><strong>Situation de crise existentielle ou sociale</strong>, sans trouble psychiatrique avéré</li><li><strong>Impulsivité</strong>, troubles de la personnalité, ou <strong>événements de vie</strong> particulièrement stressants</li></ul>"
+    },
+    {
+      "id": 10,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 218931,
+          "text": "Un acte médical provisoire",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 218932,
+          "text": "Un acte médical de premier recours",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 218933,
+          "text": "N'oblige aucune surveillance",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 218934,
+          "text": "Ne nécessite aucune prescription",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 218935,
+          "text": "Toutes ces propositions sont justes",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Urgences psychiatriques",
+        "series": "Mystidia Exams"
+      },
+      "question": "La contention physique d'un malade agité est :",
+      "has_media": false,
+      "statement": "La contention physique d'un malade agité est :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Traitements non pharmacologiques :  L’état d’agitation pose toujours le problème du risque de passage à l’acte, auto- ou hétéro-agressif. Un contact verbal instaurant un climat de confiance et facilitant une alliance thérapeutique ainsi qu’un comportement empathique peuvent prévenir un passage à l’acte. Ainsi, il est important de ne pas provoquer, d’établir un contact visuel et d’utiliser un langage clair et concis. La prise en charge relationnelle est une obligation médicale puisqu’elle désamorce un nombre important de cas d’état d’agitation, mais aussi médico-légale puisque l’utilisation d’une contention physique ou mécanique ne peut se justifier qu’après échec de tous les autres moyens (y compris la prise en charge relationnelle). les mesures de contention mécanique ou physique constituent des pratiques de dernier recours. Leur utilisation doit être justifiée par des arguments cliniques.Source : Référentiel en psychiatrie 4ème édition.",
+      "original_id": 44511,
+      "clinical_case": null,
+      "display_title": "Question 10",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><span style=\"background-color: rgb(102, 185, 102);\">Traitements non pharmacologiques : </span></p><p>&nbsp;L’état d’agitation <strong style=\"color: rgb(230, 0, 0);\">pose toujours le problème du risque de passage à l’acte, auto- ou hétéro-agressif.</strong></p><p>&nbsp;Un contact verbal instaurant un climat de confiance et facilitant une alliance thérapeutique ainsi qu’un&nbsp;</p><p>comportement empathique peuvent prévenir un passage à l’acte. Ainsi, il est important de ne pas provoquer, d’établir un contact visuel et d’utiliser un langage clair et concis.</p><p>&nbsp;<span style=\"background-color: rgb(255, 255, 0);\">La prise en charge relationnelle est une obligation </span>médicale puisqu’elle désamorce un nombre important de cas d’état d’agitation, mais aussi médico-légale puisque <span style=\"background-color: rgb(255, 255, 0);\">l’utilisation d’une contention physique ou mécanique ne peut se justifier qu’après échec de tous les autres moyens </span>(y compris la prise en charge relationnelle).</p><p><span style=\"background-color: rgb(255, 255, 0);\">&nbsp;les mesures de contention</span> mécanique ou physique constituent des <span style=\"background-color: rgb(255, 255, 0);\">pratiques de dernier recours.</span> Leur utilisation<span style=\"background-color: rgb(255, 255, 0);\"> doit être justifiée par des arguments cliniques.</span></p><p><br></p><p>Source : </p><ul><li>Référentiel en psychiatrie 4ème édition.</li></ul>"
+    },
+    {
+      "id": 11,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 218936,
+          "text": "Un geste imprévisible",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 218937,
+          "text": "Le trouble de l'humeur avéré est toujours présent",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 218938,
+          "text": "Le sujet critique et regrette son acte dans la majorité des cas",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 218939,
+          "text": "Le passage à l'acte est spécifique aux troubles de la personnalité",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 218940,
+          "text": "La violence et le risque de récidive est éminent",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Urgences psychiatriques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Toutes ces propositions concernent le passage à l'acte impulsif sauf une, laquelle ?",
+      "has_media": false,
+      "statement": "Toutes ces propositions concernent le passage à l'acte impulsif sauf une, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "B- Faux : Le passage à l'acte impulsif :Peut survenir sans trouble de l'humeur avéré (comme la dépression).Est souvent associé à des troubles de la personnalité (borderline, antisocial, etc.), mais pas exclusivement.Est souvent imprévisible, violent, avec un haut risque de récidive.Le sujet critique souvent son acte après coup et peut le regretter.",
+      "original_id": 44512,
+      "clinical_case": null,
+      "display_title": "Question 11",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>B- <span style=\"background-color: rgb(230, 0, 0);\">Faux </span>: Le <strong>passage à l'acte impulsif</strong> :</p><ul><li>Peut survenir <strong style=\"background-color: rgb(255, 255, 0);\">sans trouble de l'humeur avéré</strong><span style=\"background-color: rgb(255, 255, 0);\"> </span>(comme la dépression).</li><li>Est souvent associé à des <strong style=\"background-color: rgb(255, 255, 0);\">troubles de la personnalité</strong> (borderline, antisocial, etc.), <strong style=\"color: rgb(230, 0, 0);\">mais pas exclusivement.</strong></li><li>Est souvent <strong style=\"background-color: rgb(255, 255, 0);\">imprévisible</strong>, <strong style=\"background-color: rgb(255, 255, 0);\">violent</strong>, avec un<span style=\"background-color: rgb(255, 255, 0);\"> </span><strong style=\"background-color: rgb(255, 255, 0);\">haut risque de récidive</strong><span style=\"background-color: rgb(255, 255, 0);\">.</span></li><li>Le sujet <strong>critique souvent</strong> son acte après coup et peut le <strong>regretter</strong>.</li></ul>"
+    },
+    {
+      "id": 12,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220944,
+          "text": "1.2.3",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 220945,
+          "text": "1.2.4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220946,
+          "text": "1.3.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220947,
+          "text": "2.3.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220948,
+          "text": "2.4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Urgences psychiatriques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Parmi les propositions suivantes quelles sont les étiologies des tentatives de suicide (RJ):\n1.Troubles de l'humeur\n2. Troubles liés à l'alcool ou autres substances psychoactives\n3. Trouble délirant\n4. L'enfance\n5. Trouble histrionique",
+      "has_media": false,
+      "statement": "Parmi les propositions suivantes quelles sont les étiologies des tentatives de suicide (RJ):\n1.Troubles de l'humeur\n2. Troubles liés à l'alcool ou autres substances psychoactives\n3. Trouble délirant\n4. L'enfance\n5. Trouble histrionique",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Diagnostic étiologique : A/ Causes organiques Médicaments: Isoniazide, psychotropes, corticoïdes Autres intoxications: CO Plomb Causes métaboliques et endocrinienne Hypoglycémie/ Acidocétose diabétique Hyperthyroïdie Causes neuro-méningées : Hémorragies méningées, Méningites, Encéphalites.Tumeurs cérébrales (frontales), Hypertension intracrânienne Epilepsie Hématome sous dural B/causes toxiques . L'agitation peut se voir soit lors d'une intoxication (intoxication alcoolique), ou lors du sevrage de certaines drogues. C/ Étiologies Psychiatriques :1. Trouble anxieux : lors des crises d'angoisse aigue dans sa forme agitée.2. Trouble de l'humeur :* L'accès maniaque, représente le tableau typique de l'agitation avec notion de l'exaltation euphorique de l'humeur ou l'hyperthymie expansive caractéristique de l'accès maniaque s'accompagne fréquemment d'une excitation psychique et physique ..* L'accès dépressif: agitation anxieuse avec des idées délirantes à thématique dépressive(pessimisme, dégoût vitale et des idées d'infériorité avec culpabilité) qui peuvent alimenteret précipiter un passage à l'acte suicidaire.3. Troubles psychotiques aigus : l'agitation est secondaire à l'adhésion au délire. 4. Schizophrénies et les paranoïaques : l'agitation survient surtout dans un contexte délirant et hallucinatoire ou dans un moment d'impulsivité, le passage à l'acte auto et hétéro-agressif est très important et imprévisible.5. Trouble de la personnalité névrotique ou anxieusehistrionique (les crises d'hystérie selon les classifications française)6. Organisation psychopathique de la personnalitéL'agitation survient dans un contexte de frustration et le passage à l'acte dangereux est trèsimportant.Source : Diapo Pr S. Sehim https://mystidia.com/lecture?uId=1U8hVDkdMaZbBw8HRc5K9-JDUuzNHKVr_",
+      "original_id": 44913,
+      "clinical_case": null,
+      "display_title": "Question 12",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><span style=\"background-color: rgb(102, 185, 102);\">Diagnostic étiologique :&nbsp;</span></p><p><span style=\"background-color: rgb(250, 204, 204);\">A/ Causes organiques&nbsp;</span></p><ul><li>Médicaments: Isoniazide, psychotropes, corticoïdes&nbsp;</li><li>Autres intoxications: CO Plomb&nbsp;</li><li>Causes métaboliques et endocrinienne&nbsp;</li><li>Hypoglycémie/ Acidocétose diabétique&nbsp;</li><li>Hyperthyroïdie&nbsp;</li><li>Causes neuro-méningées :&nbsp;</li><li>Hémorragies méningées, Méningites, Encéphalites.</li><li>Tumeurs cérébrales (frontales),&nbsp;</li><li>Hypertension intracrânienne&nbsp;</li><li>Epilepsie&nbsp;</li><li>Hématome sous dural&nbsp;</li></ul><p><span style=\"background-color: rgb(250, 204, 204);\">B/causes toxiques .&nbsp;</span></p><ul><li>L'agitation peut se voir soit lors d'une <span style=\"background-color: rgb(255, 255, 0);\">intoxication</span> (intoxication alcoolique), ou<span style=\"background-color: rgb(255, 255, 0);\"> lors du sevrage de&nbsp;certaines drogues.&nbsp;</span></li></ul><p><span style=\"background-color: rgb(250, 204, 204);\">C/ Étiologies Psychiatriques :</span></p><p>1. <span style=\"background-color: rgb(255, 255, 0);\">Trouble anxieux</span> : lors des crises d'angoisse aigue dans sa forme agitée.</p><p>2. <span style=\"background-color: rgb(255, 255, 0);\">Trouble de l'humeur :</span></p><p>* L'accès maniaque, représente le tableau typique de l'agitation avec notion de l'exaltation euphorique de l'humeur ou l'hyperthymie expansive caractéristique de l'accès maniaque s'accompagne fréquemment d'une excitation psychique et physique ..</p><p>* L'accès dépressif: agitation anxieuse avec des idées délirantes à thématique dépressive</p><p>(pessimisme, dégoût vitale et des idées d'infériorité avec culpabilité) qui peuvent alimenter</p><p>et précipiter un passage à l'acte suicidaire.</p><p>3. <span style=\"background-color: rgb(255, 255, 0);\">Troubles psychotiques aigus :</span> l'agitation est secondaire à l'adhésion au délire. </p><p>4. <span style=\"background-color: rgb(255, 255, 0);\">Schizophrénies et les paranoïaques :</span> l'agitation survient surtout dans <strong style=\"color: rgb(230, 0, 0);\">un contexte délirant et hallucinatoire</strong> ou dans un moment d'impulsivité,<strong style=\"color: rgb(230, 0, 0);\"> le passage à l'acte auto et hétéro-agressif est très important et imprévisible.</strong></p><p>5.<span style=\"background-color: rgb(255, 255, 0);\"> Trouble de la personnalité névrotique ou anxieuse</span></p><p><span style=\"background-color: rgb(255, 255, 0);\">histrionique </span>(les crises d'hystérie selon les classifications française)</p><p>6. <span style=\"background-color: rgb(255, 255, 0);\">Organisation psychopathique de la personnalité</span></p><p>L'agitation survient dans un contexte de frustration et le passage à l'acte dangereux est très</p><p>important.</p><p>Source : </p><ul><li>Diapo Pr S. Sehim </li></ul><p>https://mystidia.com/lecture?uId=1U8hVDkdMaZbBw8HRc5K9-JDUuzNHKVr_</p>"
+    },
+    {
+      "id": 13,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 218941,
+          "text": "Antécédents suicidaires personnels ou familiaux",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 218942,
+          "text": "Intégration familiale et sociale",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 218943,
+          "text": "Ages extrêmes",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 218944,
+          "text": "Présence d’une mélancolie",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 218945,
+          "text": "Maladie organique à l’origine de désespoir et résistance au traitement",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Urgences psychiatriques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le suicide constitue la complication la plus redoutable d’un état dépressif, les facteurs de risque en sont : (RF)",
+      "has_media": false,
+      "statement": "Le suicide constitue la complication la plus redoutable d’un état dépressif, les facteurs de risque en sont : (RF)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Les éléments suivants et leur intrication permettent l’évaluation du risque suicidaire : * Facteurs personnels :Antécédents personnels de TS;Diagnostic de trouble psychiatrique (troubles de l’humeur, troubles des conduites alimentaires, troubles de la personnalité, schizophrénie, trouble lié à l’usage de substances, troubles anxieux, etc.);Traits de personnalité : faible estime de soi, impulsivité agressivité, rigidité de la pensée, colère, propension au désespoir; expression d’idées suicidaires; santé générale: pathologie affectant la qualité de vie. * Facteurs familiaux :Antécédents familiaux de TS et de suicide. * Événements de vie et facteurs psychosociaux :Antécédents de maltraitance dans l’enfance (violences, abus physique, émotionnel ou sexuel)perte d’un parent pendant l’enfance; situation socio-économique: difficultés économiques ou professionnelles;isolement social (réseau social inexistant ou pauvre, problèmes d’intégration), séparation ou perte récente, difficultés avec la loi (infractions, délits), échecs ou événements humiliants, appartenance à ne minorité;Difficultés dans le développement: difficultés scolaires, placement durant l’enfance/adolescence en foyer d’accueil ou en détention, perte parentale précoce;Phénomène de «contagion» suite à un suicide: exposition directe ou indirecte à un suicide, soit qu’il s’agisse d’un proche, soit via les médias ou les fictions, que la personne soit célèbre ou non (avec un risque accru en cas de célébrité);élément déclencheur: élément récent entraînant un état de crise chez un sujet.Source :Référentiel en psychiatrie 4ème édition.",
+      "original_id": 44513,
+      "clinical_case": null,
+      "display_title": "Question 13",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>Les éléments suivants et leur intrication permettent l’évaluation du risque suicidaire :</p><p><span style=\"background-color: rgb(250, 204, 204);\">&nbsp;* Facteurs personnels :</span></p><ul><li><span style=\"background-color: rgb(255, 255, 0);\">Antécédents personnels de TS</span>;</li><li>Diagnostic de trouble psychiatrique (troubles de l’humeur, troubles des conduites alimentaires,&nbsp;troubles de la personnalité, schizophrénie, trouble lié à l’usage de substances, troubles anxieux, etc.);</li><li>Traits de personnalité : <span style=\"background-color: rgb(255, 255, 0);\">faible estime de soi</span>, <span style=\"background-color: rgb(255, 255, 0);\">impulsivité agressivité</span>, <span style=\"background-color: rgb(255, 255, 0);\">rigidité de la pensée</span>, colère,&nbsp;propension au désespoir; expression d’idées suicidaires; santé générale: pathologie affectant la qualité de vie.</li></ul><p><span style=\"background-color: rgb(250, 204, 204);\">&nbsp;* Facteurs familiaux :</span></p><ul><li><span style=\"background-color: rgb(255, 255, 0);\">Antécédents familiaux de TS et de suicide</span>.</li></ul><p><span style=\"background-color: rgb(250, 204, 204);\">&nbsp;* Événements de vie et facteurs psychosociaux :</span></p><ul><li>Antécédents de maltraitance dans l’enfance (violences, abus physique, émotionnel ou sexuel)</li><li><span style=\"background-color: rgb(255, 255, 0);\">perte d’un parent pendant l’enfance</span>; situation socio-économique: difficultés économiques ou professionnelles;</li><li><span style=\"background-color: rgb(255, 255, 0);\">isolement social</span> (réseau social inexistant ou pauvre, problèmes d’intégration), séparation ou perte&nbsp;récente, difficultés avec la loi (infractions, délits), échecs ou événements humiliants, appartenance à&nbsp;ne minorité;</li><li>Difficultés dans le développement: difficultés scolaires, placement durant l’enfance/adolescence en&nbsp;foyer d’accueil ou en détention, perte parentale précoce;</li><li>Phénomène de «contagion» suite à un suicide: exposition directe ou indirecte à un suicide, soit qu’il&nbsp;s’agisse d’un proche, soit via les médias ou les fictions, que la personne soit célèbre ou non (avec un&nbsp;risque accru en cas de célébrité);</li><li>élément déclencheur: élément récent entraînant un état de crise chez un sujet.</li></ul><p>Source :</p><ul><li>Référentiel en psychiatrie 4ème édition.</li></ul><p><br></p>"
+    },
+    {
+      "id": 14,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 218946,
+          "text": "1+2+4",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 218947,
+          "text": "2+3+5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 218948,
+          "text": "1+3+5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 218949,
+          "text": "1+2+5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 218950,
+          "text": "2+4+5",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Urgences psychiatriques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans les tentatives de suicides :\n\n1 La prise en charge est exclusivement psychiatrique\n2 Une évaluation somatique, psychologique, socio-familiale est nécessaire\n3 Le traitement est essentiellement curatif\n4 Rechercher une comorbidité somatique\n5 Prévenir le risque de récidive à court terme",
+      "has_media": false,
+      "statement": "Dans les tentatives de suicides :\n\n1 La prise en charge est exclusivement psychiatrique\n2 Une évaluation somatique, psychologique, socio-familiale est nécessaire\n3 Le traitement est essentiellement curatif\n4 Rechercher une comorbidité somatique\n5 Prévenir le risque de récidive à court terme",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Prise en charge d’un état d’agitation :  La prise en charge d’un état d’agitation est généralement réalisée aux urgences (ou au minimum après les différentes évaluations cliniques et paracliniques ). L’hospitalisation en psychiatrie sera indiquée en cas de trouble psychiatrique sous-jacent nécessitant des soins. Elle sera réalisée en urgence, de préférence en soins libres ou en soins sans consentement si les conditions sont réunies. Traitements pharmacologiques Le patient devrait être impliqué autant que possible dans le choix de son traitement et de sa voie d’administration. Le principal objectif du traitement pharmacologique de l’agitation est d’apaiser rapidement le patient sans le sédater de façon trop importante. Les classes médicamenteuses concernées dans la prise en charge de l’agitation correspondent aux benzodiazépines et aux antipsychotiques.Traitements non pharmacologiques :  L’état d’agitation pose toujours le problème du risque de passage à l’acte, auto- ou hétéro-agressif. Un contact verbal instaurant un climat de confiance et facilitant une alliance thérapeutique ainsi qu’un comportement empathique peuvent prévenir un passage à l’acte. Ainsi, il est important de ne pas provoquer, d’établir un contact visuel et d’utiliser un langage clair et concis. La prise en charge relationnelle est une obligation médicale puisqu’elle désamorce un nombre important de cas d’état d’agitation, mais aussi médico-légale puisque l’utilisation d’une contention physique ou mécanique ne peut se justifier qu’après échec de tous les autres moyens (y compris la prise en charge relationnelle). les mesures de contention mécanique ou physique constituent des pratiques de dernier recours. Leur utilisation doit être justifiée par des arguments cliniques.Source : Référentiel en psychiatrie 4ème édition.",
+      "original_id": 44514,
+      "clinical_case": null,
+      "display_title": "Question 14",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><span style=\"background-color: rgb(102, 185, 102);\">Prise en charge d’un état d’agitation : </span></p><p>&nbsp;La prise en charge d’un état d’agitation est généralement réalisée aux urgences (ou au minimum après les différentes <span style=\"background-color: rgb(255, 255, 0);\">évaluations cliniques et paracliniques</span> ). L’hospitalisation en psychiatrie sera indiquée en cas de trouble psychiatrique sous-jacent nécessitant des soins. Elle sera réalisée en urgence, de préférence en soins libres ou en soins sans consentement si les conditions sont réunies.</p><p><span style=\"background-color: rgb(250, 204, 204);\">&nbsp;Traitements pharmacologiques</span></p><p>&nbsp;Le patient devrait être impliqué autant que possible dans le choix de son traitement et de sa voie d’administration. Le principal objectif du traitement pharmacologique de l’agitation est d’apaiser rapidement le&nbsp;</p><p>patient sans le sédater de façon trop importante.</p><p>&nbsp;Les classes médicamenteuses concernées dans la prise en charge de l’agitation correspondent aux benzo</p><p>diazépines et aux antipsychotiques.</p><p><span style=\"background-color: rgb(250, 204, 204);\">Traitements non pharmacologiques : </span></p><p>&nbsp;L’état d’agitation <strong style=\"color: rgb(230, 0, 0);\">pose toujours le problème du risque de passage à l’acte, auto- ou hétéro-agressif.</strong></p><p>&nbsp;Un contact verbal instaurant un climat de confiance et facilitant une alliance thérapeutique ainsi qu’un&nbsp;</p><p>comportement empathique peuvent prévenir un passage à l’acte. Ainsi, il est important de ne pas provoquer, d’établir un contact visuel et d’utiliser un langage clair et concis.</p><p>&nbsp;<span style=\"background-color: rgb(255, 255, 0);\">La prise en charge relationnelle est une obligation </span>médicale puisqu’elle désamorce un nombre important de cas d’état d’agitation, mais aussi médico-légale puisque <span style=\"background-color: rgb(255, 255, 0);\">l’utilisation d’une contention physique ou mécanique ne peut se justifier qu’après échec de tous les autres moyens </span>(y compris la prise en charge relationnelle).</p><p><span style=\"background-color: rgb(255, 255, 0);\">&nbsp;les mesures de contention</span> mécanique ou physique constituent des <span style=\"background-color: rgb(255, 255, 0);\">pratiques de dernier recours.</span> Leur utilisation<span style=\"background-color: rgb(255, 255, 0);\"> doit être justifiée par des arguments cliniques.</span></p><p><br></p><p>Source : </p><ul><li>Référentiel en psychiatrie 4ème édition.</li></ul><p><br></p>"
+    },
+    {
+      "id": 15,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 218951,
+          "text": "1+2+3",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 218952,
+          "text": "1+2+4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 218953,
+          "text": "1+3+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 218954,
+          "text": "2+3+4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 218955,
+          "text": "2+4+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Urgences psychiatriques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Parmi les propositions suivantes quelles sont les étiologies des tentatives de suicide (RJ) :\n\n1 Troubles de l'humeur\n2 Troubles liés à l'alcool ou autres substances psychoactives\n3 Trouble délirant\n4 L'enfance\n5 Troubles histrioniques",
+      "has_media": false,
+      "statement": "Parmi les propositions suivantes quelles sont les étiologies des tentatives de suicide (RJ) :\n\n1 Troubles de l'humeur\n2 Troubles liés à l'alcool ou autres substances psychoactives\n3 Trouble délirant\n4 L'enfance\n5 Troubles histrioniques",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Diagnostic étiologique : A/ Causes organiques Médicaments: Isoniazide, psychotropes, corticoïdes Autres intoxications: CO Plomb Causes métaboliques et endocrinienne Hypoglycémie/ Acidocétose diabétique Hyperthyroïdie Causes neuro-méningées : Hémorragies méningées, Méningites, Encéphalites.Tumeurs cérébrales (frontales), Hypertension intracrânienne Epilepsie Hématome sous dural B/causes toxiques . L'agitation peut se voir soit lors d'une intoxication (intoxication alcoolique), ou lors du sevrage de certaines drogues. C/ Étiologies Psychiatriques :1. Trouble anxieux : lors des crises d'angoisse aigue dans sa forme agitée.2. Trouble de l'humeur :* L'accès maniaque, représente le tableau typique de l'agitation avec notion de l'exaltation euphorique de l'humeur ou l'hyperthymie expansive caractéristique de l'accès maniaque s'accompagne fréquemment d'une excitation psychique et physique ..* L'accès dépressif: agitation anxieuse avec des idées délirantes à thématique dépressive(pessimisme, dégoût vitale et des idées d'infériorité avec culpabilité) qui peuvent alimenteret précipiter un passage à l'acte suicidaire.3. Troubles psychotiques aigus : l'agitation est secondaire à l'adhésion au délire. 4. Schizophrénies et les paranoïaques : l'agitation survient surtout dans un contexte délirant et hallucinatoire ou dans un moment d'impulsivité, le passage à l'acte auto et hétéro-agressif est très important et imprévisible.5. Trouble de la personnalité névrotique ou anxieusehistrionique (les crises d'hystérie selon les classifications française)6. Organisation psychopathique de la personnalitéL'agitation survient dans un contexte de frustration et le passage à l'acte dangereux est trèsimportant.Source : Diapo Pr S. Sehim https://mystidia.com/lecture?uId=1U8hVDkdMaZbBw8HRc5K9-JDUuzNHKVr_",
+      "original_id": 44515,
+      "clinical_case": null,
+      "display_title": "Question 15",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><span style=\"background-color: rgb(102, 185, 102);\">Diagnostic étiologique :&nbsp;</span></p><p><span style=\"background-color: rgb(250, 204, 204);\">A/ Causes organiques&nbsp;</span></p><ul><li>Médicaments: Isoniazide, psychotropes, corticoïdes&nbsp;</li><li>Autres intoxications: CO Plomb&nbsp;</li><li>Causes métaboliques et endocrinienne&nbsp;</li><li>Hypoglycémie/ Acidocétose diabétique&nbsp;</li><li>Hyperthyroïdie&nbsp;</li><li>Causes neuro-méningées :&nbsp;</li><li>Hémorragies méningées, Méningites, Encéphalites.</li><li>Tumeurs cérébrales (frontales),&nbsp;</li><li>Hypertension intracrânienne&nbsp;</li><li>Epilepsie&nbsp;</li><li>Hématome sous dural&nbsp;</li></ul><p><span style=\"background-color: rgb(250, 204, 204);\">B/causes toxiques .&nbsp;</span></p><ul><li>L'agitation peut se voir soit lors d'une <span style=\"background-color: rgb(255, 255, 0);\">intoxication</span> (intoxication alcoolique), ou<span style=\"background-color: rgb(255, 255, 0);\"> lors du sevrage de&nbsp;certaines drogues.&nbsp;</span></li></ul><p><span style=\"background-color: rgb(250, 204, 204);\">C/ Étiologies Psychiatriques :</span></p><p>1. <span style=\"background-color: rgb(255, 255, 0);\">Trouble anxieux</span> : lors des crises d'angoisse aigue dans sa forme agitée.</p><p>2. <span style=\"background-color: rgb(255, 255, 0);\">Trouble de l'humeur :</span></p><p>* L'accès maniaque, représente le tableau typique de l'agitation avec notion de l'exaltation euphorique de l'humeur ou l'hyperthymie expansive caractéristique de l'accès maniaque s'accompagne fréquemment d'une excitation psychique et physique ..</p><p>* L'accès dépressif: agitation anxieuse avec des idées délirantes à thématique dépressive</p><p>(pessimisme, dégoût vitale et des idées d'infériorité avec culpabilité) qui peuvent alimenter</p><p>et précipiter un passage à l'acte suicidaire.</p><p>3. <span style=\"background-color: rgb(255, 255, 0);\">Troubles psychotiques aigus :</span> l'agitation est secondaire à l'adhésion au délire. </p><p>4. <span style=\"background-color: rgb(255, 255, 0);\">Schizophrénies et les paranoïaques :</span> l'agitation survient surtout dans <strong style=\"color: rgb(230, 0, 0);\">un contexte délirant et hallucinatoire</strong> ou dans un moment d'impulsivité,<strong style=\"color: rgb(230, 0, 0);\"> le passage à l'acte auto et hétéro-agressif est très important et imprévisible.</strong></p><p>5.<span style=\"background-color: rgb(255, 255, 0);\"> Trouble de la personnalité névrotique ou anxieuse</span></p><p><span style=\"background-color: rgb(255, 255, 0);\">histrionique </span>(les crises d'hystérie selon les classifications française)</p><p>6. <span style=\"background-color: rgb(255, 255, 0);\">Organisation psychopathique de la personnalité</span></p><p>L'agitation survient dans un contexte de frustration et le passage à l'acte dangereux est très</p><p>important.</p><p>Source : </p><ul><li>Diapo Pr S. Sehim </li></ul><p>https://mystidia.com/lecture?uId=1U8hVDkdMaZbBw8HRc5K9-JDUuzNHKVr_</p>"
+    },
+    {
+      "id": 16,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 218956,
+          "text": "Projet explicité à l'entretien",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 218957,
+          "text": "Antécédents familiaux et personnels de tentatives de suicide ou de suicide",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 218958,
+          "text": "Hallucinations impératives",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 218959,
+          "text": "Isolement social et affectif",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 218960,
+          "text": "Toutes les réponses sont justes",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Urgences psychiatriques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Parmi les propositions suivantes, quels sont les éléments évocateurs d'un risque de passage à l’acte suicidaire devant un patient présentant des idées suicidaires ?",
+      "has_media": false,
+      "statement": "Parmi les propositions suivantes, quels sont les éléments évocateurs d'un risque de passage à l’acte suicidaire devant un patient présentant des idées suicidaires ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Les éléments suivants et leur intrication permettent l’évaluation du risque suicidaire : * Facteurs personnels :Antécédents personnels de TS;Diagnostic de trouble psychiatrique (troubles de l’humeur, troubles des conduites alimentaires, troubles de la personnalité, schizophrénie, trouble lié à l’usage de substances, troubles anxieux, etc.);Traits de personnalité : faible estime de soi, impulsivité agressivité, rigidité de la pensée, colère, propension au désespoir; expression d’idées suicidaires; santé générale: pathologie affectant la qualité de vie. * Facteurs familiaux :Antécédents familiaux de TS et de suicide. * Événements de vie et facteurs psychosociaux :Antécédents de maltraitance dans l’enfance (violences, abus physique, émotionnel ou sexuel)perte d’un parent pendant l’enfance; situation socio-économique: difficultés économiques ou professionnelles;isolement social (réseau social inexistant ou pauvre, problèmes d’intégration), séparation ou perte récente, difficultés avec la loi (infractions, délits), échecs ou événements humiliants, appartenance à ne minorité;Difficultés dans le développement: difficultés scolaires, placement durant l’enfance/adolescence en foyer d’accueil ou en détention, perte parentale précoce;Phénomène de «contagion» suite à un suicide: exposition directe ou indirecte à un suicide, soit qu’il s’agisse d’un proche, soit via les médias ou les fictions, que la personne soit célèbre ou non (avec un risque accru en cas de célébrité);élément déclencheur: élément récent entraînant un état de crise chez un sujet.Source :Référentiel en psychiatrie 4ème édition.",
+      "original_id": 44516,
+      "clinical_case": null,
+      "display_title": "Question 16",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>Les éléments suivants et leur intrication permettent l’évaluation du risque suicidaire :</p><p><span style=\"background-color: rgb(250, 204, 204);\">&nbsp;* Facteurs personnels :</span></p><ul><li><span style=\"background-color: rgb(255, 255, 0);\">Antécédents personnels de TS</span>;</li><li>Diagnostic de trouble psychiatrique (troubles de l’humeur, troubles des conduites alimentaires,&nbsp;troubles de la personnalité, schizophrénie, trouble lié à l’usage de substances, troubles anxieux, etc.);</li><li>Traits de personnalité : <span style=\"background-color: rgb(255, 255, 0);\">faible estime de soi</span>, <span style=\"background-color: rgb(255, 255, 0);\">impulsivité agressivité</span>, <span style=\"background-color: rgb(255, 255, 0);\">rigidité de la pensée</span>, colère,&nbsp;propension au désespoir; expression d’idées suicidaires; santé générale: pathologie affectant la qualité de vie.</li></ul><p><span style=\"background-color: rgb(250, 204, 204);\">&nbsp;* Facteurs familiaux :</span></p><ul><li><span style=\"background-color: rgb(255, 255, 0);\">Antécédents familiaux de TS et de suicide</span>.</li></ul><p><span style=\"background-color: rgb(250, 204, 204);\">&nbsp;* Événements de vie et facteurs psychosociaux :</span></p><ul><li>Antécédents de maltraitance dans l’enfance (violences, abus physique, émotionnel ou sexuel)</li><li>perte d’un parent pendant l’enfance; situation socio-économique: difficultés économiques ou professionnelles;</li><li><span style=\"background-color: rgb(255, 255, 0);\">isolement social</span> (réseau social inexistant ou pauvre, problèmes d’intégration), séparation ou perte&nbsp;récente, difficultés avec la loi (infractions, délits), échecs ou événements humiliants, appartenance à&nbsp;ne minorité;</li><li>Difficultés dans le développement: difficultés scolaires, placement durant l’enfance/adolescence en&nbsp;foyer d’accueil ou en détention, perte parentale précoce;</li><li>Phénomène de «contagion» suite à un suicide: exposition directe ou indirecte à un suicide, soit qu’il&nbsp;s’agisse d’un proche, soit via les médias ou les fictions, que la personne soit célèbre ou non (avec un&nbsp;risque accru en cas de célébrité);</li><li>élément déclencheur: élément récent entraînant un état de crise chez un sujet.</li></ul><p>Source :</p><ul><li>Référentiel en psychiatrie 4ème édition.</li></ul><p><br></p>"
+    },
+    {
+      "id": 17,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 218961,
+          "text": "1.2.4",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 218962,
+          "text": "1.2.5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 218963,
+          "text": "1.3.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 218964,
+          "text": "1.3.5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 218965,
+          "text": "1.4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2022"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Urgences psychiatriques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les critère de gravité d’un état d’agitation sont : (RF)\n\n1 Contact possible\n2 Agressivité majeure\n3 Absence d’un vécu délirant et hallucinatoire intense\n4 Association à une intoxication aux produits toxicomanogènes\n5 Toutes ces propositions sont justes",
+      "has_media": false,
+      "statement": "Les critère de gravité d’un état d’agitation sont : (RF)\n\n1 Contact possible\n2 Agressivité majeure\n3 Absence d’un vécu délirant et hallucinatoire intense\n4 Association à une intoxication aux produits toxicomanogènes\n5 Toutes ces propositions sont justes",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Les vrais critères de gravité incluent :Agressivité intenseAltération du contactDélire ou hallucinations intensesConduites auto/ hétéro-agressivesContexte toxique ou sevrageNon-réponse à l’approche verbale.",
+      "original_id": 44517,
+      "clinical_case": null,
+      "display_title": "Question 17",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>Les <strong>vrais critères de gravité</strong> incluent :</p><ul><li><strong style=\"background-color: rgb(255, 255, 0);\">Agressivité intense</strong></li><li><strong style=\"background-color: rgb(255, 255, 0);\">Altération du contact</strong></li><li><strong style=\"background-color: rgb(255, 255, 0);\">Délire</strong><strong> ou </strong><strong style=\"background-color: rgb(255, 255, 0);\">hallucinations intenses</strong></li><li><strong>Conduites </strong><strong style=\"background-color: rgb(255, 255, 0);\">auto/ hétéro-agressives</strong></li><li><strong style=\"background-color: rgb(255, 255, 0);\">Contexte toxique </strong><strong>ou </strong><strong style=\"background-color: rgb(255, 255, 0);\">sevrage</strong></li><li><strong style=\"background-color: rgb(255, 255, 0);\">Non-réponse à l’approche verbale.</strong></li></ul>"
+    },
+    {
+      "id": 18,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 218966,
+          "text": "1.2.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 218967,
+          "text": "1.2.4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 218968,
+          "text": "1.3.4",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 218969,
+          "text": "1.4.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 218970,
+          "text": "2.3.4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2022"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Urgences psychiatriques",
+        "series": "Mystidia Exams"
+      },
+      "question": "La contention physique d’un malade agité est : (RJ)\n\n1 Sur prescription médicale\n2 Un acte médical de premier recours\n3 Un acte médical provisoire\n4 Oblige une surveillance médicale stricte et régulière\n5 Toutes ces réponses sont justes",
+      "has_media": false,
+      "statement": "La contention physique d’un malade agité est : (RJ)\n\n1 Sur prescription médicale\n2 Un acte médical de premier recours\n3 Un acte médical provisoire\n4 Oblige une surveillance médicale stricte et régulière\n5 Toutes ces réponses sont justes",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Traitements non pharmacologiques :  L’état d’agitation pose toujours le problème du risque de passage à l’acte, auto- ou hétéro-agressif. Un contact verbal instaurant un climat de confiance et facilitant une alliance thérapeutique ainsi qu’un comportement empathique peuvent prévenir un passage à l’acte. Ainsi, il est important de ne pas provoquer, d’établir un contact visuel et d’utiliser un langage clair et concis. La prise en charge relationnelle est une obligation médicale puisqu’elle désamorce un nombre important de cas d’état d’agitation, mais aussi médico-légale puisque l’utilisation d’une contention physique ou mécanique ne peut se justifier qu’après échec de tous les autres moyens (y compris la prise en charge relationnelle). les mesures de contention mécanique ou physique constituent des pratiques de dernier recours. Leur utilisation doit être justifiée par des arguments cliniques.Source : Référentiel en psychiatrie 4ème édition.",
+      "original_id": 44518,
+      "clinical_case": null,
+      "display_title": "Question 18",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><span style=\"background-color: rgb(102, 185, 102);\">Traitements non pharmacologiques : </span></p><p>&nbsp;L’état d’agitation <strong style=\"color: rgb(230, 0, 0);\">pose toujours le problème du risque de passage à l’acte, auto- ou hétéro-agressif.</strong></p><p>&nbsp;Un contact verbal instaurant un climat de confiance et facilitant une alliance thérapeutique ainsi qu’un&nbsp;</p><p>comportement empathique peuvent prévenir un passage à l’acte. Ainsi, il est important de ne pas provoquer, d’établir un contact visuel et d’utiliser un langage clair et concis.</p><p>&nbsp;<span style=\"background-color: rgb(255, 255, 0);\">La prise en charge relationnelle est une obligation </span>médicale puisqu’elle désamorce un nombre important de cas d’état d’agitation, mais aussi médico-légale puisque <span style=\"background-color: rgb(255, 255, 0);\">l’utilisation d’une contention physique ou mécanique ne peut se justifier qu’après échec de tous les autres moyens </span>(y compris la prise en charge relationnelle).</p><p><span style=\"background-color: rgb(255, 255, 0);\">&nbsp;les mesures de contention</span> mécanique ou physique constituent des <span style=\"background-color: rgb(255, 255, 0);\">pratiques de dernier recours.</span> Leur utilisation<span style=\"background-color: rgb(255, 255, 0);\"> doit être justifiée par des arguments cliniques.</span></p><p><br></p><p>Source : </p><ul><li>Référentiel en psychiatrie 4ème édition.</li></ul><p><br></p>"
+    },
+    {
+      "id": 19,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 218971,
+          "text": "La schizophrénie hébéphrénique",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 218972,
+          "text": "L'obsession névrotique",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 218973,
+          "text": "Le trouble psychotique chronique",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 218974,
+          "text": "L'état dépressif majeur avec caractéristiques mélancoliques",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 218975,
+          "text": "L'attaque de panique",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Résidanat Alger 2014"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Urgences psychiatriques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle est l'affection qui comporte le plus de risque suicidaire ? (Cocher la réponse juste)",
+      "has_media": false,
+      "statement": "Quelle est l'affection qui comporte le plus de risque suicidaire ? (Cocher la réponse juste)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44519,
+      "clinical_case": null,
+      "display_title": "Question 19",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 20,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 218976,
+          "text": "Delirium tremens.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 218977,
+          "text": "Syndrome de sevrage aux opiacés.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 218978,
+          "text": "Accès mélancolique.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 218979,
+          "text": "Accès panique.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 218980,
+          "text": "Catatonie.",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Résidanat Alger 20009"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Urgences psychiatriques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Toutes les situations suivantes peuvent être à l'origine d'un état d'agitation avec une composante d'anxiété sauf une, laquelle?",
+      "has_media": false,
+      "statement": "Toutes les situations suivantes peuvent être à l'origine d'un état d'agitation avec une composante d'anxiété sauf une, laquelle?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44520,
+      "clinical_case": null,
+      "display_title": "Question 20",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    }
+  ]
+}

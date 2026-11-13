@@ -1,20 +1,36 @@
 // Lesson Timer & Study Time Tracking Service for PédiaDrill
 // Tracks focused study time per lesson/chapter with persistent stopwatch, background tracking, and summary analytics.
+import { resolveStorageKey } from './storageScope.js';
 
-export const LESSON_TRACKER_STATE_KEY = 'pedia_lesson_tracker_state_v1';
-export const LESSON_SESSIONS_KEY = 'pedia_lesson_sessions_v1';
+function getLessonStateKey() {
+  return typeof resolveStorageKey === 'function' ? resolveStorageKey('lesson_tracker_state') : 'pedia_lesson_tracker_state_v1';
+}
+
+function getLessonSessionsKey() {
+  return typeof resolveStorageKey === 'function' ? resolveStorageKey('lesson_sessions') : 'pedia_lesson_sessions_v1';
+}
+
+function getLessonClearedKey() {
+  return typeof resolveStorageKey === 'function' ? resolveStorageKey('lesson_timer_cleared') : 'pedia_lesson_timer_cleared_at';
+}
 
 export class LessonTracker {
   constructor() {
     this.activeTimer = this.loadActiveTimer();
     this.sessions = this.loadSessions();
-    this.lastTimerClearedAt = Number(localStorage.getItem('pedia_lesson_timer_cleared_at') || 0);
+    this.lastTimerClearedAt = Number(localStorage.getItem(getLessonClearedKey()) || 0);
+  }
+
+  reloadForModule() {
+    this.activeTimer = this.loadActiveTimer();
+    this.sessions = this.loadSessions();
+    this.lastTimerClearedAt = Number(localStorage.getItem(getLessonClearedKey()) || 0);
   }
 
   loadActiveTimer() {
     try {
       if (typeof localStorage === 'undefined') return null;
-      const raw = localStorage.getItem(LESSON_TRACKER_STATE_KEY);
+      const raw = localStorage.getItem(getLessonStateKey());
       if (!raw) return null;
       const parsed = JSON.parse(raw);
       if (parsed && typeof parsed === 'object' && parsed.lessonName) {
@@ -31,10 +47,10 @@ export class LessonTracker {
     try {
       if (typeof localStorage === 'undefined') return;
       if (this.activeTimer) {
-        localStorage.setItem(LESSON_TRACKER_STATE_KEY, JSON.stringify(this.activeTimer));
+        localStorage.setItem(getLessonStateKey(), JSON.stringify(this.activeTimer));
       } else {
-        localStorage.removeItem(LESSON_TRACKER_STATE_KEY);
-        localStorage.setItem('pedia_lesson_timer_cleared_at', String(this.lastTimerClearedAt || Date.now()));
+        localStorage.removeItem(getLessonStateKey());
+        localStorage.setItem(getLessonClearedKey(), String(this.lastTimerClearedAt || Date.now()));
       }
     } catch (e) {
       console.warn('Failed to save active lesson timer:', e);
@@ -44,7 +60,7 @@ export class LessonTracker {
   loadSessions() {
     try {
       if (typeof localStorage === 'undefined') return [];
-      const raw = localStorage.getItem(LESSON_SESSIONS_KEY);
+      const raw = localStorage.getItem(getLessonSessionsKey());
       if (!raw) return [];
       const parsed = JSON.parse(raw);
       return Array.isArray(parsed) ? parsed : [];
@@ -57,7 +73,7 @@ export class LessonTracker {
   saveSessions() {
     try {
       if (typeof localStorage === 'undefined') return;
-      localStorage.setItem(LESSON_SESSIONS_KEY, JSON.stringify(this.sessions));
+      localStorage.setItem(getLessonSessionsKey(), JSON.stringify(this.sessions));
     } catch (e) {
       console.warn('Failed to save lesson sessions:', e);
     }

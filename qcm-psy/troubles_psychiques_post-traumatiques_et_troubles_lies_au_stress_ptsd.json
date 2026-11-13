@@ -1,0 +1,1994 @@
+{
+  "version": "2.0",
+  "exported_at": "2026-11-13T09:30:29.207Z",
+  "app": "Mystidia Cursus Medical Explorer",
+  "course": {
+    "title": "Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+    "module": "Psychiatrie",
+    "year": "5ème Année (DFASM2)",
+    "session_id": "session_1792187119681_sexide3",
+    "questions_count": 34
+  },
+  "questions": [
+    {
+      "id": "1.1",
+      "case_id": 1,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 315906,
+          "text": "Trouble de stress post-traumatique (TSPT).",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 315907,
+          "text": "État de stress aigu (ESA).",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 315908,
+          "text": "Trouble de l'adaptation avec réaction anxieuse.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 315909,
+          "text": "Trouble panique induit par une situation.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 315910,
+          "text": "Épisode dépressif majeur avec caractéristiques psychotiques.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2026"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est le diagnostic principal à évoquer en priorité à ce stade de l'évolution ?",
+      "has_media": false,
+      "statement": "Quel est le diagnostic principal à évoquer en priorité à ce stade de l'évolution ?",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Question 1:B.Vrai, vu que la durée des symptômes est de 3 semaines  cela nous oriente vers un stresse aiguë .Rappel :Etat de stresse aigue : Réaction psychologique et physique intense et immédiate, Entre 3 jours à un mois après l'exposition à un événement traumatisant(accident, agression, catastrophe).Trouble de stresse post-traumatique (TSPT): Un trouble psychiatrique spécifique liée à l’exposition à un événement traumatique.Persistance des symptômes au-delà de 1 mois après l’exposition au trauma.Question 2 :A.Faux, C’est une perception sans objet réel (entendre des voix, par exemple) révéle un trouble psychotique.B.Faux,C’est une déformation d’une perception réelle (par exemple prendre un manteau pour une personne).C.Vrai,Le flashback est un symptôme d’intrusion typique il correspond à une reviviscence involontaire d’un événement traumatique  ou la personne a l’impression que le traumatisme se reproduit.D.Faux, Les ruminations sont des pensées répétitives, souvent centrées sur une inquiétude ou un problème.E.Faux,Il s’agit d’une croyance fausse et inébranlable d’être persécuté.Question 3 :B.Vrai, la consommation importante et répétée d’alcool associée à un mésusage de bromazépam pour gérer le sommeil et la souffrance psychique évoque en priorité un trouble de l’usage de substances.Question 4 :A.Faux, Nn indiqué car Le patient n'a pas d'antécédents psychiatriques et ne présente pas un trouble psychotique (bouffée délirante aiguë, schizophrénie).B.Vrai, L'EMDR est une psychothérapie neuro-émotionnelle validée de première intention qui utilise des stimulations bilatérales alternées (mouvements oculaires) pour retraiter l'information traumatique et lever le blocage de la mémoire émotionnelle.Le suivi rapproché est indispensable pour évaluer l'évolution des symptômes, prévenir le risque de dépression secondaire et s'assurer que le patient ne s'isole pas.C.Faux, C’est une mesure d’exception qui n’est pas justifier ici.D.Faux, Forcer un patient en plein syndrome de stress aigu à s'exposer massivement et sans préparation à l'élément traumatique est fortement contre-indiqué, car ya un risque d'aggraver massivement l'anxiété et de renforcer le traumatisme.E.Faux, Nn indiqué ici.Question 5 :B.Vrai:  On retrouve les critères typiques d'un EDC : tristesse profonde, ralentissement psychomoteur marqué, et surtout des éléments de gravité extrême : les idées de ruine (qui traduisent une dimension psychotique/mélancolique) et des projets suicidaires structurés .Rappel :L'association TSPT et Dépression est la comorbidité la plus fréquente en psychopathologie du trauma (environ 50% des cas).",
+      "original_id": 64684,
+      "clinical_case": "Un homme de 28 ans, sans antécédents psychiatriques, est amené aux urgences par son frère 3 semaines après avoir survécu à un grave accident de la route. Depuis l'accident, le patient est décrit comme \"méconnaissable\". II présente une anxiété massive, sursaute au moindre bruit de freinage, refuse catégoriquement de monter dans une voiture et fait des cauchemars répétés, qui réveillent toute la maison. A l'entretien, il est prostré, fige son regard par moments comme s'il revivait la scène, et exprime un sentiment intense de culpabilité d'avoir survécu.",
+      "display_title": "Question 1 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong>Question 1:</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai, </strong>vu que la durée des symptômes est de 3 semaines  cela nous oriente vers un stresse aiguë .</p><p><br></p><p><strong style=\"color: rgb(153, 51, 255);\">Rappel :</strong></p><p><strong>Etat de stresse aigue : </strong>Réaction psychologique et physique&nbsp;intense et immédiate,&nbsp;Entre&nbsp;<span style=\"color: rgb(255, 153, 0);\">3 jours à un mois</span><strong style=\"color: rgb(255, 0, 0);\">&nbsp;</strong>après l'exposition à&nbsp;un événement traumatisant(accident, agression, catastrophe).</p><p><br></p><p><strong>Trouble de stresse post-traumatique (TSPT): </strong>Un trouble psychiatrique<span style=\"color: rgb(255, 0, 0);\">&nbsp;</span>spécifique liée à&nbsp;l’exposition à un événement traumatique.Persistance des symptômes&nbsp;<span style=\"color: rgb(255, 153, 0);\">au-delà de 1 mois</span><span style=\"color: rgb(255, 0, 0);\">&nbsp;</span>après l’exposition au trauma.</p><p><br></p><p><br></p><p><strong>Question 2 :</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">A.Faux, </strong>C’est une perception sans objet réel (entendre des voix, par exemple) révéle un trouble psychotique.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">B.Faux,</strong>C’est une déformation d’une perception réelle (par exemple prendre un manteau pour une personne).</p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">C.Vrai,</strong>Le flashback est un symptôme d’intrusion typique il correspond à une reviviscence involontaire d’un événement traumatique  ou la personne a l’impression que le traumatisme se reproduit.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">D.Faux, </strong>Les ruminations sont des pensées répétitives, souvent centrées sur une inquiétude ou un problème.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux,</strong>Il s’agit d’une croyance fausse et inébranlable d’être persécuté.</p><p><br></p><p><br></p><p><strong>Question 3 :</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai, </strong>la consommation importante et répétée d’alcool associée à un mésusage de bromazépam pour gérer le sommeil et la souffrance psychique évoque en priorité un trouble de l’usage de substances.</p><p><br></p><p><br></p><p><strong>Question 4 :</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">A.Faux, </strong>Nn indiqué car Le patient n'a pas d'antécédents psychiatriques et ne présente pas un trouble psychotique (bouffée délirante aiguë, schizophrénie).</p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai, </strong>L'EMDR est une psychothérapie neuro-émotionnelle validée de première intention qui utilise des stimulations bilatérales alternées (mouvements oculaires) pour retraiter l'information traumatique et lever le blocage de la mémoire émotionnelle.Le suivi rapproché est indispensable pour évaluer l'évolution des symptômes, prévenir le risque de dépression secondaire et s'assurer que le patient ne s'isole pas.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">C.Faux, </strong>C’est une mesure d’exception qui n’est pas justifier ici.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">D.Faux, </strong>Forcer un patient en plein syndrome de stress aigu à s'exposer massivement et sans préparation à l'élément traumatique est fortement contre-indiqué, car ya un risque d'aggraver massivement l'anxiété et de renforcer le traumatisme.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux, </strong>Nn indiqué ici.</p><p><br></p><p><strong>Question 5 :</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai: </strong><strong> </strong>On retrouve les critères typiques d'un EDC : tristesse profonde, ralentissement psychomoteur marqué, et surtout des éléments de gravité extrême : les idées de ruine (qui traduisent une dimension psychotique/mélancolique) et des projets suicidaires structurés .</p><p><br></p><p><strong style=\"color: rgb(153, 51, 255);\">Rappel :</strong></p><p>L'association TSPT et Dépression est la comorbidité la plus fréquente en psychopathologie du trauma (environ 50% des cas).</p><p><br></p><p><br></p><p><br></p><p><br></p>"
+    },
+    {
+      "id": "1.2",
+      "case_id": 1,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 315911,
+          "text": "Une hallucination psychosensorielle auditive",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 315912,
+          "text": "Une illusion",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 315913,
+          "text": " Un flashback",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 315914,
+          "text": " Une rumination anxieuse persistante",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 315915,
+          "text": " Une idée délirante de persécution",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2026"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Au cours de l'entretien, le patient décrit que lorsqu'll entend un klaxon dans la rue, il revit la scène de l'accident avec la même intensité émotionnelle et sensorielle qu'au moment du drame, perdant temporairement le contact avec son environnement immédiat. \n\nQuel terme sémiologique précis qualifie ce symptôme d'intrusion ?\n\n",
+      "has_media": false,
+      "statement": "Au cours de l'entretien, le patient décrit que lorsqu'll entend un klaxon dans la rue, il revit la scène de l'accident avec la même intensité émotionnelle et sensorielle qu'au moment du drame, perdant temporairement le contact avec son environnement immédiat. \n\nQuel terme sémiologique précis qualifie ce symptôme d'intrusion ?\n\n",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Question 1:B.Vrai, vu que la durée des symptômes est de 3 semaines  cela nous oriente vers un stresse aiguë .Rappel :Etat de stresse aigue : Réaction psychologique et physique intense et immédiate, Entre 3 jours à un mois après l'exposition à un événement traumatisant(accident, agression, catastrophe).Trouble de stresse post-traumatique (TSPT): Un trouble psychiatrique spécifique liée à l’exposition à un événement traumatique.Persistance des symptômes au-delà de 1 mois après l’exposition au trauma.Question 2 :A.Faux, C’est une perception sans objet réel (entendre des voix, par exemple) révéle un trouble psychotique.B.Faux,C’est une déformation d’une perception réelle (par exemple prendre un manteau pour une personne).C.Vrai,Le flashback est un symptôme d’intrusion typique il correspond à une reviviscence involontaire d’un événement traumatique  ou la personne a l’impression que le traumatisme se reproduit.D.Faux, Les ruminations sont des pensées répétitives, souvent centrées sur une inquiétude ou un problème.E.Faux,Il s’agit d’une croyance fausse et inébranlable d’être persécuté.Question 3 :B.Vrai, la consommation importante et répétée d’alcool associée à un mésusage de bromazépam pour gérer le sommeil et la souffrance psychique évoque en priorité un trouble de l’usage de substances.Question 4 :A.Faux, Nn indiqué car Le patient n'a pas d'antécédents psychiatriques et ne présente pas un trouble psychotique (bouffée délirante aiguë, schizophrénie).B.Vrai, L'EMDR est une psychothérapie neuro-émotionnelle validée de première intention qui utilise des stimulations bilatérales alternées (mouvements oculaires) pour retraiter l'information traumatique et lever le blocage de la mémoire émotionnelle.Le suivi rapproché est indispensable pour évaluer l'évolution des symptômes, prévenir le risque de dépression secondaire et s'assurer que le patient ne s'isole pas.C.Faux, C’est une mesure d’exception qui n’est pas justifier ici.D.Faux, Forcer un patient en plein syndrome de stress aigu à s'exposer massivement et sans préparation à l'élément traumatique est fortement contre-indiqué, car ya un risque d'aggraver massivement l'anxiété et de renforcer le traumatisme.E.Faux, Nn indiqué ici.Question 5 :B.Vrai:  On retrouve les critères typiques d'un EDC : tristesse profonde, ralentissement psychomoteur marqué, et surtout des éléments de gravité extrême : les idées de ruine (qui traduisent une dimension psychotique/mélancolique) et des projets suicidaires structurés .Rappel :L'association TSPT et Dépression est la comorbidité la plus fréquente en psychopathologie du trauma (environ 50% des cas).",
+      "original_id": 64685,
+      "clinical_case": "Un homme de 28 ans, sans antécédents psychiatriques, est amené aux urgences par son frère 3 semaines après avoir survécu à un grave accident de la route. Depuis l'accident, le patient est décrit comme \"méconnaissable\". II présente une anxiété massive, sursaute au moindre bruit de freinage, refuse catégoriquement de monter dans une voiture et fait des cauchemars répétés, qui réveillent toute la maison. A l'entretien, il est prostré, fige son regard par moments comme s'il revivait la scène, et exprime un sentiment intense de culpabilité d'avoir survécu.",
+      "display_title": "Question 1 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong>Question 1:</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai, </strong>vu que la durée des symptômes est de 3 semaines  cela nous oriente vers un stresse aiguë .</p><p><br></p><p><strong style=\"color: rgb(153, 51, 255);\">Rappel :</strong></p><p><strong>Etat de stresse aigue : </strong>Réaction psychologique et physique&nbsp;intense et immédiate,&nbsp;Entre&nbsp;<span style=\"color: rgb(255, 153, 0);\">3 jours à un mois</span><strong style=\"color: rgb(255, 0, 0);\">&nbsp;</strong>après l'exposition à&nbsp;un événement traumatisant(accident, agression, catastrophe).</p><p><br></p><p><strong>Trouble de stresse post-traumatique (TSPT): </strong>Un trouble psychiatrique<span style=\"color: rgb(255, 0, 0);\">&nbsp;</span>spécifique liée à&nbsp;l’exposition à un événement traumatique.Persistance des symptômes&nbsp;<span style=\"color: rgb(255, 153, 0);\">au-delà de 1 mois</span><span style=\"color: rgb(255, 0, 0);\">&nbsp;</span>après l’exposition au trauma.</p><p><br></p><p><br></p><p><strong>Question 2 :</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">A.Faux, </strong>C’est une perception sans objet réel (entendre des voix, par exemple) révéle un trouble psychotique.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">B.Faux,</strong>C’est une déformation d’une perception réelle (par exemple prendre un manteau pour une personne).</p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">C.Vrai,</strong>Le flashback est un symptôme d’intrusion typique il correspond à une reviviscence involontaire d’un événement traumatique  ou la personne a l’impression que le traumatisme se reproduit.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">D.Faux, </strong>Les ruminations sont des pensées répétitives, souvent centrées sur une inquiétude ou un problème.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux,</strong>Il s’agit d’une croyance fausse et inébranlable d’être persécuté.</p><p><br></p><p><br></p><p><strong>Question 3 :</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai, </strong>la consommation importante et répétée d’alcool associée à un mésusage de bromazépam pour gérer le sommeil et la souffrance psychique évoque en priorité un trouble de l’usage de substances.</p><p><br></p><p><br></p><p><strong>Question 4 :</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">A.Faux, </strong>Nn indiqué car Le patient n'a pas d'antécédents psychiatriques et ne présente pas un trouble psychotique (bouffée délirante aiguë, schizophrénie).</p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai, </strong>L'EMDR est une psychothérapie neuro-émotionnelle validée de première intention qui utilise des stimulations bilatérales alternées (mouvements oculaires) pour retraiter l'information traumatique et lever le blocage de la mémoire émotionnelle.Le suivi rapproché est indispensable pour évaluer l'évolution des symptômes, prévenir le risque de dépression secondaire et s'assurer que le patient ne s'isole pas.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">C.Faux, </strong>C’est une mesure d’exception qui n’est pas justifier ici.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">D.Faux, </strong>Forcer un patient en plein syndrome de stress aigu à s'exposer massivement et sans préparation à l'élément traumatique est fortement contre-indiqué, car ya un risque d'aggraver massivement l'anxiété et de renforcer le traumatisme.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux, </strong>Nn indiqué ici.</p><p><br></p><p><strong>Question 5 :</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai: </strong><strong> </strong>On retrouve les critères typiques d'un EDC : tristesse profonde, ralentissement psychomoteur marqué, et surtout des éléments de gravité extrême : les idées de ruine (qui traduisent une dimension psychotique/mélancolique) et des projets suicidaires structurés .</p><p><br></p><p><strong style=\"color: rgb(153, 51, 255);\">Rappel :</strong></p><p>L'association TSPT et Dépression est la comorbidité la plus fréquente en psychopathologie du trauma (environ 50% des cas).</p><p><br></p><p><br></p><p><br></p><p><br></p>"
+    },
+    {
+      "id": "1.3",
+      "case_id": 1,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 315916,
+          "text": "Un sevrage masqué aux opiacés.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 315917,
+          "text": "Un trouble de l'usage de substances",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 315918,
+          "text": "Une pharmaco-psychose émergente.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 315919,
+          "text": "Une résistance primaire aux traitements sérotoninergiques",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 315920,
+          "text": " Un virage maniaque induit.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2026"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "On interroge le patient sur son sommeil. Ce dernier avoue consommer d'importantes quantités de bière et prendre des comprimés de Bromazépam (Kietyl) empruntés à sa mère chaque soir pour \"éteindre son cerveau\" et tenter de dormir. \nQuelle complication redoutable devez-vous suspecter en priorité ?\n\n",
+      "has_media": false,
+      "statement": "On interroge le patient sur son sommeil. Ce dernier avoue consommer d'importantes quantités de bière et prendre des comprimés de Bromazépam (Kietyl) empruntés à sa mère chaque soir pour \"éteindre son cerveau\" et tenter de dormir. \nQuelle complication redoutable devez-vous suspecter en priorité ?\n\n",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Question 1:B.Vrai, vu que la durée des symptômes est de 3 semaines  cela nous oriente vers un stresse aiguë .Rappel :Etat de stresse aigue : Réaction psychologique et physique intense et immédiate, Entre 3 jours à un mois après l'exposition à un événement traumatisant(accident, agression, catastrophe).Trouble de stresse post-traumatique (TSPT): Un trouble psychiatrique spécifique liée à l’exposition à un événement traumatique.Persistance des symptômes au-delà de 1 mois après l’exposition au trauma.Question 2 :A.Faux, C’est une perception sans objet réel (entendre des voix, par exemple) révéle un trouble psychotique.B.Faux,C’est une déformation d’une perception réelle (par exemple prendre un manteau pour une personne).C.Vrai,Le flashback est un symptôme d’intrusion typique il correspond à une reviviscence involontaire d’un événement traumatique  ou la personne a l’impression que le traumatisme se reproduit.D.Faux, Les ruminations sont des pensées répétitives, souvent centrées sur une inquiétude ou un problème.E.Faux,Il s’agit d’une croyance fausse et inébranlable d’être persécuté.Question 3 :B.Vrai, la consommation importante et répétée d’alcool associée à un mésusage de bromazépam pour gérer le sommeil et la souffrance psychique évoque en priorité un trouble de l’usage de substances.Question 4 :A.Faux, Nn indiqué car Le patient n'a pas d'antécédents psychiatriques et ne présente pas un trouble psychotique (bouffée délirante aiguë, schizophrénie).B.Vrai, L'EMDR est une psychothérapie neuro-émotionnelle validée de première intention qui utilise des stimulations bilatérales alternées (mouvements oculaires) pour retraiter l'information traumatique et lever le blocage de la mémoire émotionnelle.Le suivi rapproché est indispensable pour évaluer l'évolution des symptômes, prévenir le risque de dépression secondaire et s'assurer que le patient ne s'isole pas.C.Faux, C’est une mesure d’exception qui n’est pas justifier ici.D.Faux, Forcer un patient en plein syndrome de stress aigu à s'exposer massivement et sans préparation à l'élément traumatique est fortement contre-indiqué, car ya un risque d'aggraver massivement l'anxiété et de renforcer le traumatisme.E.Faux, Nn indiqué ici.Question 5 :B.Vrai:  On retrouve les critères typiques d'un EDC : tristesse profonde, ralentissement psychomoteur marqué, et surtout des éléments de gravité extrême : les idées de ruine (qui traduisent une dimension psychotique/mélancolique) et des projets suicidaires structurés .Rappel :L'association TSPT et Dépression est la comorbidité la plus fréquente en psychopathologie du trauma (environ 50% des cas).",
+      "original_id": 64686,
+      "clinical_case": "Un homme de 28 ans, sans antécédents psychiatriques, est amené aux urgences par son frère 3 semaines après avoir survécu à un grave accident de la route. Depuis l'accident, le patient est décrit comme \"méconnaissable\". II présente une anxiété massive, sursaute au moindre bruit de freinage, refuse catégoriquement de monter dans une voiture et fait des cauchemars répétés, qui réveillent toute la maison. A l'entretien, il est prostré, fige son regard par moments comme s'il revivait la scène, et exprime un sentiment intense de culpabilité d'avoir survécu.",
+      "display_title": "Question 1 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong>Question 1:</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai, </strong>vu que la durée des symptômes est de 3 semaines  cela nous oriente vers un stresse aiguë .</p><p><br></p><p><strong style=\"color: rgb(153, 51, 255);\">Rappel :</strong></p><p><strong>Etat de stresse aigue : </strong>Réaction psychologique et physique&nbsp;intense et immédiate,&nbsp;Entre&nbsp;<span style=\"color: rgb(255, 153, 0);\">3 jours à un mois</span><strong style=\"color: rgb(255, 0, 0);\">&nbsp;</strong>après l'exposition à&nbsp;un événement traumatisant(accident, agression, catastrophe).</p><p><br></p><p><strong>Trouble de stresse post-traumatique (TSPT): </strong>Un trouble psychiatrique<span style=\"color: rgb(255, 0, 0);\">&nbsp;</span>spécifique liée à&nbsp;l’exposition à un événement traumatique.Persistance des symptômes&nbsp;<span style=\"color: rgb(255, 153, 0);\">au-delà de 1 mois</span><span style=\"color: rgb(255, 0, 0);\">&nbsp;</span>après l’exposition au trauma.</p><p><br></p><p><br></p><p><strong>Question 2 :</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">A.Faux, </strong>C’est une perception sans objet réel (entendre des voix, par exemple) révéle un trouble psychotique.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">B.Faux,</strong>C’est une déformation d’une perception réelle (par exemple prendre un manteau pour une personne).</p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">C.Vrai,</strong>Le flashback est un symptôme d’intrusion typique il correspond à une reviviscence involontaire d’un événement traumatique  ou la personne a l’impression que le traumatisme se reproduit.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">D.Faux, </strong>Les ruminations sont des pensées répétitives, souvent centrées sur une inquiétude ou un problème.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux,</strong>Il s’agit d’une croyance fausse et inébranlable d’être persécuté.</p><p><br></p><p><br></p><p><strong>Question 3 :</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai, </strong>la consommation importante et répétée d’alcool associée à un mésusage de bromazépam pour gérer le sommeil et la souffrance psychique évoque en priorité un trouble de l’usage de substances.</p><p><br></p><p><br></p><p><strong>Question 4 :</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">A.Faux, </strong>Nn indiqué car Le patient n'a pas d'antécédents psychiatriques et ne présente pas un trouble psychotique (bouffée délirante aiguë, schizophrénie).</p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai, </strong>L'EMDR est une psychothérapie neuro-émotionnelle validée de première intention qui utilise des stimulations bilatérales alternées (mouvements oculaires) pour retraiter l'information traumatique et lever le blocage de la mémoire émotionnelle.Le suivi rapproché est indispensable pour évaluer l'évolution des symptômes, prévenir le risque de dépression secondaire et s'assurer que le patient ne s'isole pas.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">C.Faux, </strong>C’est une mesure d’exception qui n’est pas justifier ici.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">D.Faux, </strong>Forcer un patient en plein syndrome de stress aigu à s'exposer massivement et sans préparation à l'élément traumatique est fortement contre-indiqué, car ya un risque d'aggraver massivement l'anxiété et de renforcer le traumatisme.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux, </strong>Nn indiqué ici.</p><p><br></p><p><strong>Question 5 :</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai: </strong><strong> </strong>On retrouve les critères typiques d'un EDC : tristesse profonde, ralentissement psychomoteur marqué, et surtout des éléments de gravité extrême : les idées de ruine (qui traduisent une dimension psychotique/mélancolique) et des projets suicidaires structurés .</p><p><br></p><p><strong style=\"color: rgb(153, 51, 255);\">Rappel :</strong></p><p>L'association TSPT et Dépression est la comorbidité la plus fréquente en psychopathologie du trauma (environ 50% des cas).</p><p><br></p><p><br></p><p><br></p><p><br></p>"
+    },
+    {
+      "id": "1.4",
+      "case_id": 1,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 315921,
+          "text": "Prescrire une monothérapie par antipsychotique incisif à forte dose.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 315922,
+          "text": "EMDR centrée sur l'accident associée à un suivi rapproché.",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 315923,
+          "text": "Hospitalisation sous contrainte en psychiatrie pour observation prolongée.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 315924,
+          "text": "Rassurer et reprise de la conduite dès le lendemain pour « affronter sa peur ».",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 315925,
+          "text": "Prescrire une cure thermale isolée.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2026"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Sur le plan thérapeutique immédiat, quelle conduite à tenir est la plus adaptée pour ce patient aux urgences ?",
+      "has_media": false,
+      "statement": "Sur le plan thérapeutique immédiat, quelle conduite à tenir est la plus adaptée pour ce patient aux urgences ?",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Question 1:B.Vrai, vu que la durée des symptômes est de 3 semaines  cela nous oriente vers un stresse aiguë .Rappel :Etat de stresse aigue : Réaction psychologique et physique intense et immédiate, Entre 3 jours à un mois après l'exposition à un événement traumatisant(accident, agression, catastrophe).Trouble de stresse post-traumatique (TSPT): Un trouble psychiatrique spécifique liée à l’exposition à un événement traumatique.Persistance des symptômes au-delà de 1 mois après l’exposition au trauma.Question 2 :A.Faux, C’est une perception sans objet réel (entendre des voix, par exemple) révéle un trouble psychotique.B.Faux,C’est une déformation d’une perception réelle (par exemple prendre un manteau pour une personne).C.Vrai,Le flashback est un symptôme d’intrusion typique il correspond à une reviviscence involontaire d’un événement traumatique  ou la personne a l’impression que le traumatisme se reproduit.D.Faux, Les ruminations sont des pensées répétitives, souvent centrées sur une inquiétude ou un problème.E.Faux,Il s’agit d’une croyance fausse et inébranlable d’être persécuté.Question 3 :B.Vrai, la consommation importante et répétée d’alcool associée à un mésusage de bromazépam pour gérer le sommeil et la souffrance psychique évoque en priorité un trouble de l’usage de substances.Question 4 :A.Faux, Nn indiqué car Le patient n'a pas d'antécédents psychiatriques et ne présente pas un trouble psychotique (bouffée délirante aiguë, schizophrénie).B.Vrai, L'EMDR est une psychothérapie neuro-émotionnelle validée de première intention qui utilise des stimulations bilatérales alternées (mouvements oculaires) pour retraiter l'information traumatique et lever le blocage de la mémoire émotionnelle.Le suivi rapproché est indispensable pour évaluer l'évolution des symptômes, prévenir le risque de dépression secondaire et s'assurer que le patient ne s'isole pas.C.Faux, C’est une mesure d’exception qui n’est pas justifier ici.D.Faux, Forcer un patient en plein syndrome de stress aigu à s'exposer massivement et sans préparation à l'élément traumatique est fortement contre-indiqué, car ya un risque d'aggraver massivement l'anxiété et de renforcer le traumatisme.E.Faux, Nn indiqué ici.Question 5 :B.Vrai:  On retrouve les critères typiques d'un EDC : tristesse profonde, ralentissement psychomoteur marqué, et surtout des éléments de gravité extrême : les idées de ruine (qui traduisent une dimension psychotique/mélancolique) et des projets suicidaires structurés .Rappel :L'association TSPT et Dépression est la comorbidité la plus fréquente en psychopathologie du trauma (environ 50% des cas).",
+      "original_id": 64687,
+      "clinical_case": "Un homme de 28 ans, sans antécédents psychiatriques, est amené aux urgences par son frère 3 semaines après avoir survécu à un grave accident de la route. Depuis l'accident, le patient est décrit comme \"méconnaissable\". II présente une anxiété massive, sursaute au moindre bruit de freinage, refuse catégoriquement de monter dans une voiture et fait des cauchemars répétés, qui réveillent toute la maison. A l'entretien, il est prostré, fige son regard par moments comme s'il revivait la scène, et exprime un sentiment intense de culpabilité d'avoir survécu.",
+      "display_title": "Question 1 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong>Question 1:</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai, </strong>vu que la durée des symptômes est de 3 semaines  cela nous oriente vers un stresse aiguë .</p><p><br></p><p><strong style=\"color: rgb(153, 51, 255);\">Rappel :</strong></p><p><strong>Etat de stresse aigue : </strong>Réaction psychologique et physique&nbsp;intense et immédiate,&nbsp;Entre&nbsp;<span style=\"color: rgb(255, 153, 0);\">3 jours à un mois</span><strong style=\"color: rgb(255, 0, 0);\">&nbsp;</strong>après l'exposition à&nbsp;un événement traumatisant(accident, agression, catastrophe).</p><p><br></p><p><strong>Trouble de stresse post-traumatique (TSPT): </strong>Un trouble psychiatrique<span style=\"color: rgb(255, 0, 0);\">&nbsp;</span>spécifique liée à&nbsp;l’exposition à un événement traumatique.Persistance des symptômes&nbsp;<span style=\"color: rgb(255, 153, 0);\">au-delà de 1 mois</span><span style=\"color: rgb(255, 0, 0);\">&nbsp;</span>après l’exposition au trauma.</p><p><br></p><p><br></p><p><strong>Question 2 :</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">A.Faux, </strong>C’est une perception sans objet réel (entendre des voix, par exemple) révéle un trouble psychotique.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">B.Faux,</strong>C’est une déformation d’une perception réelle (par exemple prendre un manteau pour une personne).</p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">C.Vrai,</strong>Le flashback est un symptôme d’intrusion typique il correspond à une reviviscence involontaire d’un événement traumatique  ou la personne a l’impression que le traumatisme se reproduit.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">D.Faux, </strong>Les ruminations sont des pensées répétitives, souvent centrées sur une inquiétude ou un problème.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux,</strong>Il s’agit d’une croyance fausse et inébranlable d’être persécuté.</p><p><br></p><p><br></p><p><strong>Question 3 :</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai, </strong>la consommation importante et répétée d’alcool associée à un mésusage de bromazépam pour gérer le sommeil et la souffrance psychique évoque en priorité un trouble de l’usage de substances.</p><p><br></p><p><br></p><p><strong>Question 4 :</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">A.Faux, </strong>Nn indiqué car Le patient n'a pas d'antécédents psychiatriques et ne présente pas un trouble psychotique (bouffée délirante aiguë, schizophrénie).</p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai, </strong>L'EMDR est une psychothérapie neuro-émotionnelle validée de première intention qui utilise des stimulations bilatérales alternées (mouvements oculaires) pour retraiter l'information traumatique et lever le blocage de la mémoire émotionnelle.Le suivi rapproché est indispensable pour évaluer l'évolution des symptômes, prévenir le risque de dépression secondaire et s'assurer que le patient ne s'isole pas.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">C.Faux, </strong>C’est une mesure d’exception qui n’est pas justifier ici.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">D.Faux, </strong>Forcer un patient en plein syndrome de stress aigu à s'exposer massivement et sans préparation à l'élément traumatique est fortement contre-indiqué, car ya un risque d'aggraver massivement l'anxiété et de renforcer le traumatisme.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux, </strong>Nn indiqué ici.</p><p><br></p><p><strong>Question 5 :</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai: </strong><strong> </strong>On retrouve les critères typiques d'un EDC : tristesse profonde, ralentissement psychomoteur marqué, et surtout des éléments de gravité extrême : les idées de ruine (qui traduisent une dimension psychotique/mélancolique) et des projets suicidaires structurés .</p><p><br></p><p><strong style=\"color: rgb(153, 51, 255);\">Rappel :</strong></p><p>L'association TSPT et Dépression est la comorbidité la plus fréquente en psychopathologie du trauma (environ 50% des cas).</p><p><br></p><p><br></p><p><br></p><p><br></p>"
+    },
+    {
+      "id": "1.5",
+      "case_id": 1,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 315926,
+          "text": "Évolution naturelle et obligatoire du trouble vers une schizophrénie résiduelle.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 315927,
+          "text": " Trouble de la personnalité borderline induit tardivement par le traumatisme.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 315928,
+          "text": " Épisode Dépressif caractérisé sévère, compliquant un PTSD.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 315929,
+          "text": "Deuil pathologique non compliqué.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 315930,
+          "text": "Réaction d'adaptation transitoire normale.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2026"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle est l'interprétation clinique et évolutive la plus exacte ? il s'agit d'un(e)",
+      "has_media": false,
+      "statement": "Quelle est l'interprétation clinique et évolutive la plus exacte ? il s'agit d'un(e)",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Question 1:B.Vrai, vu que la durée des symptômes est de 3 semaines  cela nous oriente vers un stresse aiguë .Rappel :Etat de stresse aigue : Réaction psychologique et physique intense et immédiate, Entre 3 jours à un mois après l'exposition à un événement traumatisant(accident, agression, catastrophe).Trouble de stresse post-traumatique (TSPT): Un trouble psychiatrique spécifique liée à l’exposition à un événement traumatique.Persistance des symptômes au-delà de 1 mois après l’exposition au trauma.Question 2 :A.Faux, C’est une perception sans objet réel (entendre des voix, par exemple) révéle un trouble psychotique.B.Faux,C’est une déformation d’une perception réelle (par exemple prendre un manteau pour une personne).C.Vrai,Le flashback est un symptôme d’intrusion typique il correspond à une reviviscence involontaire d’un événement traumatique  ou la personne a l’impression que le traumatisme se reproduit.D.Faux, Les ruminations sont des pensées répétitives, souvent centrées sur une inquiétude ou un problème.E.Faux,Il s’agit d’une croyance fausse et inébranlable d’être persécuté.Question 3 :B.Vrai, la consommation importante et répétée d’alcool associée à un mésusage de bromazépam pour gérer le sommeil et la souffrance psychique évoque en priorité un trouble de l’usage de substances.Question 4 :A.Faux, Nn indiqué car Le patient n'a pas d'antécédents psychiatriques et ne présente pas un trouble psychotique (bouffée délirante aiguë, schizophrénie).B.Vrai, L'EMDR est une psychothérapie neuro-émotionnelle validée de première intention qui utilise des stimulations bilatérales alternées (mouvements oculaires) pour retraiter l'information traumatique et lever le blocage de la mémoire émotionnelle.Le suivi rapproché est indispensable pour évaluer l'évolution des symptômes, prévenir le risque de dépression secondaire et s'assurer que le patient ne s'isole pas.C.Faux, C’est une mesure d’exception qui n’est pas justifier ici.D.Faux, Forcer un patient en plein syndrome de stress aigu à s'exposer massivement et sans préparation à l'élément traumatique est fortement contre-indiqué, car ya un risque d'aggraver massivement l'anxiété et de renforcer le traumatisme.E.Faux, Nn indiqué ici.Question 5 :B.Vrai:  On retrouve les critères typiques d'un EDC : tristesse profonde, ralentissement psychomoteur marqué, et surtout des éléments de gravité extrême : les idées de ruine (qui traduisent une dimension psychotique/mélancolique) et des projets suicidaires structurés .Rappel :L'association TSPT et Dépression est la comorbidité la plus fréquente en psychopathologie du trauma (environ 50% des cas).",
+      "original_id": 64688,
+      "clinical_case": "Un homme de 28 ans, sans antécédents psychiatriques, est amené aux urgences par son frère 3 semaines après avoir survécu à un grave accident de la route. Depuis l'accident, le patient est décrit comme \"méconnaissable\". II présente une anxiété massive, sursaute au moindre bruit de freinage, refuse catégoriquement de monter dans une voiture et fait des cauchemars répétés, qui réveillent toute la maison. A l'entretien, il est prostré, fige son regard par moments comme s'il revivait la scène, et exprime un sentiment intense de culpabilité d'avoir survécu.",
+      "display_title": "Question 1 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong>Question 1:</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai, </strong>vu que la durée des symptômes est de 3 semaines  cela nous oriente vers un stresse aiguë .</p><p><br></p><p><strong style=\"color: rgb(153, 51, 255);\">Rappel :</strong></p><p><strong>Etat de stresse aigue : </strong>Réaction psychologique et physique&nbsp;intense et immédiate,&nbsp;Entre&nbsp;<span style=\"color: rgb(255, 153, 0);\">3 jours à un mois</span><strong style=\"color: rgb(255, 0, 0);\">&nbsp;</strong>après l'exposition à&nbsp;un événement traumatisant(accident, agression, catastrophe).</p><p><br></p><p><strong>Trouble de stresse post-traumatique (TSPT): </strong>Un trouble psychiatrique<span style=\"color: rgb(255, 0, 0);\">&nbsp;</span>spécifique liée à&nbsp;l’exposition à un événement traumatique.Persistance des symptômes&nbsp;<span style=\"color: rgb(255, 153, 0);\">au-delà de 1 mois</span><span style=\"color: rgb(255, 0, 0);\">&nbsp;</span>après l’exposition au trauma.</p><p><br></p><p><br></p><p><strong>Question 2 :</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">A.Faux, </strong>C’est une perception sans objet réel (entendre des voix, par exemple) révéle un trouble psychotique.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">B.Faux,</strong>C’est une déformation d’une perception réelle (par exemple prendre un manteau pour une personne).</p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">C.Vrai,</strong>Le flashback est un symptôme d’intrusion typique il correspond à une reviviscence involontaire d’un événement traumatique  ou la personne a l’impression que le traumatisme se reproduit.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">D.Faux, </strong>Les ruminations sont des pensées répétitives, souvent centrées sur une inquiétude ou un problème.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux,</strong>Il s’agit d’une croyance fausse et inébranlable d’être persécuté.</p><p><br></p><p><br></p><p><strong>Question 3 :</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai, </strong>la consommation importante et répétée d’alcool associée à un mésusage de bromazépam pour gérer le sommeil et la souffrance psychique évoque en priorité un trouble de l’usage de substances.</p><p><br></p><p><br></p><p><strong>Question 4 :</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">A.Faux, </strong>Nn indiqué car Le patient n'a pas d'antécédents psychiatriques et ne présente pas un trouble psychotique (bouffée délirante aiguë, schizophrénie).</p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai, </strong>L'EMDR est une psychothérapie neuro-émotionnelle validée de première intention qui utilise des stimulations bilatérales alternées (mouvements oculaires) pour retraiter l'information traumatique et lever le blocage de la mémoire émotionnelle.Le suivi rapproché est indispensable pour évaluer l'évolution des symptômes, prévenir le risque de dépression secondaire et s'assurer que le patient ne s'isole pas.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">C.Faux, </strong>C’est une mesure d’exception qui n’est pas justifier ici.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">D.Faux, </strong>Forcer un patient en plein syndrome de stress aigu à s'exposer massivement et sans préparation à l'élément traumatique est fortement contre-indiqué, car ya un risque d'aggraver massivement l'anxiété et de renforcer le traumatisme.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux, </strong>Nn indiqué ici.</p><p><br></p><p><strong>Question 5 :</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai: </strong><strong> </strong>On retrouve les critères typiques d'un EDC : tristesse profonde, ralentissement psychomoteur marqué, et surtout des éléments de gravité extrême : les idées de ruine (qui traduisent une dimension psychotique/mélancolique) et des projets suicidaires structurés .</p><p><br></p><p><strong style=\"color: rgb(153, 51, 255);\">Rappel :</strong></p><p>L'association TSPT et Dépression est la comorbidité la plus fréquente en psychopathologie du trauma (environ 50% des cas).</p><p><br></p><p><br></p><p><br></p><p><br></p>"
+    },
+    {
+      "id": 2,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 308651,
+          "text": "Psychanalyse",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 308652,
+          "text": "Benzodiazépines en monothérapie prolongée",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 308653,
+          "text": "Thérapie cognitivo-comportementale centrée sur le trauma",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 308654,
+          "text": "Arrêt de toute prise en charge pendant 3 mois",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 308655,
+          "text": "Débriefing",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "S2 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le traitement de première intention recommandé dans le TSPT est : (RJ)",
+      "has_media": true,
+      "statement": "Le traitement de première intention recommandé dans le TSPT est : (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "B-FauxLes benzodiazépines en monothérapie prolongée sont DÉCONSEILLÉES en raison du risque de dépendanceC-VraiLes TCC avec exposition prolongée ou les thérapies EMDR sont les traitements psychothérapiques de référence recommandés en première intention.D-FauxL'absence de prise en charge est plus grave E-Faux Le débriefing psychologique précoce (immédiatement après l'événement) n'est pas recommandé car il pourrait être iatrogène et augmenter le risque de TSPT.﻿",
+      "original_id": 63136,
+      "clinical_case": null,
+      "display_title": "Question 2",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p><p><strong style=\"color: rgb(230, 0, 0); background-color: rgb(250, 204, 204);\">B-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les benzodiazépines en monothérapie prolongée sont </span><strong style=\"color: rgb(15, 17, 21);\">DÉCONSEILLÉES </strong><span style=\"color: rgb(15, 17, 21);\">en raison du </span><strong style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 102);\">risque de dépendance</strong></p><p><br></p><p><span style=\"background-color: rgb(204, 232, 204); color: rgb(0, 138, 0); font-weight: 700;\">C-Vrai</span></p><p><span style=\"color: rgb(15, 17, 21);\">Les</span><strong style=\"color: rgb(15, 17, 21);\"> </strong><strong style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 204);\">TCC</strong><span style=\"color: rgb(15, 17, 21);\"> avec exposition prolongée ou les thérapies </span><strong style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 204);\">EMDR</strong><span style=\"color: rgb(15, 17, 21);\"> sont les traitements psychothérapiques de référence recommandés en première intention.</span></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0); background-color: rgb(250, 204, 204);\">D-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">L'absence de prise en charge est plus grave </span></p><p><br></p><p><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">E-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Le débriefing psychologique précoce </span><span style=\"color: rgb(240, 102, 102);\">(immédiatement après l'événement)</span><span style=\"color: rgb(15, 17, 21);\"> n'est pas recommandé car il pourrait être iatrogène et </span><strong style=\"color: rgb(15, 17, 21);\">augmenter le risque de TSPT.</strong></p><p><br></p><p><img src=\"https://www.monindemnite.com/wp-content/uploads/2021/08/montant-indemnisation-stress-post-traumatique-scaled.jpg\" alt=\"Montant indemnisation stress post-traumatique : l'exiger en 2025\"></p><p><br></p><p><span class=\"ql-cursor\">﻿</span><img src=\"https://www.anxiete.fr/wp-content/uploads/sites/2/2015_/02/moyens-therapeutiques.jpg\" alt=\"Prise en charge du stress post traumatique\"></p>"
+    },
+    {
+      "id": 3,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 308646,
+          "text": "Exposition à un événement traumatique menaçant la vie",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 308647,
+          "text": "Fragilité psychologique préexistante",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 308648,
+          "text": "Antécédent de trouble anxieux",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 308649,
+          "text": "Consommation de substances",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 308650,
+          "text": "Toutes les réponses sont justes",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "S2 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le diagnostic de trouble de stress post-traumatique (TSPT) nécessite : (RJ)",
+      "has_media": true,
+      "statement": "Le diagnostic de trouble de stress post-traumatique (TSPT) nécessite : (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "1-VraiC'est le critère A du DSM-5 et de la CIM-11 : exposition à la mort effective ou à une menace de mort, à une blessure grave ou à des violences sexuelles.2-FauxUne fragilité psychologique préexistante est un facteur de risque mais n'est PAS nécessaire au diagnostic3-FauxUn antécédent de trouble anxieux est un facteur de risque, pas un critère diagnostique.4-FauxLa consommation de substances est un facteur de comorbidité possible, pas un critère.",
+      "original_id": 63135,
+      "clinical_case": null,
+      "display_title": "Question 3",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(204, 232, 204); color: rgb(0, 138, 0);\">1-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">C'est l</span><span style=\"color: rgb(15, 17, 21); background-color: rgb(255, 235, 204);\">e critère A du DSM-5 et de la CIM-11</span><span style=\"color: rgb(15, 17, 21);\"> : exposition à la mort effective ou à une menace de mort, à une blessure grave ou à des violences sexuelles.</span></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0); background-color: rgb(250, 204, 204);\">2-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Une fragilité psychologique préexistante est un</span><strong style=\"color: rgb(15, 17, 21);\"> facteur de risque</strong><span style=\"color: rgb(15, 17, 21);\"> mais n'est PAS nécessaire au diagnostic</span></p><p><br></p><p><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">3-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Un antécédent de trouble anxieux est un facteur de risque, pas un critère diagnostique.</span></p><p><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">4-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">La consommation de substances est un facteur de </span><strong style=\"color: rgb(15, 17, 21);\">comorbidité</strong><span style=\"color: rgb(15, 17, 21);\"> possible, pas un critère.</span></p><p><img src=\"https://leblogdepetiteloutre.com/wp-content/uploads/2025/01/dyade-autistique-3.png?w=1024\" alt=\"Autisme et TSPT(c) : deux diagnostics qui ne s'opposent pas – Le blog de  Petite Loutre\"></p><p><br></p>"
+    },
+    {
+      "id": "4.1",
+      "case_id": 4,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295381,
+          "text": "Trouble de Stress Aigu",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 295382,
+          "text": "Épisode dépressif caractérisé",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 295383,
+          "text": "Un trouble de l'adaptation",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 295384,
+          "text": "Trouble de Stress Post-Traumatique",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 295385,
+          "text": "Dépression anxieuse",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026 "
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Pour vous quel diagnostic est le plus probable ?",
+      "has_media": true,
+      "statement": "Pour vous quel diagnostic est le plus probable ?",
+      "sub_index": 1,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187119681_sexide3/session_1792187119681_sexide3_q_7_1792187156532_img_0.jpg"
+      ],
+      "croq_answer": null,
+      "explanation": "Question 11-Faux ; Le TSA se définit par symptômes survenant dans les 3 premiers jours à 1 mois après le trauma. 4-Vrai : - on a une ;-exposition à un événement traumatique (mort violente sous ses yeux). - Symptômes persistants depuis plus d’un mois (ici 6 mois)  - Reviviscences (flashbacks, cauchemars). -Évitement persistant (ne veut plus conduire, éviter les routes). - Altérations neurovégétatives (sursauts, troubles du sommeil, irritabilité). - Retrait social (détachement).Question 21-Vrai ; Les thérapies cognitivo-comportementales centrées sur le traumatisme sont efficaces et utilisées en 1ere ligne .2-Faux ; non nécessaire sauf si risque suicidaire ou décompensation sévère (non rapporté ici ).3-Faux ; Pas recommandée comme traitement de première intention et jamais seul4-Faux ; Contre indiqué car ca aggrave l’evitement 5-Faux ; Les benzodiazépines ne sont pas recommandées en traitement de fond du TSPT, leur usage est a éviter .Question 31-Vrai: l’hypervigilance (sursauts exagérés) et les difficultés de concentration font partie des altérations neurovégétatives persistantes2- Faux : Même un traumatisme observé (comme Amina, témoin d’un accident) peut provoquer des symptômes neurovégétatifs.3-Faux:   Ils persistent au-delà d’un mois dans le TSPT parfois des années 4-Faux : Ils peuvent tout à fait s’accompagner de symptômes dépressifs (comorbidité fréquente).5 -faux : Les symptômes neurovégétatifs sont fonctionnels / psychologiques, pas toujours visibles à l’examen physique.source :Diapo 2026 - Dr OUADI TSPT SUPPORT.pdf - Google Drive",
+      "original_id": 60410,
+      "clinical_case": "il y a six mois ,Amina, une femme de 35 ans, infirmière ,a été témoin d'un accident de la route grave un véhicule a percuté un piéton sous ses yeux, entraînant sa mort. Depuis cet événement, elle rapporte des symptômes persistants qui impactent sa vie quotidienne et professionnelle. Elle décrit des flashbacks récurrents de la scène, elle évite systématiquement les routes fréquentées et refuse de conduire, ce qui l'empêche de se rendre au travail, sursautant au moindre bruit, avec des difficultés de concentration, et des troubles du sommeil ainsi que des cauchemars récurrents. Elle se sent détachée de ses proches, irritable. Elle nie toute consommation de substances ou antécédents psychiatriques personnels, mais mentionne un stress professionnel élevé avant l'accident. Un examen physique est normal, et les analyses biologiques ne révèlent aucune anomalie.",
+      "display_title": "Question 4 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong>Question 1</strong></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux&nbsp;;</strong><strong> </strong>Le TSA se définit par symptômes survenant dans <strong style=\"background-color: rgb(240, 102, 102);\">les 3 premiers jours à 1 mois après le trauma. </strong></p><p><strong style=\"color: rgb(0, 138, 0);\">4-Vrai :</strong><strong> - </strong>on a une ;</p><p>-<strong style=\"background-color: rgb(255, 255, 204);\">exposition à un événement traumatique </strong>(mort violente sous ses yeux).</p><p> - <strong style=\"background-color: rgb(255, 255, 204);\">Symptômes persistants&nbsp;depuis plus d’un mois</strong>&nbsp;(ici 6 mois) </p><p> - <strong style=\"background-color: rgb(255, 255, 204);\">Reviviscences </strong>(flashbacks, cauchemars).</p><p> -<strong style=\"background-color: rgb(255, 255, 204);\">Évitement persistant</strong> (ne veut plus conduire, éviter les routes).</p><p> - <strong style=\"background-color: rgb(255, 255, 204);\">Altérations neurovégétatives </strong>(sursauts, troubles du sommeil, irritabilité).</p><p> - <strong style=\"background-color: rgb(255, 255, 204);\">Retrait social </strong>(détachement).</p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187119681_sexide3/session_1792187119681_sexide3_q_7_1792187156532_img_0.jpg\"></p><p><br></p><p><strong>Question 2</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai&nbsp;;</strong> <strong>Les thérapies cognitivo-comportementales </strong>centrées sur le traumatisme <span style=\"background-color: rgb(102, 185, 102);\">sont efficaces et utilisées en 1ere ligne .</span></p><p><strong style=\"color: rgb(230, 0, 0);\">2-Faux&nbsp;; </strong><strong style=\"background-color: rgb(250, 204, 204);\">non nécessaire</strong><strong> </strong>sauf si risque suicidaire ou décompensation sévère (non rapporté ici ).</p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux&nbsp;;</strong> Pas recommandée comme <strong>traitement de première intention</strong> et<strong> jamais</strong> seul</p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux&nbsp;;</strong> <strong style=\"background-color: rgb(240, 102, 102);\">Contre indiqué</strong> car ca aggrave l’evitement </p><p><strong style=\"color: rgb(230, 0, 0);\">5-Faux&nbsp;</strong><span style=\"color: rgb(230, 0, 0);\">;</span> Les benzodiazépines ne sont pas recommandées en traitement de fond du TSPT,<strong style=\"background-color: rgb(230, 0, 0);\"> leur usage est a éviter</strong><strong style=\"color: rgb(230, 0, 0); background-color: rgb(230, 0, 0);\"> .</strong></p><p><br></p><p><strong style=\"color: black; background-color: white;\">Question 3</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai:</strong> l’hypervigilance (sursauts exagérés) et les difficultés de concentration font partie des altérations neurovégétatives persistantes</p><p><strong style=\"color: rgb(230, 0, 0);\">2- Faux </strong>: Même un <strong>traumatisme observé</strong> (comme Amina, témoin d’un accident) peut provoquer des symptômes neurovégétatifs.</p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux: </strong>&nbsp; Ils persistent au-delà d’un mois dans le TSPT parfois des années </p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux :</strong> Ils peuvent tout à fait s’accompagner de symptômes dépressifs (comorbidité fréquente).</p><p><strong style=\"color: rgb(230, 0, 0);\">5&nbsp;-faux&nbsp;:</strong> Les symptômes neurovégétatifs sont <strong>fonctionnels / psychologiques</strong>, <strong style=\"background-color: rgb(240, 102, 102);\">pas toujours visibles à l’examen physique.</strong></p><p><br></p><p><br></p><p><strong style=\"background-color: rgb(204, 224, 245); color: rgb(0, 102, 204);\">source :Diapo 2026 - Dr OUADI </strong></p><p><a href=\"https://drive.google.com/file/d/1GYEODnfvEH6V8fxIdwlemvBo586oKsAw/view\" rel=\"noopener noreferrer\" target=\"_blank\">TSPT SUPPORT.pdf - Google Drive</a></p>"
+    },
+    {
+      "id": "4.2",
+      "case_id": 4,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295386,
+          "text": "Thérapie cognitivo-comportementale axée sur le trauma ",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 295387,
+          "text": "Hospitalisation immédiate pour soulager l'anxiété",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 295388,
+          "text": "Hypnose exclusive sans suivi psychothérapeutique",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 295389,
+          "text": "Isolement social pour éviter les déclencheurs",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 295390,
+          "text": "Utilisation de benzodiazépines comme traitement de fond ",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026 "
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": " Quelle est la prise en charge recommandée en première ligne pour Amina ?",
+      "has_media": true,
+      "statement": " Quelle est la prise en charge recommandée en première ligne pour Amina ?",
+      "sub_index": 2,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187119681_sexide3/session_1792187119681_sexide3_q_8_1792187156532_img_0.jpg"
+      ],
+      "croq_answer": null,
+      "explanation": "Question 11-Faux ; Le TSA se définit par symptômes survenant dans les 3 premiers jours à 1 mois après le trauma. 4-Vrai : - on a une ;-exposition à un événement traumatique (mort violente sous ses yeux). - Symptômes persistants depuis plus d’un mois (ici 6 mois)  - Reviviscences (flashbacks, cauchemars). -Évitement persistant (ne veut plus conduire, éviter les routes). - Altérations neurovégétatives (sursauts, troubles du sommeil, irritabilité). - Retrait social (détachement).Question 21-Vrai ; Les thérapies cognitivo-comportementales centrées sur le traumatisme sont efficaces et utilisées en 1ere ligne .2-Faux ; non nécessaire sauf si risque suicidaire ou décompensation sévère (non rapporté ici ).3-Faux ; Pas recommandée comme traitement de première intention et jamais seul4-Faux ; Contre indiqué car ca aggrave l’evitement 5-Faux ; Les benzodiazépines ne sont pas recommandées en traitement de fond du TSPT, leur usage est a éviter .Question 31-Vrai: l’hypervigilance (sursauts exagérés) et les difficultés de concentration font partie des altérations neurovégétatives persistantes2- Faux : Même un traumatisme observé (comme Amina, témoin d’un accident) peut provoquer des symptômes neurovégétatifs.3-Faux:   Ils persistent au-delà d’un mois dans le TSPT parfois des années 4-Faux : Ils peuvent tout à fait s’accompagner de symptômes dépressifs (comorbidité fréquente).5 -faux : Les symptômes neurovégétatifs sont fonctionnels / psychologiques, pas toujours visibles à l’examen physique.source :Diapo 2026 - Dr OUADI TSPT SUPPORT.pdf - Google Drive",
+      "original_id": 60411,
+      "clinical_case": "il y a six mois ,Amina, une femme de 35 ans, infirmière ,a été témoin d'un accident de la route grave un véhicule a percuté un piéton sous ses yeux, entraînant sa mort. Depuis cet événement, elle rapporte des symptômes persistants qui impactent sa vie quotidienne et professionnelle. Elle décrit des flashbacks récurrents de la scène, elle évite systématiquement les routes fréquentées et refuse de conduire, ce qui l'empêche de se rendre au travail, sursautant au moindre bruit, avec des difficultés de concentration, et des troubles du sommeil ainsi que des cauchemars récurrents. Elle se sent détachée de ses proches, irritable. Elle nie toute consommation de substances ou antécédents psychiatriques personnels, mais mentionne un stress professionnel élevé avant l'accident. Un examen physique est normal, et les analyses biologiques ne révèlent aucune anomalie.",
+      "display_title": "Question 4 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong>Question 1</strong></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux&nbsp;;</strong><strong> </strong>Le TSA se définit par symptômes survenant dans <strong style=\"background-color: rgb(240, 102, 102);\">les 3 premiers jours à 1 mois après le trauma. </strong></p><p><strong style=\"color: rgb(0, 138, 0);\">4-Vrai :</strong><strong> - </strong>on a une ;</p><p>-<strong style=\"background-color: rgb(255, 255, 204);\">exposition à un événement traumatique </strong>(mort violente sous ses yeux).</p><p> - <strong style=\"background-color: rgb(255, 255, 204);\">Symptômes persistants&nbsp;depuis plus d’un mois</strong>&nbsp;(ici 6 mois) </p><p> - <strong style=\"background-color: rgb(255, 255, 204);\">Reviviscences </strong>(flashbacks, cauchemars).</p><p> -<strong style=\"background-color: rgb(255, 255, 204);\">Évitement persistant</strong> (ne veut plus conduire, éviter les routes).</p><p> - <strong style=\"background-color: rgb(255, 255, 204);\">Altérations neurovégétatives </strong>(sursauts, troubles du sommeil, irritabilité).</p><p> - <strong style=\"background-color: rgb(255, 255, 204);\">Retrait social </strong>(détachement).</p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187119681_sexide3/session_1792187119681_sexide3_q_8_1792187156532_img_0.jpg\"></p><p><br></p><p><strong>Question 2</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai&nbsp;;</strong> <strong>Les thérapies cognitivo-comportementales </strong>centrées sur le traumatisme <span style=\"background-color: rgb(102, 185, 102);\">sont efficaces et utilisées en 1ere ligne .</span></p><p><strong style=\"color: rgb(230, 0, 0);\">2-Faux&nbsp;; </strong><strong style=\"background-color: rgb(250, 204, 204);\">non nécessaire</strong><strong> </strong>sauf si risque suicidaire ou décompensation sévère (non rapporté ici ).</p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux&nbsp;;</strong> Pas recommandée comme <strong>traitement de première intention</strong> et<strong> jamais</strong> seul</p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux&nbsp;;</strong> <strong style=\"background-color: rgb(240, 102, 102);\">Contre indiqué</strong> car ca aggrave l’evitement </p><p><strong style=\"color: rgb(230, 0, 0);\">5-Faux&nbsp;</strong><span style=\"color: rgb(230, 0, 0);\">;</span> Les benzodiazépines ne sont pas recommandées en traitement de fond du TSPT,<strong style=\"background-color: rgb(230, 0, 0);\"> leur usage est a éviter</strong><strong style=\"color: rgb(230, 0, 0); background-color: rgb(230, 0, 0);\"> .</strong></p><p><br></p><p><strong style=\"color: black; background-color: white;\">Question 3</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai:</strong> l’hypervigilance (sursauts exagérés) et les difficultés de concentration font partie des altérations neurovégétatives persistantes</p><p><strong style=\"color: rgb(230, 0, 0);\">2- Faux </strong>: Même un <strong>traumatisme observé</strong> (comme Amina, témoin d’un accident) peut provoquer des symptômes neurovégétatifs.</p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux: </strong>&nbsp; Ils persistent au-delà d’un mois dans le TSPT parfois des années </p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux :</strong> Ils peuvent tout à fait s’accompagner de symptômes dépressifs (comorbidité fréquente).</p><p><strong style=\"color: rgb(230, 0, 0);\">5&nbsp;-faux&nbsp;:</strong> Les symptômes neurovégétatifs sont <strong>fonctionnels / psychologiques</strong>, <strong style=\"background-color: rgb(240, 102, 102);\">pas toujours visibles à l’examen physique.</strong></p><p><br></p><p><br></p><p><strong style=\"background-color: rgb(204, 224, 245); color: rgb(0, 102, 204);\">source :Diapo 2026 - Dr OUADI </strong></p><p><a href=\"https://drive.google.com/file/d/1GYEODnfvEH6V8fxIdwlemvBo586oKsAw/view\" rel=\"noopener noreferrer\" target=\"_blank\">TSPT SUPPORT.pdf - Google Drive</a></p>"
+    },
+    {
+      "id": "4.3",
+      "case_id": 4,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295391,
+          "text": "Ils incluent les réactions de sursaut exagérées et troubles de la concentration",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 295392,
+          "text": "Ils sont absents si le traumatisme n'est pas physique",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 295393,
+          "text": "Ils disparaissent toujours dans les 6 premières semaines",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 295394,
+          "text": "Ils ne s'accompagnent jamais de symptômes dépressifs",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 295395,
+          "text": "Ils sont absents car l'examen physique est normal",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026 "
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Concernant les symptômes neurovégétatifs chez Amina, laquelle des affirmations est juste ?",
+      "has_media": true,
+      "statement": "Concernant les symptômes neurovégétatifs chez Amina, laquelle des affirmations est juste ?",
+      "sub_index": 3,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187119681_sexide3/session_1792187119681_sexide3_q_9_1792187156532_img_0.jpg"
+      ],
+      "croq_answer": null,
+      "explanation": "Question 11-Faux ; Le TSA se définit par symptômes survenant dans les 3 premiers jours à 1 mois après le trauma. 4-Vrai : - on a une ;-exposition à un événement traumatique (mort violente sous ses yeux). - Symptômes persistants depuis plus d’un mois (ici 6 mois)  - Reviviscences (flashbacks, cauchemars). -Évitement persistant (ne veut plus conduire, éviter les routes). - Altérations neurovégétatives (sursauts, troubles du sommeil, irritabilité). - Retrait social (détachement).Question 21-Vrai ; Les thérapies cognitivo-comportementales centrées sur le traumatisme sont efficaces et utilisées en 1ere ligne .2-Faux ; non nécessaire sauf si risque suicidaire ou décompensation sévère (non rapporté ici ).3-Faux ; Pas recommandée comme traitement de première intention et jamais seul4-Faux ; Contre indiqué car ca aggrave l’evitement 5-Faux ; Les benzodiazépines ne sont pas recommandées en traitement de fond du TSPT, leur usage est a éviter .Question 31-Vrai: l’hypervigilance (sursauts exagérés) et les difficultés de concentration font partie des altérations neurovégétatives persistantes2- Faux : Même un traumatisme observé (comme Amina, témoin d’un accident) peut provoquer des symptômes neurovégétatifs.3-Faux:   Ils persistent au-delà d’un mois dans le TSPT parfois des années 4-Faux : Ils peuvent tout à fait s’accompagner de symptômes dépressifs (comorbidité fréquente).5 -faux : Les symptômes neurovégétatifs sont fonctionnels / psychologiques, pas toujours visibles à l’examen physique.source :Diapo 2026 - Dr OUADI TSPT SUPPORT.pdf - Google Drive",
+      "original_id": 60412,
+      "clinical_case": "il y a six mois ,Amina, une femme de 35 ans, infirmière ,a été témoin d'un accident de la route grave un véhicule a percuté un piéton sous ses yeux, entraînant sa mort. Depuis cet événement, elle rapporte des symptômes persistants qui impactent sa vie quotidienne et professionnelle. Elle décrit des flashbacks récurrents de la scène, elle évite systématiquement les routes fréquentées et refuse de conduire, ce qui l'empêche de se rendre au travail, sursautant au moindre bruit, avec des difficultés de concentration, et des troubles du sommeil ainsi que des cauchemars récurrents. Elle se sent détachée de ses proches, irritable. Elle nie toute consommation de substances ou antécédents psychiatriques personnels, mais mentionne un stress professionnel élevé avant l'accident. Un examen physique est normal, et les analyses biologiques ne révèlent aucune anomalie.",
+      "display_title": "Question 4 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong>Question 1</strong></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux&nbsp;;</strong><strong> </strong>Le TSA se définit par symptômes survenant dans <strong style=\"background-color: rgb(240, 102, 102);\">les 3 premiers jours à 1 mois après le trauma. </strong></p><p><strong style=\"color: rgb(0, 138, 0);\">4-Vrai :</strong><strong> - </strong>on a une ;</p><p>-<strong style=\"background-color: rgb(255, 255, 204);\">exposition à un événement traumatique </strong>(mort violente sous ses yeux).</p><p> - <strong style=\"background-color: rgb(255, 255, 204);\">Symptômes persistants&nbsp;depuis plus d’un mois</strong>&nbsp;(ici 6 mois) </p><p> - <strong style=\"background-color: rgb(255, 255, 204);\">Reviviscences </strong>(flashbacks, cauchemars).</p><p> -<strong style=\"background-color: rgb(255, 255, 204);\">Évitement persistant</strong> (ne veut plus conduire, éviter les routes).</p><p> - <strong style=\"background-color: rgb(255, 255, 204);\">Altérations neurovégétatives </strong>(sursauts, troubles du sommeil, irritabilité).</p><p> - <strong style=\"background-color: rgb(255, 255, 204);\">Retrait social </strong>(détachement).</p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187119681_sexide3/session_1792187119681_sexide3_q_9_1792187156532_img_0.jpg\"></p><p><br></p><p><strong>Question 2</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai&nbsp;;</strong> <strong>Les thérapies cognitivo-comportementales </strong>centrées sur le traumatisme <span style=\"background-color: rgb(102, 185, 102);\">sont efficaces et utilisées en 1ere ligne .</span></p><p><strong style=\"color: rgb(230, 0, 0);\">2-Faux&nbsp;; </strong><strong style=\"background-color: rgb(250, 204, 204);\">non nécessaire</strong><strong> </strong>sauf si risque suicidaire ou décompensation sévère (non rapporté ici ).</p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux&nbsp;;</strong> Pas recommandée comme <strong>traitement de première intention</strong> et<strong> jamais</strong> seul</p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux&nbsp;;</strong> <strong style=\"background-color: rgb(240, 102, 102);\">Contre indiqué</strong> car ca aggrave l’evitement </p><p><strong style=\"color: rgb(230, 0, 0);\">5-Faux&nbsp;</strong><span style=\"color: rgb(230, 0, 0);\">;</span> Les benzodiazépines ne sont pas recommandées en traitement de fond du TSPT,<strong style=\"background-color: rgb(230, 0, 0);\"> leur usage est a éviter</strong><strong style=\"color: rgb(230, 0, 0); background-color: rgb(230, 0, 0);\"> .</strong></p><p><br></p><p><strong style=\"color: black; background-color: white;\">Question 3</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai:</strong> l’hypervigilance (sursauts exagérés) et les difficultés de concentration font partie des altérations neurovégétatives persistantes</p><p><strong style=\"color: rgb(230, 0, 0);\">2- Faux </strong>: Même un <strong>traumatisme observé</strong> (comme Amina, témoin d’un accident) peut provoquer des symptômes neurovégétatifs.</p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux: </strong>&nbsp; Ils persistent au-delà d’un mois dans le TSPT parfois des années </p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux :</strong> Ils peuvent tout à fait s’accompagner de symptômes dépressifs (comorbidité fréquente).</p><p><strong style=\"color: rgb(230, 0, 0);\">5&nbsp;-faux&nbsp;:</strong> Les symptômes neurovégétatifs sont <strong>fonctionnels / psychologiques</strong>, <strong style=\"background-color: rgb(240, 102, 102);\">pas toujours visibles à l’examen physique.</strong></p><p><br></p><p><br></p><p><strong style=\"background-color: rgb(204, 224, 245); color: rgb(0, 102, 204);\">source :Diapo 2026 - Dr OUADI </strong></p><p><a href=\"https://drive.google.com/file/d/1GYEODnfvEH6V8fxIdwlemvBo586oKsAw/view\" rel=\"noopener noreferrer\" target=\"_blank\">TSPT SUPPORT.pdf - Google Drive</a></p>"
+    },
+    {
+      "id": 5,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284661,
+          "text": "1.2.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284662,
+          "text": "2.3.4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 284663,
+          "text": "1.2.5",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 284664,
+          "text": "2.3.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284665,
+          "text": "1.2.4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Une des associations concernés le trouble stress post traumatique :\n1- Ensemble de symptômes survenant suite à l’exposition à un événement traumatisant.\n2- La reviviscence de l’événement traumatique peut se faire de différentes façons.\n3- Les flash-back constituent la reviviscence nocturne la plus fréquente.\n4- Une activité délirante et hallucinatoire remplissant le critère A de la schizophrénie peut être présente.\n5- L’évitement des stimuli rappelant l’événement traumatique peut être invalidant.",
+      "has_media": true,
+      "statement": "Une des associations concernés le trouble stress post traumatique :\n1- Ensemble de symptômes survenant suite à l’exposition à un événement traumatisant.\n2- La reviviscence de l’événement traumatique peut se faire de différentes façons.\n3- Les flash-back constituent la reviviscence nocturne la plus fréquente.\n4- Une activité délirante et hallucinatoire remplissant le critère A de la schizophrénie peut être présente.\n5- L’évitement des stimuli rappelant l’événement traumatique peut être invalidant.",
+      "sub_index": null,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187119681_sexide3/session_1792187119681_sexide3_q_10_1792187156532_img_0.png"
+      ],
+      "croq_answer": null,
+      "explanation": "Rappel: Le trouble stress post traumatique correspond à la survenue de symptômes caractéristiques à la suite de l'exposition à un événement traumatique. Un événement traumatique est défini comme un événement au cours duquel le sujet ou d'autres personnes ont pu être menacé(s) de mort, trouver la mort, subir des blessures graves ou des violences sexuelles. L'exposition peut se faire de différentes façons en étant directement victime, en étant témoin direct, en apprenant que cela est arrivé à un membre de la famille/une personne proche dans un cadre professionnel avec exposition répétée Clinique: Syndrome de répétition : Pathognomonique du psychotrauma où le patient revit I'expérience: -Les cauchemars de répétition.-Ruminations épuisantes.-Evocations rassurantes.-Pensées forcées.-Tics et sursauts.-Impressions soudaines que l'évènement va se reproduire.-Gestes de défense ou d'agression.-Fuite comme si l'évènement se reproduire.-Etat d'alerte permanent avec évitement des stimuli associé au traumatisme Syndrome d'évitement: L'évitement des stimuli qui rappellent au sujet le traumatisme est aussi un symptôme clé pour le diagnostic de TSPT -Ces stimuli peuvent être des personnes, des lieux, des situations ou des circonstances qui ressemblent ou sont associés au traumatisme, -Les patients souffrant de TSPT s'efforcent de chasser tout souvenir rattaché au traumatisme, par exemple en évitant d'y penser (en se mettant à lire, en allumant la télévision ou en appelant un ami) ou d'en parler de manière détaillée, surtout pour les souvenirs les plus difficiles Hyperactivation neurovégétative: Les altérations du sommeil sont généralement au premier plan :- difficultés d'endormissement ou sommeil interrompu au moindre bruit. -La survenue de cauchemars peut participer à ces altérations du sommeil, parce que l'endormissement est redouté ou parce que le rêve traumatique réveille en sursaut. L'irritabilité est souvent rapportée :  -tout devient insupportable, < invivable > (le bruit, la foule, certaines situations du quotidien, etc.). L'hypervigilance (état de qui vive permanent): -Est un état d'alarme dont l'objectif est de dépister et d'analyser le moindre stimulus environnemental qui peut être interprété comme une nouvelle menace. -Cet état s'accompagne souvent de réactions de sursaut exagérées au moindre bruit (claquement de porte, bruit de moteur, sonnerie de téléphone, sirène, etc.). -Cette symptomatologie s'accompagne fréquemment d'altérations de la concentration et de la mémoire.Altérations négatives des cognitions et de l'humeur : Les distorsions cognitives persistantes concernent non seulement le sujet lui-même , mais également les autres Le sujet se blâme ou rumine l'implication d'autres personnes en rapport avec l'événement. Dans ce contexte, des modifications de l'humeur peuvent également être observées : diminution des intérêts, détachement, incapacité à éprouver des émotions positives. Ces symptômes rendent difficiles le diagnostic d'une éventuelle comorbidité avec l'épisode dépressif caractérisé.",
+      "original_id": 58132,
+      "clinical_case": null,
+      "display_title": "Question 5",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong><em><u>Rappel</u></em></strong>: </p><p>Le trouble stress post traumatique correspond à la survenue de symptômes caractéristiques à la suite de l'exposition à un événement traumatique. Un événement traumatique est défini comme un événement au cours duquel le sujet ou d'autres personnes ont pu être menacé(s) de mort, trouver la mort, subir des blessures graves ou des violences sexuelles. L'exposition peut se faire de différentes façons en étant directement victime, en étant témoin direct, en apprenant que cela est arrivé à un membre de la famille/une personne proche dans un cadre professionnel avec exposition répétée </p><p><br></p><p><em><u>Clinique</u></em>: </p><p><span style=\"background-color: rgb(204, 232, 204);\">Syndrome de répétition</span> : </p><ul><li>Pathognomonique du psychotrauma où le patient revit I'expérience: </li></ul><p class=\"ql-indent-2\">-Les cauchemars de répétition.</p><p class=\"ql-indent-2\">-Ruminations épuisantes.</p><p class=\"ql-indent-2\">-Evocations rassurantes.</p><p class=\"ql-indent-2\">-Pensées forcées.</p><p class=\"ql-indent-2\">-Tics et sursauts.</p><p class=\"ql-indent-2\">-Impressions soudaines que l'évènement va se reproduire.</p><p class=\"ql-indent-2\">-Gestes de défense ou d'agression.</p><p class=\"ql-indent-2\">-Fuite comme si l'évènement se reproduire.</p><p class=\"ql-indent-2\">-Etat d'alerte permanent avec évitement des stimuli associé au traumatisme</p><p> <span style=\"background-color: rgb(204, 232, 204);\">Syndrome d'évitement</span>: </p><ul><li>L'évitement des stimuli qui rappellent au sujet le traumatisme est aussi un symptôme clé pour le diagnostic de TSPT </li></ul><p class=\"ql-indent-2\">-Ces stimuli peuvent être des personnes, des lieux, des situations ou des circonstances qui ressemblent ou sont associés au traumatisme, </p><p class=\"ql-indent-2\">-Les patients souffrant de TSPT s'efforcent de chasser tout souvenir rattaché au traumatisme, par exemple en évitant d'y penser (en se mettant à lire, en allumant la télévision ou en appelant un ami) ou d'en parler de manière détaillée, surtout pour les </p><p class=\"ql-indent-2\">souvenirs les plus difficiles</p><p class=\"ql-indent-2\"><br></p><p> <span style=\"background-color: rgb(204, 232, 204);\">Hyperactivation neurovégétative</span>: </p><ul><li>Les altérations du sommeil sont généralement au premier plan :</li></ul><p class=\"ql-indent-2\">- difficultés d'endormissement ou sommeil interrompu au moindre bruit. </p><p class=\"ql-indent-2\">-La survenue de cauchemars peut participer à ces altérations du sommeil, parce que l'endormissement est redouté ou parce que le rêve traumatique réveille en sursaut.</p><ul><li> L'irritabilité est souvent rapportée : </li></ul><p class=\"ql-indent-2\"> -tout devient insupportable, &lt; invivable &gt; (le bruit, la foule, certaines situations du quotidien, etc.). </p><ul><li>L'hypervigilance (état de qui vive permanent): </li></ul><p class=\"ql-indent-2\">-Est un état d'alarme dont l'objectif est de dépister et d'analyser le moindre stimulus environnemental qui peut être interprété comme une nouvelle menace. </p><p>-Cet état s'accompagne souvent de réactions de sursaut exagérées au moindre bruit (claquement de porte, bruit de moteur, sonnerie de téléphone, sirène, etc.). </p><p>-Cette symptomatologie s'accompagne fréquemment d'altérations de la concentration et de la mémoire.</p><p><br></p><p><span style=\"background-color: rgb(204, 232, 204);\">Altérations négatives des cognitions et de l'humeur : </span></p><p><br></p><ul><li class=\"ql-indent-1\">Les distorsions cognitives persistantes concernent non seulement le sujet lui-même , mais également les autres </li><li class=\"ql-indent-1\">Le sujet se blâme ou rumine l'implication d'autres personnes en rapport avec l'événement. </li><li class=\"ql-indent-1\">Dans ce contexte, des modifications de l'humeur peuvent également être observées : diminution des intérêts, détachement, incapacité à éprouver des émotions positives. </li><li class=\"ql-indent-1\">Ces symptômes rendent difficiles le diagnostic d'une éventuelle comorbidité avec l'épisode dépressif caractérisé.</li></ul><p class=\"ql-indent-2\"><br></p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187119681_sexide3/session_1792187119681_sexide3_q_10_1792187156532_img_0.png\"></p>"
+    },
+    {
+      "id": 6,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284656,
+          "text": "Peut-être un événement potentiellement traumatisant.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284657,
+          "text": "Peut-être un échec dans un examen important.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 284658,
+          "text": "Peut entraîner des flash-back invalidants.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 284659,
+          "text": "Fait appel aux stratégies de coping de l’individu exposé.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284660,
+          "text": "Peut engendrer un trouble de l’adaptation.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Un facteur de stress, quelle est la proposition fausse ?",
+      "has_media": false,
+      "statement": "Un facteur de stress, quelle est la proposition fausse ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "C/ FAUX : Les flash-back invalidants sont un symptôme caractéristique du Trouble de Stress Post-Traumatique (PTSD). Bien qu'un facteur de stress potentiellement traumatisant puisse en être la cause, tous les facteurs de stress ne provoquent pas de TSPT ni de flash-back. En particulier, un stress non-traumatique ne conduit généralement pas à des flash-back au sens clinique du terme.",
+      "original_id": 58131,
+      "clinical_case": null,
+      "display_title": "Question 6",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>C/ <em style=\"color: rgb(230, 0, 0);\">FAUX</em> : Les flash-back invalidants sont un symptôme caractéristique du Trouble de Stress Post-Traumatique (PTSD). Bien qu'un facteur de stress potentiellement traumatisant puisse en être la cause, tous les facteurs de stress ne provoquent pas de TSPT ni de flash-back. En particulier, un stress non-traumatique ne conduit généralement pas à des flash-back au sens clinique du terme.</p>"
+    },
+    {
+      "id": 7,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266222,
+          "text": "Être témoin d'un homicide",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266223,
+          "text": "Attaque terroriste",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 266224,
+          "text": "Agression violente",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266225,
+          "text": "Situation de divorce",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 266226,
+          "text": "Viol",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Tous ces événements peuvent être considérés comme traumatique responsable de l'apparition de symptomatologie psychique post traumatique sauf une :",
+      "has_media": false,
+      "statement": "Tous ces événements peuvent être considérés comme traumatique responsable de l'apparition de symptomatologie psychique post traumatique sauf une :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 54150,
+      "clinical_case": null,
+      "display_title": "Question 7",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": 8,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266217,
+          "text": "Fait suite à un traumatisme sévère",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266218,
+          "text": "Sa symptomatologie peut simuler celle de l'état de stress post-traumatique",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 266219,
+          "text": "La durée des troubles ne perdure pas au-delà d'un mois",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266220,
+          "text": "Peut-être diagnostiqué dès le premier jour après le traumatisme",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 266221,
+          "text": "Peut évoluer vers un état de stress post-traumatique (ESPT)",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'état de stress aigu : (RF)",
+      "has_media": false,
+      "statement": "L'état de stress aigu : (RF)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "D- Faux, Le trouble stress aigu ne peut être diagnostiqué que 3 jours après le traumatisme.",
+      "original_id": 54149,
+      "clinical_case": null,
+      "display_title": "Question 8",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> Le trouble stress aigu ne peut être diagnostiqué <strong>que 3 jours</strong> <strong>après </strong>le traumatisme.</p><p><br></p>"
+    },
+    {
+      "id": 9,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 253007,
+          "text": "Un ensemble de symptômes survenant suite à l'exposition à un événement traumatisant (ET)",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 253008,
+          "text": "La reviviscence de l'ET s'exprime de différentes manières",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 253009,
+          "text": "Les flash-back constituent la reviviscence nocturne la plus fréquente",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 253010,
+          "text": "Les ISRS combinés aux psychothérapies représentent le traitement de choix",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 253011,
+          "text": "L'évitement des stimuli rappelant ET peut être invalidant",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des propositions est fausse concernant le trouble stress post-traumatique, laquelle ?",
+      "has_media": false,
+      "statement": "L'une des propositions est fausse concernant le trouble stress post-traumatique, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 51098,
+      "clinical_case": null,
+      "display_title": "Question 9",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 10,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 253002,
+          "text": "Elle est le plus souvent défavorable",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 253003,
+          "text": "Peut-être émaillée par divers troubles psychiatriques",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 253004,
+          "text": "Les conduites suicidaires sont à évaluer régulièrement",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 253005,
+          "text": "Elle est tributaire d'une prise en charge précoce et adaptée",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 253006,
+          "text": "La reconnaissance du statut de victime et la réparation sont primordiales pour la rendre favorable",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des évolutions des troubles psychiques post-traumatiques est fausse, laquelle ?",
+      "has_media": false,
+      "statement": "L'une des évolutions des troubles psychiques post-traumatiques est fausse, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 51097,
+      "clinical_case": null,
+      "display_title": "Question 10",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 11,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252997,
+          "text": "1.2.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252998,
+          "text": "1.2.4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252999,
+          "text": "1.4.5",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 253000,
+          "text": "2.4.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 253001,
+          "text": "3.4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le risque de développer un état de stress post-traumatique (ESPT) est plus élevé dans les situations suivantes (cochez l'association juste) :\n1- Exposition à des traumatismes sévères\n2- Absence d'antécédents de troubles mentaux\n3- Famille soutenante\n4- Expériences traumatiques antérieures\n5- Métiers de militaire, pompier, ambulancier",
+      "has_media": false,
+      "statement": "Le risque de développer un état de stress post-traumatique (ESPT) est plus élevé dans les situations suivantes (cochez l'association juste) :\n1- Exposition à des traumatismes sévères\n2- Absence d'antécédents de troubles mentaux\n3- Famille soutenante\n4- Expériences traumatiques antérieures\n5- Métiers de militaire, pompier, ambulancier",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 51096,
+      "clinical_case": null,
+      "display_title": "Question 11",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": 12,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252662,
+          "text": "Exposition à un évènement traumatique",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252663,
+          "text": "Un syndrome de répétition",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252664,
+          "text": "Une période de latence asymptomatique",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252665,
+          "text": "Une Hyper activation neuro-végétative",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252666,
+          "text": "Des conduites d'exposition progressives",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les éléments cliniques suivants peuvent être présents en cas d'état de stress post traumatique (ESPT) (RF):",
+      "has_media": false,
+      "statement": "Les éléments cliniques suivants peuvent être présents en cas d'état de stress post traumatique (ESPT) (RF):",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 51029,
+      "clinical_case": null,
+      "display_title": "Question 12",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": 13,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252652,
+          "text": "Une réponse immédiate à un conflit",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252653,
+          "text": "Une réponse prolongée à des facteurs détresse chronique",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252654,
+          "text": "Une réponse à un évènement traumatique dans les quatre semaines suivant l'événement",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 252655,
+          "text": "Une réponse à un évènement traumatique dans les six mois suivant l'événement",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252656,
+          "text": "Les réponses A et C sont justes",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'état de stress aigu se définit par (ESA) (RJ):",
+      "has_media": true,
+      "statement": "L'état de stress aigu se définit par (ESA) (RJ):",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A- Faux, L'état de stress aigu survient en réponse à un événement traumatique intense, généralement dans les quatre semaines suivant l'événement.",
+      "original_id": 51027,
+      "clinical_case": null,
+      "display_title": "Question 13",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1725117639.505.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p><strong style=\"color: rgb(230, 0, 0);\">A- Faux</strong>, <span style=\"background-color: transparent; color: rgb(0, 0, 0);\">L'état de stress aigu survient </span><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">en réponse à un événement <u>traumatique</u></strong><u style=\"background-color: transparent; color: rgb(0, 0, 0);\"> </u><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">intense, généralement dans les </span><strong style=\"background-color: transparent; color: rgb(255, 0, 0);\">quatre semaines suivant l'événement.</strong></p>"
+    },
+    {
+      "id": 14,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229333,
+          "text": "L'intervention immédiate consiste en un défusing.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229334,
+          "text": "L'intervention post-immédiate consiste en un débriefing",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229335,
+          "text": "La reconnaissance du statut de victime par le thérapeute et l'expert qui établit l'imputabilité ouvrant ainsi le droit à la réparation.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229336,
+          "text": "Au-delà de 01 mois, une prise en charge spécialisée s'impose",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229337,
+          "text": "L'indemnisation intéresse les patients blessés physiquement seulement",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Concernant la prise en charge des troubles psychiques post traumatiques, l'une des propositions est fausse, laquelle ?",
+      "has_media": false,
+      "statement": "Concernant la prise en charge des troubles psychiques post traumatiques, l'une des propositions est fausse, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 46540,
+      "clinical_case": null,
+      "display_title": "Question 14",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 15,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229328,
+          "text": "Un ensemble de symptômes survenant suite à l'exposition à un événement traumatisant (ET)",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229329,
+          "text": "La reviviscence de l'ET s'exprime de différentes manières",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229330,
+          "text": "Les flash-back constituent la reviviscence nocturne la plus fréquente",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 229331,
+          "text": "Les ISRS combinés aux psychothérapies représentent le traitement de choix",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229332,
+          "text": "L'évitement des stimuli rappelant l'ET peut être invalidant",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Concernant le trouble du stress post traumatique, l'une des propositions est fausse, laquelle ?",
+      "has_media": false,
+      "statement": "Concernant le trouble du stress post traumatique, l'une des propositions est fausse, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 46539,
+      "clinical_case": null,
+      "display_title": "Question 15",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 16,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 221004,
+          "text": "Explorer les origines familiales du patient",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 221005,
+          "text": "Modifier les schémas de pensée négatifs",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 221006,
+          "text": "Prescrire des médicaments antipsychotiques",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 221007,
+          "text": "Encourager l'isolement social",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 221008,
+          "text": "Fournir un soutien émotionnel constant",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est l'objectif principal de la thérapie cognitivo-comportementale (TCC) dans le traitement de L’ESPT?",
+      "has_media": false,
+      "statement": "Quel est l'objectif principal de la thérapie cognitivo-comportementale (TCC) dans le traitement de L’ESPT?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44925,
+      "clinical_case": null,
+      "display_title": "Question 16",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 17,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220999,
+          "text": "Antibiotiques",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 221000,
+          "text": "Antidépresseurs",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 221001,
+          "text": "Médicaments anti-inflammatoires",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 221002,
+          "text": "Médicaments antihypertenseurs",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 221003,
+          "text": "Vitamines B",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quels types de médicaments sont généralement prescrits pour traiter les symptômes de l'ESPT?",
+      "has_media": false,
+      "statement": "Quels types de médicaments sont généralement prescrits pour traiter les symptômes de l'ESPT?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44924,
+      "clinical_case": null,
+      "display_title": "Question 17",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 18,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220994,
+          "text": "Durée des symptômes",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220995,
+          "text": "Présence de symptômes physiques",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220996,
+          "text": "Prévalence dans la famille",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220997,
+          "text": "Age du patient",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220998,
+          "text": "Absence d'événement traumatique",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle caractéristique distingue l'ESPT des autres troubles anxieux?",
+      "has_media": false,
+      "statement": "Quelle caractéristique distingue l'ESPT des autres troubles anxieux?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44923,
+      "clinical_case": null,
+      "display_title": "Question 18",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": "19.1",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220909,
+          "text": "1.2.4",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220910,
+          "text": "1.3.4",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 220911,
+          "text": "2.3.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220912,
+          "text": "2.3.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220913,
+          "text": "1.3.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle association symptomatique est présente chez Mme F ?\n1. Reviviscences\n2. Flash-backs\n3. Difficulté de maintien de sommeil\n4. Hyperactivation neurovégétative\n5. Dissociation traumatique ",
+      "has_media": false,
+      "statement": "Quelle association symptomatique est présente chez Mme F ?\n1. Reviviscences\n2. Flash-backs\n3. Difficulté de maintien de sommeil\n4. Hyperactivation neurovégétative\n5. Dissociation traumatique ",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 44906,
+      "clinical_case": "Mme F. 53 ans, sans antécédents, amenée aux urgences par son mari pour agitation anxieuse, des troubles respiratoires, des tremblements, de polypnée, de tachycardie et un sentiment de malaise général apparus soudainement alors qu'elle regardait la\r\ntélévision. Elle a commencé à étouffer dès la première scène qui montrait l'intervention de pompiers sur le lieu d'un accident.\r\nL'anamnèse retrouve une symptomatologie évoluant depuis plus deux mois a type d'irritabilité, des nuits agitées avec des réveilles brutales après des cauchemars dont elle n'arrive pas à se souvenir. L'interrogatoire retrouve aussi une notion de menace d'agression physique si elle ne reconnaissait pas ses torts de la part d'un conducteur suite à un d'accident de la circulation. Elle était restée « sans voix ». Les différents examens somatiques ne révèlent rien d'organique.",
+      "display_title": "Question 19 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "19.2",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220914,
+          "text": "Trouble stress aigu",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220915,
+          "text": "Trouble de l'adaptation",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220916,
+          "text": "Trouble stress post-traumatique",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 220917,
+          "text": "Episode dépressif",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220918,
+          "text": "Aucune réponse exacte",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est votre diagnostic ?",
+      "has_media": false,
+      "statement": "Quel est votre diagnostic ?",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 44907,
+      "clinical_case": "Mme F. 53 ans, sans antécédents, amenée aux urgences par son mari pour agitation anxieuse, des troubles respiratoires, des tremblements, de polypnée, de tachycardie et un sentiment de malaise général apparus soudainement alors qu'elle regardait la\r\ntélévision. Elle a commencé à étouffer dès la première scène qui montrait l'intervention de pompiers sur le lieu d'un accident.\r\nL'anamnèse retrouve une symptomatologie évoluant depuis plus deux mois a type d'irritabilité, des nuits agitées avec des réveilles brutales après des cauchemars dont elle n'arrive pas à se souvenir. L'interrogatoire retrouve aussi une notion de menace d'agression physique si elle ne reconnaissait pas ses torts de la part d'un conducteur suite à un d'accident de la circulation. Elle était restée « sans voix ». Les différents examens somatiques ne révèlent rien d'organique.",
+      "display_title": "Question 19 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "19.3",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220919,
+          "text": "Dépersonnalisation et/ou déréalisation",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220920,
+          "text": "Amnésie de l'évènement",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220921,
+          "text": "Symptômes anxieux sévères",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220922,
+          "text": "Conduite d'évitement",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220923,
+          "text": "Aucune réponse exacte",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Selon le diagnostic retenu, quel symptôme est absent chez Mme F?",
+      "has_media": false,
+      "statement": "Selon le diagnostic retenu, quel symptôme est absent chez Mme F?",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 44908,
+      "clinical_case": "Mme F. 53 ans, sans antécédents, amenée aux urgences par son mari pour agitation anxieuse, des troubles respiratoires, des tremblements, de polypnée, de tachycardie et un sentiment de malaise général apparus soudainement alors qu'elle regardait la\r\ntélévision. Elle a commencé à étouffer dès la première scène qui montrait l'intervention de pompiers sur le lieu d'un accident.\r\nL'anamnèse retrouve une symptomatologie évoluant depuis plus deux mois a type d'irritabilité, des nuits agitées avec des réveilles brutales après des cauchemars dont elle n'arrive pas à se souvenir. L'interrogatoire retrouve aussi une notion de menace d'agression physique si elle ne reconnaissait pas ses torts de la part d'un conducteur suite à un d'accident de la circulation. Elle était restée « sans voix ». Les différents examens somatiques ne révèlent rien d'organique.",
+      "display_title": "Question 19 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "19.4",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 232786,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 232787,
+          "text": "2.5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 232788,
+          "text": "3.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 232789,
+          "text": "1.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 232790,
+          "text": "3.4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel(s) traitement(s) pharmacologique(s) pouvez-vous proposer en première intention ? \n1. Inhibiteurs sélectifs de recapture de la sérotonine \n2. Benzodiazépines à visée anxiolytique \n3. Hydroxyzine a visée hypnotique \n4. Antipsychotiques sédatifs \n5. Antidépresseur tricyclique",
+      "has_media": false,
+      "statement": "Quel(s) traitement(s) pharmacologique(s) pouvez-vous proposer en première intention ? \n1. Inhibiteurs sélectifs de recapture de la sérotonine \n2. Benzodiazépines à visée anxiolytique \n3. Hydroxyzine a visée hypnotique \n4. Antipsychotiques sédatifs \n5. Antidépresseur tricyclique",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 47198,
+      "clinical_case": "Mme F. 53 ans, sans antécédents, amenée aux urgences par son mari pour agitation anxieuse, des troubles respiratoires, des tremblements, de polypnée, de tachycardie et un sentiment de malaise général apparus soudainement alors qu'elle regardait la\r\ntélévision. Elle a commencé à étouffer dès la première scène qui montrait l'intervention de pompiers sur le lieu d'un accident.\r\nL'anamnèse retrouve une symptomatologie évoluant depuis plus deux mois a type d'irritabilité, des nuits agitées avec des réveilles brutales après des cauchemars dont elle n'arrive pas à se souvenir. L'interrogatoire retrouve aussi une notion de menace d'agression physique si elle ne reconnaissait pas ses torts de la part d'un conducteur suite à un d'accident de la circulation. Elle était restée « sans voix ». Les différents examens somatiques ne révèlent rien d'organique.",
+      "display_title": "Question 19 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "19.5",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 232791,
+          "text": "1.2.5",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 232792,
+          "text": "2.3.4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 232793,
+          "text": "3.4.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 232794,
+          "text": "2.3.5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 232795,
+          "text": "1.3.4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelles sont les catégories de psychothérapie actuellement considérés comme les traitements de première ligne ? \n1. Thérapie analytique \n2. Thérapie d'exposition prolongée \n3. Thérapie cognitivo-comportementale \n4. Thérapie systémique. \n5. EMDR (eyes mouvements desensitization and reprocessing)",
+      "has_media": false,
+      "statement": "Quelles sont les catégories de psychothérapie actuellement considérés comme les traitements de première ligne ? \n1. Thérapie analytique \n2. Thérapie d'exposition prolongée \n3. Thérapie cognitivo-comportementale \n4. Thérapie systémique. \n5. EMDR (eyes mouvements desensitization and reprocessing)",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 47199,
+      "clinical_case": "Mme F. 53 ans, sans antécédents, amenée aux urgences par son mari pour agitation anxieuse, des troubles respiratoires, des tremblements, de polypnée, de tachycardie et un sentiment de malaise général apparus soudainement alors qu'elle regardait la\r\ntélévision. Elle a commencé à étouffer dès la première scène qui montrait l'intervention de pompiers sur le lieu d'un accident.\r\nL'anamnèse retrouve une symptomatologie évoluant depuis plus deux mois a type d'irritabilité, des nuits agitées avec des réveilles brutales après des cauchemars dont elle n'arrive pas à se souvenir. L'interrogatoire retrouve aussi une notion de menace d'agression physique si elle ne reconnaissait pas ses torts de la part d'un conducteur suite à un d'accident de la circulation. Elle était restée « sans voix ». Les différents examens somatiques ne révèlent rien d'organique.",
+      "display_title": "Question 19 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": 20,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220067,
+          "text": "Reviviscence involontaire de l'expérience traumatique",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220068,
+          "text": "Flashbacks",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220069,
+          "text": "Des conduites d'évitements",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220070,
+          "text": "Hypo- activation neuro-végétative",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220071,
+          "text": "Symptômes d'indifférences émotionnelles",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'état de stress post traumatique est caractérisé par toutes les réponses sauf une, laquelle ?",
+      "has_media": false,
+      "statement": "L'état de stress post traumatique est caractérisé par toutes les réponses sauf une, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44737,
+      "clinical_case": null,
+      "display_title": "Question 20",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 21,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220062,
+          "text": "Apparaît dans les suites immédiates du traumatisme",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220063,
+          "text": "Symptômes similaires au stress post traumatique évoluant moins d'un mois",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220064,
+          "text": "Représente un diagnostic différentiel de l’état de stress post traumatique",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220065,
+          "text": "Bonne évolution en présence de symptômes dissociatifs, dépersonnalisation et déréalisation",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220066,
+          "text": "Evolution le plus souvent spontanément résolutive",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'état de stress aigue se caractérise par les propositions suivantes sauf une, laquelle ?",
+      "has_media": false,
+      "statement": "L'état de stress aigue se caractérise par les propositions suivantes sauf une, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44736,
+      "clinical_case": null,
+      "display_title": "Question 21",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 22,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220077,
+          "text": "Psychanalyses.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220078,
+          "text": "EMDR.",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 220079,
+          "text": "Thérapie de groupe.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220080,
+          "text": "Débriefing.",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220081,
+          "text": "Thérapie cognitivo-comportementale.",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P4 2022"
+        ],
+        "type": "QCM",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les psychothérapies utilisées dans l'état de stress post-traumatique : (la ou les RJ)",
+      "has_media": false,
+      "statement": "Les psychothérapies utilisées dans l'état de stress post-traumatique : (la ou les RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44739,
+      "clinical_case": null,
+      "display_title": "Question 22",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 23,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220082,
+          "text": "Reviviscences.",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 220083,
+          "text": "Absence de conduite d'évitement.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220084,
+          "text": "Cauchemars.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 220085,
+          "text": "Flash-back.",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220086,
+          "text": "Absence de trouble neurovégétative.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P4 2022"
+        ],
+        "type": "QCM",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'état de stress post-traumatique comprend cliniquement : (la ou les RJ)",
+      "has_media": false,
+      "statement": "L'état de stress post-traumatique comprend cliniquement : (la ou les RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44740,
+      "clinical_case": null,
+      "display_title": "Question 23",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 24,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220072,
+          "text": "Syndrome de répétition",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 220073,
+          "text": "Syndrome délirant",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220074,
+          "text": "Syndrome de désorganisation",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220075,
+          "text": "Syndrome hallucinatoire",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220076,
+          "text": "Toutes ces réponses sont justes",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2022"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychiques post-traumatiques et troubles liés au stress (PTSD)",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le syndrome pathognomonique de stress post traumatique est : (RJ)",
+      "has_media": false,
+      "statement": "Le syndrome pathognomonique de stress post traumatique est : (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44738,
+      "clinical_case": null,
+      "display_title": "Question 24",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    }
+  ]
+}

@@ -1,0 +1,1348 @@
+{
+  "version": "2.0",
+  "exported_at": "2026-11-13T09:30:27.107Z",
+  "app": "Mystidia Cursus Medical Explorer",
+  "course": {
+    "title": "Aspects médico-légaux et organisations des soins en psychiatrie",
+    "module": "Psychiatrie",
+    "year": "5ème Année (DFASM2)",
+    "session_id": "session_1792186788346_0t487u3",
+    "questions_count": 23
+  },
+  "questions": [
+    {
+      "id": 1,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 318245,
+          "text": "La décision est prise par arrêté du wali",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 318246,
+          "text": "Elle est prononcée pour une durée initiale de 6 mois maximum, renouvelable",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 318247,
+          "text": "Le psychiatre peut décider seul de la levée de l'HO sans en référer au wali",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 318248,
+          "text": "L'examen psychiatrique d'office peut être ordonné par le procureur général ou le wali.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 318249,
+          "text": "La personne en intermement judiciaire est soumise au régime de l'HO.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Aspects médico-légaux et organisations des soins en psychiatrie",
+        "series": "Mystidia Exams"
+      },
+      "question": "Concernant l'hospitalisation d'office (HO) en psychiatrie en Algérie, quelle proposition est fausse ?",
+      "has_media": false,
+      "statement": "Concernant l'hospitalisation d'office (HO) en psychiatrie en Algérie, quelle proposition est fausse ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "C.Faux, Puisque l'HO est une décision administrative prise par une autorité publique (le wali) sa levée doit obligatoirement faire l'objet d'un arrêté de levée signé par cette même autorité. Le psychiatre rédige un rapport médical attestant que les conditions de l'HO ne sont plus réunies mais il ne peut pas libérer le patient de lui-même sans l'acte administratif correspondant.",
+      "original_id": 65143,
+      "clinical_case": null,
+      "display_title": "Question 1",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">C.Faux, </strong>Puisque l'HO est une décision administrative prise par une autorité publique (le wali) sa levée doit obligatoirement faire l'objet d'un arrêté de levée signé par cette même autorité. Le psychiatre rédige un rapport médical attestant que les conditions de l'HO ne sont plus réunies mais il ne peut pas libérer le patient de lui-même sans l'acte administratif correspondant.</p>"
+    },
+    {
+      "id": 2,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 315831,
+          "text": "Toutes les maladies mentales entraînent automatiquement l'irresponsabilité pénale.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 315832,
+          "text": "Le trouble abolit le discernement au moment de l'infraction.",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 315833,
+          "text": "L'expertise psychiatrique pénale est obligatoire pour toute infraction, même mineure.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 315834,
+          "text": "Le terme « démence » dans le code pénal désigne la démence d'Alzheimer.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 315835,
+          "text": "En cas d'irresponsabilité pénale, le patient est libéré sans aucune mesure de soins ordonnée.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Aspects médico-légaux et organisations des soins en psychiatrie",
+        "series": "Mystidia Exams"
+      },
+      "question": "Une des propositions concernant la déclaration d'un malade mental pénalement irresponsable selon l'article 47, laquelle ?",
+      "has_media": false,
+      "statement": "Une des propositions concernant la déclaration d'un malade mental pénalement irresponsable selon l'article 47, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Rappel :L'article 47 du code pénal Algérien stipule:<<< N'est pas punissable celui qui était en état de démence au moment de l'infraction, ou lorsqu'il a été contraint par une force à laquelle il n'a pas pu résister >>>Le terme démence est compris dans le sens d'altération des facultés mentales et de la capacité du discernement.Ainsi, le malade mental échappe à la responsabilité pénale à 02 conditions:  -La nature du trouble qui abolit le discernement ou le contrôle des actes.  -Pendant le moment où se produit l'infraction.",
+      "original_id": 64669,
+      "clinical_case": null,
+      "display_title": "Question 2",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(153, 51, 255);\">Rappel :</strong></p><p>L'article 47 du code pénal Algérien stipule:</p><p><br></p><p><strong>&lt;&lt;&lt; N'est pas punissable celui qui était en état de démence au moment de l'infraction, ou lorsqu'il a été contraint par une force à laquelle il n'a pas pu résister &gt;&gt;&gt;</strong></p><p><br></p><p>Le terme démence est compris dans le sens d'altération des facultés mentales et de la capacité du discernement.</p><p><br></p><p>Ainsi, le malade mental échappe à la responsabilité pénale à 02 conditions:</p><p>  -La nature du trouble qui abolit le discernement ou le contrôle des actes.</p><p>  -Pendant le moment où se produit l'infraction.</p><p><br></p><p><br></p>"
+    },
+    {
+      "id": 3,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 308616,
+          "text": "Supprime la capacité juridique",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 308617,
+          "text": "Constitue la mesure de protection la plus contraignante",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 308618,
+          "text": "Permet la contestation ultérieure des actes préjudiciables",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 308619,
+          "text": "Est définitive",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 308620,
+          "text": "Nécessite obligatoirement une expertise préalable",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "S2 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Aspects médico-légaux et organisations des soins en psychiatrie",
+        "series": "Mystidia Exams"
+      },
+      "question": "La sauvegarde de justice : (RJ)",
+      "has_media": false,
+      "statement": "La sauvegarde de justice : (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A-Faux La sauvegarde de justice ne supprime PAS la capacité juridique (contrairement à la tutelle). La personne conserve le droit d'agir.B-FauxC'est la mesure de protection la MOINS contraignante (protection temporaire).C-Vrai Elle permet, si nécessaire, de demander en justice la nullité d'actes préjudiciables accomplis pendant la période de sauvegarde.D-FauxElle est TEMPORAIRE (durée maximale de 12 mois, renouvelable une fois).E-Faux Elle ne nécessite pas obligatoirement une expertise pénale; elle peut être médicale.Rappel :1.Sauvegarde de Justice (mesure temporaire) :Mesure de protection légère et temporaire qui permet au majeur de conserver ses droits, les capacités civiles et civiques du patient.Exemple : Un patient bipolaire en crise achète plusieurs voitures de luxe sans raison. Une sauvegarde de justice permet de bloquer ses comptes temporairement.2. Curatelle (assistance dans les décisions importantes) :Permet d'assister le majeur dans les actes de la vie civile.La Curatelle est destinée aux malades qui, sans être hors d'état d'agir par eux-mêmes, ont besoin d'être conseillés ou contrôlés dans les actes de la vie civile.C'est la mesure intermédiaire entre la sauvegarde de justice et la tutelle.Exemple : Un patient schizophrène stabilisé peut gérer ses courses mais doit être assisté pour signer un chèque.3. Tutelle (représentation totale) :Entraîne l'incapacité juridique la plus étendue, presque totale et s'applique dans les cas où le majeur a besoin d'être représenté d'une manière continue dans les actes de la vie civile. Le tuteur prend toutes les décisions pour le patient.Indiquée en cas de troubles psychiatriques sévères et irréversibles.",
+      "original_id": 63129,
+      "clinical_case": null,
+      "display_title": "Question 3",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><span style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0); font-weight: bolder;\">A-Faux</span></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;La sauvegarde de justice</span><strong style=\"color: rgb(15, 17, 21);\"> ne supprime PAS</strong><span style=\"color: rgb(15, 17, 21);\"> la capacité juridique (</span><strong style=\"color: rgb(15, 17, 21);\">contrairement à la tutelle</strong><span style=\"color: rgb(15, 17, 21);\">). La personne conserve le droit d'agir.</span></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0); background-color: rgb(250, 204, 204);\">B-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">C'est la mesure de protection la</span><strong style=\"color: rgb(15, 17, 21);\"> MOINS contraignante</strong><span style=\"color: rgb(15, 17, 21);\"> (protection temporaire).</span></p><p><br></p><p><span style=\"background-color: rgb(204, 232, 204); color: rgb(0, 138, 0); font-weight: bolder;\">C-Vrai</span></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Elle permet, si nécessaire, de demander en justice </span><strong style=\"color: rgb(15, 17, 21);\">la nullité d'actes préjudiciables accomplis</strong><span style=\"color: rgb(15, 17, 21);\"> pendant la période de sauvegarde.</span></p><p><br></p><p><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">D-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Elle est </span><strong style=\"color: rgb(15, 17, 21);\">TEMPORAIRE</strong><span style=\"color: rgb(15, 17, 21);\"> (durée maximale de 12 mois, renouvelable une fois).</span></p><p><br></p><p><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">E-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Elle ne nécessite pas obligatoirement une expertise pénale; elle peut être médicale.</span></p><h2><br></h2><h2><span style=\"color: rgb(15, 17, 21); background-color: rgb(204, 224, 245);\">Rappel :</span></h2><p><strong style=\"background-color: rgb(255, 255, 102);\"><em>1.Sauvegarde de Justice (mesure temporaire) :</em></strong></p><p>Mesure de protection légère et temporaire qui permet au majeur de<strong style=\"background-color: rgb(255, 235, 204);\"> conserver ses droits, les capacités civiles et civiques du patient.</strong></p><p><u>Exemple :</u></p><p>&nbsp;Un patient bipolaire en crise achète plusieurs voitures de luxe sans raison. Une sauvegarde de justice permet de bloquer ses comptes temporairement.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><em>2. Curatelle (assistance dans les décisions importantes) :</em></strong></p><p>Permet<strong> d'assister le majeur dans les actes de la vie civile.</strong></p><p>La Curatelle est destinée aux malades qui, sans être hors d'état<span style=\"background-color: rgb(255, 235, 204);\"> </span><strong style=\"background-color: rgb(255, 235, 204);\">d'agir par eux-mêmes</strong><span style=\"background-color: rgb(255, 235, 204);\">, </span>ont besoin d'être conseillés ou contrôlés dans les actes de la vie civile.</p><p>C'est la mesure intermédiaire entre la sauvegarde de justice et la tutelle.</p><p><u>Exemple :</u></p><p>&nbsp;Un patient schizophrène stabilisé peut gérer ses courses mais doit être assisté pour signer un chèque.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><em>3. Tutelle (représentation totale) :</em></strong></p><p>Entraîne<strong style=\"background-color: rgb(255, 235, 204);\"> l'incapacité juridique la plus étendue, presque totale </strong>et s'applique dans les cas où le majeur a besoin d'être représenté d'une manière continue dans les actes de la vie civile. <strong style=\"background-color: rgb(255, 235, 204);\">Le tuteur prend toutes les décisions</strong> pour le patient.</p><p>Indiquée en cas de troubles psychiatriques sévères et irréversibles.</p><p><br></p>"
+    },
+    {
+      "id": 4,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 308611,
+          "text": "Information du procureur et recherche active",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 308612,
+          "text": "Attente de réapparition spontanée",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 308613,
+          "text": "Transformation en hospitalisation libre",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 308614,
+          "text": "Décision de mainlevée automatique",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 308615,
+          "text": "Transfert administratif",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "S2 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Aspects médico-légaux et organisations des soins en psychiatrie",
+        "series": "Mystidia Exams"
+      },
+      "question": "Un patient fugue d’un service d’hospitalisation d’office. Quelle est la procédure légale à suivre immédiatement ? (RJ)",
+      "has_media": false,
+      "statement": "Un patient fugue d’un service d’hospitalisation d’office. Quelle est la procédure légale à suivre immédiatement ? (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A-VraiEn cas de fuge d'un patient hospitalisé sous contrainte, il faut informer immediatement le procureur de la republique et declencher une recherche active. B-Faux Attendre une réapparition spontanée est une faute professionnelle et une mise en danger du patient.C-FauxLa fugue ne transforme pas automatiquement l'hospitalisation en hospitalisation libre.D-Faux La mainlevée de la mesure n'est pas automatique; elle sera décidée ultérieurement si le patient est retrouvé et que son état le justifie.E-FauxUn transfert administratif n'a pas de sens dans ce contexte.",
+      "original_id": 63128,
+      "clinical_case": null,
+      "display_title": "Question 4",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(204, 232, 204); color: rgb(0, 138, 0);\">A-Vrai</strong></p><p>En cas de fuge d'un patient <strong>hospitalisé sous contrainte</strong>, il faut <strong>informer immediatement le procureur</strong> de la republique et declencher une <strong>recherche</strong> active. </p><p><strong style=\"color: rgb(230, 0, 0); background-color: rgb(250, 204, 204);\">B-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Attendre une réapparition spontanée est une faute professionnelle et une</span><strong style=\"color: rgb(15, 17, 21);\"> mise en danger du patient.</strong></p><p><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">C-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">La fugue ne transforme pas automatiquement l'hospitalisation en hospitalisation libre.</span></p><p><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">D-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;La mainlevée de la mesure n'est pas automatique; elle sera décidée ultérieurement si le patient est retrouvé et que son état le justifie.</span></p><p><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">E-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Un transfert administratif n'a pas de sens dans ce contexte.</span></p>"
+    },
+    {
+      "id": 5,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295494,
+          "text": "Hospitalisation à la demande d'un tiers",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 295495,
+          "text": "Hospitalisation d'office",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 295496,
+          "text": "Soins psychiatriques libres",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 295497,
+          "text": "Placement volontaire",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 295498,
+          "text": "Mesure de sauvegarde",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026 "
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Aspects médico-légaux et organisations des soins en psychiatrie",
+        "series": "Mystidia Exams"
+      },
+      "question": "En Algérie, l'hospitalisation psychiatrique sans consentement pour « trouble mental grave compromettant l'ordre public ou la sûreté des personnes » est appelée :",
+      "has_media": false,
+      "statement": "En Algérie, l'hospitalisation psychiatrique sans consentement pour « trouble mental grave compromettant l'ordre public ou la sûreté des personnes » est appelée :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "2-Vrai: l’hospitalisation sans consentement pour des raisons de dangerosité (trouble mental menaçant l’ordre public ou la sûreté des personnes) est appelée hospitalisation d’office.Elle est généralement décidée par l'autorité administrative (wali/préfet) sur avis médical, et ne nécessite pas le consentement du patient",
+      "original_id": 60433,
+      "clinical_case": null,
+      "display_title": "Question 5",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai:</strong><strong style=\"background-color: rgb(255, 255, 204);\"> l’hospitalisation sans consentement </strong>pour des raisons de dangerosité (trouble mental menaçant l’ordre public ou la sûreté des personnes) est appelée <strong style=\"background-color: rgb(204, 232, 204);\">hospitalisation d’office.</strong></p><p>Elle est généralement décidée par l'autorité administrative (wali/préfet) sur avis médical, et ne nécessite pas le consentement du patient</p>"
+    },
+    {
+      "id": 6,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295499,
+          "text": "Le psychiatre de secteur",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 295500,
+          "text": "Le procureur de la République",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 295501,
+          "text": "Le directeur de l'EHS",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 295502,
+          "text": "Le wali de la wilaya",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 295503,
+          "text": "Le médecin généraliste des urgences",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026 "
+        ],
+        "type": "QCM",
+        "module": "Psychiatrie - Aspects médico-légaux et organisations des soins en psychiatrie",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'autorité compétente pour ordonner une hospitalisation d'office en Algérie est :",
+      "has_media": false,
+      "statement": "L'autorité compétente pour ordonner une hospitalisation d'office en Algérie est :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "c’est le Wali ou préfet (représentant de l’État au niveau de la wilaya)  et le procureur général près la Cour,qui ont  l’autorité administrative pour ordonner une hospitalisation d’officecour 2026 Aspects médico légaux.pdf - Google Drive",
+      "original_id": 60434,
+      "clinical_case": null,
+      "display_title": "Question 6",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(255, 235, 204);\">c’est le Wali ou préfet</strong> (représentant de l’État au niveau de la wilaya)  et<strong style=\"background-color: rgb(255, 235, 204);\"> le procureur général près la Cour</strong>,<strong>qui ont  l’autorité administrative pour ordonner une hospitalisation d’office</strong></p><p><br></p><p><br></p><p><br></p><p>cour 2026</p><p> <a href=\"https://drive.google.com/file/d/1Cj8n1BbzFnrSDJbY-qKlUIQa9HpaXhba/view\" rel=\"noopener noreferrer\" target=\"_blank\">Aspects médico légaux.pdf - Google Drive</a></p>"
+    },
+    {
+      "id": 7,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284811,
+          "text": "Une hospitalisation volontaire du patient.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284812,
+          "text": "Une hospitalisation décidée par un tiers, comme un proche.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 284813,
+          "text": "Une hospitalisation sans consentement du patient, décidée par les autorités.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 284814,
+          "text": "Une consultation chez un psychiatre.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284815,
+          "text": "Peut être effectué pour des patients non dangereux.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Aspects médico-légaux et organisations des soins en psychiatrie",
+        "series": "Mystidia Exams"
+      },
+      "question": "Qu'est-ce qu'un placement d'office en psychiatrie ?",
+      "has_media": true,
+      "statement": "Qu'est-ce qu'un placement d'office en psychiatrie ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": " Examen psychiatrique d'Office Dans le cas où l'autorité publique le juge utile, notamment lorsqu'un danger estimé imminent est encouru, du fait de la maladie, par le malade lui-même ou par autrui, une décision d'examen psychiatrique d'office peut être prise par l'apposition sur le formulaire de demande d'examen psychiatrique de la mention Hospitalisation d'OfficeLe médecin psychiatre de l'établissement peut requérir une hospitalisation d'office, au terme ou au cours :de l'hospitalisation en service ouvert ; de la mise en observation ou de I'hospitalisation du fait d'un tiers de la mise en observation d'office. Le médecin psychiatre de l'établissement ne peut, en aucun cas, requérir une hospitalisation d'office pour un membre de sa famille.Dans ce cas, il est fait appel à un autre médecin psychiatre de l'établissement ou d'un autre établissement. En cas de nécessité d'hospitalisation d'office, le médecin psychiatre de l'établissement adresse au wali, un certificat médical détaillant les motifs pour lesquels il estime cette mesure nécessaire, La décision d'hospitalisation d'office est prise par arrêté du wali pour une durée de six mois, au maximum, et peut faire l'objet de renouvellement dans les mêmes formes En cas de contestation de la demande d'hospitalisation d'office, la commission de santé mentale de wilaya est saisie dans les conditions prévues par la loi. Le médecin psychiatre informé de cette saisine par la commission, maintient le malade en mise en observation l'office en attendant la décision de la commission de santé mentale de wilaya Le wali ne peut prendre également l'arrêté d'hospitalisation d'office concernant un membre de sa famille. Il est fait appel, en pareil cas, au wali d'une wilaya limitrophe La sortie des malades hospitalisés d'office s'effectue lorsque le médecin psychiatre de l'établissement estime opportune leur sortie, il adresse au wali, avant l'échéance du dernier arrêté, une requête motivée de levée d' hospitalisation d'office en cas d'accord du wali, le médecin psychiatre procède à la sortie du malade en établissant un bulletin de sortie, selon les règles d'usage, En cas de refus ou d'absence de réponse du wali, le psychiatre de l'établissement ne peut autoriser la sortie du malade hospitalisé d'office, qu'à l'échéance de la période couverte par ľarrêté du wali. ",
+      "original_id": 58162,
+      "clinical_case": null,
+      "display_title": "Question 7",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1761934145.1332.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p> <em style=\"background-color: rgb(255, 235, 204);\"><u>Examen psychiatrique d'Office</u></em> </p><p>Dans le cas où l'autorité publique le juge utile, notamment lorsqu'un danger estimé imminent est encouru, du fait de la maladie, par le malade lui-même ou par autrui, une décision d'examen psychiatrique d'office peut être prise par l'apposition sur le formulaire de demande d'examen psychiatrique de la mention </p><p><br></p><p><span style=\"background-color: rgb(255, 235, 204);\">Hospitalisation d'Office</span></p><p>Le médecin psychiatre de l'établissement peut requérir une hospitalisation d'office, au terme ou au cours :</p><p>de l'hospitalisation en service ouvert ; de la mise en observation ou de I'hospitalisation du fait d'un tiers de la mise en observation d'office.</p><p> Le médecin psychiatre de l'établissement ne peut, en aucun cas, requérir une hospitalisation d'office pour un membre de sa famille.</p><p><br></p><p>Dans ce cas, il est fait appel à un autre médecin psychiatre de l'établissement ou d'un autre établissement. En cas de nécessité d'hospitalisation d'office, le médecin psychiatre de l'établissement adresse au wali, un certificat médical détaillant les motifs pour lesquels il estime cette mesure nécessaire, La décision d'hospitalisation d'office est prise par arrêté du wali pour une durée de six mois, au maximum, et peut faire l'objet de renouvellement dans les mêmes formes En cas de contestation de la demande d'hospitalisation d'office, la commission de santé mentale de wilaya est saisie dans les conditions prévues par la loi.</p><p> </p><p>Le médecin psychiatre informé de cette saisine par la commission, maintient le malade en mise en observation l'office en attendant la décision de la commission de santé mentale de wilaya Le wali ne peut prendre également l'arrêté d'hospitalisation d'office concernant un membre de sa famille. Il est fait appel, en pareil cas, au wali d'une wilaya limitrophe La sortie des malades hospitalisés d'office s'effectue lorsque le médecin psychiatre de l'établissement estime opportune leur sortie, il adresse au wali, avant l'échéance du dernier arrêté, une requête motivée de levée d' hospitalisation d'office en cas d'accord du wali, le médecin psychiatre procède à la sortie du malade en établissant un bulletin de sortie, selon les règles d'usage, En cas de refus ou d'absence de réponse du wali, le psychiatre de l'établissement ne peut autoriser la sortie du malade hospitalisé d'office, qu'à l'échéance de la période couverte par ľarrêté du wali.</p><p> </p>"
+    },
+    {
+      "id": 8,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266047,
+          "text": "Elle décharge le sujet de sa capacité juridique",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266048,
+          "text": "Elle peut permettre l'annulation d'actes commis de façon inconsidérée",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 266049,
+          "text": "Elle impose la représentation du sujet d'une manière continue dans les divers actes de sa vie civile",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266050,
+          "text": "Cette mesure succède à un jugement rendu par le juge des tutelles",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266051,
+          "text": "Cette mesure n'est valable que pour 2 mois ; si elle n'est pas renouvelée",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Aspects médico-légaux et organisations des soins en psychiatrie",
+        "series": "Mystidia Exams"
+      },
+      "question": "Parmi les propositions suivantes concernant la sauvegarde de justice, indiquer la réponse fausse :",
+      "has_media": false,
+      "statement": "Parmi les propositions suivantes concernant la sauvegarde de justice, indiquer la réponse fausse :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Corriger type officiel.E- Faux, Sa duré est de 06 mois, au maximum, et peut faire l'objet de renouvellement.Sauvegarde de justice présente la mesure la plus simple de protection des biens ;- Ce régime de protection est applicable aux personnes qui, en raison de l'altération de leurs facultés mentales ou corporelles, ont besoin d'être protégées dans les actes de la vie civile.- Il a un caractère transitoire, immédiat (mesure d'urgence)- L'indication principale en est l'état maniaque compliqué de dépenses inconsidérées ;- Les autres indications concernent tous les sujets susceptibles d'être lésés du fait de leur pathologie psychiatrique ou neurodégénérative et peut être le préliminaire d'une curatelle ou d'une tutelle.",
+      "original_id": 54115,
+      "clinical_case": null,
+      "display_title": "Question 8",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><a href=\"https://drive.google.com/file/d/1ZwFTy_RUDPVRuOi6MVvoFC46-ZF7mnhP/view?usp=drive_link\" rel=\"noopener noreferrer\" target=\"_blank\">Corriger type officiel.</a></p><p><strong style=\"color: rgb(230, 0, 0);\">E- Faux,</strong> Sa duré est de 06 mois, au maximum, et peut faire l'objet de renouvellement.</p><p><br></p><p><strong>Sauvegarde de justice</strong> présente la mesure la plus simple de protection des biens ;</p><p>- Ce régime de protection est applicable aux personnes qui, en raison de l'altération de leurs facultés mentales ou corporelles, ont besoin d'être protégées dans les actes de la vie civile.</p><p>- Il a un caractère transitoire, immédiat (mesure d'urgence)</p><p>- L'indication principale en est l'état maniaque compliqué de dépenses inconsidérées ;</p><p>- Les autres indications concernent tous les sujets susceptibles d'être lésés du fait de leur pathologie psychiatrique ou neurodégénérative et peut être le préliminaire d'une curatelle ou d'une tutelle.</p>"
+    },
+    {
+      "id": 9,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266042,
+          "text": "Le commissaire de police",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266043,
+          "text": "Le médecin traitant",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 266044,
+          "text": "Le préfet",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266045,
+          "text": "Un psychiatre des hôpitaux",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266046,
+          "text": "Le procureur de la république",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Aspects médico-légaux et organisations des soins en psychiatrie",
+        "series": "Mystidia Exams"
+      },
+      "question": "L’arrêté de mise en placement d’office d’un malade est pris par : (RJ)",
+      "has_media": false,
+      "statement": "L’arrêté de mise en placement d’office d’un malade est pris par : (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Corriger type officiel.Dans le cadre légal qui régit les hospitalisations sans consentement, le Procureur de la république (ou le wali, pour les décisions prises par I'administration centrale/exécutive) est l'autorité administrative qui prend l'arrêté de placement d'office lorsque 'état du malade compromet la sécurité des personnes ou porte atteinte de façon grave à l'ordre public. C'est une décision administrative",
+      "original_id": 54114,
+      "clinical_case": null,
+      "display_title": "Question 9",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><a href=\"https://drive.google.com/file/d/1ZwFTy_RUDPVRuOi6MVvoFC46-ZF7mnhP/view?usp=drive_link\" rel=\"noopener noreferrer\" target=\"_blank\">Corriger type officiel.</a></p><p><br></p><p>Dans le cadre légal qui régit les hospitalisations sans consentement, le Procureur de la république (ou le wali, pour les décisions prises par I'administration centrale/exécutive) est l'autorité administrative qui prend l'arrêté de placement d'office lorsque 'état du malade compromet la sécurité des personnes ou porte atteinte de façon grave à l'ordre public. C'est une décision administrative</p>"
+    },
+    {
+      "id": 10,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266037,
+          "text": "1.2.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266038,
+          "text": "1.3.4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 266039,
+          "text": "2.4.5",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 266040,
+          "text": "2.3.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266041,
+          "text": "1.4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Aspects médico-légaux et organisations des soins en psychiatrie",
+        "series": "Mystidia Exams"
+      },
+      "question": "Parmi les affections suivantes quelles sont celles qui peuvent justifier des mesures de mise sous tutelle : (RJ)\n1- La dépression\n2- La démence\n3- L’état phobique\n4- L’arriération mentale\n5- Une schizophrénie",
+      "has_media": false,
+      "statement": "Parmi les affections suivantes quelles sont celles qui peuvent justifier des mesures de mise sous tutelle : (RJ)\n1- La dépression\n2- La démence\n3- L’état phobique\n4- L’arriération mentale\n5- Une schizophrénie",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "La tutelle est une mesure de protection juridique destinée aux personnes majeures qui ne peuvent plus pourvoir seules à leurs intérêts en raison d'une altération de leurs facultés mentales ou corporelles, médicalement constatée.1- Faux, Dépression : sauf forme très sévère et chronique, ne suffit pas en elle-même.2- Vrai, Démence : pathologie neurodégénérative avec altération des fonctions cognitives = justifie la tutelle.3- Faux, État phobique : rarement une altération totale du jugement, donc pas suffisant pour la tutelle.4- Vrai, Déficience intellectuelle (arriération mentale) : si elle altère les capacités de jugement et de gestion = peut justifier la tutelle.5- Vrai, Schizophrénie : si elle entraîne une perte de discernement durable = justifie potentiellement la tutelle.",
+      "original_id": 54113,
+      "clinical_case": null,
+      "display_title": "Question 10",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>La <strong>tutelle</strong> est une mesure de protection juridique destinée aux personnes <strong>majeures qui ne peuvent plus pourvoir seules à leurs intérêts</strong> en raison d'une <strong>altération de leurs facultés mentales ou corporelles</strong>, médicalement constatée.</p><p><strong style=\"color: rgb(230, 0, 0);\">1- Faux,</strong> <strong>Dépression</strong> : sauf forme très sévère et chronique, ne suffit pas en elle-même.</p><p><strong style=\"color: rgb(0, 138, 0);\">2- Vrai,</strong> <strong>Démence</strong> : pathologie neurodégénérative avec altération des fonctions cognitives = <strong>justifie la tutelle.</strong></p><p><strong style=\"color: rgb(230, 0, 0);\">3- Faux,</strong> <strong>État phobique</strong> : rarement une altération totale du jugement, donc pas suffisant pour la tutelle.</p><p><strong style=\"color: rgb(0, 138, 0);\">4- Vrai,</strong> <strong>Déficience intellectuelle (arriération mentale)</strong> : si elle altère les capacités de jugement et de gestion = <strong>peut justifier la tutelle.</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">5- Vrai,</strong> <strong>Schizophrénie</strong> : si elle entraîne une perte de discernement durable = <strong>justifie potentiellement la tutelle.</strong></p>"
+    },
+    {
+      "id": 11,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265882,
+          "text": "Placement volontaire",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265883,
+          "text": "Examen d'office",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265884,
+          "text": "Hospitalisation d'office",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 265885,
+          "text": "Mise sous surveillance médicale",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265886,
+          "text": "Aucune de ces propositions",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Aspects médico-légaux et organisations des soins en psychiatrie",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans la législation algérienne la mise en observation peut se transformer en: (RJ)",
+      "has_media": true,
+      "statement": "Dans la législation algérienne la mise en observation peut se transformer en: (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Récap : ",
+      "original_id": 54082,
+      "clinical_case": null,
+      "display_title": "Question 11",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1748872339.8602.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p>Récap : </p>"
+    },
+    {
+      "id": 12,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265877,
+          "text": "Hospitalisation d'office",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 265878,
+          "text": "Placement administratif",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265879,
+          "text": "Mise en observation",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 265880,
+          "text": "Hospitalisation du jour",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265881,
+          "text": "Hospitalisation à la demande d'un tiers",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Aspects médico-légaux et organisations des soins en psychiatrie",
+        "series": "Mystidia Exams"
+      },
+      "question": "Après avoir subi une expertise psychiatrique pour un acte médicolégal et déclaré irresponsable au moment des faits, il doit être hospitalisé en (RJ)",
+      "has_media": false,
+      "statement": "Après avoir subi une expertise psychiatrique pour un acte médicolégal et déclaré irresponsable au moment des faits, il doit être hospitalisé en (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 54081,
+      "clinical_case": null,
+      "display_title": "Question 12",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": 13,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 253097,
+          "text": "Donner un avis sur la personnalité d'un mineur victime",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 253098,
+          "text": "L'expertise de crédibilité pour apprécier le témoignage du Mineur",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 253099,
+          "text": "L'expertise en matière de garde des enfants",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 253100,
+          "text": "Les expertises de mineurs délinquants",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 253101,
+          "text": "La notion d’irresponsabilité pénale",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Aspects médico-légaux et organisations des soins en psychiatrie",
+        "series": "Mystidia Exams"
+      },
+      "question": "Toutes ces expertises sont considérées comme des expertises pénales sauf une, laquelle ?",
+      "has_media": false,
+      "statement": "Toutes ces expertises sont considérées comme des expertises pénales sauf une, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "C- Faux : Cette expertise est de nature civile : elle intervient dans le cadre de procédures comme le divorce, la séparation ou la fixation des modalités de garde, afin d’évaluer l’intérêt de l’enfant. Elle peut être menée par un psychologue ou un pédopsychiatre, mais elle n’a pas pour but de déterminer une responsabilité pénale ou de participer à une enquête criminelle.",
+      "original_id": 51116,
+      "clinical_case": null,
+      "display_title": "Question 13",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>C- <span style=\"background-color: rgb(230, 0, 0);\">Faux </span>: Cette expertise <strong style=\"background-color: rgb(255, 255, 0);\">est de nature civile </strong>: elle intervient dans le cadre de procédures comme <strong style=\"color: rgb(230, 0, 0);\">le divorce</strong>, <strong style=\"color: rgb(230, 0, 0);\">la séparation ou la fixation des modalités de garde</strong>, afin d’évaluer l’intérêt de l’enfant. Elle peut être menée par un psychologue ou un pédopsychiatre, mais <span style=\"background-color: rgb(255, 255, 0);\">elle n’a pas pour but de déterminer une responsabilité pénale </span>ou de participer à une enquête criminelle.</p>"
+    },
+    {
+      "id": 14,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 253092,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 253093,
+          "text": "1.2.3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 253094,
+          "text": "2.4",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 253095,
+          "text": "3.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 253096,
+          "text": "2.4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Aspects médico-légaux et organisations des soins en psychiatrie",
+        "series": "Mystidia Exams"
+      },
+      "question": "La décision d’hospitalisation d’office (association Juste) :\n1- Est prise par le médecin de l'établissement\n2- Est prise par arrêté du wali\n3- Sa durée est de six (6) mois, au maximum, et ne peut faire l’objet de renouvellement.\n4- Sa durée est de six (6) mois, au maximum, et peut faire l'objet de renouvellement.\n5- La sortie des malades hospitalisés d’office s'effectue uniquement avec l'accord du médecin psychiatre de l'établissement.",
+      "has_media": false,
+      "statement": "La décision d’hospitalisation d’office (association Juste) :\n1- Est prise par le médecin de l'établissement\n2- Est prise par arrêté du wali\n3- Sa durée est de six (6) mois, au maximum, et ne peut faire l’objet de renouvellement.\n4- Sa durée est de six (6) mois, au maximum, et peut faire l'objet de renouvellement.\n5- La sortie des malades hospitalisés d’office s'effectue uniquement avec l'accord du médecin psychiatre de l'établissement.",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Hospitalisation d’office :  - Le médecin psychiatre de l’établissement peut requérir une hospitalisation d’office, au terme ou au cours : de l’hospitalisation en service ouvert ; de la mise en observation ou de l’hospitalisation du fait d’un tiers ; de la mise en observation d’office. - Le médecin psychiatre de l’établissement ne peut, en aucun cas, requérir une hospitalisation d’office pour un membre de sa famille +++- Dans ce cas, il est fait appel à un autre médecin psychiatre de l’établissement ou d’un autre établissement. - En cas de nécessité d’hospitalisation d’office, le médecin psychiatre de l’établissement adresse au wali, un certificat médical détaillant les motifs pour lesquels il estime cette mesure nécessaire. - La décision d’hospitalisation d’office est prise par arrêté du wali pour une durée de six (6) mois, au maximum, et peut faire l’objet de renouvellement dans les mêmes formes. - En cas de contestation de la demande d’hospitalisation d’office, la commission de santé mentale de wilaya est saisie dans les conditions prévues par la loi. - Le médecin psychiatre informé de cette saisine par la commission, maintient le malade en mise en observation d’office en attendant la décision de la commission de santé mentale de wilaya. - Le wali ne peut prendre également l’arrêté d’hospitalisation d’office concernant un membre de sa famille. Il est fait appel, en pareil cas, au wali d’une wilaya limitrophe. - La sortie des malades hospitalisés d’office s’effectue lorsque le médecin psychiatre de l’établissement estime opportune leur sortie. - Il adresse au wali, avant l’échéance du dernier arrêté, une requête motivée de levée d’hospitalisation d’office. - En cas d’accord du wali, le médecin psychiatre procède à la sortie du malade en établissant un bulletin de sortie, selon les règles d’usage. - En cas de refus ou d’absence de réponse du wali, le psychiatre de l’établissement ne peut autoriser la sortie du malade hospitalisé d’office, qu’à l’échéance de la période couverte par l’arrêté du wali. ",
+      "original_id": 51115,
+      "clinical_case": null,
+      "display_title": "Question 14",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><span style=\"background-color: rgb(102, 185, 102);\">Hospitalisation d’office :&nbsp;&nbsp;</span></p><p>- Le médecin psychiatre de l’établissement peut requérir une hospitalisation d’office, au terme ou&nbsp;</p><p>au cours :&nbsp;</p><ul><li>de l’hospitalisation en service ouvert ;&nbsp;</li><li>de la mise en observation ou de l’hospitalisation du fait d’un tiers ;&nbsp;</li><li>de la mise en observation d’office.&nbsp;</li></ul><p>- Le médecin psychiatre de l’établissement <strong style=\"color: rgb(230, 0, 0);\">ne peut, en aucun cas, requérir une hospitalisation&nbsp;d’office pour un membre de sa famille +++</strong></p><p>- Dans ce cas, il est fait appel à un autre médecin psychiatre de l’établissement ou d’un autre&nbsp;établissement.&nbsp;</p><p>- En cas de nécessité d’hospitalisation d’office, le médecin psychiatre de l’établissement adresse&nbsp;au wali, un certificat médical détaillant les motifs pour lesquels il estime cette mesure nécessaire.&nbsp;</p><p>- <span style=\"background-color: rgb(255, 255, 0);\">La décision d’hospitalisation d’office est prise par arrêté du wali pour une durée de six (6) mois</span>,&nbsp;au maximum, et <span style=\"background-color: rgb(255, 255, 0);\">peut faire l’objet de renouvellement</span> dans les mêmes formes.&nbsp;</p><p>- En cas de contestation de la demande d’hospitalisation d’office, la commission de santé mentale&nbsp;de wilaya est saisie dans les conditions prévues par la loi.&nbsp;</p><p>- Le médecin psychiatre informé de cette saisine par la commission, maintient le malade en mise&nbsp;en observation d’office en attendant la décision de la commission de santé mentale de wilaya.&nbsp;</p><p>- Le wali ne peut prendre également l’arrêté d’hospitalisation d’office concernant un membre de&nbsp;</p><p>sa famille. Il est fait appel, en pareil cas, au wali d’une wilaya limitrophe.&nbsp;</p><p>- <span style=\"background-color: rgb(255, 255, 0);\">La sortie des malades hospitalisés d’office</span> s’effectue lorsque le<span style=\"background-color: rgb(255, 255, 0);\"> médecin psychiatre de&nbsp;l’établissement estime opportune leur sortie</span>.&nbsp;</p><p>- <span style=\"background-color: rgb(255, 255, 0);\">Il adresse au wali, avant l’échéance du dernier arrêté, une requête motivée de levée&nbsp;d’hospitalisation d’office.&nbsp;</span></p><p>- En cas<span style=\"background-color: rgb(255, 255, 0);\"> d’accord du wali, le médecin psychiatre procède à la sortie du malade en établissant un&nbsp;bulletin de sortie</span>, selon les règles d’usage.&nbsp;</p><p>- En cas de <span style=\"background-color: rgb(255, 255, 0);\">refus ou d’absence de réponse du wali, le psychiatre de l’établissement ne peut&nbsp;autoriser la sortie du malade hospitalisé d’office</span>, qu’à l’échéance de la période couverte par&nbsp;l’arrêté du wali.&nbsp;</p>"
+    },
+    {
+      "id": 15,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 253087,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 253088,
+          "text": "2.3.5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 253089,
+          "text": "2.4.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 253090,
+          "text": "3.4.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 253091,
+          "text": "1.2.4.5",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Aspects médico-légaux et organisations des soins en psychiatrie",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'hospitalisation du fait d’un tiers d’un patient dans un service psychiatrique (association Juste) :\n1- La mesure d'hospitalisation est prise pour une durée déterminée selon l'état de santé du malade.\n2- La sortie d'un malade s'effectue à l'initiative du médecin psychiatre de l'établissement.\n3- Est établie pour une période qui ne peut excéder quinze (15) jours.\n4- Toute demande de sortie est soumise à l'accord préalable du médecin psychiatre.\n5- Nécessite l'accord d'un membre de la famille du malade ascendant ou descendant direct ou de son représentant légal.",
+      "has_media": false,
+      "statement": "L'hospitalisation du fait d’un tiers d’un patient dans un service psychiatrique (association Juste) :\n1- La mesure d'hospitalisation est prise pour une durée déterminée selon l'état de santé du malade.\n2- La sortie d'un malade s'effectue à l'initiative du médecin psychiatre de l'établissement.\n3- Est établie pour une période qui ne peut excéder quinze (15) jours.\n4- Toute demande de sortie est soumise à l'accord préalable du médecin psychiatre.\n5- Nécessite l'accord d'un membre de la famille du malade ascendant ou descendant direct ou de son représentant légal.",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Mise en observation et hospitalisation du fait d’un tiers :  a) Mise en observation du fait d’un tiers :  - Le malade est mis en observation, pour une période qui ne peut excéder quinze (15) jours, dans un service psychiatrique, par le médecin psychiatre de l’établissement, qui doit, dans ce cas, délivrer préalablement un bulletin d’admission pour mise en observation. - Le médecin psychiatre de l’établissement peut, à l’expiration du délai de quinze (15) jours, décider soit : de la sortie du malade ;  de la prolongation de la période de mise en observation pour une durée maximale de quinze (15) jours.  Toutefois, le médecin psychiatre de l’établissement peut décider de la sortie du malade, avant l’expiration du délai de quinze (15) jours, s’il estime que l’état de santé du malade le permet.  b)- Hospitalisation du fait d’un tiers :  - La mise en observation du malade peut être transformée, à tout moment, en hospitalisation du fait d'un tiers, sur proposition du médecin psychiatre de l’établissement et après accord d’un membre de la famille du malade ascendant ou descendant direct ou de son représentant légal, exprimé par une demande écrite, transcrite sur le registre prévu à cet effet. - Un exemplaire de cette demande, signé et revêtu de l’accord du médecin psychiatre de l’établissement, est déposé à la direction de l’établissement, à l’effet d’y être conservé et présenté à toute réquisition des autorités compétentes. - La mesure d'hospitalisation est prise pour une durée déterminée selon l’état de santé du malade. - Elle est soumise aux mesures de contrôle prévues plus bas. - La sortie d’un malade s’effectue soit : à l’initiative du médecin psychiatre de l’établissement à la demande du malade majeur et civilement capable à la demande de la personne à l'origine de l’hospitalisation du fait d’un tiers a la demande d’un ascendant ou d’un descendant majeur direct, du conjoint, du frère, de la sœur, de l’oncle ou de la tante, majeurs, du représentant légal du malade incapable. Ils sont civilement responsables du malade et doivent s’engager à le prendre en charge Toute demande de sortie est soumise à l’accord préalable du médecin psychiatre. Elle doit être établie par écrit et signée par la personne qui la formule. Elle est transcrite sur le registre prévu à cet effet.",
+      "original_id": 51114,
+      "clinical_case": null,
+      "display_title": "Question 15",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><span style=\"background-color: rgb(102, 185, 102);\">Mise en observation et hospitalisation du fait d’un tiers :&nbsp;&nbsp;</span></p><p><span style=\"background-color: rgb(250, 204, 204);\">a) Mise en observation du fait d’un tiers :&nbsp;&nbsp;</span></p><p>- Le malade est mis en observation, pour <strong style=\"color: rgb(230, 0, 0);\">une période qui ne peut excéder quinze (15) jours</strong>, dans&nbsp;un service psychiatrique, par le médecin psychiatre de l’établissement, qui doit, dans ce cas,&nbsp;délivrer préalablement un bulletin d’admission pour mise en observation.&nbsp;</p><p>- Le médecin psychiatre de l’établissement <strong style=\"color: rgb(230, 0, 0);\">peut, à l’expiration du délai de quinze (15) jours</strong>,&nbsp;</p><p>décider soit :&nbsp;</p><ul><li>de la sortie du malade ;&nbsp;</li><li> de la <span style=\"background-color: rgb(255, 255, 0);\">prolongation de la période de mise en observation pour une durée maximale de quinze&nbsp;</span></li></ul><p><span style=\"background-color: rgb(255, 255, 0);\">(15) jours.&nbsp;</span></p><p> Toutefois, le médecin psychiatre de l’établissement peut décider de la sortie du malade,&nbsp;avant l’expiration du délai de quinze (15) jours, s’il estime que l’état de santé du malade le&nbsp;permet.&nbsp;</p><p><span style=\"background-color: rgb(250, 204, 204);\">&nbsp;b)- Hospitalisation du fait d’un tiers :&nbsp;&nbsp;</span></p><p>- La mise en observation du malade peut être transformée, à tout moment, en hospitalisation du&nbsp;fait d'un tiers, sur proposition du médecin psychiatre de l’établissement et <span style=\"background-color: rgb(255, 255, 0);\">après accord d’un&nbsp;membre de la famille du malade ascendant ou descendant direct ou de son représentant légal</span>,&nbsp;exprimé par une demande écrite, transcrite sur le registre prévu à cet effet.&nbsp;</p><p>- Un exemplaire de cette demande, signé et revêtu de l’accord du médecin psychiatre de&nbsp;l’établissement, est déposé à la direction de l’établissement, à l’effet d’y être conservé et&nbsp;présenté à toute réquisition des autorités compétentes.&nbsp;</p><p>- <span style=\"background-color: rgb(255, 255, 0);\">La mesure d'hospitalisation est prise pour une durée déterminée selon l’état de santé du malade.&nbsp;</span></p><p>- Elle est soumise aux mesures de contrôle prévues plus bas.&nbsp;</p><p>- La sortie d’un malade s’effectue soit :&nbsp;</p><ul><li><span style=\"background-color: rgb(255, 255, 0);\">à l’initiative du médecin psychiatre de l’établissement&nbsp;</span></li><li><strong style=\"color: rgb(230, 0, 0);\">à la demande du malade majeur et civilement capable&nbsp;</strong></li><li>à la demande de la personne à l'origine de l’hospitalisation du fait d’un tiers&nbsp;</li><li>a <span style=\"background-color: rgb(255, 255, 0);\">la demande d’un ascendant ou d’un descendant majeur direct</span>, du conjoint, du frère, de la&nbsp;sœur, de l’oncle ou de la tante, majeurs, du<span style=\"background-color: rgb(255, 255, 0);\"> représentant légal du malade incapable</span>. Ils sont&nbsp;civilement responsables du malade et doivent s’engager à le prendre en charge&nbsp;</li></ul><p><span style=\"background-color: rgb(255, 255, 0);\">Toute demande de sortie est soumise à l’accord préalable du médecin psychiatre</span>. Elle doit être&nbsp;établie par écrit et signée par la personne qui la formule. Elle est transcrite sur le registre prévu à&nbsp;cet effet.</p><p><br></p>"
+    },
+    {
+      "id": 16,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252587,
+          "text": "1",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252588,
+          "text": "2.3",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 252589,
+          "text": "1.3",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252590,
+          "text": "2.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252591,
+          "text": "1.3.4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Aspects médico-légaux et organisations des soins en psychiatrie",
+        "series": "Mystidia Exams"
+      },
+      "question": "La mise en observation d'office (RJ)\n1. Est prise par le médecin de l'établissement\n2. S'effectue au sein d'un service ou d'une unité fermée de psychiatrie\n3. Est prise par arrêté du wali\n4. Sa durée est de six (6) mois, au maximum, et peut faire l'objet de renouvellement.\n5. La sortie du malade hospitalisé s'effectue uniquement avec l'accord du wall.",
+      "has_media": true,
+      "statement": "La mise en observation d'office (RJ)\n1. Est prise par le médecin de l'établissement\n2. S'effectue au sein d'un service ou d'une unité fermée de psychiatrie\n3. Est prise par arrêté du wali\n4. Sa durée est de six (6) mois, au maximum, et peut faire l'objet de renouvellement.\n5. La sortie du malade hospitalisé s'effectue uniquement avec l'accord du wall.",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Mise en observation d’office :  La mise en observation d’office s’effectue au sein d’un service ou d’une unité fermée de psychiatrie. - La personne qui accompagne le malade est tenue de fournir tous renseignements administratifs et médicaux utiles pendant la phase médicale et administrative de sa mise en observation d’office. - La durée de la mise en observation d’office ne peut excéder quinze (15) jours. - Au terme de quinze (15) jours de mise en observation d’office, il se peut que soit : décidé de la sortie du malade décidé du maintien en hospitalisation en service ouvert avec l’accord du patient proposé, à la famille du malade ou à toute personne prenant intérêt du malade, une hospitalisation du fait d’un tiers demandé une hospitalisation d’office, conformément aux dispositions de la loi sanitaire.",
+      "original_id": 51014,
+      "clinical_case": null,
+      "display_title": "Question 16",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1725051183.986.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p><span style=\"background-color: rgb(102, 185, 102);\">Mise en observation d’office :&nbsp;&nbsp;</span></p><p>La mise en observation d’office s’effectue<span style=\"background-color: rgb(255, 255, 0);\"> au sein d’un service ou d’une unité fermée de&nbsp;psychiatrie.&nbsp;</span></p><p>- La personne qui accompagne le malade est <strong style=\"color: rgb(230, 0, 0);\">tenue de fournir tous renseignements administratifs&nbsp;</strong>et <strong style=\"color: rgb(230, 0, 0);\">médicaux</strong> utiles pendant la phase médicale et administrative de sa mise en observation&nbsp;d’office.&nbsp;</p><p>- La <span style=\"background-color: rgb(255, 255, 0);\">durée de la mise en observation d’office ne peut excéder quinze (15) jours.&nbsp;</span></p><p>- Au terme de quinze (15) jours de mise en observation d’office, il se peut que soit :&nbsp;</p><ul><li>décidé de la sortie du malade&nbsp;</li><li>décidé du maintien en hospitalisation en service ouvert avec l’accord du patient&nbsp;</li><li>proposé, à la famille du malade ou à toute personne prenant intérêt du malade, une&nbsp;hospitalisation du fait d’un tiers&nbsp;</li><li>demandé une hospitalisation d’office, conformément aux dispositions de la loi sanitaire.</li></ul>"
+    },
+    {
+      "id": 17,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229308,
+          "text": "1.2.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229309,
+          "text": "1.3.5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229310,
+          "text": "1.4.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229311,
+          "text": "2.4.5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 229312,
+          "text": "3.4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Aspects médico-légaux et organisations des soins en psychiatrie",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'expertise Psychiatrique est définit par l'une des associations, laquelle ?\n1. C’est un acte ordonné uniquement par l'autorité judiciaire\n2. Elle apprécie l'état mental d'une personne\n3. Est un acte à visée thérapeutique\n4. Peut être demandée par la Cour civile du Tribunal\n5. Peut être demandées par la sécurité sociale",
+      "has_media": false,
+      "statement": "L'expertise Psychiatrique est définit par l'une des associations, laquelle ?\n1. C’est un acte ordonné uniquement par l'autorité judiciaire\n2. Elle apprécie l'état mental d'une personne\n3. Est un acte à visée thérapeutique\n4. Peut être demandée par la Cour civile du Tribunal\n5. Peut être demandées par la sécurité sociale",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Une expertise psychiatrique est un acte à visée non thérapeutique demandé à un psychiatre par une autorité ou un organisme afin d'apprécier l'état mental d'une personne et d'en évaluer les conséquences qui ont des incidences pénales, civiles, administratives ou contractuelles.Source : Polycopie 2024 Dr.Djili ",
+      "original_id": 46535,
+      "clinical_case": null,
+      "display_title": "Question 17",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>Une expertise psychiatrique est un acte à visée<span style=\"background-color: rgb(255, 255, 0);\"> </span><strong style=\"background-color: rgb(255, 255, 0);\">non thérapeutique</strong><span style=\"background-color: rgb(255, 255, 0);\"> </span>demandé à un psychiatre par une autorité ou un organisme<strong style=\"background-color: rgb(255, 255, 0);\"> afin d'apprécier l'état mental d'une personne</strong> et d'en évaluer les conséquences qui ont des incidences <strong style=\"background-color: rgb(255, 255, 0);\">pénales, civiles, administratives ou contractuelles</strong><span style=\"background-color: rgb(255, 255, 0);\">.</span></p><p><br></p><p>Source : </p><p><a href=\"https://drive.google.com/file/d/10EkjOkYNGhMHKZL46FnCbXAWumfy98CR/view?usp=drive_link\" rel=\"noopener noreferrer\" target=\"_blank\">Polycopie 2024 Dr.Djili </a></p>"
+    },
+    {
+      "id": 18,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229303,
+          "text": "Vérifié et visé, chaque (3) mois, par le wall.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229304,
+          "text": "Vérifié et visé, chaque (3) mois, le procureur général",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229305,
+          "text": "Vérifié et visé, chaque (6) mois, par le directeur de l'établissement.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229306,
+          "text": "Vérifié et visé, chaque mois, par le wall et le procureur général",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229307,
+          "text": "Vérifié et visé, chaque (6) mois, par le wall et le procureur général.",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Aspects médico-légaux et organisations des soins en psychiatrie",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans chaque service fermé d'hospitalisation d'office, il est tenu un registre coté et paraphé qui doit être :",
+      "has_media": false,
+      "statement": "Dans chaque service fermé d'hospitalisation d'office, il est tenu un registre coté et paraphé qui doit être :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Dans chaque établissement disposant d’une unité ou d’un service fermé d’hospitalisation d’office, il est tenu un registre coté et paraphé par le président du tribunal du siège de l’établissement.- Ce registre doit être vérifié et visé, chaque six (6) mois, par le wali et le procureur général près la Cour.",
+      "original_id": 46534,
+      "clinical_case": null,
+      "display_title": "Question 18",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>Dans chaque établissement disposant d’une unité ou d’un service fermé d’hospitalisation d’office, il est tenu un registre coté et paraphé par le président du tribunal du siège de l’établissement.</p><p>- Ce registre doit être vérifié et visé,<span style=\"background-color: rgb(255, 255, 0);\"> chaque six (6) mois, par le wali et le procureur général près la Cour.</span></p>"
+    },
+    {
+      "id": 19,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229298,
+          "text": "C'est un placement dans un établissement psychiatrique par une décision médicale",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 232196,
+          "text": "Malade pressente un trouble mental au moment de la commission d'une infraction.",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 232197,
+          "text": "Sa durée est maximum de 3 mois",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 232198,
+          "text": "Sa durée est maximum de 6 mois non renouvelables.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 232199,
+          "text": "Toutes ces réponses sont justes",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Aspects médico-légaux et organisations des soins en psychiatrie",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'internement judiciaire concerne l'une des propositions, laquelle ?",
+      "has_media": false,
+      "statement": "L'internement judiciaire concerne l'une des propositions, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "L’internement judiciaire dans un établissement psychiatrique consiste dans le placement en un établissement approprié par une décision de justice, d’un individu en raison du trouble de ses facultés mentales existant au moment de la commission d’une infraction ou survenu ultérieurement. Sa durée de six (6) mois, au maximum, et peut faire l’objet de renouvellement.Source : Polycopie 2024 Dr. Djili",
+      "original_id": 46533,
+      "clinical_case": null,
+      "display_title": "Question 19",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(102, 185, 102);\">L’internement judiciaire</strong> dans un établissement psychiatrique consiste dans le placement en un établissement approprié par une <span style=\"background-color: rgb(255, 255, 0);\">décision de justice,</span> d’un individu en raison du trouble de ses facultés mentales existant au moment de la commission d’une infraction ou survenu ultérieurement.<span style=\"background-color: rgb(255, 255, 0);\"> Sa durée de six (6) mois, au maximum, et peut faire l’objet de renouvellement.</span></p><p><br></p><p>Source : </p><p><a href=\"https://drive.google.com/file/d/10EkjOkYNGhMHKZL46FnCbXAWumfy98CR/view?usp=drive_link\" rel=\"noopener noreferrer\" target=\"_blank\">Polycopie 2024 Dr. Djili</a></p>"
+    },
+    {
+      "id": 20,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 218926,
+          "text": "La mesure d'hospitalisation est prise pour une durée déterminée selon l’état de santé du malade",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 218927,
+          "text": "La sortie d'un malade s'effectue À l'initiative du médecin psychiatre de l’établissement",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 218928,
+          "text": "Est établie pour une période qui ne peut excéder quinze (15) jours",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 218929,
+          "text": "Toute demande de sortie est soumise à l'accord préalable du médecin psychiatre",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 218930,
+          "text": "Nécessite l'accord d’un membre de la famille du malade ou de son représentant légal",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Aspects médico-légaux et organisations des soins en psychiatrie",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'hospitalisation du fait d'un tiers d’un patient dans un service psychiatrique (RF)",
+      "has_media": false,
+      "statement": "L'hospitalisation du fait d'un tiers d’un patient dans un service psychiatrique (RF)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Mise en observation et hospitalisation du fait d’un tiers :  a) Mise en observation du fait d’un tiers :  - Le malade est mis en observation, pour une période qui ne peut excéder quinze (15) jours, dans un service psychiatrique, par le médecin psychiatre de l’établissement, qui doit, dans ce cas, délivrer préalablement un bulletin d’admission pour mise en observation. - Le médecin psychiatre de l’établissement peut, à l’expiration du délai de quinze (15) jours, décider soit : de la sortie du malade ; de la prolongation de la période de mise en observation pour une durée maximale de quinze (15) jours. Toutefois, le médecin psychiatre de l’établissement peut décider de la sortie du malade, avant l’expiration du délai de quinze (15) jours, s’il estime que l’état de santé du malade le permet.  b)- Hospitalisation du fait d’un tiers :  - La mise en observation du malade peut être transformée, à tout moment, en hospitalisation du fait d'un tiers, sur proposition du médecin psychiatre de l’établissement et après accord d’un membre de la famille du malade ascendant ou descendant direct ou de son représentant légal, exprimé par une demande écrite, transcrite sur le registre prévu à cet effet. - Un exemplaire de cette demande, signé et revêtu de l’accord du médecin psychiatre de l’établissement, est déposé à la direction de l’établissement, à l’effet d’y être conservé et présenté à toute réquisition des autorités compétentes. - La mesure d'hospitalisation est prise pour une durée déterminée selon l’état de santé du malade. +++- Elle est soumise aux mesures de contrôle prévues plus bas. - La sortie d’un malade s’effectue soit : à l’initiative du médecin psychiatre de l’établissement à la demande du malade majeur et civilement capable à la demande de la personne à l'origine de l’hospitalisation du fait d’un tiers a la demande d’un ascendant ou d’un descendant majeur direct, du conjoint, du frère, de la sœur, de l’oncle ou de la tante, majeurs, du représentant légal du malade incapable. Ils sont civilement responsables du malade et doivent s’engager à le prendre en charge Toute demande de sortie est soumise à l’accord préalable du médecin psychiatre. Elle doit être établie par écrit et signée par la personne qui la formule. Elle est transcrite sur le registre prévu à cet effet.",
+      "original_id": 44510,
+      "clinical_case": null,
+      "display_title": "Question 20",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><span style=\"background-color: rgb(102, 185, 102);\">Mise en observation et hospitalisation du fait d’un tiers :&nbsp;&nbsp;</span></p><p><span style=\"background-color: rgb(250, 204, 204);\">a) Mise en observation du fait d’un tiers :&nbsp;&nbsp;</span></p><p>- Le malade est mis en observation, pour <strong style=\"color: rgb(230, 0, 0);\">une période qui ne peut excéder quinze (15) jours</strong>, dans&nbsp;un service psychiatrique, par le médecin psychiatre de l’établissement, qui doit, dans ce cas,&nbsp;délivrer préalablement un bulletin d’admission pour mise en observation.&nbsp;</p><p>- Le médecin psychiatre de l’établissement <strong style=\"color: rgb(230, 0, 0);\">peut, à l’expiration du délai de quinze (15) jours</strong>,&nbsp;</p><p>décider soit :&nbsp;</p><ul><li>de la sortie du malade ;&nbsp;</li><li>de la <span style=\"background-color: rgb(255, 255, 0);\">prolongation de la période de mise en observation pour une durée maximale de quinze&nbsp;</span></li></ul><p><span style=\"background-color: rgb(255, 255, 0);\">(15) jours.&nbsp;</span></p><p>Toutefois, le médecin psychiatre de l’établissement peut décider de la sortie du malade,&nbsp;avant l’expiration du délai de quinze (15) jours, s’il estime que l’état de santé du malade le&nbsp;permet.&nbsp;</p><p><span style=\"background-color: rgb(250, 204, 204);\">&nbsp;b)- Hospitalisation du fait d’un tiers :&nbsp;&nbsp;</span></p><p>- La mise en observation du malade peut être transformée, à tout moment, en hospitalisation du&nbsp;fait d'un tiers, sur proposition du médecin psychiatre de l’établissement et <span style=\"background-color: rgb(255, 255, 0);\">après accord d’un&nbsp;membre de la famille du malade ascendant ou descendant direct ou de son représentant légal</span>,&nbsp;exprimé par une demande écrite, transcrite sur le registre prévu à cet effet.&nbsp;</p><p>- Un exemplaire de cette demande, signé et revêtu de l’accord du médecin psychiatre de&nbsp;l’établissement, est déposé à la direction de l’établissement, à l’effet d’y être conservé et&nbsp;présenté à toute réquisition des autorités compétentes.&nbsp;</p><p>- <span style=\"background-color: rgb(255, 255, 0);\">La mesure d'hospitalisation est prise pour une durée déterminée selon l’état de santé du malade.</span> <strong style=\"color: rgb(230, 0, 0);\">+++</strong></p><p>- Elle est soumise aux mesures de contrôle prévues plus bas.&nbsp;</p><p>- La sortie d’un malade s’effectue soit :&nbsp;</p><ul><li><span style=\"background-color: rgb(255, 255, 0);\">à l’initiative du médecin psychiatre de l’établissement&nbsp;</span></li><li><strong style=\"color: rgb(230, 0, 0);\">à la demande du malade majeur et civilement capable&nbsp;</strong></li><li>à la demande de la personne à l'origine de l’hospitalisation du fait d’un tiers&nbsp;</li><li>a <span style=\"background-color: rgb(255, 255, 0);\">la demande d’un ascendant ou d’un descendant majeur direct</span>, du conjoint, du frère, de la&nbsp;sœur, de l’oncle ou de la tante, majeurs, du<span style=\"background-color: rgb(255, 255, 0);\"> représentant légal du malade incapable</span>. Ils sont&nbsp;civilement responsables du malade et doivent s’engager à le prendre en charge&nbsp;</li></ul><p><span style=\"background-color: rgb(255, 255, 0);\">Toute demande de sortie est soumise à l’accord préalable du médecin psychiatre</span>. Elle doit être&nbsp;établie par écrit et signée par la personne qui la formule. Elle est transcrite sur le registre prévu à&nbsp;cet effet.</p><p><br></p>"
+    },
+    {
+      "id": 21,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 218921,
+          "text": "1",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 218922,
+          "text": "1+2+3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 218923,
+          "text": "3",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 218924,
+          "text": "2+4",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 218925,
+          "text": "1+3",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Aspects médico-légaux et organisations des soins en psychiatrie",
+        "series": "Mystidia Exams"
+      },
+      "question": "La mise en observation d'office : \n\n1- Est prise par le médecin de l’établissement\n2- Est prise par arrêté du wali\n3- S’effectue au sein d’un service ou d’une unité ouverte de psychiatrie\n4- Sa durée est de six (6) mois, au maximum, et peut faire l’objet de renouvellement\n5- La sortie du malade hospitalisé s'effectue uniquement avec l'accord du wali",
+      "has_media": false,
+      "statement": "La mise en observation d'office : \n\n1- Est prise par le médecin de l’établissement\n2- Est prise par arrêté du wali\n3- S’effectue au sein d’un service ou d’une unité ouverte de psychiatrie\n4- Sa durée est de six (6) mois, au maximum, et peut faire l’objet de renouvellement\n5- La sortie du malade hospitalisé s'effectue uniquement avec l'accord du wali",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Mise en observation d’office :  La mise en observation d’office s’effectue au sein d’un service ou d’une unité fermée de psychiatrie. - La personne qui accompagne le malade est tenue de fournir tous renseignements administratifs et médicaux utiles pendant la phase médicale et administrative de sa mise en observation d’office. - La durée de la mise en observation d’office ne peut excéder quinze (15) jours. - Au terme de quinze (15) jours de mise en observation d’office, il se peut que soit : décidé de la sortie du malade décidé du maintien en hospitalisation en service ouvert avec l’accord du patient proposé, à la famille du malade ou à toute personne prenant intérêt du malade, une hospitalisation du fait d’un tiers demandé une hospitalisation d’office, conformément aux dispositions de la loi sanitaire.La réponse 2 est la seule réponse juste !!!",
+      "original_id": 44509,
+      "clinical_case": null,
+      "display_title": "Question 21",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><span style=\"background-color: rgb(102, 185, 102);\">Mise en observation d’office :&nbsp;&nbsp;</span></p><p>La mise en observation d’office s’effectue<span style=\"background-color: rgb(255, 255, 0);\"> au sein d’un service ou d’une unité fermée de&nbsp;psychiatrie.&nbsp;</span></p><p>- La personne qui accompagne le malade est <strong style=\"color: rgb(230, 0, 0);\">tenue de fournir tous renseignements administratifs&nbsp;</strong>et <strong style=\"color: rgb(230, 0, 0);\">médicaux</strong> utiles pendant la phase médicale et administrative de sa mise en observation&nbsp;d’office.&nbsp;</p><p>- La <span style=\"background-color: rgb(255, 255, 0);\">durée de la mise en observation d’office ne peut excéder quinze (15) jours.&nbsp;</span></p><p>- Au terme de quinze (15) jours de mise en observation d’office, il se peut que soit :&nbsp;</p><ul><li>décidé de la sortie du malade&nbsp;</li><li>décidé du maintien en hospitalisation en service ouvert avec l’accord du patient&nbsp;</li><li>proposé, à la famille du malade ou à toute personne prenant intérêt du malade, une&nbsp;hospitalisation du fait d’un tiers&nbsp;</li><li>demandé une hospitalisation d’office, conformément aux dispositions de la loi sanitaire.</li></ul><p>La réponse 2 est la seule réponse juste <strong style=\"color: rgb(230, 0, 0);\">!!!</strong></p>"
+    },
+    {
+      "id": 22,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220860,
+          "text": "1+2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220861,
+          "text": "1+2+3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220862,
+          "text": "1+5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220863,
+          "text": "2+4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220864,
+          "text": "2+3",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Aspects médico-légaux et organisations des soins en psychiatrie",
+        "series": "Mystidia Exams"
+      },
+      "question": "Cochez l'association juste concernant la décision d'hospitalisation d'office (HO) :\n\n1 Est prise par le médecin de l'établissement\n2 Est prise par arrêté du wali\n3 Sa durée est de six (6) mois, au maximum, et peut faire l'objet de renouvellement\n4 Sa durée est de six (6) mois, au maximum, et ne peut faire l'objet de renouvellement\n5 La sortie des malades HO s'effectue uniquement avec l'accord du médecin psychiatre de l'établissement",
+      "has_media": false,
+      "statement": "Cochez l'association juste concernant la décision d'hospitalisation d'office (HO) :\n\n1 Est prise par le médecin de l'établissement\n2 Est prise par arrêté du wali\n3 Sa durée est de six (6) mois, au maximum, et peut faire l'objet de renouvellement\n4 Sa durée est de six (6) mois, au maximum, et ne peut faire l'objet de renouvellement\n5 La sortie des malades HO s'effectue uniquement avec l'accord du médecin psychiatre de l'établissement",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Hospitalisation d’office :  - Le médecin psychiatre de l’établissement peut requérir une hospitalisation d’office, au terme ou au cours : de l’hospitalisation en service ouvert ; de la mise en observation ou de l’hospitalisation du fait d’un tiers ; de la mise en observation d’office. Le médecin psychiatre de l’établissement ne peut, en aucun cas, requérir une hospitalisation d’office pour un membre de sa famille. Dans ce cas, il est fait appel à un autre médecin psychiatre de l’établissement ou d’un autre établissement.  En cas de nécessité d’hospitalisation d’office, le médecin psychiatre de l’établissement adresse au wali, un certificat médical détaillant les motifs pour lesquels il estime cette mesure nécessaire. - La décision d’hospitalisation d’office est prise par arrêté du wali pour une durée de six (6) mois, au maximum, et peut faire l’objet de renouvellement dans les mêmes formes. - En cas de contestation de la demande d’hospitalisation d’office, la commission de santé mentale de wilaya est saisie dans les conditions prévues par la loi. - Le médecin psychiatre informé de cette saisine par la commission, maintient le malade en mise en observation d’office en attendant la décision de la commission de santé mentale de wilaya. - Le wali ne peut prendre également l’arrêté d’hospitalisation d’office concernant un membre de sa famille. Il est fait appel, en pareil cas, au wali d’une wilaya limitrophe. - La sortie des malades hospitalisés d’office s’effectue lorsque le médecin psychiatre de l’établissement estime opportune leur sortie. - Il adresse au wali, avant l’échéance du dernier arrêté, une requête motivée de levée d’hospitalisation d’office. - En cas d’accord du wali, le médecin psychiatre procède à la sortie du malade en établissant un bulletin de sortie, selon les règles d’usage. - En cas de refus ou d’absence de réponse du wali, le psychiatre de l’établissement ne peut autoriser la sortie du malade hospitalisé d’office, qu’à l’échéance de la période couverte par l’arrêté du wali. ",
+      "original_id": 44896,
+      "clinical_case": null,
+      "display_title": "Question 22",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><span style=\"background-color: rgb(102, 185, 102);\">Hospitalisation d’office :&nbsp;&nbsp;</span></p><p>- Le médecin psychiatre de l’établissement peut requérir une hospitalisation d’office, au terme ou&nbsp;au cours :&nbsp;</p><ul><li>de l’hospitalisation en service ouvert ;&nbsp;</li><li>de la mise en observation ou de l’hospitalisation du fait d’un tiers ;&nbsp;</li><li>de la mise en observation d’office.&nbsp;</li></ul><p><strong style=\"color: rgb(230, 0, 0);\">Le médecin psychiatre de l’établissement ne peut, en aucun cas, requérir une hospitalisation&nbsp;d’office pour un membre de sa famille.&nbsp;</strong></p><p>Dans ce cas, <strong style=\"color: rgb(230, 0, 0);\">il est fait appel à un autre médecin psychiatre</strong> de l’établissement ou d’un autre établissement.  En cas de nécessité d’hospitalisation d’office, le médecin psychiatre de l’établissement adresse au wali, un certificat médical détaillant les motifs pour lesquels il estime cette mesure nécessaire. </p><p>- La décision d’hospitalisation d’office est <span style=\"background-color: rgb(255, 255, 0);\">prise par arrêté du wali pour une durée de six (6) mois</span>, <span style=\"background-color: rgb(255, 255, 0);\">au maximum, et peut faire l’objet de renouvellement dans les mêmes formes.&nbsp;</span></p><p>- En cas de contestation de la demande d’hospitalisation d’office, la commission de santé mentale&nbsp;de wilaya est saisie dans les conditions prévues par la loi.&nbsp;</p><p>- Le médecin psychiatre informé de cette saisine par la commission, maintient le malade en mise&nbsp;en observation d’office en attendant la décision de la commission de santé mentale de wilaya.&nbsp;</p><p>- <strong style=\"color: rgb(230, 0, 0);\">Le wali ne peut prendre également l’arrêté d’hospitalisation d’office concernant un membre de&nbsp;</strong></p><p><strong style=\"color: rgb(230, 0, 0);\">sa famille</strong>. Il est fait appel, en pareil cas, au wali d’une wilaya limitrophe.&nbsp;</p><p>- La sortie des malades hospitalisés d’office s’effectue lorsque le médecin psychiatre de&nbsp;l’établissement estime opportune leur sortie.&nbsp;</p><p>- Il adresse au wali, avant l’échéance du dernier arrêté, une requête motivée de levée&nbsp;</p><p>d’hospitalisation d’office.&nbsp;</p><p>- En cas d’accord du wali, le médecin psychiatre procède à la sortie du malade en établissant un&nbsp;</p><p>bulletin de sortie, selon les règles d’usage.&nbsp;</p><p>- En cas de refus ou d’absence de réponse du wali, le psychiatre de l’établissement ne peut&nbsp;</p><p>autoriser la sortie du malade hospitalisé d’office, qu’à l’échéance de la période couverte par&nbsp;</p><p>l’arrêté du wali.&nbsp;</p>"
+    },
+    {
+      "id": 23,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220855,
+          "text": "Est établie pour une période qui ne peut excéder quinze (15) jours",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 220856,
+          "text": "Se fait uniquement par le médecin psychiatre de l'établissement",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220857,
+          "text": "Est établie pour une période qui ne peut excéder six (06) mois",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220858,
+          "text": "Nécessite son consentement",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220859,
+          "text": "Ne peut pas être prolongée sans l'accord du directeur de l'établissement",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Aspects médico-légaux et organisations des soins en psychiatrie",
+        "series": "Mystidia Exams"
+      },
+      "question": "Parmi l'une des propositions concernant la mise en observation d'un patient dans un service psychiatrique est juste, laquelle ?",
+      "has_media": false,
+      "statement": "Parmi l'une des propositions concernant la mise en observation d'un patient dans un service psychiatrique est juste, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Mise en observation  du fait d’un tiers :  - Le malade est mis en observation, pour une période qui ne peut excéder quinze (15) jours, dans un service psychiatrique, par le médecin psychiatre de l’établissement, qui doit, dans ce cas, délivrer préalablement un bulletin d’admission pour mise en observation. - Le médecin psychiatre de l’établissement peut, à l’expiration du délai de quinze (15) jours, décider soit : de la sortie du malade ;  de la prolongation de la période de mise en observation pour une durée maximale de quinze (15) jours.  Toutefois, le médecin psychiatre de l’établissement peut décider de la sortie du malade, avant l’expiration du délai de quinze (15) jours, s’il estime que l’état de santé du malade le permet. ",
+      "original_id": 44895,
+      "clinical_case": null,
+      "display_title": "Question 23",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><span style=\"background-color: rgb(102, 185, 102);\">Mise en observation  du fait d’un tiers :&nbsp;&nbsp;</span></p><p>- Le malade est mis en observation, pour <strong style=\"color: rgb(230, 0, 0);\">une période qui ne peut excéder quinze (15) jours</strong>, dans&nbsp;un service psychiatrique, par le médecin psychiatre de l’établissement, qui doit, dans ce cas,&nbsp;délivrer préalablement un bulletin d’admission pour mise en observation.&nbsp;</p><p>- Le médecin psychiatre de l’établissement <strong style=\"color: rgb(230, 0, 0);\">peut, à l’expiration du délai de quinze (15) jours</strong>,&nbsp;</p><p>décider soit :&nbsp;</p><ul><li>de la sortie du malade ;&nbsp;</li><li> de la <span style=\"background-color: rgb(255, 255, 0);\">prolongation de la période de mise en observation pour une durée maximale de quinze&nbsp;</span></li></ul><p><span style=\"background-color: rgb(255, 255, 0);\">(15) jours.&nbsp;</span></p><p> Toutefois, le médecin psychiatre de l’établissement peut décider de la sortie du malade,&nbsp;avant l’expiration du délai de quinze (15) jours, s’il estime que l’état de santé du malade le&nbsp;permet.&nbsp;</p>"
+    }
+  ]
+}

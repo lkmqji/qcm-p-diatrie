@@ -1,0 +1,188 @@
+{
+  "version": "2.0",
+  "exported_at": "2026-11-13T09:30:32.522Z",
+  "app": "Mystidia Cursus Medical Explorer",
+  "course": {
+    "title": "Autres",
+    "module": "Psychiatrie",
+    "year": "5ème Année (DFASM2)",
+    "session_id": "session_1792187648622_pojltrg",
+    "questions_count": 3
+  },
+  "questions": [
+    {
+      "id": 1,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 308606,
+          "text": "Sécheresse buccale avec caries dentaires invalidantes",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 308607,
+          "text": "Prise de poids",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 308608,
+          "text": "Syndrome sérotoninergique",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 308609,
+          "text": "Somnolence",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 308610,
+          "text": "Syndrome malin",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "S2 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Autres",
+        "series": "Mystidia Exams"
+      },
+      "question": "L’un des effets secondaires graves ci-dessous concerne les antidépresseurs, lequel ? (RJ)",
+      "has_media": true,
+      "statement": "L’un des effets secondaires graves ci-dessous concerne les antidépresseurs, lequel ? (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A- FauxSécheresse buccale : effet secondaire fréquent, gênant mais pas \"grave\" au sens vital.B-FauxPrise de poids : effet secondaire fréquent, problématique à long terme mais pas aigu graveC-VraiSyndrome sérotoninergique : complication rare mais potentiellement mortelle (association d'antidépresseurs sérotoninergiques) avec hyperthermie, agitation, rigidité, convulsions.D-FauxSomnolence : effet secondaire fréquent, surtout en début de traitement, mais pas grave.E-Faux Syndrome malin : c'est une complication des ANTIPSYCHOTIQUES (neuroleptiques), pas des antidépresseurs.",
+      "original_id": 63127,
+      "clinical_case": null,
+      "display_title": "Question 1",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">A- Faux</strong></p><p><strong style=\"color: rgb(15, 17, 21);\">Sécheresse buccale</strong><span style=\"color: rgb(15, 17, 21);\"> : effet secondaire fréquent, gênant mais pas \"grave\" au sens vital.</span></p><p><span style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0); font-weight: 700;\">B-Faux</span></p><p><strong style=\"color: rgb(15, 17, 21);\">Prise de poids :</strong><span style=\"color: rgb(15, 17, 21);\"> effet secondaire fréquent, problématique à long terme mais pas aigu grave</span></p><p><span style=\"background-color: rgb(204, 232, 204); color: rgb(0, 138, 0); font-weight: bolder;\">C-Vrai</span></p><p><strong style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 102);\">Syndrome sérotoninergique :</strong><strong style=\"color: rgb(15, 17, 21);\"> </strong><span style=\"color: rgb(15, 17, 21);\">complication rare mais potentiellement mortelle (association d'antidépresseurs sérotoninergiques) avec </span><strong style=\"color: rgb(15, 17, 21);\">hyperthermie</strong><span style=\"color: rgb(15, 17, 21);\">, </span><strong style=\"color: rgb(15, 17, 21);\">agitation</strong><span style=\"color: rgb(15, 17, 21);\">, </span><strong style=\"color: rgb(15, 17, 21);\">rigidité</strong><span style=\"color: rgb(15, 17, 21);\">, </span><strong style=\"color: rgb(15, 17, 21);\">convulsions</strong><span style=\"color: rgb(15, 17, 21);\">.</span></p><p><img src=\"https://turkeyistanbulmedical.com/wp-content/uploads/2021/08/Serotonin-Syndrome.jpg\" alt=\"Syndrome Sérotoninergique - Turkey Istanbul Medical\"></p><p><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">D-Faux</strong></p><p><strong style=\"color: rgb(15, 17, 21);\">Somnolence</strong><span style=\"color: rgb(15, 17, 21);\"> : effet secondaire fréquent, surtout en début de traitement, mais pas grave.</span></p><p><strong style=\"color: rgb(230, 0, 0); background-color: rgb(250, 204, 204);\">E-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;</span><strong style=\"color: rgb(15, 17, 21);\">Syndrome malin </strong><span style=\"color: rgb(15, 17, 21);\">: c'est une complication des </span><span style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 102);\">ANTIPSYCHOTIQUES</span><span style=\"color: rgb(15, 17, 21);\"> (neuroleptiques), pas des antidépresseurs.</span></p>"
+    },
+    {
+      "id": 2,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266052,
+          "text": "1.2.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266053,
+          "text": "1.2.4",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 266054,
+          "text": "2.3.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266055,
+          "text": "1.2.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266056,
+          "text": "3.4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Autres",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelles sont parmi les affections suivantes celles qui rendent un prévenu irresponsable de l'acte qui lui est reproché : (RJ)\n1- L'épisode maniaque\n2- La confusion mentale\n3- Les troubles obsessionnels compulsifs\n4- Une bouffée délirante aiguë\n5- Une épilepsie stabilisée",
+      "has_media": false,
+      "statement": "Quelles sont parmi les affections suivantes celles qui rendent un prévenu irresponsable de l'acte qui lui est reproché : (RJ)\n1- L'épisode maniaque\n2- La confusion mentale\n3- Les troubles obsessionnels compulsifs\n4- Une bouffée délirante aiguë\n5- Une épilepsie stabilisée",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "1- Vrai, En phase aiguë, un épisode maniaque peut altérer gravement le jugement et la conscience de la réalité. Il peut donc, selon la gravité, justifier une irresponsabilité pénale si le prévenu n’a pas pu comprendre la nature de son acte ou contrôler son comportement.2- Vrai, La confusion mentale, souvent due à un état organique ou toxique, empêche la compréhension ou le contrôle de ses actes. Elle entraîne donc classiquement une irresponsabilité pénale.3- Faux, Les TOC sont des troubles anxieux avec obsessions et compulsions, mais la personne garde la conscience de ses actes et du caractère illégal de ses comportements.4- Vrai,  C’est un trouble psychiatrique avec perte temporaire du contact avec la réalité (délires, hallucinations). Elle est bien reconnue comme cause d’irresponsabilité pénale, car la personne ne peut pas comprendre ou maîtriser ses actes.5- Faux, Si l’épilepsie est stabilisée et que la personne est consciente au moment des faits, elle est responsable. Par contre, si l’acte est commis pendant une crise (par exemple une crise d’épilepsie avec perte de conscience), cela peut être un facteur d’irresponsabilité.",
+      "original_id": 54116,
+      "clinical_case": null,
+      "display_title": "Question 2",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(0, 138, 0);\">1- Vrai,</strong><strong> </strong>En phase aiguë, un épisode maniaque peut altérer gravement le jugement et la conscience de la réalité. Il peut donc, selon la gravité, justifier une <strong>irresponsabilité pénale</strong> si le prévenu n’a pas pu comprendre la nature de son acte ou contrôler son comportement.</p><p><strong style=\"color: rgb(0, 138, 0);\">2- Vrai, </strong>La confusion mentale, souvent due à un état organique ou toxique, empêche la compréhension ou le contrôle de ses actes. Elle entraîne donc classiquement une irresponsabilité pénale.</p><p><strong style=\"color: rgb(230, 0, 0);\">3- Faux,</strong> Les TOC sont des troubles anxieux avec obsessions et compulsions, mais la personne garde la conscience de ses actes et du caractère illégal de ses comportements.</p><p><strong style=\"color: rgb(0, 138, 0);\">4- Vrai,  </strong>C’est un trouble psychiatrique avec perte temporaire du contact avec la réalité (délires, hallucinations). Elle est bien reconnue comme cause d’irresponsabilité pénale, car la personne ne peut pas comprendre ou maîtriser ses actes.</p><p><strong style=\"color: rgb(230, 0, 0);\">5- Faux,</strong> Si l’épilepsie est stabilisée et que la personne est consciente au moment des faits, elle est responsable. Par contre, si l’acte est commis pendant une crise (par exemple une crise d’épilepsie avec perte de conscience), cela peut être un facteur d’irresponsabilité.</p>"
+    },
+    {
+      "id": 3,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 259206,
+          "text": "Certains possèdent des propriétés anticholinergiques",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 259207,
+          "text": "Ils stimulent les récepteurs dopaminergiques",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 259208,
+          "text": "Ils peuvent être responsables d’hyperthermie",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 259209,
+          "text": "Ils sont responsables de troubles extrapyramidaux",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 259210,
+          "text": "Ils ne doivent pas être associés à de l’alcool",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Résidanat Alger 2019"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Autres",
+        "series": "Mystidia Exams"
+      },
+      "question": "Toutes ces affirmations sur les neuroleptiques sont exactes, sauf une, laquelle ?",
+      "has_media": false,
+      "statement": "Toutes ces affirmations sur les neuroleptiques sont exactes, sauf une, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 52494,
+      "clinical_case": null,
+      "display_title": "Question 3",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    }
+  ]
+}

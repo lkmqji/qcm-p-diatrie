@@ -1,0 +1,2046 @@
+{
+  "version": "2.0",
+  "exported_at": "2026-11-13T09:30:28.022Z",
+  "app": "Mystidia Cursus Medical Explorer",
+  "course": {
+    "title": "Troubles psychotiques aigus et transitoires",
+    "module": "Psychiatrie",
+    "year": "5ème Année (DFASM2)",
+    "session_id": "session_1792186916078_s4smbmp",
+    "questions_count": 35
+  },
+  "questions": [
+    {
+      "id": 1,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295469,
+          "text": "Le début est brutal",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 295470,
+          "text": "Les idées délirantes sont incohérentes, et mal systématisées",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 295471,
+          "text": "L'âge du début est tardif entre 55 et 70 ans",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 295472,
+          "text": "La prise en charge doit être la plus précoce possible",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 295473,
+          "text": "Apparait avec ou sans facteur déclenchant",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026 "
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des propositions des troubles psychotiques aigus et transitoires est fausse, laquelle ?",
+      "has_media": false,
+      "statement": "L'une des propositions des troubles psychotiques aigus et transitoires est fausse, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Rappel                         Les troubles psychotiques aigus et transitoires  Ce sont des psychoses caractérisées par la présence d'idées délirantes qui évoluent depuis moins de 06 mois.Caractéristiques -Le début est brutal. -Le délire est mal systématisé.- Les mécanismes sont multiples : hallucinatoires, imaginatifs, intuitifs, et    interprétatifs. -Les thèmes sont en général nombreux et riches. -Les idées délirantes sont présentes depuis moins de 06 mois et peuvent durer moins de 24 heures.- Les idées délirantes sont incohérentes, et mal systématisées.- L'âge du début est précoce et se situe en générale entre 18 et 25 ans. cours 2026 psychose aigues.pdf - Google Drive ",
+      "original_id": 60428,
+      "clinical_case": null,
+      "display_title": "Question 1",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<h4><strong>Rappel </strong></h4><h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"background-color: rgb(102, 163, 224);\">&nbsp;&nbsp;</span><strong style=\"background-color: rgb(102, 163, 224);\">Les troubles psychotiques aigus et transitoires </strong></h3><p><br></p><p>&nbsp;Ce sont des psychoses caractérisées par la présence d'idées délirantes qui évoluent depuis moins de 06 mois.</p><p><br></p><p><strong style=\"background-color: rgb(204, 224, 245);\">Caractéristiques</strong></p><p><strong style=\"background-color: rgb(204, 224, 245);\">&nbsp;-Le début est brutal.</strong></p><p><strong style=\"background-color: rgb(204, 224, 245);\">&nbsp;-Le délire est mal systématisé.</strong></p><p><strong style=\"background-color: rgb(204, 224, 245);\">-&nbsp;Les mécanismes sont multiples : hallucinatoires, imaginatifs, intuitifs, et    interprétatifs.</strong></p><p><strong style=\"background-color: rgb(204, 224, 245);\">&nbsp;-Les thèmes sont en général nombreux et riches.</strong></p><p><strong style=\"background-color: rgb(204, 224, 245);\">&nbsp;-Les idées délirantes sont présentes depuis moins de 06 mois et peuvent durer moins de 24 heures.</strong></p><p><strong style=\"background-color: rgb(204, 224, 245);\">-&nbsp;Les idées délirantes sont incohérentes, et mal systématisées.</strong></p><p>-<span style=\"background-color: rgb(250, 204, 204);\">&nbsp;L'âge du début est </span><strong style=\"background-color: rgb(250, 204, 204);\">précoce </strong><span style=\"background-color: rgb(250, 204, 204);\">et se situe en générale entre 18 et 25 ans.</span></p><p><br></p><p><br></p><p><br></p><p> </p><p>cours 2026 </p><p><a href=\"https://drive.google.com/file/d/1kYquqxWxXEAVFOFd90hV3QkTgWMbG5Zz/view\" rel=\"noopener noreferrer\" target=\"_blank\">psychose aigues.pdf - Google&nbsp;Drive</a> </p>"
+    },
+    {
+      "id": 2,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295474,
+          "text": "Début brutal et présence de Facteur déclenchant",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 295475,
+          "text": "Richesse du délire",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 295476,
+          "text": "Fonctionnement pré morbide schizoïde",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 295477,
+          "text": "Absence d'automatisme mental",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 295478,
+          "text": "Peu ou pas de participation thymique",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026 "
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Tous ces facteurs sont de bon pronostic des troubles psychotiques aigus sauf un, lequel ?",
+      "has_media": true,
+      "statement": "Tous ces facteurs sont de bon pronostic des troubles psychotiques aigus sauf un, lequel ?",
+      "sub_index": null,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792186916078_s4smbmp/session_1792186916078_s4smbmp_q_1_1792186935484_img_0.jpg"
+      ],
+      "croq_answer": null,
+      "explanation": "3-Faux : un fonctionnement prémorbide schizoïde est associé à un mauvais pronosticremarque : la proposition 5 est juste mais ils cherchaient la proposition la plus juste    cours 2026 psychose aigues.pdf - Google Drive ",
+      "original_id": 60429,
+      "clinical_case": null,
+      "display_title": "Question 2",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">3-Faux :</strong> un fonctionnement prémorbide schizoïde est associé à <strong style=\"background-color: rgb(250, 204, 204);\">un mauvais pronostic</strong></p><p><span style=\"background-color: rgb(240, 102, 102);\">remarque : la proposition 5 est juste mais ils cherchaient la proposition la plus juste </span></p><p> </p><h4> <img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792186916078_s4smbmp/session_1792186916078_s4smbmp_q_1_1792186935484_img_0.jpg\"></h4><p><br></p><p><br></p><p><br></p><p> </p><p>cours 2026 </p><p><a href=\"https://drive.google.com/file/d/1kYquqxWxXEAVFOFd90hV3QkTgWMbG5Zz/view\" rel=\"noopener noreferrer\" target=\"_blank\">psychose aigues.pdf - Google&nbsp;Drive</a> </p>"
+    },
+    {
+      "id": 3,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284701,
+          "text": "L’éclosion soudaine d’un délire transitoire.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284702,
+          "text": "Le délire est polymorphe dans les thèmes et mécanismes.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 284703,
+          "text": "Une association fréquente avec les troubles de l’humeur.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 284704,
+          "text": "La cause est exclusivement organique.",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 284705,
+          "text": "Leurs distinction est quantitative et temporelle.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les troubles psychotiques aigus, quelle est la réponse fausse ?",
+      "has_media": false,
+      "statement": "Les troubles psychotiques aigus, quelle est la réponse fausse ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Les états psychotiques aigus et transitoires correspondent, soit à des décompensations de pathologies psychiatriques connues (schizophrénie, troubles bipolaires, paranoïa), soit à des premiers épisodes psychotiques qui peuvent inaugurer ou non lentrée dans une pathologie psychiatrique chronique, Il s'agit d'un syndrome clinique marqué ,par l'apparition brutale d'un délire polymorphe riche,avec une évolution souvent favorable et DSM V, classe le trouble en 2 catégories :Le troublepsychotique bref : dure plus d'un jour et moins de 30 jours, Le trouble schizophréniforme, qui dure moins de 06 mois, Au-delà, Il s'agit d'une schizophrénie.Description clinique :Le terrain :Comme un coup de tonnerre dans un ciel serein.Le plus souvent l'adulte jeune.Eclosion soudaine d'un délire transitoire, généralement polymorphe, dans ses thèmes et mécanismes. Sans ATCD psychiatrique.Un stress ou une prise toxique ou médicamentsLa phase d'état délirante :Le délire :La variabilité et la labilité de l'intensité du délire dans la journée sont une caractéristique La thématique est riche, les idées de persécutions cohabitent avec des idées mystiques , mégalomanies, possession..... Les mécanismes sont polymorphes, hallucinatoires au 1er plan, mais aussi interprétatifs et intuitifs.L'automatisme mental:Quasi constant ; est en rapport avec une mécanisation de la pensée qui perd son caractère intimeVécu intensément :Entrainant un bouleversement des repères intérieurs et extérieurs , avec un sentiment d' étrangéité de soi et du monde extérieur : déréalisation et dépersonnalisation .Aussi l'adhésion au délire , est totale .Ce tableau s'associe:Des troubles thymiques ou une dysphorie, constants, allant de l'exaltation maniaque a la dépression ,Des troubles de la conscience: affaiblissement, voire dispersion de l'attentionDes troubles du comportement : agitation le plus souvent, mais aussi prostration et mutisme.",
+      "original_id": 58140,
+      "clinical_case": null,
+      "display_title": "Question 3",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>Les états psychotiques aigus et transitoires correspondent, soit à des décompensations de pathologies psychiatriques connues (schizophrénie, troubles bipolaires, paranoïa), soit à des premiers épisodes psychotiques qui peuvent inaugurer ou non lentrée dans une pathologie psychiatrique chronique,</p><p> Il s'agit d'un syndrome clinique marqué ,par <span style=\"background-color: rgb(204, 232, 204);\">l'apparition</span> <span style=\"background-color: rgb(204, 232, 204);\">brutale d'un délire polymorphe</span> riche,avec une évolution souvent favorable</p><p> </p><p>et DSM V, classe le trouble en 2 catégories :</p><ul><li>Le troublepsychotique bref : dure plus d'un jour et moins de 30 jours, </li><li>Le trouble schizophréniforme, qui dure moins de 06 mois, Au-delà, Il s'agit d'une schizophrénie.</li></ul><p><br></p><p><strong><em><u>Description clinique</u></em></strong> :</p><ul><li>Le terrain :</li><li class=\"ql-indent-1\">Comme un coup de tonnerre dans un ciel serein.</li><li class=\"ql-indent-1\">Le plus souvent l'adulte jeune.</li><li class=\"ql-indent-1\"><span style=\"background-color: rgb(204, 232, 204);\">Eclosion soudaine d'un délire transitoire, généralement polymorphe, dans ses thèmes et mécanismes.</span></li><li class=\"ql-indent-1\"> Sans ATCD psychiatrique.</li><li class=\"ql-indent-1\">Un stress ou une prise toxique ou médicaments</li><li>La phase d'état délirante :</li><li class=\"ql-indent-1\">Le délire :</li><li class=\"ql-indent-2\">La variabilité et la labilité de l'intensité du délire dans la journée sont une caractéristique</li><li class=\"ql-indent-2\"> La thématique est riche, les idées de persécutions cohabitent avec des idées mystiques , mégalomanies, possession.....</li><li class=\"ql-indent-2\"> Les mécanismes sont polymorphes, hallucinatoires au 1er plan, mais aussi interprétatifs et intuitifs.</li><li class=\"ql-indent-1\">L'automatisme mental:</li><li class=\"ql-indent-2\">Quasi constant ; est en rapport avec une mécanisation de la pensée qui perd son caractère intime</li><li class=\"ql-indent-1\">Vécu intensément :</li><li class=\"ql-indent-2\">Entrainant un bouleversement des repères intérieurs et extérieurs , avec un sentiment d' étrangéité de soi et du monde extérieur : déréalisation et dépersonnalisation .Aussi l'adhésion au délire , est totale .</li><li class=\"ql-indent-1\">Ce tableau s'associe:</li><li class=\"ql-indent-2\"><span style=\"background-color: rgb(204, 232, 204);\">Des troubles thymiques</span> ou une dysphorie,</li><li class=\"ql-indent-2\"> constants, allant de l'exaltation maniaque a la dépression ,</li><li class=\"ql-indent-2\">Des troubles de la conscience: affaiblissement, voire dispersion de l'attention</li><li class=\"ql-indent-2\">Des troubles du comportement : agitation le plus souvent, mais aussi prostration et mutisme.</li></ul>"
+    },
+    {
+      "id": 4,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284706,
+          "text": "1.2.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284707,
+          "text": "1.2.4",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 284708,
+          "text": "1.3.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 284709,
+          "text": "1.4.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284710,
+          "text": "2.3.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les troubles psychotiques aigus peuvent évoluer vers :\n1- La guérison.\n2- Le trouble de l’humeur.\n3- Les troubles anxieux.\n4- La schizophrénie.\n5- Les troubles de stress post traumatique.",
+      "has_media": false,
+      "statement": "Les troubles psychotiques aigus peuvent évoluer vers :\n1- La guérison.\n2- Le trouble de l’humeur.\n3- Les troubles anxieux.\n4- La schizophrénie.\n5- Les troubles de stress post traumatique.",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Les troubles psychotiques aigus sont des expériences très destructurantes  et le retentissement esy majeur ,avec un vécu délirant très intense et un risque de passage à l'acte auto ou hétéro agressif . Il s'agit une urgence thérapeutique faut évaluer le risque suicidaire. ◦ A long terme, 3 grands types d'évolution, imposant un suivi de ces patients 25% des cas, il s'agit d'un épisode unique. 25% des cas, il aura récidive.50% des cas elle représente un mode d'entrée dans une maladie psychiatrique Source : Diapo Dr SAYAH",
+      "original_id": 58141,
+      "clinical_case": null,
+      "display_title": "Question 4",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>Les troubles psychotiques aigus sont des expériences très destructurantes  et le retentissement esy majeur ,avec un vécu délirant très intense et un risque de passage à l'acte auto ou hétéro agressif . Il s'agit une urgence thérapeutique faut évaluer le risque suicidaire.</p><p> ◦ A long terme, 3 grands types d'évolution, imposant un suivi de ces patients </p><ul><li>25% des cas, il s'agit d'un <span style=\"background-color: rgb(204, 232, 204);\">épisode unique</span>. </li><li>25% des cas, il aura <span style=\"background-color: rgb(204, 232, 204);\">récidive</span>.</li><li>50% des cas elle <span style=\"background-color: rgb(204, 232, 204);\">représente un mode d'entrée dans une maladie psychiatrique </span></li></ul><p><br></p><p>Source : Diapo Dr SAYAH</p>"
+    },
+    {
+      "id": 5,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266102,
+          "text": "Début brutal, à caractère aigu",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 266103,
+          "text": "Personnalité schizoïde",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 266104,
+          "text": "Pauvreté du délire",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266105,
+          "text": "Présence d'antécédents familiaux de schizophrénie",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266106,
+          "text": "Absence des facteurs précipitants manifestes, environnementaux et psychologiques",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les éléments suivants constituent des signes de mauvais pronostic pour l'évolution d'un trouble psychotique aigu, sauf un lequel ?",
+      "has_media": true,
+      "statement": "Les éléments suivants constituent des signes de mauvais pronostic pour l'évolution d'un trouble psychotique aigu, sauf un lequel ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A- Vrai, C'est un élément de bon pronostic. ",
+      "original_id": 54126,
+      "clinical_case": null,
+      "display_title": "Question 5",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1749235828.3459.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p><strong style=\"color: rgb(0, 138, 0);\">A- Vrai,</strong> C'est un élément de bon pronostic. </p>"
+    },
+    {
+      "id": 6,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266197,
+          "text": "Un début progressif, avec un délire bien systématisé",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266198,
+          "text": "Un début brutal, avec un délire polymorphe mal systématisé",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 266199,
+          "text": "Un début brutal, sans délire",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266200,
+          "text": "Un début progressif, avec une désorientation temporo-spatiale",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266201,
+          "text": "Un début progressif, sans désorientation temporo-spatiale",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "La symptomatologie clinique des troubles psychotiques aigus et transitoires est caractérisée par :",
+      "has_media": false,
+      "statement": "La symptomatologie clinique des troubles psychotiques aigus et transitoires est caractérisée par :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "La description clinique des troubles psychotiques aigus et transitoires est caractérisé par un début brutal « coup de tonnerre dans un ciel serein » éclosion soudaine d'idées délirantes intenses et de symptômes affectifs particulièrement polymorphes et changeants, fréquemment en 48 h.",
+      "original_id": 54145,
+      "clinical_case": null,
+      "display_title": "Question 6",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>La description clinique des troubles psychotiques aigus et transitoires est caractérisé par un <strong>début brutal</strong> « coup de tonnerre dans un ciel serein » éclosion soudaine d'idées délirantes intenses et de symptômes affectifs particulièrement polymorphes et changeants, fréquemment en 48 h.</p>"
+    },
+    {
+      "id": 7,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252677,
+          "text": "Idées délirantes.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252678,
+          "text": "Hallucinations.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252679,
+          "text": "Discours désorganisé.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252680,
+          "text": "Comportement grossièrement désorganisé ou catatonique",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252681,
+          "text": "Symptômes négatifs",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Parmi les critères diagnostiques du Trouble psychotique bref, dont la durée est d'au moins un jour mais moins d'un 01 mois, figure la présence d'un des symptômes suivants (RF):",
+      "has_media": false,
+      "statement": "Parmi les critères diagnostiques du Trouble psychotique bref, dont la durée est d'au moins un jour mais moins d'un 01 mois, figure la présence d'un des symptômes suivants (RF):",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Critères diagnostiques du Trouble psychotique bref (DSM V) :A. Présence d'un (ou plus) des symptômes suivants. Au moins l'un d'entre eux doit être (1), (2), ou(3):1.Idées délirantes2.Hallucinations3.Discours désorganisé déraillement fréquents ou incohérence)4.Comportement grossièrement désorganisé ou catatoniqueB.la perturbation persiste au moins 1 jour, mais moins d‘1 mois, avec retour complet au niveau de fonctionnement prémorbideC. Exclusion de Trouble dépressif majeur ou trouble bipolaire avec caractéristiques psychotiques,autre trouble psychotique (schizophrénie ou catatonie et n'est pas due aux effets physiologiquesdirects d'une substance ou affection médicale générale",
+      "original_id": 51032,
+      "clinical_case": null,
+      "display_title": "Question 7",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong><u>Critères diagnostiques du Trouble psychotique bref (DSM V) :</u></strong></p><p>A. Présence d'un (ou plus) des symptômes suivants. Au moins l'un d'entre eux doit être (1), (2), ou(3):</p><p>1.Idées délirantes</p><p>2.Hallucinations</p><p>3.Discours désorganisé déraillement fréquents ou incohérence)</p><p>4.Comportement grossièrement désorganisé ou catatonique</p><p>B.la perturbation persiste au moins 1 jour, mais moins d‘1 mois, avec retour complet au niveau de fonctionnement prémorbide</p><p>C. Exclusion de Trouble dépressif majeur ou trouble bipolaire avec caractéristiques psychotiques,autre trouble psychotique (schizophrénie ou catatonie et n'est pas due aux effets physiologiquesdirects d'une substance ou affection médicale générale</p>"
+    },
+    {
+      "id": "8.1",
+      "case_id": 8,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229375,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 229376,
+          "text": "1.4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229377,
+          "text": "2.3",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229378,
+          "text": "2.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229379,
+          "text": "3.4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Tous les diagnostics sont possibles sauf deux lesquels ?\n1. Une schizophrénie paranoïde\n2. Un trouble panique\n3. Un trouble psychotique bref\n4. Un trouble psychotique induit\n5. Un épisode dépressif avec caractéristiques psychotiques",
+      "has_media": false,
+      "statement": "Tous les diagnostics sont possibles sauf deux lesquels ?\n1. Une schizophrénie paranoïde\n2. Un trouble panique\n3. Un trouble psychotique bref\n4. Un trouble psychotique induit\n5. Un épisode dépressif avec caractéristiques psychotiques",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46552,
+      "clinical_case": "M.A, 19 ans, célibataire et qui suit ses études universitaires depuis 02 ans, sans antécédents psychiatriques particuliers, ni toxiques, ni juridiques, est venu aux urgences dans un état aigu d'agitation psychomotrice.\r\nL'anamnèse avec ses parents retrouve :\r\n- Une bonne insertion sur les plans social, familial et scolaire.\r\n- Une notion de rupture amoureuse avec une jeune fille.\r\n- Un changement en 24h de son comportement évoluant depuis une semaine, en devenant agressif et très angoissé et proférant des propos incompréhensibles et bizarres.\r\nA l'entretien, M.A était agité et angoissé, il ressentait comme un danger qui s'approchait de lui, et en mettant les doigts sur les oreilles et en criant: \" ils veulent me tuer, ils sont là, ils veulent me prendre avec eux \". Une heure plus tard, Il est devenu calme, moins agité, et moins angoissé, révélant que certains « démons », le commandaient de loin et lui dictaient ce qu'il devait dire ou faire.",
+      "display_title": "Question 8 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "8.2",
+      "case_id": 8,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229380,
+          "text": "1.4",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 229381,
+          "text": "1.5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229382,
+          "text": "2.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229383,
+          "text": "2.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229384,
+          "text": "4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Deux examens complémentaires aidant beaucoup pour étayer le diagnostic, lesquels ?\n1. Une TDM cérébrale\n2. Dosage de la vitamine B12\n3. Dosage des folates\n4. Une analyse toxicologique urinaire\n5. Bilan thyroïdien.",
+      "has_media": false,
+      "statement": "Deux examens complémentaires aidant beaucoup pour étayer le diagnostic, lesquels ?\n1. Une TDM cérébrale\n2. Dosage de la vitamine B12\n3. Dosage des folates\n4. Une analyse toxicologique urinaire\n5. Bilan thyroïdien.",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46553,
+      "clinical_case": "M.A, 19 ans, célibataire et qui suit ses études universitaires depuis 02 ans, sans antécédents psychiatriques particuliers, ni toxiques, ni juridiques, est venu aux urgences dans un état aigu d'agitation psychomotrice.\r\nL'anamnèse avec ses parents retrouve :\r\n- Une bonne insertion sur les plans social, familial et scolaire.\r\n- Une notion de rupture amoureuse avec une jeune fille.\r\n- Un changement en 24h de son comportement évoluant depuis une semaine, en devenant agressif et très angoissé et proférant des propos incompréhensibles et bizarres.\r\nA l'entretien, M.A était agité et angoissé, il ressentait comme un danger qui s'approchait de lui, et en mettant les doigts sur les oreilles et en criant: \" ils veulent me tuer, ils sont là, ils veulent me prendre avec eux \". Une heure plus tard, Il est devenu calme, moins agité, et moins angoissé, révélant que certains « démons », le commandaient de loin et lui dictaient ce qu'il devait dire ou faire.",
+      "display_title": "Question 8 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "8.3",
+      "case_id": 8,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229385,
+          "text": "1.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229386,
+          "text": "1.5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229387,
+          "text": "2.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229388,
+          "text": "3.4",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 229389,
+          "text": "4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans ce cas clinique, deux syndromes psychiatriques sont clairement manifestes, lesquels?\n1. Le syndrome dissociatif\n2. Le syndrome maniaque\n3. Le syndrome hallucinatoire\n4. Le syndrome anxieux\n5. Le syndrome dépressif",
+      "has_media": false,
+      "statement": "Dans ce cas clinique, deux syndromes psychiatriques sont clairement manifestes, lesquels?\n1. Le syndrome dissociatif\n2. Le syndrome maniaque\n3. Le syndrome hallucinatoire\n4. Le syndrome anxieux\n5. Le syndrome dépressif",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46554,
+      "clinical_case": "M.A, 19 ans, célibataire et qui suit ses études universitaires depuis 02 ans, sans antécédents psychiatriques particuliers, ni toxiques, ni juridiques, est venu aux urgences dans un état aigu d'agitation psychomotrice.\r\nL'anamnèse avec ses parents retrouve :\r\n- Une bonne insertion sur les plans social, familial et scolaire.\r\n- Une notion de rupture amoureuse avec une jeune fille.\r\n- Un changement en 24h de son comportement évoluant depuis une semaine, en devenant agressif et très angoissé et proférant des propos incompréhensibles et bizarres.\r\nA l'entretien, M.A était agité et angoissé, il ressentait comme un danger qui s'approchait de lui, et en mettant les doigts sur les oreilles et en criant: \" ils veulent me tuer, ils sont là, ils veulent me prendre avec eux \". Une heure plus tard, Il est devenu calme, moins agité, et moins angoissé, révélant que certains « démons », le commandaient de loin et lui dictaient ce qu'il devait dire ou faire.",
+      "display_title": "Question 8 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "8.4",
+      "case_id": 8,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229390,
+          "text": "1.2.3.4",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229391,
+          "text": "1.2.3.5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229392,
+          "text": "1.2.4.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229393,
+          "text": "1.3.4.5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 229394,
+          "text": "2.3.4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans ce cas clinique, quels sont les éléments qui plaident pour un bon pronostic?\n1. L'absence d'antécédents psychiatriques\n2. L'incohérence de ses propos\n3. Le début aigu\n4. La bonne insertion socio-familiale avant le début de la maladie\n5. L'histoire de la rupture amoureuse.",
+      "has_media": false,
+      "statement": "Dans ce cas clinique, quels sont les éléments qui plaident pour un bon pronostic?\n1. L'absence d'antécédents psychiatriques\n2. L'incohérence de ses propos\n3. Le début aigu\n4. La bonne insertion socio-familiale avant le début de la maladie\n5. L'histoire de la rupture amoureuse.",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46555,
+      "clinical_case": "M.A, 19 ans, célibataire et qui suit ses études universitaires depuis 02 ans, sans antécédents psychiatriques particuliers, ni toxiques, ni juridiques, est venu aux urgences dans un état aigu d'agitation psychomotrice.\r\nL'anamnèse avec ses parents retrouve :\r\n- Une bonne insertion sur les plans social, familial et scolaire.\r\n- Une notion de rupture amoureuse avec une jeune fille.\r\n- Un changement en 24h de son comportement évoluant depuis une semaine, en devenant agressif et très angoissé et proférant des propos incompréhensibles et bizarres.\r\nA l'entretien, M.A était agité et angoissé, il ressentait comme un danger qui s'approchait de lui, et en mettant les doigts sur les oreilles et en criant: \" ils veulent me tuer, ils sont là, ils veulent me prendre avec eux \". Une heure plus tard, Il est devenu calme, moins agité, et moins angoissé, révélant que certains « démons », le commandaient de loin et lui dictaient ce qu'il devait dire ou faire.",
+      "display_title": "Question 8 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "8.5",
+      "case_id": 8,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229395,
+          "text": "Une schizophrénie",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229396,
+          "text": "Un trouble psychotique induite",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229397,
+          "text": "Une trouble psychotique d'origine organique",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229398,
+          "text": "Un trouble psychotique bref",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 229399,
+          "text": "Un délire paranoïaque",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le fait que ce patient présente des périodes d'accalmie intermittentes avec des périodes d’agitation de délire est fortement significatif de :",
+      "has_media": false,
+      "statement": "Le fait que ce patient présente des périodes d'accalmie intermittentes avec des périodes d’agitation de délire est fortement significatif de :",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46556,
+      "clinical_case": "M.A, 19 ans, célibataire et qui suit ses études universitaires depuis 02 ans, sans antécédents psychiatriques particuliers, ni toxiques, ni juridiques, est venu aux urgences dans un état aigu d'agitation psychomotrice.\r\nL'anamnèse avec ses parents retrouve :\r\n- Une bonne insertion sur les plans social, familial et scolaire.\r\n- Une notion de rupture amoureuse avec une jeune fille.\r\n- Un changement en 24h de son comportement évoluant depuis une semaine, en devenant agressif et très angoissé et proférant des propos incompréhensibles et bizarres.\r\nA l'entretien, M.A était agité et angoissé, il ressentait comme un danger qui s'approchait de lui, et en mettant les doigts sur les oreilles et en criant: \" ils veulent me tuer, ils sont là, ils veulent me prendre avec eux \". Une heure plus tard, Il est devenu calme, moins agité, et moins angoissé, révélant que certains « démons », le commandaient de loin et lui dictaient ce qu'il devait dire ou faire.",
+      "display_title": "Question 8 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "8.6",
+      "case_id": 8,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229400,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229401,
+          "text": "1.3",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 229402,
+          "text": "2.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229403,
+          "text": "2.3",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229404,
+          "text": "4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "En faveur de ce diagnostic, il manque encore deux éléments sémiologiques importants, lesquels ?\n1. La labilité thymique\n2. Les idées suicidaires\n3. Les éléments confusionnels\n4. Le syndrome de reviviscence\n5. Les obsessions et les compulsions",
+      "has_media": false,
+      "statement": "En faveur de ce diagnostic, il manque encore deux éléments sémiologiques importants, lesquels ?\n1. La labilité thymique\n2. Les idées suicidaires\n3. Les éléments confusionnels\n4. Le syndrome de reviviscence\n5. Les obsessions et les compulsions",
+      "sub_index": 6,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46557,
+      "clinical_case": "M.A, 19 ans, célibataire et qui suit ses études universitaires depuis 02 ans, sans antécédents psychiatriques particuliers, ni toxiques, ni juridiques, est venu aux urgences dans un état aigu d'agitation psychomotrice.\r\nL'anamnèse avec ses parents retrouve :\r\n- Une bonne insertion sur les plans social, familial et scolaire.\r\n- Une notion de rupture amoureuse avec une jeune fille.\r\n- Un changement en 24h de son comportement évoluant depuis une semaine, en devenant agressif et très angoissé et proférant des propos incompréhensibles et bizarres.\r\nA l'entretien, M.A était agité et angoissé, il ressentait comme un danger qui s'approchait de lui, et en mettant les doigts sur les oreilles et en criant: \" ils veulent me tuer, ils sont là, ils veulent me prendre avec eux \". Une heure plus tard, Il est devenu calme, moins agité, et moins angoissé, révélant que certains « démons », le commandaient de loin et lui dictaient ce qu'il devait dire ou faire.",
+      "display_title": "Question 8 - Question 6",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": 9,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219443,
+          "text": "Syndrome neuropsychiatrique aigu",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219444,
+          "text": "Existence d'une souffrance cérébrale",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219445,
+          "text": "Première étiologie est d’origine psychiatrique",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 219446,
+          "text": "Urgence diagnostique et thérapeutique",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219447,
+          "text": "Fréquent et grave chez le sujet âgé",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les affirmations suivantes concernant le delirium sont exactes sauf une, laquelle ?",
+      "has_media": false,
+      "statement": "Les affirmations suivantes concernant le delirium sont exactes sauf une, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44613,
+      "clinical_case": null,
+      "display_title": "Question 9",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": "10.1",
+      "case_id": 10,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219418,
+          "text": "1.2.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219419,
+          "text": "1.3.4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219420,
+          "text": "2.3.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219421,
+          "text": "2.4.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219422,
+          "text": "Toutes ces propositions",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel(s) élément(s) sémiologique(s) retrouvez-vous dans cet énoncé ? \n\n1 Barrage et fading\n2 Automatisme mental\n3 Désorganisation\n4 Ambivalence\n5 Attitudes d'écoute",
+      "has_media": false,
+      "statement": "Quel(s) élément(s) sémiologique(s) retrouvez-vous dans cet énoncé ? \n\n1 Barrage et fading\n2 Automatisme mental\n3 Désorganisation\n4 Ambivalence\n5 Attitudes d'écoute",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": ".",
+      "original_id": 44608,
+      "clinical_case": "Mlle D 23 ans célibataire ramenée par ses parents aux urgences pour un état d'agitation avec instabilité motrice et soliloquie. Les symptômes durent depuis deux semaines avec une aggravation brutale depuis 24h. La patiente est très anxieuse tenant des propos incompréhensibles. Par moments, elle s'arrête de parler au milieu d’une phrase et reste silencieuse plusieurs secondes. À d'autres moments, son volume de parole diminue progressivement jusqu'à être inaudible. Son humeur est variable tantôt elle pleure et tantôt elle redevient irritable. Non confuse, son discours est haché et incohérent : « je veux que vous m’aidiez et que vous me sauviez avec vos drogues … vous êtes des charlatans, les psychiatres ça ne sert à rien » « Je ne suis pas malade, c’est la réalité on me maltraite « mon corps est téléguidé… je reçois des ondes, je les entends comme le grésillement d'une prise électrique on me demande de me taire ! Soudain elle quitte le bureau, elle marmonne des insultes, et fait des gestes incongrus bizarres.",
+      "display_title": "Question 10 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>.</p>"
+    },
+    {
+      "id": "10.2",
+      "case_id": 10,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219423,
+          "text": " Épisode dépressif caractérisé d'intensité sévère",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219424,
+          "text": "Épisode dépressif caractérisé avec caractéristiques psychotiques",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219425,
+          "text": " Mélancolie délirante",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219426,
+          "text": "Épisode psychotique aigu",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 219427,
+          "text": " Schizophrénie",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est (sont) votre (vos) diagnostic(s) ?",
+      "has_media": false,
+      "statement": "Quel est (sont) votre (vos) diagnostic(s) ?",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": ".",
+      "original_id": 44609,
+      "clinical_case": "Mlle D 23 ans célibataire ramenée par ses parents aux urgences pour un état d'agitation avec instabilité motrice et soliloquie. Les symptômes durent depuis deux semaines avec une aggravation brutale depuis 24h. La patiente est très anxieuse tenant des propos incompréhensibles. Par moments, elle s'arrête de parler au milieu d’une phrase et reste silencieuse plusieurs secondes. À d'autres moments, son volume de parole diminue progressivement jusqu'à être inaudible. Son humeur est variable tantôt elle pleure et tantôt elle redevient irritable. Non confuse, son discours est haché et incohérent : « je veux que vous m’aidiez et que vous me sauviez avec vos drogues … vous êtes des charlatans, les psychiatres ça ne sert à rien » « Je ne suis pas malade, c’est la réalité on me maltraite « mon corps est téléguidé… je reçois des ondes, je les entends comme le grésillement d'une prise électrique on me demande de me taire ! Soudain elle quitte le bureau, elle marmonne des insultes, et fait des gestes incongrus bizarres.",
+      "display_title": "Question 10 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>.</p>"
+    },
+    {
+      "id": "10.3",
+      "case_id": 10,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219428,
+          "text": "1+2+3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219429,
+          "text": "1+2+4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219430,
+          "text": "1+2+5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219431,
+          "text": " 2+3+5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219432,
+          "text": " 1+2+3+4+5",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Tous ces examens font partie du bilan paraclinique sauf un, lequel ? \n\n1 Toxiques urinaires\n2 Imagerie cérébrale\n3 Bêta-HCG\n4 TSH\n5 EEG",
+      "has_media": false,
+      "statement": "Tous ces examens font partie du bilan paraclinique sauf un, lequel ? \n\n1 Toxiques urinaires\n2 Imagerie cérébrale\n3 Bêta-HCG\n4 TSH\n5 EEG",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": ".",
+      "original_id": 44610,
+      "clinical_case": "Mlle D 23 ans célibataire ramenée par ses parents aux urgences pour un état d'agitation avec instabilité motrice et soliloquie. Les symptômes durent depuis deux semaines avec une aggravation brutale depuis 24h. La patiente est très anxieuse tenant des propos incompréhensibles. Par moments, elle s'arrête de parler au milieu d’une phrase et reste silencieuse plusieurs secondes. À d'autres moments, son volume de parole diminue progressivement jusqu'à être inaudible. Son humeur est variable tantôt elle pleure et tantôt elle redevient irritable. Non confuse, son discours est haché et incohérent : « je veux que vous m’aidiez et que vous me sauviez avec vos drogues … vous êtes des charlatans, les psychiatres ça ne sert à rien » « Je ne suis pas malade, c’est la réalité on me maltraite « mon corps est téléguidé… je reçois des ondes, je les entends comme le grésillement d'une prise électrique on me demande de me taire ! Soudain elle quitte le bureau, elle marmonne des insultes, et fait des gestes incongrus bizarres.",
+      "display_title": "Question 10 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>.</p>"
+    },
+    {
+      "id": "10.4",
+      "case_id": 10,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219433,
+          "text": "Traitement symptomatique par benzodiazépine injectable",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219434,
+          "text": "Traitement symptomatique par antipsychotique sédatif",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219435,
+          "text": " Traitement de fond par antipsychotique de première génération",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 219436,
+          "text": "Traitement de fond antipsychotique de deuxième génération",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219437,
+          "text": "Traitement de fond par antipsychotique atypique",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": " Les traitements suivants peuvent être donné à la patiente en urgence et en traitement de fonds sauf un, lequel ? ",
+      "has_media": false,
+      "statement": " Les traitements suivants peuvent être donné à la patiente en urgence et en traitement de fonds sauf un, lequel ? ",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": ".",
+      "original_id": 44611,
+      "clinical_case": "Mlle D 23 ans célibataire ramenée par ses parents aux urgences pour un état d'agitation avec instabilité motrice et soliloquie. Les symptômes durent depuis deux semaines avec une aggravation brutale depuis 24h. La patiente est très anxieuse tenant des propos incompréhensibles. Par moments, elle s'arrête de parler au milieu d’une phrase et reste silencieuse plusieurs secondes. À d'autres moments, son volume de parole diminue progressivement jusqu'à être inaudible. Son humeur est variable tantôt elle pleure et tantôt elle redevient irritable. Non confuse, son discours est haché et incohérent : « je veux que vous m’aidiez et que vous me sauviez avec vos drogues … vous êtes des charlatans, les psychiatres ça ne sert à rien » « Je ne suis pas malade, c’est la réalité on me maltraite « mon corps est téléguidé… je reçois des ondes, je les entends comme le grésillement d'une prise électrique on me demande de me taire ! Soudain elle quitte le bureau, elle marmonne des insultes, et fait des gestes incongrus bizarres.",
+      "display_title": "Question 10 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>.</p>"
+    },
+    {
+      "id": "10.5",
+      "case_id": 10,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219438,
+          "text": "1+4",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219439,
+          "text": "1+5",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 219440,
+          "text": " 2+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219441,
+          "text": "3+5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219442,
+          "text": " 2+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "La nuit, vous êtes appelé en urgence auprès de la patiente. Elle présente des spasmes musculaires douloureux de l'extrémité céphalique avec dysphonie et protrusion de la langue. Que suspectez-vous ? Que faites-vous ?\n\n1 Dystonie aiguë\n2 Crise d'angoisse\n3 Conversion hystérique\n4 Traitement de l'épisode aigu par benzodiazépines à forte dose\n5 Traitement de l'épisode aigu par anti cholinergique de synthèse",
+      "has_media": false,
+      "statement": "La nuit, vous êtes appelé en urgence auprès de la patiente. Elle présente des spasmes musculaires douloureux de l'extrémité céphalique avec dysphonie et protrusion de la langue. Que suspectez-vous ? Que faites-vous ?\n\n1 Dystonie aiguë\n2 Crise d'angoisse\n3 Conversion hystérique\n4 Traitement de l'épisode aigu par benzodiazépines à forte dose\n5 Traitement de l'épisode aigu par anti cholinergique de synthèse",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": ".",
+      "original_id": 44612,
+      "clinical_case": "Mlle D 23 ans célibataire ramenée par ses parents aux urgences pour un état d'agitation avec instabilité motrice et soliloquie. Les symptômes durent depuis deux semaines avec une aggravation brutale depuis 24h. La patiente est très anxieuse tenant des propos incompréhensibles. Par moments, elle s'arrête de parler au milieu d’une phrase et reste silencieuse plusieurs secondes. À d'autres moments, son volume de parole diminue progressivement jusqu'à être inaudible. Son humeur est variable tantôt elle pleure et tantôt elle redevient irritable. Non confuse, son discours est haché et incohérent : « je veux que vous m’aidiez et que vous me sauviez avec vos drogues … vous êtes des charlatans, les psychiatres ça ne sert à rien » « Je ne suis pas malade, c’est la réalité on me maltraite « mon corps est téléguidé… je reçois des ondes, je les entends comme le grésillement d'une prise électrique on me demande de me taire ! Soudain elle quitte le bureau, elle marmonne des insultes, et fait des gestes incongrus bizarres.",
+      "display_title": "Question 10 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>.</p>"
+    },
+    {
+      "id": 11,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219453,
+          "text": "Thématique délirantes polymorphes",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219454,
+          "text": "Possibilité de phénomènes hallucinatoires",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219455,
+          "text": "Idées de transformation corporelles",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219456,
+          "text": "Indifférence affective",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 219457,
+          "text": "Absence de systématisation",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les états psychotiques aigus transitoires, se caractérisent dans sa forme typique par toutes ces propositions sauf, laquelle?",
+      "has_media": false,
+      "statement": "Les états psychotiques aigus transitoires, se caractérisent dans sa forme typique par toutes ces propositions sauf, laquelle?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44615,
+      "clinical_case": null,
+      "display_title": "Question 11",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": "12.1",
+      "case_id": 12,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219508,
+          "text": " Trouble bipolaire.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219509,
+          "text": "Trouble panique.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219510,
+          "text": "Psychose aiguë.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 219511,
+          "text": " Trouble anxiété généralisée compliqué d'une dépression.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219512,
+          "text": "Trouble dépressif.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P4 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est le diagnostic le plus probable ? (la ou les RJ)",
+      "has_media": false,
+      "statement": "Quel est le diagnostic le plus probable ? (la ou les RJ)",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44626,
+      "clinical_case": "Mr B.F /âgé de 25 ans, célibataire, sans antécédents psychiatriques particuliers, est accompagné aux urgences de psychiatrie par sa famille, en présentant un premier état d'agitation psychomotrice. L'entretien avec ses parents ne relève aucun antécédent particulier ni une prise toxique. Ses parents rapportent un changement de son comportement depuis une semaine, en devenant agressif et très angoissé et proférant des propos incompréhensibles et bizarres. À l'entretien, Mr B.F est toujours agité et angoissé, rapportant un danger qui s’approche de lui, et en criant : « Ils veulent me tuer, Ils sont là, Ils me surveillent », rapporte également qu'il entend des voix qui lui parlent, le commandent et qui lui dictent ce qu'il doit dire ou faire.",
+      "display_title": "Question 12 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "12.2",
+      "case_id": 12,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219513,
+          "text": "TDM cérébrale.",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 219514,
+          "text": "Dosage de la vitamine B12.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219515,
+          "text": "Dosage des folates.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219516,
+          "text": "Dosage de la vitamine D.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219517,
+          "text": " Analyse toxicologique urinaire.",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P4 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quels sont les examens complémentaires qui aideraient pour étayer le diagnostic ? (la ou les RJ)",
+      "has_media": false,
+      "statement": "Quels sont les examens complémentaires qui aideraient pour étayer le diagnostic ? (la ou les RJ)",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44627,
+      "clinical_case": "Mr B.F /âgé de 25 ans, célibataire, sans antécédents psychiatriques particuliers, est accompagné aux urgences de psychiatrie par sa famille, en présentant un premier état d'agitation psychomotrice. L'entretien avec ses parents ne relève aucun antécédent particulier ni une prise toxique. Ses parents rapportent un changement de son comportement depuis une semaine, en devenant agressif et très angoissé et proférant des propos incompréhensibles et bizarres. À l'entretien, Mr B.F est toujours agité et angoissé, rapportant un danger qui s’approche de lui, et en criant : « Ils veulent me tuer, Ils sont là, Ils me surveillent », rapporte également qu'il entend des voix qui lui parlent, le commandent et qui lui dictent ce qu'il doit dire ou faire.",
+      "display_title": "Question 12 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "12.3",
+      "case_id": 12,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219518,
+          "text": " Ordres imposés.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219519,
+          "text": " Hallucinations hypnagogiques.",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 219520,
+          "text": "Echo de la pensée.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219521,
+          "text": "Commentaires d'actes.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219522,
+          "text": "Le délire de grandeur.",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P4 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Lesquels de ces éléments sémiologiques ne constituent pas le syndrome d'automatisme mental ? (la ou les RJ)",
+      "has_media": false,
+      "statement": "Lesquels de ces éléments sémiologiques ne constituent pas le syndrome d'automatisme mental ? (la ou les RJ)",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44628,
+      "clinical_case": "Mr B.F /âgé de 25 ans, célibataire, sans antécédents psychiatriques particuliers, est accompagné aux urgences de psychiatrie par sa famille, en présentant un premier état d'agitation psychomotrice. L'entretien avec ses parents ne relève aucun antécédent particulier ni une prise toxique. Ses parents rapportent un changement de son comportement depuis une semaine, en devenant agressif et très angoissé et proférant des propos incompréhensibles et bizarres. À l'entretien, Mr B.F est toujours agité et angoissé, rapportant un danger qui s’approche de lui, et en criant : « Ils veulent me tuer, Ils sont là, Ils me surveillent », rapporte également qu'il entend des voix qui lui parlent, le commandent et qui lui dictent ce qu'il doit dire ou faire.",
+      "display_title": "Question 12 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "12.4",
+      "case_id": 12,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219523,
+          "text": "Absence d'antécédents psychiatriques.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219524,
+          "text": "Incohérence de ses propos.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219525,
+          "text": " Début aigu.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219526,
+          "text": " Bonne insertion socio-familiale avant le début de la maladie.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219527,
+          "text": " Absence de prise de toxique.",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P4 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Tous les éléments suivants plaident pour un bon pronostic sauf un ? (la RF)",
+      "has_media": false,
+      "statement": "Tous les éléments suivants plaident pour un bon pronostic sauf un ? (la RF)",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44629,
+      "clinical_case": "Mr B.F /âgé de 25 ans, célibataire, sans antécédents psychiatriques particuliers, est accompagné aux urgences de psychiatrie par sa famille, en présentant un premier état d'agitation psychomotrice. L'entretien avec ses parents ne relève aucun antécédent particulier ni une prise toxique. Ses parents rapportent un changement de son comportement depuis une semaine, en devenant agressif et très angoissé et proférant des propos incompréhensibles et bizarres. À l'entretien, Mr B.F est toujours agité et angoissé, rapportant un danger qui s’approche de lui, et en criant : « Ils veulent me tuer, Ils sont là, Ils me surveillent », rapporte également qu'il entend des voix qui lui parlent, le commandent et qui lui dictent ce qu'il doit dire ou faire.",
+      "display_title": "Question 12 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "12.5",
+      "case_id": 12,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219528,
+          "text": " Clomepramine.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219529,
+          "text": " Fluoxétine.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219530,
+          "text": " Carbapazépine.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219531,
+          "text": " Halopéridol.",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 219532,
+          "text": "Paroxétine.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P4 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Un traitement en intramusculaire pourrait être administré en urgence. Lequel ? (la RJ)",
+      "has_media": false,
+      "statement": "Un traitement en intramusculaire pourrait être administré en urgence. Lequel ? (la RJ)",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44630,
+      "clinical_case": "Mr B.F /âgé de 25 ans, célibataire, sans antécédents psychiatriques particuliers, est accompagné aux urgences de psychiatrie par sa famille, en présentant un premier état d'agitation psychomotrice. L'entretien avec ses parents ne relève aucun antécédent particulier ni une prise toxique. Ses parents rapportent un changement de son comportement depuis une semaine, en devenant agressif et très angoissé et proférant des propos incompréhensibles et bizarres. À l'entretien, Mr B.F est toujours agité et angoissé, rapportant un danger qui s’approche de lui, et en criant : « Ils veulent me tuer, Ils sont là, Ils me surveillent », rapporte également qu'il entend des voix qui lui parlent, le commandent et qui lui dictent ce qu'il doit dire ou faire.",
+      "display_title": "Question 12 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "13.1",
+      "case_id": 13,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219458,
+          "text": "1.2.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219459,
+          "text": "1.3.4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219460,
+          "text": "1.4.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219461,
+          "text": "2.3.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219462,
+          "text": "2.4.5",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Une des propositions diagnostics suivantes est la plus possible, laquelle ? (RJ)\n\n1 Une schizophrénie paranoïde\n2 Une dépression délirante\n3 Un trouble panique\n4 Une trouble psychotique transitoire\n5 Une psychose induite",
+      "has_media": false,
+      "statement": "Une des propositions diagnostics suivantes est la plus possible, laquelle ? (RJ)\n\n1 Une schizophrénie paranoïde\n2 Une dépression délirante\n3 Un trouble panique\n4 Une trouble psychotique transitoire\n5 Une psychose induite",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 44616,
+      "clinical_case": "Un jeune étudiant de 21 ans, est ramené par ses parents aux urgences psychiatriques dans un état d’agitation psychomotrice. L’anamnèse ne relève aucun antécédent psychiatrique et somatique et pas de prise toxique. Le début des troubles remonte à une dizaine de jours, marqué par une symptomatologie fait des voix dans sa tête qui le menace de le tuer le rendant très anxieux et l’empêchent de dormir la nuit. Depuis 24 h, le tableau clinique s’est aggravé par l’apparition d’une incohérence verbale et une hétéro-agressivité. L’examen psychiatrique, retrouve un sujet angoissé et très agité, des attitudes d’écoutes avec un discours centré sur la conviction d’être possédé par des démons qui le suivent continuellement parlent avec lui et le commandent à distance.",
+      "display_title": "Question 13 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "13.2",
+      "case_id": 13,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219463,
+          "text": "Une TDM cérébrale",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 219464,
+          "text": " Dosage de la vitamine B12",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219465,
+          "text": " Dosage de folates",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219466,
+          "text": "Bilan rénal",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219467,
+          "text": " Un bilan thyroïdien",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Un examen complémentaire aidant beaucoup pour étayer le diagnostic, lequel ? (1RJ)",
+      "has_media": false,
+      "statement": "Un examen complémentaire aidant beaucoup pour étayer le diagnostic, lequel ? (1RJ)",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 44617,
+      "clinical_case": "Un jeune étudiant de 21 ans, est ramené par ses parents aux urgences psychiatriques dans un état d’agitation psychomotrice. L’anamnèse ne relève aucun antécédent psychiatrique et somatique et pas de prise toxique. Le début des troubles remonte à une dizaine de jours, marqué par une symptomatologie fait des voix dans sa tête qui le menace de le tuer le rendant très anxieux et l’empêchent de dormir la nuit. Depuis 24 h, le tableau clinique s’est aggravé par l’apparition d’une incohérence verbale et une hétéro-agressivité. L’examen psychiatrique, retrouve un sujet angoissé et très agité, des attitudes d’écoutes avec un discours centré sur la conviction d’être possédé par des démons qui le suivent continuellement parlent avec lui et le commandent à distance.",
+      "display_title": "Question 13 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "13.3",
+      "case_id": 13,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219468,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219469,
+          "text": "1.3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219470,
+          "text": "2.3",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219471,
+          "text": "3.4",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 219472,
+          "text": "4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans ce cas clinique, deux syndromes psychiatriques sont clairement manifestes, lesquels ? (RJ)\n\n1 Le syndrome dissociatif\n2 Le syndrome maniaque\n3 Le syndrome hallucinatoire\n4 Le syndrome anxieux\n5 Le syndrome dépressif",
+      "has_media": false,
+      "statement": "Dans ce cas clinique, deux syndromes psychiatriques sont clairement manifestes, lesquels ? (RJ)\n\n1 Le syndrome dissociatif\n2 Le syndrome maniaque\n3 Le syndrome hallucinatoire\n4 Le syndrome anxieux\n5 Le syndrome dépressif",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 44618,
+      "clinical_case": "Un jeune étudiant de 21 ans, est ramené par ses parents aux urgences psychiatriques dans un état d’agitation psychomotrice. L’anamnèse ne relève aucun antécédent psychiatrique et somatique et pas de prise toxique. Le début des troubles remonte à une dizaine de jours, marqué par une symptomatologie fait des voix dans sa tête qui le menace de le tuer le rendant très anxieux et l’empêchent de dormir la nuit. Depuis 24 h, le tableau clinique s’est aggravé par l’apparition d’une incohérence verbale et une hétéro-agressivité. L’examen psychiatrique, retrouve un sujet angoissé et très agité, des attitudes d’écoutes avec un discours centré sur la conviction d’être possédé par des démons qui le suivent continuellement parlent avec lui et le commandent à distance.",
+      "display_title": "Question 13 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "13.4",
+      "case_id": 13,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219473,
+          "text": " Les ordres imposés",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219474,
+          "text": " Les hallucinations visuelles",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 219475,
+          "text": " Perte d’intimité de la pensée",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219476,
+          "text": "Commentaires d’actes",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219477,
+          "text": " Vol de pensée",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le syndrome d’automatisme mentale est constitué de tous ces éléments sémiologiques sauf un, lequel ? (RF)",
+      "has_media": false,
+      "statement": "Le syndrome d’automatisme mentale est constitué de tous ces éléments sémiologiques sauf un, lequel ? (RF)",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 44619,
+      "clinical_case": "Un jeune étudiant de 21 ans, est ramené par ses parents aux urgences psychiatriques dans un état d’agitation psychomotrice. L’anamnèse ne relève aucun antécédent psychiatrique et somatique et pas de prise toxique. Le début des troubles remonte à une dizaine de jours, marqué par une symptomatologie fait des voix dans sa tête qui le menace de le tuer le rendant très anxieux et l’empêchent de dormir la nuit. Depuis 24 h, le tableau clinique s’est aggravé par l’apparition d’une incohérence verbale et une hétéro-agressivité. L’examen psychiatrique, retrouve un sujet angoissé et très agité, des attitudes d’écoutes avec un discours centré sur la conviction d’être possédé par des démons qui le suivent continuellement parlent avec lui et le commandent à distance.",
+      "display_title": "Question 13 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "13.5",
+      "case_id": 13,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219478,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219479,
+          "text": "2.3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219480,
+          "text": "2.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219481,
+          "text": "1.3.4",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 219482,
+          "text": "1.3.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans ce cas clinique, quels sont les éléments qui plaident pour un bon pronostic ? (RJ)\n\n1 Absences d’antécédents psychiatriques\n2 Discours incohérent\n3 Début brutal\n4 Adaptation socio-familiale bonne\n5 Absence d’un facteur déclenchant",
+      "has_media": false,
+      "statement": "Dans ce cas clinique, quels sont les éléments qui plaident pour un bon pronostic ? (RJ)\n\n1 Absences d’antécédents psychiatriques\n2 Discours incohérent\n3 Début brutal\n4 Adaptation socio-familiale bonne\n5 Absence d’un facteur déclenchant",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 44620,
+      "clinical_case": "Un jeune étudiant de 21 ans, est ramené par ses parents aux urgences psychiatriques dans un état d’agitation psychomotrice. L’anamnèse ne relève aucun antécédent psychiatrique et somatique et pas de prise toxique. Le début des troubles remonte à une dizaine de jours, marqué par une symptomatologie fait des voix dans sa tête qui le menace de le tuer le rendant très anxieux et l’empêchent de dormir la nuit. Depuis 24 h, le tableau clinique s’est aggravé par l’apparition d’une incohérence verbale et une hétéro-agressivité. L’examen psychiatrique, retrouve un sujet angoissé et très agité, des attitudes d’écoutes avec un discours centré sur la conviction d’être possédé par des démons qui le suivent continuellement parlent avec lui et le commandent à distance.",
+      "display_title": "Question 13 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "13.6",
+      "case_id": 13,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219483,
+          "text": "Schizophrénie",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219484,
+          "text": " Paraphrénie",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219485,
+          "text": " Psychose induite par une affection médicale générale",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219486,
+          "text": " Trouble psychotique transitoire",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 219487,
+          "text": " Trouble délirant",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le délire chez cet étudiant est fortement significatif de : (RJ)",
+      "has_media": false,
+      "statement": "Le délire chez cet étudiant est fortement significatif de : (RJ)",
+      "sub_index": 6,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 44621,
+      "clinical_case": "Un jeune étudiant de 21 ans, est ramené par ses parents aux urgences psychiatriques dans un état d’agitation psychomotrice. L’anamnèse ne relève aucun antécédent psychiatrique et somatique et pas de prise toxique. Le début des troubles remonte à une dizaine de jours, marqué par une symptomatologie fait des voix dans sa tête qui le menace de le tuer le rendant très anxieux et l’empêchent de dormir la nuit. Depuis 24 h, le tableau clinique s’est aggravé par l’apparition d’une incohérence verbale et une hétéro-agressivité. L’examen psychiatrique, retrouve un sujet angoissé et très agité, des attitudes d’écoutes avec un discours centré sur la conviction d’être possédé par des démons qui le suivent continuellement parlent avec lui et le commandent à distance.",
+      "display_title": "Question 13 - Question 6",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "13.7",
+      "case_id": 13,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219488,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219489,
+          "text": "1.3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219490,
+          "text": "1.5",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 219491,
+          "text": "2.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219492,
+          "text": "1.4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "En faveur de ce diagnostic, il manque encore deux élément sémiologiques importants, lesquels ? (RJ)\n\n1 Labilité de l’humeur\n2 Velléités suicidaires\n3 Flash-back\n4 Idées fixes\n5 Sub-confusion",
+      "has_media": false,
+      "statement": "En faveur de ce diagnostic, il manque encore deux élément sémiologiques importants, lesquels ? (RJ)\n\n1 Labilité de l’humeur\n2 Velléités suicidaires\n3 Flash-back\n4 Idées fixes\n5 Sub-confusion",
+      "sub_index": 7,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 44622,
+      "clinical_case": "Un jeune étudiant de 21 ans, est ramené par ses parents aux urgences psychiatriques dans un état d’agitation psychomotrice. L’anamnèse ne relève aucun antécédent psychiatrique et somatique et pas de prise toxique. Le début des troubles remonte à une dizaine de jours, marqué par une symptomatologie fait des voix dans sa tête qui le menace de le tuer le rendant très anxieux et l’empêchent de dormir la nuit. Depuis 24 h, le tableau clinique s’est aggravé par l’apparition d’une incohérence verbale et une hétéro-agressivité. L’examen psychiatrique, retrouve un sujet angoissé et très agité, des attitudes d’écoutes avec un discours centré sur la conviction d’être possédé par des démons qui le suivent continuellement parlent avec lui et le commandent à distance.",
+      "display_title": "Question 13 - Question 7",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "13.8",
+      "case_id": 13,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219493,
+          "text": "Schizophrénie",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219494,
+          "text": "Récidive",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219495,
+          "text": "Dépression",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219496,
+          "text": "Guérison avec restitution ad-integrum",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219497,
+          "text": " Démence",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Ces propositions représentent l’évolution possible à moyen et à long terme sauf une, laquelle ? (RJ)",
+      "has_media": false,
+      "statement": "Ces propositions représentent l’évolution possible à moyen et à long terme sauf une, laquelle ? (RJ)",
+      "sub_index": 8,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 44623,
+      "clinical_case": "Un jeune étudiant de 21 ans, est ramené par ses parents aux urgences psychiatriques dans un état d’agitation psychomotrice. L’anamnèse ne relève aucun antécédent psychiatrique et somatique et pas de prise toxique. Le début des troubles remonte à une dizaine de jours, marqué par une symptomatologie fait des voix dans sa tête qui le menace de le tuer le rendant très anxieux et l’empêchent de dormir la nuit. Depuis 24 h, le tableau clinique s’est aggravé par l’apparition d’une incohérence verbale et une hétéro-agressivité. L’examen psychiatrique, retrouve un sujet angoissé et très agité, des attitudes d’écoutes avec un discours centré sur la conviction d’être possédé par des démons qui le suivent continuellement parlent avec lui et le commandent à distance.",
+      "display_title": "Question 13 - Question 8",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "13.9",
+      "case_id": 13,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219498,
+          "text": "Amitriptillyne (Laroxyl®)",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219499,
+          "text": " Neuroleptique (Loxapac®)",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 219500,
+          "text": "Sertraline (Zoloft®)",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219501,
+          "text": " Clomipramine (Anafranil®)",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 219502,
+          "text": "Fluoxétine (Prozac®)",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Un traitement en intramusculaire pourrait être administré en urgence. Lequel ? (RJ)",
+      "has_media": false,
+      "statement": "Un traitement en intramusculaire pourrait être administré en urgence. Lequel ? (RJ)",
+      "sub_index": 9,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 44624,
+      "clinical_case": "Un jeune étudiant de 21 ans, est ramené par ses parents aux urgences psychiatriques dans un état d’agitation psychomotrice. L’anamnèse ne relève aucun antécédent psychiatrique et somatique et pas de prise toxique. Le début des troubles remonte à une dizaine de jours, marqué par une symptomatologie fait des voix dans sa tête qui le menace de le tuer le rendant très anxieux et l’empêchent de dormir la nuit. Depuis 24 h, le tableau clinique s’est aggravé par l’apparition d’une incohérence verbale et une hétéro-agressivité. L’examen psychiatrique, retrouve un sujet angoissé et très agité, des attitudes d’écoutes avec un discours centré sur la conviction d’être possédé par des démons qui le suivent continuellement parlent avec lui et le commandent à distance.",
+      "display_title": "Question 13 - Question 9",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "13.10",
+      "case_id": 13,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 219503,
+          "text": "Identification vulnérabilité personnelle",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 219504,
+          "text": " Identification des stresseurs",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 219505,
+          "text": " Prise des antipsychotiques",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 219506,
+          "text": " Sismothérapie",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 219507,
+          "text": "Psychoéducation du patient et sa famille",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles psychotiques aigus et transitoires",
+        "series": "Mystidia Exams"
+      },
+      "question": "Toutes ces propositions aidant à prévenir les rechutes au long terme, sauf une, laquelle ? (RF)",
+      "has_media": false,
+      "statement": "Toutes ces propositions aidant à prévenir les rechutes au long terme, sauf une, laquelle ? (RF)",
+      "sub_index": 10,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 44625,
+      "clinical_case": "Un jeune étudiant de 21 ans, est ramené par ses parents aux urgences psychiatriques dans un état d’agitation psychomotrice. L’anamnèse ne relève aucun antécédent psychiatrique et somatique et pas de prise toxique. Le début des troubles remonte à une dizaine de jours, marqué par une symptomatologie fait des voix dans sa tête qui le menace de le tuer le rendant très anxieux et l’empêchent de dormir la nuit. Depuis 24 h, le tableau clinique s’est aggravé par l’apparition d’une incohérence verbale et une hétéro-agressivité. L’examen psychiatrique, retrouve un sujet angoissé et très agité, des attitudes d’écoutes avec un discours centré sur la conviction d’être possédé par des démons qui le suivent continuellement parlent avec lui et le commandent à distance.",
+      "display_title": "Question 13 - Question 10",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    }
+  ]
+}

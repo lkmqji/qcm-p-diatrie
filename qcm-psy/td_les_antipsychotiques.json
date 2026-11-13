@@ -1,0 +1,1068 @@
+{
+  "version": "2.0",
+  "exported_at": "2026-11-13T09:30:32.807Z",
+  "app": "Mystidia Cursus Medical Explorer",
+  "course": {
+    "title": "TD : Les antipsychotiques",
+    "module": "Psychiatrie",
+    "year": "5ème Année (DFASM2)",
+    "session_id": "session_1792187655784_3gpxpve",
+    "questions_count": 18
+  },
+  "questions": [
+    {
+      "id": 1,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 316203,
+          "text": "Sécheresse buccale et constipation.",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 316204,
+          "text": "Hypersalivation.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 316205,
+          "text": "Diarrhée.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 316206,
+          "text": "Spasme nasal.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 316207,
+          "text": "Rhinorrhée.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - TD : Les antipsychotiques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Un des effets secondaires ci-dessous concerne les effets anticholinergiques des antidépresseurs tricycliques, lequel ?",
+      "has_media": false,
+      "statement": "Un des effets secondaires ci-dessous concerne les effets anticholinergiques des antidépresseurs tricycliques, lequel ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Rappel : Les effets secondaires des psychotropes Effet anticholinergique :Constipation Vision floueBouche sèche SomnolenceEffet Noradrénergiques :Hypotension artérielleTachycardie énurésie Vertige SomnolenceEffet Histaminergiques : Prise de poids SomnolenceSource diapositive 2026.",
+      "original_id": 64676,
+      "clinical_case": null,
+      "display_title": "Question 1",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(153, 51, 255);\">Rappel : Les effets secondaires des psychotropes </strong></p><p><br></p><p><strong>Effet anticholinergique :</strong></p><ul><li>Constipation&nbsp;</li><li>Vision&nbsp;floue</li><li>Bouche&nbsp;sèche&nbsp;</li><li>Somnolence</li></ul><p><strong>Effet Noradrénergiques :</strong></p><ul><li>Hypotension&nbsp;artérielle</li><li>Tachycardie&nbsp;</li><li>énurésie&nbsp;</li><li>Vertige&nbsp;</li><li>Somnolence</li></ul><p><strong>Effet Histaminergiques : </strong></p><ul><li>Prise&nbsp;de&nbsp;poids&nbsp;</li><li>Somnolence</li></ul><p><br></p><p><strong>Source diapositive 2026.</strong></p>"
+    },
+    {
+      "id": 2,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 315876,
+          "text": "Hypersexualité systématique.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 315877,
+          "text": "Retard de l'orgasme ou anorgasmie.",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 315878,
+          "text": "Infertilité définitive.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 315879,
+          "text": "Vaginisme.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 315880,
+          "text": "Augmentation constante de la libido.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - TD : Les antipsychotiques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel effet indésirable sexuel peut survenir avec les ISRS ?",
+      "has_media": false,
+      "statement": "Quel effet indésirable sexuel peut survenir avec les ISRS ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "B.Vrai, Les ISRS ont un effet inhibiteur puissant sur la fonction sexuelle principalement via la stimulation des récepteurs 5-HT2 et 5-HT3. Cette hyperstimulation sérotoninergique émousse les réflexes neurologiques de l'orgasme. Chez l'homme, cela se traduit par un retard éjaculatoire (parfois mis à profit en thérapeutique pour traiter l'éjaculation précoce) ou une anorgasmie et chez la femme cela provoque une anorgasmie ou une baisse d'intensité du plaisir.",
+      "original_id": 64678,
+      "clinical_case": null,
+      "display_title": "Question 2",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai, </strong>Les ISRS ont un effet inhibiteur puissant sur la fonction sexuelle principalement via la stimulation des récepteurs 5-HT2 et 5-HT3. Cette hyperstimulation sérotoninergique émousse les réflexes neurologiques de l'orgasme.</p><p> Chez l'homme, cela se traduit par un retard éjaculatoire (parfois mis à profit en thérapeutique pour traiter l'éjaculation précoce) ou une anorgasmie et chez la femme cela provoque une anorgasmie ou une baisse d'intensité du plaisir.</p><p><br></p><p><br></p>"
+    },
+    {
+      "id": 3,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 308601,
+          "text": "A. 1+2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 308602,
+          "text": "B. 1+4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 308603,
+          "text": "C. 2+4",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 308604,
+          "text": "D. 3+4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 308605,
+          "text": "E. 4+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "S2 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - TD : Les antipsychotiques",
+        "series": "Mystidia Exams"
+      },
+      "question": "L’une des associations concerne les antipsychotiques, laquelle ? (RJ)\n1. Traitements des troubles anxieux\n2. Antagonistes des récepteurs dopaminergiques D2\n3. Inhibiteurs de la recapture de la sérotonine\n4. Susceptibles d’induire un syndrome malin des neuroleptiques\n5. Fortement addictogènes",
+      "has_media": false,
+      "statement": "L’une des associations concerne les antipsychotiques, laquelle ? (RJ)\n1. Traitements des troubles anxieux\n2. Antagonistes des récepteurs dopaminergiques D2\n3. Inhibiteurs de la recapture de la sérotonine\n4. Susceptibles d’induire un syndrome malin des neuroleptiques\n5. Fortement addictogènes",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "1- FauxLes antipsychotiques ne sont pas des traitements de première intention des troubles anxieux (sauf dans certains cas résistants ou en association).2-Vrai. Les antipsychotiques (typiques surtout) sont des antagonistes des récepteurs dopaminergiques D2, ce qui explique leur efficacité sur les symptômes positifs.3-Faux Les inhibiteurs de la recapture de la sérotonine (ISRS) sont des ANTIDÉPRESSEURS, pas des antipsychotiques.4-VraiLes antipsychotiques peuvent induire un syndrome malin des neuroleptiques, une complication grave (hyperthermie, rigidité, troubles de la conscience).5-FauxLe traitement symptomatique n'est PAS privilégié en première intention; on cherche d'abord la cause.",
+      "original_id": 63126,
+      "clinical_case": null,
+      "display_title": "Question 3",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">1- Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les antipsychotiques ne sont pas des traitements de première intention des troubles anxieux (sauf dans certains cas résistants ou en association).</span></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0); background-color: rgb(204, 232, 204);\">2-Vrai.</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Les antipsychotiques (typiques surtout) sont des </span><span style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 102);\">antagonistes des récepteurs dopaminergiques D2</span><span style=\"color: rgb(15, 17, 21);\">, ce qui explique leur efficacité sur les symptômes positifs.</span></p><p><br></p><p><span style=\"color: rgb(230, 0, 0); font-weight: 700; background-color: rgb(250, 204, 204);\">3-Faux</span></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Les inhibiteurs de la recapture de la sérotonine (</span><strong style=\"color: rgb(15, 17, 21);\">ISRS</strong><span style=\"color: rgb(15, 17, 21);\">) sont des </span><span style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 102);\">ANTIDÉPRESSEURS</span><span style=\"color: rgb(15, 17, 21);\">, pas des antipsychotiques.</span></p><p><br></p><p><span style=\"background-color: rgb(204, 232, 204); color: rgb(0, 138, 0); font-weight: bolder;\">4-Vrai</span></p><p><span style=\"color: rgb(15, 17, 21);\">Les antipsychotiques peuvent induire</span><strong style=\"color: rgb(240, 102, 102);\"> un syndrome malin des neuroleptiques</strong><span style=\"color: rgb(15, 17, 21);\">, une complication grave (</span><strong style=\"color: rgb(15, 17, 21);\">hyperthermie</strong><span style=\"color: rgb(15, 17, 21);\">, </span><strong style=\"color: rgb(15, 17, 21);\">rigidité</strong><span style=\"color: rgb(15, 17, 21);\">, </span><strong style=\"color: rgb(15, 17, 21);\">troubles de la conscience</strong><span style=\"color: rgb(15, 17, 21);\">).</span></p><p><br></p><p><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">5-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Le traitement symptomatique n'est PAS privilégié en première intention; on cherche d'abord la cause.</span></p>"
+    },
+    {
+      "id": 4,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295421,
+          "text": "Sédative",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 295422,
+          "text": "Antipsychotique",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 295423,
+          "text": "Myorelaxante",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 295424,
+          "text": "Amnésiante",
+          "letter": "D",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026 "
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - TD : Les antipsychotiques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Toutes ces propositions définissent l'action des benzodiazépines, sauf une, laquelle ?",
+      "has_media": true,
+      "statement": "Toutes ces propositions définissent l'action des benzodiazépines, sauf une, laquelle ?",
+      "sub_index": null,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187655784_3gpxpve/session_1792187655784_3gpxpve_q_3_1792187669173_img_0.jpg"
+      ],
+      "croq_answer": null,
+      "explanation": " 3-Faux : Les benzodiazépines n'ont pas d'effet sur les symptômes psychotiques positifs (délires, hallucinations).",
+      "original_id": 60418,
+      "clinical_case": null,
+      "display_title": "Question 4",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">&nbsp;3-Faux&nbsp;:</strong> Les benzodiazépines n'ont pas d'effet sur les symptômes psychotiques positifs (délires, hallucinations).</p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187655784_3gpxpve/session_1792187655784_3gpxpve_q_3_1792187669173_img_0.jpg\"></p>"
+    },
+    {
+      "id": 5,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295425,
+          "text": "1+2+3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 295426,
+          "text": "1+2+4",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 295427,
+          "text": "2+3+5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 295428,
+          "text": "1+3+5",
+          "letter": "D",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026 "
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - TD : Les antipsychotiques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le syndrome malin des neuroleptiques se caractérise par l'une des associations, laquelle ?\n1-Une hyperthermie\n2-Une rigidité musculaire\n3-Une diminution des CPK\n4-Une déshydratation\n5-Bradycardie",
+      "has_media": false,
+      "statement": "Le syndrome malin des neuroleptiques se caractérise par l'une des associations, laquelle ?\n1-Une hyperthermie\n2-Une rigidité musculaire\n3-Une diminution des CPK\n4-Une déshydratation\n5-Bradycardie",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": " Syndrome malin des NL▪ Rigidité musculaire, élévation des CPK et hyperthermie, tachycardie, sueursprofuses, hyperpnée, tension artérielle variable, troubles de conscience,hyperleucocytose et déshydratation.3-Faux ; il y aune élévation importante des CPK5-Faux ; une tachycardie, pas bradycardie. cours  2026 Les Médicaments Psychotropes.pdf - Google Drive ",
+      "original_id": 60419,
+      "clinical_case": null,
+      "display_title": "Question 5",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<h3><strong style=\"color: rgb(230, 0, 0);\">&nbsp;</strong><strong style=\"background-color: rgb(204, 224, 245);\">Syndrome malin des NL</strong></h3><p><strong style=\"background-color: rgb(204, 224, 245);\">▪ Rigidité musculaire, élévation des CPK et hyperthermie, tachycardie, sueurs</strong></p><p><strong style=\"background-color: rgb(204, 224, 245);\">profuses, hyperpnée, tension artérielle variable, troubles de conscience,</strong></p><p><strong style=\"background-color: rgb(204, 224, 245);\">hyperleucocytose et déshydratation.</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux&nbsp;; </strong>il y aune <span style=\"background-color: rgb(240, 102, 102);\">élévation </span>importante des CPK</p><p><strong style=\"color: rgb(230, 0, 0);\">5-Faux&nbsp;;&nbsp;</strong>une tachycardie, <span style=\"background-color: rgb(240, 102, 102);\">pas bradycardie.</span></p><p><br></p><p><br></p><p> </p><p>cours  2026 </p><p><a href=\"https://drive.google.com/file/d/1aYP9oTPnWK91s_n3x4ybOBCpnRHF_iV8/view\" rel=\"noopener noreferrer\" target=\"_blank\">Les Médicaments Psychotropes.pdf - Google Drive</a> </p>"
+    },
+    {
+      "id": 6,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295429,
+          "text": "Paroxxetine",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 295430,
+          "text": "Sertraline",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 295431,
+          "text": "Escitalopram",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 295432,
+          "text": "Amitriptyline",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 295433,
+          "text": "Fluoxetine",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026 "
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - TD : Les antipsychotiques",
+        "series": "Mystidia Exams"
+      },
+      "question": "13. Toutes ces molécules sont des antidépresseurs ISRS, sauf une, laquelle ?",
+      "has_media": false,
+      "statement": "13. Toutes ces molécules sont des antidépresseurs ISRS, sauf une, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": " La paroxétine, la sertraline, l'escitalopram et la fluoxétine sont des Inhibiteurs Sélectifs de la Recapture de la Sérotonine (ISRS).L'amitriptyline est un antidépresseur tricyclique (action sur la recapture de la noradrénaline et de la sérotonine, avec effets anticholinergiques et antihistaminiques marqués) cours  2026 Les Médicaments Psychotropes.pdf - Google Drive ",
+      "original_id": 60420,
+      "clinical_case": null,
+      "display_title": "Question 6",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<h3><strong style=\"color: rgb(230, 0, 0);\">&nbsp;</strong></h3><p><br></p><p><strong>La paroxétine, la sertraline, l'escitalopram</strong> et la <strong>fluoxétine</strong> sont des <strong style=\"color: rgb(0, 138, 0);\">Inhibiteurs Sélectifs de la Recapture de la Sérotonine (ISRS).</strong></p><p><strong>L'amitriptyline</strong> est un<strong style=\"background-color: rgb(250, 204, 204);\"> antidépresseur tricyclique</strong> (action sur la recapture de la noradrénaline et de la sérotonine, avec effets anticholinergiques et antihistaminiques marqués)</p><p> </p><p>cours  2026 </p><p><a href=\"https://drive.google.com/file/d/1aYP9oTPnWK91s_n3x4ybOBCpnRHF_iV8/view\" rel=\"noopener noreferrer\" target=\"_blank\">Les Médicaments Psychotropes.pdf - Google Drive</a> </p>"
+    },
+    {
+      "id": 7,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266237,
+          "text": "Induisent un état d'indifférence psychomotrice",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266238,
+          "text": "Agissent sur l'agitation et l'agressivité",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 266239,
+          "text": "Agissent sur les psychoses aiguës et chroniques",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266240,
+          "text": "Peuvent induire des effets secondaires de type neurologique",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266241,
+          "text": "Ont une action corticale dominante",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - TD : Les antipsychotiques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Selon les caractéristiques de Delay & Deniker, les neuroleptiques : RF",
+      "has_media": false,
+      "statement": "Selon les caractéristiques de Delay & Deniker, les neuroleptiques : RF",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "E- Faux, ont une action sous-corticale dominante. Selon les caractéristiques décrites par Jean Delay et Pierre Deniker, les neuroleptiques (appelés aujourd’hui antipsychotiques) présentent un profil d’action typique mis en évidence lors de leurs premières utilisations dans les années 1950.🔹 Action antipsychotique Réduction des symptômes psychotiques : délire, hallucinations, agitation.🔹 Indifférence affective Le patient devient plus calme, moins réactif émotionnellement, moins concerné par ses symptômes.🔹 Sédation Effet tranquillisant sans perte de conscience (différent des hypnotiques).🔹 Neurolepsie (syndrome neuroleptique)Triade clinique : indifférence psychomotrice, ralentissement psychique, et réduction des initiatives spontanées.🔹 Effets extrapyramidaux Dystonies, parkinsonisme, akinésie, dyskinésies tardives – dus au blocage dopaminergique dans la voie nigro-striée.🔹 Effets végétatifs Hypotension, prise de poids, constipation, sécheresse buccale (surtout pour les neuroleptiques à effet antihistaminique ou anticholinergique).",
+      "original_id": 54153,
+      "clinical_case": null,
+      "display_title": "Question 7",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">E- Faux,</strong> ont une action <strong style=\"background-color: rgb(240, 102, 102);\">sous-corticale</strong> dominante. </p><p><br></p><p>Selon les caractéristiques décrites par <strong>Jean Delay et Pierre Deniker</strong>, les <strong>neuroleptiques</strong> (appelés aujourd’hui antipsychotiques) présentent un <strong>profil d’action typique</strong> mis en évidence lors de leurs premières utilisations dans les années 1950.</p><p>🔹 <strong>Action antipsychotique </strong>Réduction des symptômes psychotiques : délire, hallucinations, agitation.</p><p>🔹 <strong>Indifférence affective </strong>Le patient devient plus calme, moins réactif émotionnellement, moins concerné par ses symptômes.</p><p>🔹 <strong>Sédation </strong>Effet tranquillisant sans perte de conscience (différent des hypnotiques).</p><p>🔹 <strong>Neurolepsie</strong> (syndrome neuroleptique)Triade clinique : indifférence psychomotrice, ralentissement psychique, et réduction des initiatives spontanées.</p><p>🔹 <strong>Effets extrapyramidaux </strong>Dystonies, parkinsonisme, akinésie, dyskinésies tardives – dus au blocage dopaminergique dans la voie nigro-striée.</p><p>🔹 <strong>Effets végétatifs </strong>Hypotension, prise de poids, constipation, sécheresse buccale (surtout pour les neuroleptiques à effet antihistaminique ou anticholinergique).</p>"
+    },
+    {
+      "id": 8,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266242,
+          "text": "Le syndrome malin des neuroleptiques est fréquent sous antipsychotiques de 2ème génération",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266243,
+          "text": "Les dyskinésies tardives sont de meilleur pronostic que les dyskinésies précoces",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 266244,
+          "text": "Les sédatifs sont indiqués pour la correction des effets secondaires parkinsoniens",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266245,
+          "text": "Les effets secondaires extra pyramidaux sont dus au blocage des récepteurs adrénergiques",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266246,
+          "text": "Les effets secondaires métaboliques sont dus à l'utilisation d'antipsychotiques atypiques",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - TD : Les antipsychotiques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Une seule des propositions suivantes est juste, à propos des effets secondaires des antipsychotiques, laquelle:",
+      "has_media": false,
+      "statement": "Une seule des propositions suivantes est juste, à propos des effets secondaires des antipsychotiques, laquelle:",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A- Faux, Le syndrome malin des neuroleptiques est une complication fréquente sous antipsychotiques typiques (de première génération) . B- Faux, Les dyskinésies tardives sont irréversibles et de mauvais pronostic, Par contre les dyskinésies précoces sont réversibles à l'arrêt du traitement ou après ajustement thérapeutique.C- Faux, les effets secondaires parkinsoniens sont traités par des anticholinergiques .D- Faux, les effets secondaires extra-pyramidaux sont dus au blocage des récepteurs dopaminergiques . ",
+      "original_id": 54154,
+      "clinical_case": null,
+      "display_title": "Question 8",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">A- Faux, </strong>Le syndrome malin des neuroleptiques est une complication fréquente sous antipsychotiques <strong style=\"background-color: rgb(240, 102, 102);\">typiques </strong>(de première génération) . </p><p><strong style=\"color: rgb(230, 0, 0);\">B- Faux, </strong>Les dyskinésies tardives sont irréversibles et de mauvais pronostic, Par contre les dyskinésies précoces sont réversibles à l'arrêt du traitement ou après ajustement thérapeutique.</p><p><strong style=\"color: rgb(230, 0, 0);\">C- Faux, </strong>les effets secondaires parkinsoniens sont traités par des <strong style=\"background-color: rgb(240, 102, 102);\">anticholinergiques </strong>.</p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux, </strong>les&nbsp;effets secondaires extra-pyramidaux sont dus au&nbsp;blocage des récepteurs <strong style=\"background-color: rgb(240, 102, 102);\">dopaminergiques </strong>. </p>"
+    },
+    {
+      "id": "9.1",
+      "case_id": 9,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265912,
+          "text": "Neuroleptique incisif et sédatif",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 265913,
+          "text": "Neuroleptiques désinhibiteurs et sédatif",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265914,
+          "text": "Psychoanaleptiques",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 265915,
+          "text": "Psychodysleptiques",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265916,
+          "text": "Correcteur anti cholinergique systématique",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - TD : Les antipsychotiques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle est votre prescription médicamenteuse : (RJ)",
+      "has_media": true,
+      "statement": "Quelle est votre prescription médicamenteuse : (RJ)",
+      "sub_index": 1,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187655784_3gpxpve/session_1792187655784_3gpxpve_q_8_1792187669173_img_0.png"
+      ],
+      "croq_answer": null,
+      "explanation": "QST 01 : Dans un contexte de psychose aiguë avec agitation, délire hallucinatoire mystico-religieux, hétéro/agressivité, il faut Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. QST 02 : 2- Faux, Rispéridone = Neuroleptique atypique5- Faux, Paroxétine = antidépresseur (ISRS)QST 03 : Le bilan paraclinique comprend :* biologie standard : NFS, glycémie à jeun, bilan lipidique, prolactinémie, βHCG chez les femmes ;* ECG à la recherche d’un trouble du rythme et d’un QTc longQST 04 : E- Faux, Le seuil épileptogène est abaissé de manière différente selon les molécules concernées. La clozapine présente un risque plus élevé.QST 05 : Les effets secondaires ne sont pas exclusivement dépendants de la posologie. Certains apparaissent même à des doses plus faibles, selon :• la sensibilité individuelle, • type de molécule (classique ou atypique),• facteurs génétiques.QST 10 : Les réponses D et E sont tous les deux fausses. D- Faux, Les effets indésirables endocrino-métaboliques surviennent surtout avec les antipsychotiques de deuxième génération.",
+      "original_id": 54088,
+      "clinical_case": "Monsieur RF, âgé de 25 ans, hospitalisé en service psychiatrique pour gros trouble du comportement fait d'une agitation psychomotrice, d'hétéro-agressivité verbale ainsi que physique, rattrapé de justesse d'une tentative d'automutilation.\r\nL'examen mental est en faveur d'une activité délirante mystico-réligieuse, de déni de filiation et de possession dont le mécanisme est essentiellement hallucinatoire. L'essentiel de ce tableau clinique est secondaire à l'apparition d'une psychose aigue un an après la première.",
+      "display_title": "Question 9 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 01</u></strong> : </p><p>Dans un contexte de <strong>psychose aiguë avec agitation, délire hallucinatoire mystico-religieux, hétéro/agressivité</strong>, il faut <span style=\"background-color: rgb(249, 250, 251);\">Anti-délirants (</span><strong style=\"background-color: rgb(255, 255, 102);\">incisifs</strong><span style=\"background-color: rgb(249, 250, 251);\">) = anti productive (type Halopéridol) + Neuroleptique </span><strong style=\"background-color: rgb(255, 255, 102);\">sédative</strong><span style=\"background-color: rgb(249, 250, 251);\"> dans la phase aigue. </span></p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 02</u></strong> : </p><p><strong style=\"color: rgb(230, 0, 0);\">2- Faux,</strong> Rispéridone = Neuroleptique atypique</p><p><strong style=\"color: rgb(230, 0, 0);\">5- Faux,</strong> Paroxétine = antidépresseur (ISRS)</p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187655784_3gpxpve/session_1792187655784_3gpxpve_q_8_1792187669173_img_0.png\"></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 03</u></strong> : </p><p>Le bilan paraclinique comprend :</p><p><strong>* biologie standard </strong>: NFS, glycémie à jeun, bilan lipidique, prolactinémie, βHCG chez les femmes ;</p><p><strong>* ECG</strong> à la recherche d’un trouble du rythme et d’un QTc long</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 04</u></strong> : </p><p><strong style=\"color: rgb(230, 0, 0);\">E- Faux,</strong> Le seuil épileptogène est abaissé de manière différente selon les molécules concernées. <strong style=\"background-color: rgb(240, 102, 102);\">La clozapine présente un risque plus élevé</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 05</u></strong> : </p><p>Les effets secondaires <strong>ne sont pas exclusivement dépendants de la posologie</strong>. Certains apparaissent même à <strong>des doses plus faibles</strong>, selon :</p><p>• la <strong>sensibilité individuelle</strong>, </p><p>• type de molécule (classique ou atypique),</p><p>• <strong>facteurs génétiques</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 10</u></strong> : </p><p>Les réponses D et E sont tous les deux fausses. </p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> Les effets indésirables endocrino-métaboliques surviennent surtout avec les antipsychotiques de deuxième génération.</p>"
+    },
+    {
+      "id": "9.2",
+      "case_id": 9,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265917,
+          "text": "1.2.5",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265918,
+          "text": "1.4.5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265919,
+          "text": "1.3.4",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 265920,
+          "text": "3.4.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265921,
+          "text": "2.4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - TD : Les antipsychotiques",
+        "series": "Mystidia Exams"
+      },
+      "question": "De ces molécules quelles sont les neuroleptiques classiques (RJ)\n1. Halopéridol\n2. Rispéridone\n3. Lévomépromazine\n4. Chlorpromazine\n5. Paroxetine",
+      "has_media": true,
+      "statement": "De ces molécules quelles sont les neuroleptiques classiques (RJ)\n1. Halopéridol\n2. Rispéridone\n3. Lévomépromazine\n4. Chlorpromazine\n5. Paroxetine",
+      "sub_index": 2,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187655784_3gpxpve/session_1792187655784_3gpxpve_q_9_1792187669173_img_0.png"
+      ],
+      "croq_answer": null,
+      "explanation": "QST 01 : Dans un contexte de psychose aiguë avec agitation, délire hallucinatoire mystico-religieux, hétéro/agressivité, il faut Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. QST 02 : 2- Faux, Rispéridone = Neuroleptique atypique5- Faux, Paroxétine = antidépresseur (ISRS)QST 03 : Le bilan paraclinique comprend :* biologie standard : NFS, glycémie à jeun, bilan lipidique, prolactinémie, βHCG chez les femmes ;* ECG à la recherche d’un trouble du rythme et d’un QTc longQST 04 : E- Faux, Le seuil épileptogène est abaissé de manière différente selon les molécules concernées. La clozapine présente un risque plus élevé.QST 05 : Les effets secondaires ne sont pas exclusivement dépendants de la posologie. Certains apparaissent même à des doses plus faibles, selon :• la sensibilité individuelle, • type de molécule (classique ou atypique),• facteurs génétiques.QST 10 : Les réponses D et E sont tous les deux fausses. D- Faux, Les effets indésirables endocrino-métaboliques surviennent surtout avec les antipsychotiques de deuxième génération.",
+      "original_id": 54089,
+      "clinical_case": "Monsieur RF, âgé de 25 ans, hospitalisé en service psychiatrique pour gros trouble du comportement fait d'une agitation psychomotrice, d'hétéro-agressivité verbale ainsi que physique, rattrapé de justesse d'une tentative d'automutilation.\r\nL'examen mental est en faveur d'une activité délirante mystico-réligieuse, de déni de filiation et de possession dont le mécanisme est essentiellement hallucinatoire. L'essentiel de ce tableau clinique est secondaire à l'apparition d'une psychose aigue un an après la première.",
+      "display_title": "Question 9 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 01</u></strong> : </p><p>Dans un contexte de <strong>psychose aiguë avec agitation, délire hallucinatoire mystico-religieux, hétéro/agressivité</strong>, il faut <span style=\"background-color: rgb(249, 250, 251);\">Anti-délirants (</span><strong style=\"background-color: rgb(255, 255, 102);\">incisifs</strong><span style=\"background-color: rgb(249, 250, 251);\">) = anti productive (type Halopéridol) + Neuroleptique </span><strong style=\"background-color: rgb(255, 255, 102);\">sédative</strong><span style=\"background-color: rgb(249, 250, 251);\"> dans la phase aigue. </span></p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 02</u></strong> : </p><p><strong style=\"color: rgb(230, 0, 0);\">2- Faux,</strong> Rispéridone = Neuroleptique atypique</p><p><strong style=\"color: rgb(230, 0, 0);\">5- Faux,</strong> Paroxétine = antidépresseur (ISRS)</p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187655784_3gpxpve/session_1792187655784_3gpxpve_q_9_1792187669173_img_0.png\"></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 03</u></strong> : </p><p>Le bilan paraclinique comprend :</p><p><strong>* biologie standard </strong>: NFS, glycémie à jeun, bilan lipidique, prolactinémie, βHCG chez les femmes ;</p><p><strong>* ECG</strong> à la recherche d’un trouble du rythme et d’un QTc long</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 04</u></strong> : </p><p><strong style=\"color: rgb(230, 0, 0);\">E- Faux,</strong> Le seuil épileptogène est abaissé de manière différente selon les molécules concernées. <strong style=\"background-color: rgb(240, 102, 102);\">La clozapine présente un risque plus élevé</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 05</u></strong> : </p><p>Les effets secondaires <strong>ne sont pas exclusivement dépendants de la posologie</strong>. Certains apparaissent même à <strong>des doses plus faibles</strong>, selon :</p><p>• la <strong>sensibilité individuelle</strong>, </p><p>• type de molécule (classique ou atypique),</p><p>• <strong>facteurs génétiques</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 10</u></strong> : </p><p>Les réponses D et E sont tous les deux fausses. </p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> Les effets indésirables endocrino-métaboliques surviennent surtout avec les antipsychotiques de deuxième génération.</p>"
+    },
+    {
+      "id": "9.3",
+      "case_id": 9,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265922,
+          "text": "Bilan sanguin standard",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265923,
+          "text": "Glycémie à jeun et bilan lipidique",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265924,
+          "text": "Scanner cérébral",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 265925,
+          "text": "Prolactïnémie",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265926,
+          "text": "ECG",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - TD : Les antipsychotiques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le bilan pré thérapeutique doit comprendre : (RF)",
+      "has_media": true,
+      "statement": "Le bilan pré thérapeutique doit comprendre : (RF)",
+      "sub_index": 3,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187655784_3gpxpve/session_1792187655784_3gpxpve_q_10_1792187669173_img_0.png"
+      ],
+      "croq_answer": null,
+      "explanation": "QST 01 : Dans un contexte de psychose aiguë avec agitation, délire hallucinatoire mystico-religieux, hétéro/agressivité, il faut Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. QST 02 : 2- Faux, Rispéridone = Neuroleptique atypique5- Faux, Paroxétine = antidépresseur (ISRS)QST 03 : Le bilan paraclinique comprend :* biologie standard : NFS, glycémie à jeun, bilan lipidique, prolactinémie, βHCG chez les femmes ;* ECG à la recherche d’un trouble du rythme et d’un QTc longQST 04 : E- Faux, Le seuil épileptogène est abaissé de manière différente selon les molécules concernées. La clozapine présente un risque plus élevé.QST 05 : Les effets secondaires ne sont pas exclusivement dépendants de la posologie. Certains apparaissent même à des doses plus faibles, selon :• la sensibilité individuelle, • type de molécule (classique ou atypique),• facteurs génétiques.QST 10 : Les réponses D et E sont tous les deux fausses. D- Faux, Les effets indésirables endocrino-métaboliques surviennent surtout avec les antipsychotiques de deuxième génération.",
+      "original_id": 54090,
+      "clinical_case": "Monsieur RF, âgé de 25 ans, hospitalisé en service psychiatrique pour gros trouble du comportement fait d'une agitation psychomotrice, d'hétéro-agressivité verbale ainsi que physique, rattrapé de justesse d'une tentative d'automutilation.\r\nL'examen mental est en faveur d'une activité délirante mystico-réligieuse, de déni de filiation et de possession dont le mécanisme est essentiellement hallucinatoire. L'essentiel de ce tableau clinique est secondaire à l'apparition d'une psychose aigue un an après la première.",
+      "display_title": "Question 9 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 01</u></strong> : </p><p>Dans un contexte de <strong>psychose aiguë avec agitation, délire hallucinatoire mystico-religieux, hétéro/agressivité</strong>, il faut <span style=\"background-color: rgb(249, 250, 251);\">Anti-délirants (</span><strong style=\"background-color: rgb(255, 255, 102);\">incisifs</strong><span style=\"background-color: rgb(249, 250, 251);\">) = anti productive (type Halopéridol) + Neuroleptique </span><strong style=\"background-color: rgb(255, 255, 102);\">sédative</strong><span style=\"background-color: rgb(249, 250, 251);\"> dans la phase aigue. </span></p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 02</u></strong> : </p><p><strong style=\"color: rgb(230, 0, 0);\">2- Faux,</strong> Rispéridone = Neuroleptique atypique</p><p><strong style=\"color: rgb(230, 0, 0);\">5- Faux,</strong> Paroxétine = antidépresseur (ISRS)</p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187655784_3gpxpve/session_1792187655784_3gpxpve_q_10_1792187669173_img_0.png\"></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 03</u></strong> : </p><p>Le bilan paraclinique comprend :</p><p><strong>* biologie standard </strong>: NFS, glycémie à jeun, bilan lipidique, prolactinémie, βHCG chez les femmes ;</p><p><strong>* ECG</strong> à la recherche d’un trouble du rythme et d’un QTc long</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 04</u></strong> : </p><p><strong style=\"color: rgb(230, 0, 0);\">E- Faux,</strong> Le seuil épileptogène est abaissé de manière différente selon les molécules concernées. <strong style=\"background-color: rgb(240, 102, 102);\">La clozapine présente un risque plus élevé</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 05</u></strong> : </p><p>Les effets secondaires <strong>ne sont pas exclusivement dépendants de la posologie</strong>. Certains apparaissent même à <strong>des doses plus faibles</strong>, selon :</p><p>• la <strong>sensibilité individuelle</strong>, </p><p>• type de molécule (classique ou atypique),</p><p>• <strong>facteurs génétiques</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 10</u></strong> : </p><p>Les réponses D et E sont tous les deux fausses. </p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> Les effets indésirables endocrino-métaboliques surviennent surtout avec les antipsychotiques de deuxième génération.</p>"
+    },
+    {
+      "id": "9.4",
+      "case_id": 9,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265927,
+          "text": "Dans certains états anxieux graves tels que les TOC résistants",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265928,
+          "text": "Dans les vomissements rebelles.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265929,
+          "text": "Psychoses aigues et chroniques",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 265930,
+          "text": "Les maladies psychosomatiques.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265931,
+          "text": "Aucune précaution pour les épileptiques",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - TD : Les antipsychotiques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les indications des neuroleptiques : (RF)",
+      "has_media": true,
+      "statement": "Les indications des neuroleptiques : (RF)",
+      "sub_index": 4,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187655784_3gpxpve/session_1792187655784_3gpxpve_q_11_1792187669173_img_0.png"
+      ],
+      "croq_answer": null,
+      "explanation": "QST 01 : Dans un contexte de psychose aiguë avec agitation, délire hallucinatoire mystico-religieux, hétéro/agressivité, il faut Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. QST 02 : 2- Faux, Rispéridone = Neuroleptique atypique5- Faux, Paroxétine = antidépresseur (ISRS)QST 03 : Le bilan paraclinique comprend :* biologie standard : NFS, glycémie à jeun, bilan lipidique, prolactinémie, βHCG chez les femmes ;* ECG à la recherche d’un trouble du rythme et d’un QTc longQST 04 : E- Faux, Le seuil épileptogène est abaissé de manière différente selon les molécules concernées. La clozapine présente un risque plus élevé.QST 05 : Les effets secondaires ne sont pas exclusivement dépendants de la posologie. Certains apparaissent même à des doses plus faibles, selon :• la sensibilité individuelle, • type de molécule (classique ou atypique),• facteurs génétiques.QST 10 : Les réponses D et E sont tous les deux fausses. D- Faux, Les effets indésirables endocrino-métaboliques surviennent surtout avec les antipsychotiques de deuxième génération.",
+      "original_id": 54091,
+      "clinical_case": "Monsieur RF, âgé de 25 ans, hospitalisé en service psychiatrique pour gros trouble du comportement fait d'une agitation psychomotrice, d'hétéro-agressivité verbale ainsi que physique, rattrapé de justesse d'une tentative d'automutilation.\r\nL'examen mental est en faveur d'une activité délirante mystico-réligieuse, de déni de filiation et de possession dont le mécanisme est essentiellement hallucinatoire. L'essentiel de ce tableau clinique est secondaire à l'apparition d'une psychose aigue un an après la première.",
+      "display_title": "Question 9 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 01</u></strong> : </p><p>Dans un contexte de <strong>psychose aiguë avec agitation, délire hallucinatoire mystico-religieux, hétéro/agressivité</strong>, il faut <span style=\"background-color: rgb(249, 250, 251);\">Anti-délirants (</span><strong style=\"background-color: rgb(255, 255, 102);\">incisifs</strong><span style=\"background-color: rgb(249, 250, 251);\">) = anti productive (type Halopéridol) + Neuroleptique </span><strong style=\"background-color: rgb(255, 255, 102);\">sédative</strong><span style=\"background-color: rgb(249, 250, 251);\"> dans la phase aigue. </span></p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 02</u></strong> : </p><p><strong style=\"color: rgb(230, 0, 0);\">2- Faux,</strong> Rispéridone = Neuroleptique atypique</p><p><strong style=\"color: rgb(230, 0, 0);\">5- Faux,</strong> Paroxétine = antidépresseur (ISRS)</p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187655784_3gpxpve/session_1792187655784_3gpxpve_q_11_1792187669173_img_0.png\"></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 03</u></strong> : </p><p>Le bilan paraclinique comprend :</p><p><strong>* biologie standard </strong>: NFS, glycémie à jeun, bilan lipidique, prolactinémie, βHCG chez les femmes ;</p><p><strong>* ECG</strong> à la recherche d’un trouble du rythme et d’un QTc long</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 04</u></strong> : </p><p><strong style=\"color: rgb(230, 0, 0);\">E- Faux,</strong> Le seuil épileptogène est abaissé de manière différente selon les molécules concernées. <strong style=\"background-color: rgb(240, 102, 102);\">La clozapine présente un risque plus élevé</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 05</u></strong> : </p><p>Les effets secondaires <strong>ne sont pas exclusivement dépendants de la posologie</strong>. Certains apparaissent même à <strong>des doses plus faibles</strong>, selon :</p><p>• la <strong>sensibilité individuelle</strong>, </p><p>• type de molécule (classique ou atypique),</p><p>• <strong>facteurs génétiques</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 10</u></strong> : </p><p>Les réponses D et E sont tous les deux fausses. </p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> Les effets indésirables endocrino-métaboliques surviennent surtout avec les antipsychotiques de deuxième génération.</p>"
+    },
+    {
+      "id": "9.5",
+      "case_id": 9,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265932,
+          "text": "Neurologiques",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265933,
+          "text": "Somnolence",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265934,
+          "text": "Hypotension artérielle",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 265935,
+          "text": "Prise de poids",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265936,
+          "text": "Dépendant de la posologie",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - TD : Les antipsychotiques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les effets secondaires des neuroleptiques sont : (RF)",
+      "has_media": true,
+      "statement": "Les effets secondaires des neuroleptiques sont : (RF)",
+      "sub_index": 5,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187655784_3gpxpve/session_1792187655784_3gpxpve_q_12_1792187669173_img_0.png"
+      ],
+      "croq_answer": null,
+      "explanation": "QST 01 : Dans un contexte de psychose aiguë avec agitation, délire hallucinatoire mystico-religieux, hétéro/agressivité, il faut Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. QST 02 : 2- Faux, Rispéridone = Neuroleptique atypique5- Faux, Paroxétine = antidépresseur (ISRS)QST 03 : Le bilan paraclinique comprend :* biologie standard : NFS, glycémie à jeun, bilan lipidique, prolactinémie, βHCG chez les femmes ;* ECG à la recherche d’un trouble du rythme et d’un QTc longQST 04 : E- Faux, Le seuil épileptogène est abaissé de manière différente selon les molécules concernées. La clozapine présente un risque plus élevé.QST 05 : Les effets secondaires ne sont pas exclusivement dépendants de la posologie. Certains apparaissent même à des doses plus faibles, selon :• la sensibilité individuelle, • type de molécule (classique ou atypique),• facteurs génétiques.QST 10 : Les réponses D et E sont tous les deux fausses. D- Faux, Les effets indésirables endocrino-métaboliques surviennent surtout avec les antipsychotiques de deuxième génération.",
+      "original_id": 54092,
+      "clinical_case": "Monsieur RF, âgé de 25 ans, hospitalisé en service psychiatrique pour gros trouble du comportement fait d'une agitation psychomotrice, d'hétéro-agressivité verbale ainsi que physique, rattrapé de justesse d'une tentative d'automutilation.\r\nL'examen mental est en faveur d'une activité délirante mystico-réligieuse, de déni de filiation et de possession dont le mécanisme est essentiellement hallucinatoire. L'essentiel de ce tableau clinique est secondaire à l'apparition d'une psychose aigue un an après la première.",
+      "display_title": "Question 9 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 01</u></strong> : </p><p>Dans un contexte de <strong>psychose aiguë avec agitation, délire hallucinatoire mystico-religieux, hétéro/agressivité</strong>, il faut <span style=\"background-color: rgb(249, 250, 251);\">Anti-délirants (</span><strong style=\"background-color: rgb(255, 255, 102);\">incisifs</strong><span style=\"background-color: rgb(249, 250, 251);\">) = anti productive (type Halopéridol) + Neuroleptique </span><strong style=\"background-color: rgb(255, 255, 102);\">sédative</strong><span style=\"background-color: rgb(249, 250, 251);\"> dans la phase aigue. </span></p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 02</u></strong> : </p><p><strong style=\"color: rgb(230, 0, 0);\">2- Faux,</strong> Rispéridone = Neuroleptique atypique</p><p><strong style=\"color: rgb(230, 0, 0);\">5- Faux,</strong> Paroxétine = antidépresseur (ISRS)</p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187655784_3gpxpve/session_1792187655784_3gpxpve_q_12_1792187669173_img_0.png\"></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 03</u></strong> : </p><p>Le bilan paraclinique comprend :</p><p><strong>* biologie standard </strong>: NFS, glycémie à jeun, bilan lipidique, prolactinémie, βHCG chez les femmes ;</p><p><strong>* ECG</strong> à la recherche d’un trouble du rythme et d’un QTc long</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 04</u></strong> : </p><p><strong style=\"color: rgb(230, 0, 0);\">E- Faux,</strong> Le seuil épileptogène est abaissé de manière différente selon les molécules concernées. <strong style=\"background-color: rgb(240, 102, 102);\">La clozapine présente un risque plus élevé</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 05</u></strong> : </p><p>Les effets secondaires <strong>ne sont pas exclusivement dépendants de la posologie</strong>. Certains apparaissent même à <strong>des doses plus faibles</strong>, selon :</p><p>• la <strong>sensibilité individuelle</strong>, </p><p>• type de molécule (classique ou atypique),</p><p>• <strong>facteurs génétiques</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 10</u></strong> : </p><p>Les réponses D et E sont tous les deux fausses. </p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> Les effets indésirables endocrino-métaboliques surviennent surtout avec les antipsychotiques de deuxième génération.</p>"
+    },
+    {
+      "id": "9.6",
+      "case_id": 9,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265937,
+          "text": "Constipation",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265938,
+          "text": "Vision floue",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265939,
+          "text": "Bouche sèche",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 265940,
+          "text": "Muscarinique",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265941,
+          "text": "Non atropinique",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - TD : Les antipsychotiques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les effets secondaires cholinergiques : (RF)",
+      "has_media": true,
+      "statement": "Les effets secondaires cholinergiques : (RF)",
+      "sub_index": 6,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187655784_3gpxpve/session_1792187655784_3gpxpve_q_13_1792187669173_img_0.png"
+      ],
+      "croq_answer": null,
+      "explanation": "QST 01 : Dans un contexte de psychose aiguë avec agitation, délire hallucinatoire mystico-religieux, hétéro/agressivité, il faut Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. QST 02 : 2- Faux, Rispéridone = Neuroleptique atypique5- Faux, Paroxétine = antidépresseur (ISRS)QST 03 : Le bilan paraclinique comprend :* biologie standard : NFS, glycémie à jeun, bilan lipidique, prolactinémie, βHCG chez les femmes ;* ECG à la recherche d’un trouble du rythme et d’un QTc longQST 04 : E- Faux, Le seuil épileptogène est abaissé de manière différente selon les molécules concernées. La clozapine présente un risque plus élevé.QST 05 : Les effets secondaires ne sont pas exclusivement dépendants de la posologie. Certains apparaissent même à des doses plus faibles, selon :• la sensibilité individuelle, • type de molécule (classique ou atypique),• facteurs génétiques.QST 10 : Les réponses D et E sont tous les deux fausses. D- Faux, Les effets indésirables endocrino-métaboliques surviennent surtout avec les antipsychotiques de deuxième génération.",
+      "original_id": 54093,
+      "clinical_case": "Monsieur RF, âgé de 25 ans, hospitalisé en service psychiatrique pour gros trouble du comportement fait d'une agitation psychomotrice, d'hétéro-agressivité verbale ainsi que physique, rattrapé de justesse d'une tentative d'automutilation.\r\nL'examen mental est en faveur d'une activité délirante mystico-réligieuse, de déni de filiation et de possession dont le mécanisme est essentiellement hallucinatoire. L'essentiel de ce tableau clinique est secondaire à l'apparition d'une psychose aigue un an après la première.",
+      "display_title": "Question 9 - Question 6",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 01</u></strong> : </p><p>Dans un contexte de <strong>psychose aiguë avec agitation, délire hallucinatoire mystico-religieux, hétéro/agressivité</strong>, il faut <span style=\"background-color: rgb(249, 250, 251);\">Anti-délirants (</span><strong style=\"background-color: rgb(255, 255, 102);\">incisifs</strong><span style=\"background-color: rgb(249, 250, 251);\">) = anti productive (type Halopéridol) + Neuroleptique </span><strong style=\"background-color: rgb(255, 255, 102);\">sédative</strong><span style=\"background-color: rgb(249, 250, 251);\"> dans la phase aigue. </span></p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 02</u></strong> : </p><p><strong style=\"color: rgb(230, 0, 0);\">2- Faux,</strong> Rispéridone = Neuroleptique atypique</p><p><strong style=\"color: rgb(230, 0, 0);\">5- Faux,</strong> Paroxétine = antidépresseur (ISRS)</p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187655784_3gpxpve/session_1792187655784_3gpxpve_q_13_1792187669173_img_0.png\"></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 03</u></strong> : </p><p>Le bilan paraclinique comprend :</p><p><strong>* biologie standard </strong>: NFS, glycémie à jeun, bilan lipidique, prolactinémie, βHCG chez les femmes ;</p><p><strong>* ECG</strong> à la recherche d’un trouble du rythme et d’un QTc long</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 04</u></strong> : </p><p><strong style=\"color: rgb(230, 0, 0);\">E- Faux,</strong> Le seuil épileptogène est abaissé de manière différente selon les molécules concernées. <strong style=\"background-color: rgb(240, 102, 102);\">La clozapine présente un risque plus élevé</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 05</u></strong> : </p><p>Les effets secondaires <strong>ne sont pas exclusivement dépendants de la posologie</strong>. Certains apparaissent même à <strong>des doses plus faibles</strong>, selon :</p><p>• la <strong>sensibilité individuelle</strong>, </p><p>• type de molécule (classique ou atypique),</p><p>• <strong>facteurs génétiques</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 10</u></strong> : </p><p>Les réponses D et E sont tous les deux fausses. </p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> Les effets indésirables endocrino-métaboliques surviennent surtout avec les antipsychotiques de deuxième génération.</p>"
+    },
+    {
+      "id": "9.7",
+      "case_id": 9,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265942,
+          "text": "Hypotension artérielle",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265943,
+          "text": "Tachycardie réactionnelle",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265944,
+          "text": "Diminution du seuil épileptogène",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 265945,
+          "text": "Vertige",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265946,
+          "text": "Somnolence",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - TD : Les antipsychotiques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les effets secondaires du système noradrénergique :(RF)",
+      "has_media": true,
+      "statement": "Les effets secondaires du système noradrénergique :(RF)",
+      "sub_index": 7,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187655784_3gpxpve/session_1792187655784_3gpxpve_q_14_1792187669173_img_0.png"
+      ],
+      "croq_answer": null,
+      "explanation": "QST 01 : Dans un contexte de psychose aiguë avec agitation, délire hallucinatoire mystico-religieux, hétéro/agressivité, il faut Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. QST 02 : 2- Faux, Rispéridone = Neuroleptique atypique5- Faux, Paroxétine = antidépresseur (ISRS)QST 03 : Le bilan paraclinique comprend :* biologie standard : NFS, glycémie à jeun, bilan lipidique, prolactinémie, βHCG chez les femmes ;* ECG à la recherche d’un trouble du rythme et d’un QTc longQST 04 : E- Faux, Le seuil épileptogène est abaissé de manière différente selon les molécules concernées. La clozapine présente un risque plus élevé.QST 05 : Les effets secondaires ne sont pas exclusivement dépendants de la posologie. Certains apparaissent même à des doses plus faibles, selon :• la sensibilité individuelle, • type de molécule (classique ou atypique),• facteurs génétiques.QST 10 : Les réponses D et E sont tous les deux fausses. D- Faux, Les effets indésirables endocrino-métaboliques surviennent surtout avec les antipsychotiques de deuxième génération.",
+      "original_id": 54094,
+      "clinical_case": "Monsieur RF, âgé de 25 ans, hospitalisé en service psychiatrique pour gros trouble du comportement fait d'une agitation psychomotrice, d'hétéro-agressivité verbale ainsi que physique, rattrapé de justesse d'une tentative d'automutilation.\r\nL'examen mental est en faveur d'une activité délirante mystico-réligieuse, de déni de filiation et de possession dont le mécanisme est essentiellement hallucinatoire. L'essentiel de ce tableau clinique est secondaire à l'apparition d'une psychose aigue un an après la première.",
+      "display_title": "Question 9 - Question 7",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 01</u></strong> : </p><p>Dans un contexte de <strong>psychose aiguë avec agitation, délire hallucinatoire mystico-religieux, hétéro/agressivité</strong>, il faut <span style=\"background-color: rgb(249, 250, 251);\">Anti-délirants (</span><strong style=\"background-color: rgb(255, 255, 102);\">incisifs</strong><span style=\"background-color: rgb(249, 250, 251);\">) = anti productive (type Halopéridol) + Neuroleptique </span><strong style=\"background-color: rgb(255, 255, 102);\">sédative</strong><span style=\"background-color: rgb(249, 250, 251);\"> dans la phase aigue. </span></p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 02</u></strong> : </p><p><strong style=\"color: rgb(230, 0, 0);\">2- Faux,</strong> Rispéridone = Neuroleptique atypique</p><p><strong style=\"color: rgb(230, 0, 0);\">5- Faux,</strong> Paroxétine = antidépresseur (ISRS)</p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187655784_3gpxpve/session_1792187655784_3gpxpve_q_14_1792187669173_img_0.png\"></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 03</u></strong> : </p><p>Le bilan paraclinique comprend :</p><p><strong>* biologie standard </strong>: NFS, glycémie à jeun, bilan lipidique, prolactinémie, βHCG chez les femmes ;</p><p><strong>* ECG</strong> à la recherche d’un trouble du rythme et d’un QTc long</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 04</u></strong> : </p><p><strong style=\"color: rgb(230, 0, 0);\">E- Faux,</strong> Le seuil épileptogène est abaissé de manière différente selon les molécules concernées. <strong style=\"background-color: rgb(240, 102, 102);\">La clozapine présente un risque plus élevé</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 05</u></strong> : </p><p>Les effets secondaires <strong>ne sont pas exclusivement dépendants de la posologie</strong>. Certains apparaissent même à <strong>des doses plus faibles</strong>, selon :</p><p>• la <strong>sensibilité individuelle</strong>, </p><p>• type de molécule (classique ou atypique),</p><p>• <strong>facteurs génétiques</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 10</u></strong> : </p><p>Les réponses D et E sont tous les deux fausses. </p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> Les effets indésirables endocrino-métaboliques surviennent surtout avec les antipsychotiques de deuxième génération.</p>"
+    },
+    {
+      "id": "9.8",
+      "case_id": 9,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265947,
+          "text": "Hyperprolactïnémie",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 265948,
+          "text": "Hypercorticisme",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265949,
+          "text": "Hyperandrogenie",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 265950,
+          "text": "Hyperparathyroïdie",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265951,
+          "text": "Hypothyroïdie",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - TD : Les antipsychotiques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Effets endocriniens des neuroleptiques : (RJ)",
+      "has_media": true,
+      "statement": "Effets endocriniens des neuroleptiques : (RJ)",
+      "sub_index": 8,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187655784_3gpxpve/session_1792187655784_3gpxpve_q_15_1792187669173_img_0.png"
+      ],
+      "croq_answer": null,
+      "explanation": "QST 01 : Dans un contexte de psychose aiguë avec agitation, délire hallucinatoire mystico-religieux, hétéro/agressivité, il faut Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. QST 02 : 2- Faux, Rispéridone = Neuroleptique atypique5- Faux, Paroxétine = antidépresseur (ISRS)QST 03 : Le bilan paraclinique comprend :* biologie standard : NFS, glycémie à jeun, bilan lipidique, prolactinémie, βHCG chez les femmes ;* ECG à la recherche d’un trouble du rythme et d’un QTc longQST 04 : E- Faux, Le seuil épileptogène est abaissé de manière différente selon les molécules concernées. La clozapine présente un risque plus élevé.QST 05 : Les effets secondaires ne sont pas exclusivement dépendants de la posologie. Certains apparaissent même à des doses plus faibles, selon :• la sensibilité individuelle, • type de molécule (classique ou atypique),• facteurs génétiques.QST 10 : Les réponses D et E sont tous les deux fausses. D- Faux, Les effets indésirables endocrino-métaboliques surviennent surtout avec les antipsychotiques de deuxième génération.",
+      "original_id": 54095,
+      "clinical_case": "Monsieur RF, âgé de 25 ans, hospitalisé en service psychiatrique pour gros trouble du comportement fait d'une agitation psychomotrice, d'hétéro-agressivité verbale ainsi que physique, rattrapé de justesse d'une tentative d'automutilation.\r\nL'examen mental est en faveur d'une activité délirante mystico-réligieuse, de déni de filiation et de possession dont le mécanisme est essentiellement hallucinatoire. L'essentiel de ce tableau clinique est secondaire à l'apparition d'une psychose aigue un an après la première.",
+      "display_title": "Question 9 - Question 8",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 01</u></strong> : </p><p>Dans un contexte de <strong>psychose aiguë avec agitation, délire hallucinatoire mystico-religieux, hétéro/agressivité</strong>, il faut <span style=\"background-color: rgb(249, 250, 251);\">Anti-délirants (</span><strong style=\"background-color: rgb(255, 255, 102);\">incisifs</strong><span style=\"background-color: rgb(249, 250, 251);\">) = anti productive (type Halopéridol) + Neuroleptique </span><strong style=\"background-color: rgb(255, 255, 102);\">sédative</strong><span style=\"background-color: rgb(249, 250, 251);\"> dans la phase aigue. </span></p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 02</u></strong> : </p><p><strong style=\"color: rgb(230, 0, 0);\">2- Faux,</strong> Rispéridone = Neuroleptique atypique</p><p><strong style=\"color: rgb(230, 0, 0);\">5- Faux,</strong> Paroxétine = antidépresseur (ISRS)</p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187655784_3gpxpve/session_1792187655784_3gpxpve_q_15_1792187669173_img_0.png\"></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 03</u></strong> : </p><p>Le bilan paraclinique comprend :</p><p><strong>* biologie standard </strong>: NFS, glycémie à jeun, bilan lipidique, prolactinémie, βHCG chez les femmes ;</p><p><strong>* ECG</strong> à la recherche d’un trouble du rythme et d’un QTc long</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 04</u></strong> : </p><p><strong style=\"color: rgb(230, 0, 0);\">E- Faux,</strong> Le seuil épileptogène est abaissé de manière différente selon les molécules concernées. <strong style=\"background-color: rgb(240, 102, 102);\">La clozapine présente un risque plus élevé</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 05</u></strong> : </p><p>Les effets secondaires <strong>ne sont pas exclusivement dépendants de la posologie</strong>. Certains apparaissent même à <strong>des doses plus faibles</strong>, selon :</p><p>• la <strong>sensibilité individuelle</strong>, </p><p>• type de molécule (classique ou atypique),</p><p>• <strong>facteurs génétiques</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 10</u></strong> : </p><p>Les réponses D et E sont tous les deux fausses. </p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> Les effets indésirables endocrino-métaboliques surviennent surtout avec les antipsychotiques de deuxième génération.</p>"
+    },
+    {
+      "id": "9.9",
+      "case_id": 9,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265952,
+          "text": "Une complication précoce (24-72 h)",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265953,
+          "text": "Secondaire à un facteur infectieux",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 265954,
+          "text": "Hyperthermie maligne",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 265955,
+          "text": "Rigidité musculaire",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265956,
+          "text": "Rhabdomyolyse et élévation de CPK",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - TD : Les antipsychotiques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le syndrome malin des neuroleptiques : (RF)",
+      "has_media": true,
+      "statement": "Le syndrome malin des neuroleptiques : (RF)",
+      "sub_index": 9,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187655784_3gpxpve/session_1792187655784_3gpxpve_q_16_1792187669173_img_0.png"
+      ],
+      "croq_answer": null,
+      "explanation": "QST 01 : Dans un contexte de psychose aiguë avec agitation, délire hallucinatoire mystico-religieux, hétéro/agressivité, il faut Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. QST 02 : 2- Faux, Rispéridone = Neuroleptique atypique5- Faux, Paroxétine = antidépresseur (ISRS)QST 03 : Le bilan paraclinique comprend :* biologie standard : NFS, glycémie à jeun, bilan lipidique, prolactinémie, βHCG chez les femmes ;* ECG à la recherche d’un trouble du rythme et d’un QTc longQST 04 : E- Faux, Le seuil épileptogène est abaissé de manière différente selon les molécules concernées. La clozapine présente un risque plus élevé.QST 05 : Les effets secondaires ne sont pas exclusivement dépendants de la posologie. Certains apparaissent même à des doses plus faibles, selon :• la sensibilité individuelle, • type de molécule (classique ou atypique),• facteurs génétiques.QST 10 : Les réponses D et E sont tous les deux fausses. D- Faux, Les effets indésirables endocrino-métaboliques surviennent surtout avec les antipsychotiques de deuxième génération.",
+      "original_id": 54096,
+      "clinical_case": "Monsieur RF, âgé de 25 ans, hospitalisé en service psychiatrique pour gros trouble du comportement fait d'une agitation psychomotrice, d'hétéro-agressivité verbale ainsi que physique, rattrapé de justesse d'une tentative d'automutilation.\r\nL'examen mental est en faveur d'une activité délirante mystico-réligieuse, de déni de filiation et de possession dont le mécanisme est essentiellement hallucinatoire. L'essentiel de ce tableau clinique est secondaire à l'apparition d'une psychose aigue un an après la première.",
+      "display_title": "Question 9 - Question 9",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 01</u></strong> : </p><p>Dans un contexte de <strong>psychose aiguë avec agitation, délire hallucinatoire mystico-religieux, hétéro/agressivité</strong>, il faut <span style=\"background-color: rgb(249, 250, 251);\">Anti-délirants (</span><strong style=\"background-color: rgb(255, 255, 102);\">incisifs</strong><span style=\"background-color: rgb(249, 250, 251);\">) = anti productive (type Halopéridol) + Neuroleptique </span><strong style=\"background-color: rgb(255, 255, 102);\">sédative</strong><span style=\"background-color: rgb(249, 250, 251);\"> dans la phase aigue. </span></p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 02</u></strong> : </p><p><strong style=\"color: rgb(230, 0, 0);\">2- Faux,</strong> Rispéridone = Neuroleptique atypique</p><p><strong style=\"color: rgb(230, 0, 0);\">5- Faux,</strong> Paroxétine = antidépresseur (ISRS)</p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187655784_3gpxpve/session_1792187655784_3gpxpve_q_16_1792187669173_img_0.png\"></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 03</u></strong> : </p><p>Le bilan paraclinique comprend :</p><p><strong>* biologie standard </strong>: NFS, glycémie à jeun, bilan lipidique, prolactinémie, βHCG chez les femmes ;</p><p><strong>* ECG</strong> à la recherche d’un trouble du rythme et d’un QTc long</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 04</u></strong> : </p><p><strong style=\"color: rgb(230, 0, 0);\">E- Faux,</strong> Le seuil épileptogène est abaissé de manière différente selon les molécules concernées. <strong style=\"background-color: rgb(240, 102, 102);\">La clozapine présente un risque plus élevé</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 05</u></strong> : </p><p>Les effets secondaires <strong>ne sont pas exclusivement dépendants de la posologie</strong>. Certains apparaissent même à <strong>des doses plus faibles</strong>, selon :</p><p>• la <strong>sensibilité individuelle</strong>, </p><p>• type de molécule (classique ou atypique),</p><p>• <strong>facteurs génétiques</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 10</u></strong> : </p><p>Les réponses D et E sont tous les deux fausses. </p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> Les effets indésirables endocrino-métaboliques surviennent surtout avec les antipsychotiques de deuxième génération.</p>"
+    },
+    {
+      "id": "9.10",
+      "case_id": 9,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265957,
+          "text": "Efficace sur les symptômes positifs",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265958,
+          "text": "Efficace sur les symptômes négatifs",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265959,
+          "text": "Entrainent moins d'effets secondaires extrapyramidaux.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 265960,
+          "text": "Entrainent moins d'effets métaboliques endocriniens.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265961,
+          "text": "N'apporte aucun effet comparable aux neuroleptiques classiques",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - TD : Les antipsychotiques",
+        "series": "Mystidia Exams"
+      },
+      "question": "Faut-il prévoir des neuroleptiques de seconde génération ? (RF)",
+      "has_media": true,
+      "statement": "Faut-il prévoir des neuroleptiques de seconde génération ? (RF)",
+      "sub_index": 10,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187655784_3gpxpve/session_1792187655784_3gpxpve_q_17_1792187669173_img_0.png"
+      ],
+      "croq_answer": null,
+      "explanation": "QST 01 : Dans un contexte de psychose aiguë avec agitation, délire hallucinatoire mystico-religieux, hétéro/agressivité, il faut Anti-délirants (incisifs) = anti productive (type Halopéridol) + Neuroleptique sédative dans la phase aigue. QST 02 : 2- Faux, Rispéridone = Neuroleptique atypique5- Faux, Paroxétine = antidépresseur (ISRS)QST 03 : Le bilan paraclinique comprend :* biologie standard : NFS, glycémie à jeun, bilan lipidique, prolactinémie, βHCG chez les femmes ;* ECG à la recherche d’un trouble du rythme et d’un QTc longQST 04 : E- Faux, Le seuil épileptogène est abaissé de manière différente selon les molécules concernées. La clozapine présente un risque plus élevé.QST 05 : Les effets secondaires ne sont pas exclusivement dépendants de la posologie. Certains apparaissent même à des doses plus faibles, selon :• la sensibilité individuelle, • type de molécule (classique ou atypique),• facteurs génétiques.QST 10 : Les réponses D et E sont tous les deux fausses. D- Faux, Les effets indésirables endocrino-métaboliques surviennent surtout avec les antipsychotiques de deuxième génération.",
+      "original_id": 54097,
+      "clinical_case": "Monsieur RF, âgé de 25 ans, hospitalisé en service psychiatrique pour gros trouble du comportement fait d'une agitation psychomotrice, d'hétéro-agressivité verbale ainsi que physique, rattrapé de justesse d'une tentative d'automutilation.\r\nL'examen mental est en faveur d'une activité délirante mystico-réligieuse, de déni de filiation et de possession dont le mécanisme est essentiellement hallucinatoire. L'essentiel de ce tableau clinique est secondaire à l'apparition d'une psychose aigue un an après la première.",
+      "display_title": "Question 9 - Question 10",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 01</u></strong> : </p><p>Dans un contexte de <strong>psychose aiguë avec agitation, délire hallucinatoire mystico-religieux, hétéro/agressivité</strong>, il faut <span style=\"background-color: rgb(249, 250, 251);\">Anti-délirants (</span><strong style=\"background-color: rgb(255, 255, 102);\">incisifs</strong><span style=\"background-color: rgb(249, 250, 251);\">) = anti productive (type Halopéridol) + Neuroleptique </span><strong style=\"background-color: rgb(255, 255, 102);\">sédative</strong><span style=\"background-color: rgb(249, 250, 251);\"> dans la phase aigue. </span></p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 02</u></strong> : </p><p><strong style=\"color: rgb(230, 0, 0);\">2- Faux,</strong> Rispéridone = Neuroleptique atypique</p><p><strong style=\"color: rgb(230, 0, 0);\">5- Faux,</strong> Paroxétine = antidépresseur (ISRS)</p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187655784_3gpxpve/session_1792187655784_3gpxpve_q_17_1792187669173_img_0.png\"></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 03</u></strong> : </p><p>Le bilan paraclinique comprend :</p><p><strong>* biologie standard </strong>: NFS, glycémie à jeun, bilan lipidique, prolactinémie, βHCG chez les femmes ;</p><p><strong>* ECG</strong> à la recherche d’un trouble du rythme et d’un QTc long</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 04</u></strong> : </p><p><strong style=\"color: rgb(230, 0, 0);\">E- Faux,</strong> Le seuil épileptogène est abaissé de manière différente selon les molécules concernées. <strong style=\"background-color: rgb(240, 102, 102);\">La clozapine présente un risque plus élevé</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 05</u></strong> : </p><p>Les effets secondaires <strong>ne sont pas exclusivement dépendants de la posologie</strong>. Certains apparaissent même à <strong>des doses plus faibles</strong>, selon :</p><p>• la <strong>sensibilité individuelle</strong>, </p><p>• type de molécule (classique ou atypique),</p><p>• <strong>facteurs génétiques</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 102);\"><u>QST 10</u></strong> : </p><p>Les réponses D et E sont tous les deux fausses. </p><p><strong style=\"color: rgb(230, 0, 0);\">D- Faux,</strong> Les effets indésirables endocrino-métaboliques surviennent surtout avec les antipsychotiques de deuxième génération.</p>"
+    }
+  ]
+}

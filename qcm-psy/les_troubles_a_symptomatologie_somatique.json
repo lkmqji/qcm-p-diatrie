@@ -1,0 +1,2334 @@
+{
+  "version": "2.0",
+  "exported_at": "2026-11-13T09:30:29.807Z",
+  "app": "Mystidia Cursus Medical Explorer",
+  "course": {
+    "title": "Les troubles à symptomatologie somatique",
+    "module": "Psychiatrie",
+    "year": "5ème Année (DFASM2)",
+    "session_id": "session_1792187283016_vdgjd31",
+    "questions_count": 40
+  },
+  "questions": [
+    {
+      "id": 1,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 318363,
+          "text": "L'installation est toujours progressive sur plusieurs années.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 318364,
+          "text": "B. L'apparition est le plus souvent brutale, souvent en lien avec un facteur de stress.",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 318365,
+          "text": "Le trouble débute exclusivement dans la petite enfance.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 318366,
+          "text": ". L'apparition est toujours secondaire à une lésion neurologique objectivée.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 318367,
+          "text": "Le début est systématiquement insidieux et lent.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Concernant l'apparition du trouble de conversion, quelle proposition est correcte ?",
+      "has_media": false,
+      "statement": "Concernant l'apparition du trouble de conversion, quelle proposition est correcte ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "B.Vrai, Le trouble de conversion se caractérise classiquement par une installation soudaine de symptômes neurologiques (paralysie, cécité, crises), un facteur de stress psychologique ou un traumatisme est très fréquemment identifié comme déclencheur du symptôme.",
+      "original_id": 65152,
+      "clinical_case": null,
+      "display_title": "Question 1",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(0, 138, 0);\">B.Vrai, </strong>Le trouble de conversion se caractérise classiquement par une installation soudaine de symptômes neurologiques (paralysie, cécité, crises), un facteur de stress psychologique ou un traumatisme est très fréquemment identifié comme déclencheur du symptôme.</p>"
+    },
+    {
+      "id": 2,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 318264,
+          "text": "1 + 2 + 5",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 318265,
+          "text": "1 + 3 + 4",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 318266,
+          "text": "2 + 3 + 5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 318267,
+          "text": "1 + 4 + 5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 318268,
+          "text": "3 + 4 + 5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle association concernant le trouble à symptomatologie neurologique fonctionnelle?\n1. Les symptômes peuvent concerner la fonction motrice ou sensorielle.\n2. Les symptômes suivent toujours l'anatomie neurologique classique.\n3. Des crises non épileptiques peuvent être observées.\n4. Les manifestations cliniques peuvent être incompatibles avec les mécanismes neurologiques\nconnus.\n5. Les symptômes sont nécessairement associés à une anomalie visible aux examens complémentaires.",
+      "has_media": false,
+      "statement": "Quelle association concernant le trouble à symptomatologie neurologique fonctionnelle?\n1. Les symptômes peuvent concerner la fonction motrice ou sensorielle.\n2. Les symptômes suivent toujours l'anatomie neurologique classique.\n3. Des crises non épileptiques peuvent être observées.\n4. Les manifestations cliniques peuvent être incompatibles avec les mécanismes neurologiques\nconnus.\n5. Les symptômes sont nécessairement associés à une anomalie visible aux examens complémentaires.",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "B.Faux, Au contraire l'un des signes cardinaux est que les symptômes ne respectent pas les voies anatomiques connuesE.Faux, Par définition dans ce trouble les examens complémentaires sont normaux on ne retrouvent pas de lésion organique expliquant les symptômes",
+      "original_id": 65147,
+      "clinical_case": null,
+      "display_title": "Question 2",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">B.Faux, </strong>Au contraire l'un des signes cardinaux est que les symptômes ne respectent pas les voies anatomiques connues</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux, </strong>Par définition dans ce trouble les examens complémentaires sont normaux on ne retrouvent pas de lésion organique expliquant les symptômes</p>"
+    },
+    {
+      "id": 3,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 309144,
+          "text": "1+2+3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 309145,
+          "text": "1+2+4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 309146,
+          "text": "2+3+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 309147,
+          "text": "1+2+5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 309148,
+          "text": "1+4+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "La prise en charge du trouble factice repose sur : (RJ)\n1. L'etroite collaboration entre psychiatre et somaticiens\n2. Un bilan clinique et paraclinique exhaustif\n3. La prescribtion d'antipsychotiques atypiques\n4. Les benzodiazepines sont a privilegier \n5.Des seances regulieres de psychotherapie",
+      "has_media": false,
+      "statement": "La prise en charge du trouble factice repose sur : (RJ)\n1. L'etroite collaboration entre psychiatre et somaticiens\n2. Un bilan clinique et paraclinique exhaustif\n3. La prescribtion d'antipsychotiques atypiques\n4. Les benzodiazepines sont a privilegier \n5.Des seances regulieres de psychotherapie",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "1-VraiLa collaboration permet :D'éviter les explorations répétitives et iatrogènes (risque de complications)D'unifier le discours des différents intervenantsD'établir une relation de confiance sans confrontationDe définir une stratégie commune : limiter les actes, fixer des rendez-vous réguliers, éviter les hospitalisations itératives2-VraiAvant de poser le diagnostic de trouble factice, il faut éliminer formellement une pathologie organique.Le risque est de méconnaître une maladie somatique réelle chez un patient qui a par ailleurs un trouble factice (les deux peuvent coexister).3-FauxIl n'existe pas de traitement médicamenteux spécifique du trouble factice.4-FauxLes benzodiazépines ne sont pas indiquées dans le traitement du trouble factice.Elles exposent à des risques majeurs dans cette population :Risque de dépendance et d'addictionRisque d'aggravation de la symptomatologie (désinhibition, confusion)Risque d'interactions avec d'éventuels traitements somatiquesRisque de passage à l'acte suicidaire ou auto-agressif sous benzodiazépines5-VraiLa psychothérapie est le traitement de base du trouble factice.Objectifs :Établir une relation de confiance durable avec le patient (souvent difficile car ces patients sont méfiants et ont des difficultés relationnelles)Explorer les conflits sous-jacents (souffrance narcissique, besoin de reconnaissance, traumatismes précoces)Travailler sur l'identité et le sentiment de vide intérieurAider le patient à trouver d'autres moyens d'exprimer sa souffrance que par la production de symptômes",
+      "original_id": 63237,
+      "clinical_case": null,
+      "display_title": "Question 3",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(204, 232, 204); color: rgb(0, 138, 0);\">1-Vrai</strong></p><p>La collaboration permet :</p><ul><li>D<strong>'éviter les explorations répétitives et iatrogènes</strong>&nbsp;(risque de complications)</li><li>D'<strong>unifier le discours&nbsp;des différents intervenants</strong></li><li>D'<strong>établir une relation de confiance&nbsp;sans confrontation</strong></li><li>De<strong>&nbsp;définir une stratégie commune</strong>&nbsp;: limiter les actes, fixer des rendez-vous réguliers, éviter les hospitalisations itératives</li></ul><p><br></p><p><strong style=\"color: rgb(0, 138, 0); background-color: rgb(204, 232, 204);\">2-Vrai</strong></p><p>Avant de poser le diagnostic de trouble factice, <strong style=\"background-color: rgb(255, 255, 204);\">il faut&nbsp;éliminer formellement une pathologie organique.</strong></p><p>Le risque est de méconnaître une maladie somatique réelle chez un patient qui a par ailleurs un trouble factice (<strong style=\"background-color: rgb(255, 255, 204);\">les deux peuvent coexister</strong>).</p><p><br></p><p><span style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0); font-weight: bolder;\">3-Faux</span></p><p>Il n'existe pas de&nbsp;traitement médicamenteux spécifique&nbsp;du trouble factice.</p><p><br></p><p><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">4-Faux</strong></p><p><strong>Les benzodiazépines</strong> ne sont&nbsp;<strong>pas indiquées&nbsp;</strong>dans le traitement du trouble factice.</p><p>Elles exposent à des risques majeurs dans cette population :</p><ul><li>Risque de <span style=\"color: rgb(240, 102, 102);\">dépendance&nbsp;</span>et<span style=\"color: rgb(240, 102, 102);\"> d'addiction</span></li><li>Risque d'<span style=\"color: rgb(240, 102, 102);\">aggravation&nbsp;de la symptomatologie </span>(désinhibition, confusion)</li><li>Risque d'<span style=\"color: rgb(240, 102, 102);\">interactions&nbsp;avec d'éventuels traitements somatiques</span></li><li>Risque de <span style=\"color: rgb(240, 102, 102);\">passage à l'acte&nbsp;suicidaire</span> ou auto-agressif sous benzodiazépines</li></ul><p><br></p><p><strong style=\"color: rgb(0, 138, 0); background-color: rgb(204, 232, 204);\">5-Vrai</strong></p><p>La psychothérapie est le&nbsp;traitement de base&nbsp;du trouble factice.</p><p><strong><u>Objectifs&nbsp;:</u></strong></p><ul><li>Établir une&nbsp;relation de confiance&nbsp;durable avec le patient (souvent difficile car ces patients sont méfiants et ont des difficultés relationnelles)</li><li>Explorer les<strong>&nbsp;conflits sous-jacents&nbsp;</strong>(souffrance narcissique, besoin de reconnaissance, traumatismes précoces)</li><li>Travailler sur <strong>l'identité&nbsp;et le&nbsp;sentiment de vide </strong>intérieur</li><li>Aider le patient à<strong> trouver d'autres moyens</strong> d'exprimer sa souffrance que par la production de symptômes</li></ul><p><br></p>"
+    },
+    {
+      "id": 4,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 308731,
+          "text": "1+3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 308732,
+          "text": "1+4",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 308733,
+          "text": "2+3",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 308734,
+          "text": "2+4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 308735,
+          "text": "5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les troubles à symptomatologie somatique correspondent à : (RJ)\n1. Un ou plusieurs symptômes somatiques d’origine psychologique\n2. Un ou plusieurs symptômes psychiatriques\n3. L’expression d’une pathologie organique\n4. L’expression d’une pathologie psychiatrique\n5. Toutes ces réponses sont fausses",
+      "has_media": false,
+      "statement": "Les troubles à symptomatologie somatique correspondent à : (RJ)\n1. Un ou plusieurs symptômes somatiques d’origine psychologique\n2. Un ou plusieurs symptômes psychiatriques\n3. L’expression d’une pathologie organique\n4. L’expression d’une pathologie psychiatrique\n5. Toutes ces réponses sont fausses",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "1-VraiIls se caractérisent par un ou plusieurs symptômes somatiques (douleur, fatigue, etc.) qui sont à l'origine d'une détresse ou d'une altération du fonctionnement, et qui sont liés à des facteurs psychologiques.2-FauxC'est l'inverse : des symptômes psychiatriques d'origine somatique relèvent de la psychiatrie de liaison (recherche d'une cause organique à des symptômes psychiques).3-Faux Ils ne correspondent PAS (ou pas entièrement) à l'expression d'une pathologie organique (médicale). Si une cause organique est retrouvée, ce n'est plus un trouble somatique fonctionnel.4-Vrai Ils sont l'expression d'une pathologie psychiatrique (anxiété, dépression, trouble de conversion, etc.).",
+      "original_id": 63152,
+      "clinical_case": null,
+      "display_title": "Question 4",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(204, 232, 204); color: rgb(0, 138, 0);\">1-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Ils se caractérisent par un ou plusieurs symptômes somatiques (</span><strong style=\"color: rgb(15, 17, 21);\">douleur, fatigue</strong><span style=\"color: rgb(15, 17, 21);\">, etc.) qui sont à l'origine d'une détresse ou d'une altération du fonctionnement, et qui sont liés à des facteurs psychologiques.</span></p><p><strong style=\"color: rgb(230, 0, 0); background-color: rgb(250, 204, 204);\">2-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">C'est l'inverse : des</span><strong style=\"color: rgb(15, 17, 21);\"> symptômes psychiatriques d'origine somatique</strong><span style=\"color: rgb(15, 17, 21);\"> relèvent de la psychiatrie de liaison (recherche d'une cause organique à des symptômes psychiques).</span></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0); background-color: rgb(250, 204, 204);\">3-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Ils ne correspondent PAS (ou pas entièrement) à l'expression d'une pathologie organique (médicale). Si une cause organique est retrouvée, ce n'est plus un trouble somatique fonctionnel.</span></p><p><strong style=\"color: rgb(0, 138, 0); background-color: rgb(204, 232, 204);\">4-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Ils sont l'expression d'une pathologie psychiatrique (</span><strong style=\"color: rgb(15, 17, 21);\">anxiété, dépression, trouble de conversion, </strong><span style=\"color: rgb(15, 17, 21);\">etc.).</span></p>"
+    },
+    {
+      "id": 5,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295654,
+          "text": "1+3+4",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 295655,
+          "text": "2+3+5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 295656,
+          "text": "3+4+5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 295657,
+          "text": "1+2+4",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 295658,
+          "text": "3+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026 "
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Devant une crise de perte de connaissance, le diagnostic de trouble neurologique fonctionnel est évoqué devant :\n1-La survenue à la suite d'un facteur de stress\n2-L'opposition à l'ouverture des paupières\n3-Une chute traumatisante \n4-Des antécédents de crises conversives\n5-L'amnésie totale de la crise au réveil",
+      "has_media": false,
+      "statement": "Devant une crise de perte de connaissance, le diagnostic de trouble neurologique fonctionnel est évoqué devant :\n1-La survenue à la suite d'un facteur de stress\n2-L'opposition à l'ouverture des paupières\n3-Une chute traumatisante \n4-Des antécédents de crises conversives\n5-L'amnésie totale de la crise au réveil",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "1-Vrai : Les crises fonctionnelles surviennent fréquemment après un stress émotionnel, un conflit, un choc psychique.2-Vrai : on observe Une résistance active à l’ouverture des paupières lors de l’examen contrairement au troubles organiques 3-Faux : : Une chute franchement traumatique oriente plutôt vers un trouble organique.4-Vrai 5-Faux : l’amnesie complete post-critique est retrouvée dans l’epilepsiecours 2026les troubles à symptomatologie somatique 26 11 2025 P1.pdf - Google Drive",
+      "original_id": 60465,
+      "clinical_case": null,
+      "display_title": "Question 5",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai&nbsp;:</strong> Les crises fonctionnelles surviennent<strong> fréquemment</strong><strong style=\"background-color: rgb(255, 255, 204);\"> </strong><span style=\"background-color: rgb(255, 255, 204);\">après un stress émotionnel, un conflit, un choc psychique.</span></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai&nbsp;: </strong>on observe<strong style=\"background-color: rgb(255, 255, 102);\"> Une résistance active à l’ouverture des paupières</strong> lors de l’examen <span style=\"background-color: rgb(250, 204, 204);\">contrairement au troubles organiques&nbsp;</span></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux&nbsp;:</strong> : Une chute franchement traumatique oriente plutôt<strong style=\"background-color: rgb(250, 204, 204);\"> vers un trouble organique.</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">4-Vrai&nbsp;</strong></p><p><strong style=\"color: rgb(230, 0, 0);\">5-Faux&nbsp;: </strong>l’amnesie complete post-critique est retrouvée dans <strong style=\"background-color: rgb(250, 204, 204);\">l’epilepsie</strong></p><h4><br></h4><p><br></p><p><br></p><p>cours 2026</p><p><a href=\"https://drive.google.com/file/d/1BhHJucFAyF-IpAjx06JI33SRzM4d4gBZ/view\" rel=\"noopener noreferrer\" target=\"_blank\">les troubles à symptomatologie somatique 26 11 2025 P1.pdf - Google Drive</a></p>"
+    },
+    {
+      "id": 6,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295644,
+          "text": "2+4+5",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 295645,
+          "text": "1+3+5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 295646,
+          "text": "1+2+4",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 295647,
+          "text": "2+3+5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 295648,
+          "text": "3+4+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026 "
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Devant une patiente mutique depuis 2 jours, vous suspectez un trouble conversif devant :\n1-La présence d'un conflit déclenchant\n2-Une indifférence de la patiente par rapport à son symptôme \n3-L'absence d'antécédents psychiatriques \n4-Une abondance de l'expression gestuelle\n5-Un ralentissement psychomoteur",
+      "has_media": false,
+      "statement": "Devant une patiente mutique depuis 2 jours, vous suspectez un trouble conversif devant :\n1-La présence d'un conflit déclenchant\n2-Une indifférence de la patiente par rapport à son symptôme \n3-L'absence d'antécédents psychiatriques \n4-Une abondance de l'expression gestuelle\n5-Un ralentissement psychomoteur",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "1-Vrai : Le début des troubles peut être associé avec un stress ou un traumatisme psychologique ou physique2-Vrai : Le concept de bénéfices secondaires ou le phénomène de la belle indifférence peuvent exister et sont des facteurs de mauvais pronostic , contrairement à une lésion organique ou il y a une détresse et inquietude face au mutisme 3-Faux : Un trouble conversif peut survenir chez n’importe qui , avec ou sans ATCD psych donc ca nous oriente pas 4-Vrai : la patiente reste muette verbalement mais communique activement par gestes, mimiques ou écriture, montrant une dissociation fonctionnelle (perte de la fonction de parole) sans altération globale cognitive.5-Faux : oriente vers une dépression mélancolique ou un état catatonique.cours 2026les troubles à symptomatologie somatique 26 11 2025 P1.pdf - Google Drive",
+      "original_id": 60463,
+      "clinical_case": null,
+      "display_title": "Question 6",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai&nbsp;:</strong> Le début des troubles peut être associé avec un stress ou un traumatisme psychologique ou physique</p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai&nbsp;:</strong> Le concept de bénéfices secondaires ou le phénomène de <strong style=\"background-color: rgb(102, 185, 102);\">la belle indifférence</strong> peuvent exister et sont des <span style=\"background-color: rgb(255, 255, 102);\">facteurs de mauvais pronostic , </span><span style=\"background-color: rgb(250, 204, 204);\">contrairement à une lésion organique ou il y a une détresse et inquietude face au mutism</span>e </p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux&nbsp;:</strong> Un trouble conversif peut survenir chez<strong style=\"background-color: rgb(255, 255, 102);\"> n’importe qui</strong> , avec ou sans ATCD psych donc ca nous oriente pas </p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">4-Vrai&nbsp;:</strong>&nbsp;la patiente reste muette verbalement mais communique activement par gestes, mimiques ou écriture, montrant une dissociation fonctionnelle (perte de la fonction de parole) sans altération globale cognitive.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">5-Faux&nbsp;: </strong>oriente vers une dépression mélancolique ou un état catatonique.</p><h4><br></h4><p><br></p><p><br></p><p>cours 2026</p><p><a href=\"https://drive.google.com/file/d/1BhHJucFAyF-IpAjx06JI33SRzM4d4gBZ/view\" rel=\"noopener noreferrer\" target=\"_blank\">les troubles à symptomatologie somatique 26 11 2025 P1.pdf - Google Drive</a></p>"
+    },
+    {
+      "id": 7,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295639,
+          "text": "Symptômes somatiques multiples sans altération fonctionnelle",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 295640,
+          "text": "Présence d'un trouble anxieux associé",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 295641,
+          "text": "Symptômes uniquement dans le contexte d'un trouble dépressif",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 295642,
+          "text": "Présence de symptômes moteurs ou sensoriels incompatibles avec une affection neurologique",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 295643,
+          "text": "Symptômes uniquement nocturnes",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026 "
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est le critère essentiel pour diagnostiquer un trouble de conversion ?",
+      "has_media": false,
+      "statement": "Quel est le critère essentiel pour diagnostiquer un trouble de conversion ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "1-Faux : c’est un trouble somatoforme, pas la conversion.2-Faux : ce n’est pas un critère diagnostic 3-5-Faux4-vraiRappel :Les critères diagnostiques :A. Un ou plusieurs symptômes d'altération de la motricité volontaire ou des fonctions sensorielles ;B. Les données cliniques démontrent l'incompatibilité entre symptômes et une affection neurologique ou médicale connue C. Les symptômes ou les handicaps ne sont pas mieux expliqués par un autre trouble médical ou mental ;D. Le symptôme ou le handicap entraîne une détresse ou une altération clinique significativedans le domaine du fonctionnement social professionnel ou dans d'autres domaines importants, ou nécessite une évaluation médicale.  cours 2026les troubles à symptomatologie somatique 26 11 2025 P1.pdf - Google Drive",
+      "original_id": 60462,
+      "clinical_case": null,
+      "display_title": "Question 7",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<h4><br></h4><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux&nbsp;:</strong> c’est un trouble somatoforme, pas la conversion.</p><p><strong style=\"color: rgb(230, 0, 0);\">2-Faux&nbsp;: </strong>ce n’est pas un critère diagnostic </p><p><strong style=\"color: rgb(230, 0, 0);\">3-5-Faux</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">4-vrai</strong></p><p><strong style=\"background-color: rgb(204, 224, 245);\"><u>Rappel&nbsp;:</u></strong></p><p><strong style=\"color: rgb(0, 71, 178); background-color: rgb(204, 224, 245);\">Les critères diagnostiques :</strong></p><p><strong style=\"color: rgb(0, 71, 178); background-color: rgb(204, 224, 245);\">A. Un ou plusieurs symptômes d'altération de la motricité volontaire ou des fonctions sensorielles ;</strong></p><p><strong style=\"color: rgb(0, 71, 178); background-color: rgb(204, 224, 245);\">B. Les données cliniques démontrent l'incompatibilité entre symptômes et une affection neurologique ou médicale connue </strong></p><p><strong style=\"color: rgb(0, 71, 178); background-color: rgb(204, 224, 245);\">C. Les symptômes ou les handicaps ne sont pas mieux expliqués par un autre trouble médical ou mental ;</strong></p><p><strong style=\"color: rgb(0, 71, 178); background-color: rgb(204, 224, 245);\">D. Le symptôme ou le handicap entraîne une détresse ou une altération clinique significativedans le domaine du fonctionnement social professionnel ou dans d'autres domaines importants,&nbsp;ou nécessite une évaluation médicale.</strong></p><p>&nbsp;</p><p>&nbsp;</p><p><br></p><p><br></p><p>cours 2026</p><p><a href=\"https://drive.google.com/file/d/1BhHJucFAyF-IpAjx06JI33SRzM4d4gBZ/view\" rel=\"noopener noreferrer\" target=\"_blank\">les troubles à symptomatologie somatique 26 11 2025 P1.pdf - Google Drive</a></p>"
+    },
+    {
+      "id": 8,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284671,
+          "text": "La crainte excessive d’avoir une maladie.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284672,
+          "text": "La conversion ou le trouble à symptomatologie neurologique fonctionnelle.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 284673,
+          "text": "Trouble panique.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 284674,
+          "text": "Troubles à symptomatologie somatique.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284675,
+          "text": "Les facteurs psychologiques influençant une affection médicale.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Tous ces troubles à symptomatologie somatique sont individualisés par le DSM 5 sauf un, lequel ?",
+      "has_media": false,
+      "statement": "Tous ces troubles à symptomatologie somatique sont individualisés par le DSM 5 sauf un, lequel ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A/ VRAI : crainte excessive d'avoir une maladie= hypochondriaqueC/ FAUX : Troubles panique fait partie des troubles anxieux",
+      "original_id": 58134,
+      "clinical_case": null,
+      "display_title": "Question 8",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>A/ VRAI : crainte excessive d'avoir une maladie= hypochondriaque</p><p>C/ FAUX : Troubles panique fait partie des troubles anxieux</p>"
+    },
+    {
+      "id": "9.1",
+      "case_id": 9,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266137,
+          "text": "Trouble bipolaire",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266138,
+          "text": "Trouble panique",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 266139,
+          "text": "Schizophrénie",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266140,
+          "text": "Accès maniaque",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266141,
+          "text": "Troubles à symptomatologie somatique",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2025"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est le diagnostic le plus probable chez cette patiente ? (RJ)",
+      "has_media": false,
+      "statement": "Quel est le diagnostic le plus probable chez cette patiente ? (RJ)",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "QST 01:E- Vrai, Hassina présente une plainte somatique persistante, inexpliquée, associée à une souffrance psychique importante, une errance médicale, et une altération du fonctionnement social → typique du trouble à symptomatologie somatique.QST 03:B- Vrai, L'épisode dépressif caractérisé, fréquent en comorbidité avec les troubles à symptomatologie somatique.QST 04:Les troubles du groupe des troubles à expression somatique et apparentés (DSM-5) regroupent:Trouble à symptomatologie somatiqueCrainte excessive d’avoir une maladie (ancien hypocondrie)Trouble de conversion (symptômes neurologiques sans base organique)",
+      "original_id": 54133,
+      "clinical_case": "Mme A Hassina âgée de 42 ans divorcée sans enfants coiffeuse de formation, elle a été orientée par son médecin traitant, ce dernier indique qu'a son dernier rendez-vous médical, elle a été en larmes et contrariée, et son médecin avait des difficultés à prendre en charge les multiples symptômes somatiques de sa patiente évoluant depuis plus d'un an estimant qu'une évaluation psychiatrique pourrait être utile. Alors qu'elle entre dans la salle de consultation, Hassina remet au psychiatre un résumé de trois pages de ses soucis physiques, ses préoccupations initiales concernent des spasmes nocturnes et des douleurs diurnes dans les jambes. Elle a ensuite développé des difficultés de sommeil qui l'ont conduite à avoir le cerveau embrouillé et la tête lourde, elle a des sensations intermittentes de froid dans les extrémités le visage et les oreilles, elle rapporte qu'elle est angoissée, se sent triste, ne mange plus qu'elle a perdu gout à la vie, et qu'elle pense souvent à la mort. Elle a consulté plusieurs spécialistes pour ses différents symptômes mais sans résultats, je suis épuisée nous rapporte-t-elle.",
+      "display_title": "Question 9 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(255, 255, 0);\">QST 01:</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">E- Vrai,</strong> Hassina présente une plainte somatique <strong>persistante, inexpliquée</strong>, associée à une <strong>souffrance psychique importante</strong>, une errance médicale, et une <strong>altération du fonctionnement social</strong> → typique du <strong>trouble à symptomatologie somatique</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 0);\">QST 03:</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> L'<strong>épisode dépressif caractérisé</strong>, fréquent en comorbidité avec les troubles à symptomatologie somatique.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 0);\">QST 04:</strong></p><p>Les troubles du <strong>groupe des troubles à expression somatique et apparentés</strong> (DSM-5) regroupent:</p><ol><li class=\"ql-indent-1\">Trouble à symptomatologie somatique</li><li class=\"ql-indent-1\">Crainte excessive d’avoir une maladie (ancien hypocondrie)</li><li class=\"ql-indent-1\">Trouble de conversion (symptômes neurologiques sans base organique)</li></ol><p><br></p>"
+    },
+    {
+      "id": "9.2",
+      "case_id": 9,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266142,
+          "text": "1.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266143,
+          "text": "1.2",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 266144,
+          "text": "3.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266145,
+          "text": "4.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266146,
+          "text": "3.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2025"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quels sont les principaux symptômes cités ? (RJ)\n1- Souffrance physique\n2- Souffrance psychique\n3- Délire de grandeur\n4- Hallucination\n5- Peur de mourir",
+      "has_media": false,
+      "statement": "Quels sont les principaux symptômes cités ? (RJ)\n1- Souffrance physique\n2- Souffrance psychique\n3- Délire de grandeur\n4- Hallucination\n5- Peur de mourir",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "QST 01:E- Vrai, Hassina présente une plainte somatique persistante, inexpliquée, associée à une souffrance psychique importante, une errance médicale, et une altération du fonctionnement social → typique du trouble à symptomatologie somatique.QST 03:B- Vrai, L'épisode dépressif caractérisé, fréquent en comorbidité avec les troubles à symptomatologie somatique.QST 04:Les troubles du groupe des troubles à expression somatique et apparentés (DSM-5) regroupent:Trouble à symptomatologie somatiqueCrainte excessive d’avoir une maladie (ancien hypocondrie)Trouble de conversion (symptômes neurologiques sans base organique)",
+      "original_id": 54134,
+      "clinical_case": "Mme A Hassina âgée de 42 ans divorcée sans enfants coiffeuse de formation, elle a été orientée par son médecin traitant, ce dernier indique qu'a son dernier rendez-vous médical, elle a été en larmes et contrariée, et son médecin avait des difficultés à prendre en charge les multiples symptômes somatiques de sa patiente évoluant depuis plus d'un an estimant qu'une évaluation psychiatrique pourrait être utile. Alors qu'elle entre dans la salle de consultation, Hassina remet au psychiatre un résumé de trois pages de ses soucis physiques, ses préoccupations initiales concernent des spasmes nocturnes et des douleurs diurnes dans les jambes. Elle a ensuite développé des difficultés de sommeil qui l'ont conduite à avoir le cerveau embrouillé et la tête lourde, elle a des sensations intermittentes de froid dans les extrémités le visage et les oreilles, elle rapporte qu'elle est angoissée, se sent triste, ne mange plus qu'elle a perdu gout à la vie, et qu'elle pense souvent à la mort. Elle a consulté plusieurs spécialistes pour ses différents symptômes mais sans résultats, je suis épuisée nous rapporte-t-elle.",
+      "display_title": "Question 9 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(255, 255, 0);\">QST 01:</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">E- Vrai,</strong> Hassina présente une plainte somatique <strong>persistante, inexpliquée</strong>, associée à une <strong>souffrance psychique importante</strong>, une errance médicale, et une <strong>altération du fonctionnement social</strong> → typique du <strong>trouble à symptomatologie somatique</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 0);\">QST 03:</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> L'<strong>épisode dépressif caractérisé</strong>, fréquent en comorbidité avec les troubles à symptomatologie somatique.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 0);\">QST 04:</strong></p><p>Les troubles du <strong>groupe des troubles à expression somatique et apparentés</strong> (DSM-5) regroupent:</p><ol><li class=\"ql-indent-1\">Trouble à symptomatologie somatique</li><li class=\"ql-indent-1\">Crainte excessive d’avoir une maladie (ancien hypocondrie)</li><li class=\"ql-indent-1\">Trouble de conversion (symptômes neurologiques sans base organique)</li></ol><p><br></p>"
+    },
+    {
+      "id": "9.3",
+      "case_id": 9,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266147,
+          "text": "Troubles obsessionnels compulsifs",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266148,
+          "text": "Trouble dépressif",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 266149,
+          "text": "Trouble stress post-traumatique",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266150,
+          "text": "Trouble de la personnalité",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266151,
+          "text": " Trouble stress aigu",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2025"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle comorbidité psychiatrique est décrite chez Hassina ? (RJ)",
+      "has_media": false,
+      "statement": "Quelle comorbidité psychiatrique est décrite chez Hassina ? (RJ)",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "QST 01:E- Vrai, Hassina présente une plainte somatique persistante, inexpliquée, associée à une souffrance psychique importante, une errance médicale, et une altération du fonctionnement social → typique du trouble à symptomatologie somatique.QST 03:B- Vrai, L'épisode dépressif caractérisé, fréquent en comorbidité avec les troubles à symptomatologie somatique.QST 04:Les troubles du groupe des troubles à expression somatique et apparentés (DSM-5) regroupent:Trouble à symptomatologie somatiqueCrainte excessive d’avoir une maladie (ancien hypocondrie)Trouble de conversion (symptômes neurologiques sans base organique)",
+      "original_id": 54135,
+      "clinical_case": "Mme A Hassina âgée de 42 ans divorcée sans enfants coiffeuse de formation, elle a été orientée par son médecin traitant, ce dernier indique qu'a son dernier rendez-vous médical, elle a été en larmes et contrariée, et son médecin avait des difficultés à prendre en charge les multiples symptômes somatiques de sa patiente évoluant depuis plus d'un an estimant qu'une évaluation psychiatrique pourrait être utile. Alors qu'elle entre dans la salle de consultation, Hassina remet au psychiatre un résumé de trois pages de ses soucis physiques, ses préoccupations initiales concernent des spasmes nocturnes et des douleurs diurnes dans les jambes. Elle a ensuite développé des difficultés de sommeil qui l'ont conduite à avoir le cerveau embrouillé et la tête lourde, elle a des sensations intermittentes de froid dans les extrémités le visage et les oreilles, elle rapporte qu'elle est angoissée, se sent triste, ne mange plus qu'elle a perdu gout à la vie, et qu'elle pense souvent à la mort. Elle a consulté plusieurs spécialistes pour ses différents symptômes mais sans résultats, je suis épuisée nous rapporte-t-elle.",
+      "display_title": "Question 9 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(255, 255, 0);\">QST 01:</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">E- Vrai,</strong> Hassina présente une plainte somatique <strong>persistante, inexpliquée</strong>, associée à une <strong>souffrance psychique importante</strong>, une errance médicale, et une <strong>altération du fonctionnement social</strong> → typique du <strong>trouble à symptomatologie somatique</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 0);\">QST 03:</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> L'<strong>épisode dépressif caractérisé</strong>, fréquent en comorbidité avec les troubles à symptomatologie somatique.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 0);\">QST 04:</strong></p><p>Les troubles du <strong>groupe des troubles à expression somatique et apparentés</strong> (DSM-5) regroupent:</p><ol><li class=\"ql-indent-1\">Trouble à symptomatologie somatique</li><li class=\"ql-indent-1\">Crainte excessive d’avoir une maladie (ancien hypocondrie)</li><li class=\"ql-indent-1\">Trouble de conversion (symptômes neurologiques sans base organique)</li></ol><p><br></p>"
+    },
+    {
+      "id": "9.4",
+      "case_id": 9,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266152,
+          "text": "1.2.3",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 266153,
+          "text": "1.4.5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 266154,
+          "text": "2.4.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266155,
+          "text": "3.4.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266156,
+          "text": "4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2025"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quels sont les principaux troubles qui appartiennent au même groupe de ce diagnostic ? (RJ)\n1- Trouble à symptomatologie somatique\n2- Crainte excessive d’avoir une maladie\n3- Trouble de conversion\n4- Trouble de l’adaptation\n5- Trouble du sommeil",
+      "has_media": false,
+      "statement": "Quels sont les principaux troubles qui appartiennent au même groupe de ce diagnostic ? (RJ)\n1- Trouble à symptomatologie somatique\n2- Crainte excessive d’avoir une maladie\n3- Trouble de conversion\n4- Trouble de l’adaptation\n5- Trouble du sommeil",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "QST 01:E- Vrai, Hassina présente une plainte somatique persistante, inexpliquée, associée à une souffrance psychique importante, une errance médicale, et une altération du fonctionnement social → typique du trouble à symptomatologie somatique.QST 03:B- Vrai, L'épisode dépressif caractérisé, fréquent en comorbidité avec les troubles à symptomatologie somatique.QST 04:Les troubles du groupe des troubles à expression somatique et apparentés (DSM-5) regroupent:Trouble à symptomatologie somatiqueCrainte excessive d’avoir une maladie (ancien hypocondrie)Trouble de conversion (symptômes neurologiques sans base organique)",
+      "original_id": 54136,
+      "clinical_case": "Mme A Hassina âgée de 42 ans divorcée sans enfants coiffeuse de formation, elle a été orientée par son médecin traitant, ce dernier indique qu'a son dernier rendez-vous médical, elle a été en larmes et contrariée, et son médecin avait des difficultés à prendre en charge les multiples symptômes somatiques de sa patiente évoluant depuis plus d'un an estimant qu'une évaluation psychiatrique pourrait être utile. Alors qu'elle entre dans la salle de consultation, Hassina remet au psychiatre un résumé de trois pages de ses soucis physiques, ses préoccupations initiales concernent des spasmes nocturnes et des douleurs diurnes dans les jambes. Elle a ensuite développé des difficultés de sommeil qui l'ont conduite à avoir le cerveau embrouillé et la tête lourde, elle a des sensations intermittentes de froid dans les extrémités le visage et les oreilles, elle rapporte qu'elle est angoissée, se sent triste, ne mange plus qu'elle a perdu gout à la vie, et qu'elle pense souvent à la mort. Elle a consulté plusieurs spécialistes pour ses différents symptômes mais sans résultats, je suis épuisée nous rapporte-t-elle.",
+      "display_title": "Question 9 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(255, 255, 0);\">QST 01:</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">E- Vrai,</strong> Hassina présente une plainte somatique <strong>persistante, inexpliquée</strong>, associée à une <strong>souffrance psychique importante</strong>, une errance médicale, et une <strong>altération du fonctionnement social</strong> → typique du <strong>trouble à symptomatologie somatique</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 0);\">QST 03:</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> L'<strong>épisode dépressif caractérisé</strong>, fréquent en comorbidité avec les troubles à symptomatologie somatique.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 0);\">QST 04:</strong></p><p>Les troubles du <strong>groupe des troubles à expression somatique et apparentés</strong> (DSM-5) regroupent:</p><ol><li class=\"ql-indent-1\">Trouble à symptomatologie somatique</li><li class=\"ql-indent-1\">Crainte excessive d’avoir une maladie (ancien hypocondrie)</li><li class=\"ql-indent-1\">Trouble de conversion (symptômes neurologiques sans base organique)</li></ol><p><br></p>"
+    },
+    {
+      "id": "9.5",
+      "case_id": 9,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266157,
+          "text": "Coordonnée (éviter de multiplier les examens complémentaires)",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266158,
+          "text": "Médicale et psychothérapeutique",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 266159,
+          "text": " Basée sur une bonne alliance thérapeutique",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266160,
+          "text": "Médicaments symptomatiques et antidépresseurs",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266161,
+          "text": " Toutes ces réponses sont justes",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2025"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "La prise en charge doit être ? (RJ)",
+      "has_media": false,
+      "statement": "La prise en charge doit être ? (RJ)",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "QST 01:E- Vrai, Hassina présente une plainte somatique persistante, inexpliquée, associée à une souffrance psychique importante, une errance médicale, et une altération du fonctionnement social → typique du trouble à symptomatologie somatique.QST 03:B- Vrai, L'épisode dépressif caractérisé, fréquent en comorbidité avec les troubles à symptomatologie somatique.QST 04:Les troubles du groupe des troubles à expression somatique et apparentés (DSM-5) regroupent:Trouble à symptomatologie somatiqueCrainte excessive d’avoir une maladie (ancien hypocondrie)Trouble de conversion (symptômes neurologiques sans base organique)",
+      "original_id": 54137,
+      "clinical_case": "Mme A Hassina âgée de 42 ans divorcée sans enfants coiffeuse de formation, elle a été orientée par son médecin traitant, ce dernier indique qu'a son dernier rendez-vous médical, elle a été en larmes et contrariée, et son médecin avait des difficultés à prendre en charge les multiples symptômes somatiques de sa patiente évoluant depuis plus d'un an estimant qu'une évaluation psychiatrique pourrait être utile. Alors qu'elle entre dans la salle de consultation, Hassina remet au psychiatre un résumé de trois pages de ses soucis physiques, ses préoccupations initiales concernent des spasmes nocturnes et des douleurs diurnes dans les jambes. Elle a ensuite développé des difficultés de sommeil qui l'ont conduite à avoir le cerveau embrouillé et la tête lourde, elle a des sensations intermittentes de froid dans les extrémités le visage et les oreilles, elle rapporte qu'elle est angoissée, se sent triste, ne mange plus qu'elle a perdu gout à la vie, et qu'elle pense souvent à la mort. Elle a consulté plusieurs spécialistes pour ses différents symptômes mais sans résultats, je suis épuisée nous rapporte-t-elle.",
+      "display_title": "Question 9 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(255, 255, 0);\">QST 01:</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">E- Vrai,</strong> Hassina présente une plainte somatique <strong>persistante, inexpliquée</strong>, associée à une <strong>souffrance psychique importante</strong>, une errance médicale, et une <strong>altération du fonctionnement social</strong> → typique du <strong>trouble à symptomatologie somatique</strong>.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 0);\">QST 03:</strong></p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> L'<strong>épisode dépressif caractérisé</strong>, fréquent en comorbidité avec les troubles à symptomatologie somatique.</p><p><br></p><p><strong style=\"background-color: rgb(255, 255, 0);\">QST 04:</strong></p><p>Les troubles du <strong>groupe des troubles à expression somatique et apparentés</strong> (DSM-5) regroupent:</p><ol><li class=\"ql-indent-1\">Trouble à symptomatologie somatique</li><li class=\"ql-indent-1\">Crainte excessive d’avoir une maladie (ancien hypocondrie)</li><li class=\"ql-indent-1\">Trouble de conversion (symptômes neurologiques sans base organique)</li></ol><p><br></p>"
+    },
+    {
+      "id": 10,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265872,
+          "text": "Il s'agit de symptômes simulés",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265873,
+          "text": "Ne se complique jamais de dépression.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265874,
+          "text": "Inclus la peur d'une dysmorphie corporelle selon le DSM5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 265875,
+          "text": "Sont pourvoyeur de souffrance et d'altération de la qualité de vie",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 265876,
+          "text": "La prise en charge est uniquement médicamenteuse.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Trouvez l'affirmation juste concernant troubles à symptomatologie somatique : (RJ)",
+      "has_media": false,
+      "statement": "Trouvez l'affirmation juste concernant troubles à symptomatologie somatique : (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A- Faux. Dans les troubles à symptomatologie somatique, les symptômes sont bien réels pour le patient, même s’il n’y a pas d’explication médicale claire.B- Faux. Les comorbidités psychiatriques sont fréquentes, notamment la dépression et l’anxiété.C- Faux. Le trouble dysmorphique corporel est une entité distincte dans le DSM-5, classée dans les troubles obsessionnels-compulsifs et apparentés, pas dans les troubles somatiques.D- Vrai. C’est le cœur du diagnostic dans le DSM-5 :Présence de symptômes physiques (ex : douleurs, fatigue)Accompagnés de pensées, émotions ou comportements excessifsEt provoquant une souffrance significative ou altération du fonctionnement social/professionnel.E- Faux. La prise en charge est multimodale :PsychoéducationPsychothérapie (TCC principalement)Prise en charge médicamenteuse si troubles anxieux ou dépressifs associés",
+      "original_id": 54080,
+      "clinical_case": null,
+      "display_title": "Question 10",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">A- Faux.</strong> Dans les troubles à symptomatologie somatique, les symptômes sont bien réels pour le patient, même s’il n’y a pas d’explication médicale claire.</p><p><strong style=\"color: rgb(230, 0, 0);\">B- Faux.</strong> Les <strong>comorbidités psychiatriques </strong>sont fréquentes, <strong>notamment la dépression et l’anxiété</strong>.</p><p><strong style=\"color: rgb(230, 0, 0);\">C- Faux.</strong> Le trouble dysmorphique corporel est une entité <strong>distincte dans le DSM-5</strong>, classée dans les <strong>troubles obsessionnels-compulsifs et apparentés</strong>, pas dans les troubles somatiques.</p><p><strong style=\"color: rgb(0, 138, 0);\">D- Vrai.</strong> C’est <strong>le cœur du diagnostic</strong> dans le DSM-5 :</p><ul><li>Présence de <strong>symptômes physiques</strong> (ex : douleurs, fatigue)</li><li>Accompagnés de <strong>pensées, émotions ou comportements excessifs</strong></li><li>Et provoquant une <strong>souffrance significative ou altération du fonctionnement social/professionnel</strong>.</li></ul><p><strong style=\"color: rgb(230, 0, 0);\">E- Faux.</strong> La prise en charge est <strong>multimodale</strong> :</p><ul><li><strong>Psychoéducation</strong></li><li><strong>Psychothérapie</strong> (TCC principalement)</li><li><strong>Prise en charge médicamenteuse</strong> si troubles anxieux ou dépressifs associés</li></ul>"
+    },
+    {
+      "id": 11,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265867,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265868,
+          "text": "1.3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265869,
+          "text": "1.2.3",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 265870,
+          "text": "1.3.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265871,
+          "text": "1.4.5",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les stratégies de communication du diagnostic de trouble à symptomatologie somatique et apparenté qui peuvent être utilisées sont : (RJ)\n1. Reconnaître que les symptômes sont véritables.\n2. Denier les symptômes du patient.\n3. Proposer de refaire les investigations.\n4. Evoquer les facteurs déclenchants et de maintien\n5. Proposer un diagnostic positif",
+      "has_media": false,
+      "statement": "Les stratégies de communication du diagnostic de trouble à symptomatologie somatique et apparenté qui peuvent être utilisées sont : (RJ)\n1. Reconnaître que les symptômes sont véritables.\n2. Denier les symptômes du patient.\n3. Proposer de refaire les investigations.\n4. Evoquer les facteurs déclenchants et de maintien\n5. Proposer un diagnostic positif",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Les stratégies de communication du diagnostic de trouble à symptomatologie somatique et apparenté ont comme objectif • De reconnaître la légitimité de cette démarche et d’informer le patient afin qu’il trouve un intérêt progressif à une démarche de santé tournée vers la santé mentale. • D’éviter de multiplier au-delà du raisonnable des investigations contribuant à pérenniser le trouble, et de savoir orienter le patient sur un suivi adapté. → Il faut notamment : - reconnaître que les symptômes sont « véritables » - proposer un diagnostic positif - évoquer les facteurs déclenchants et de maintien ",
+      "original_id": 54079,
+      "clinical_case": null,
+      "display_title": "Question 11",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>Les stratégies de communication du diagnostic de trouble à symptomatologie somatique et apparenté ont comme objectif </p><p><span style=\"background-color: transparent;\">• De reconnaître la légitimité de cette démarche et d’informer le patient afin qu’il trouve un intérêt progressif à une démarche de santé tournée vers la santé mentale. </span></p><p><span style=\"background-color: transparent;\">• D’éviter de multiplier au-delà du raisonnable des investigations contribuant à pérenniser le trouble, et de savoir orienter le patient sur un suivi adapté. </span></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">→ </span><strong style=\"background-color: rgb(102, 163, 224); color: rgb(0, 0, 0);\">Il faut notamment</strong><span style=\"background-color: transparent; color: rgb(0, 0, 0);\"> :&nbsp;</span></p><p><span style=\"background-color: transparent;\">- reconnaître que les symptômes sont « véritables »&nbsp;</span></p><p>- <span style=\"background-color: transparent;\">proposer un diagnostic positif&nbsp;</span></p><p>- <span style=\"background-color: transparent; color: rgb(0, 0, 0);\">évoquer les facteurs déclenchants et de maintien </span></p>"
+    },
+    {
+      "id": 12,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252642,
+          "text": "L'élimination d'une pathologie organique sous-jacente",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252643,
+          "text": "La prise en charge des symptômes uniquement",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 252644,
+          "text": "La suppression d'éventuels bénéfices secondaires",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252645,
+          "text": "La valorisation de la guérison",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252646,
+          "text": "L'établissement d'une relation de confiance entre médecin et patient.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "La prise en charge des troubles à symptomatologie somatique repose sur (RF):",
+      "has_media": false,
+      "statement": "La prise en charge des troubles à symptomatologie somatique repose sur (RF):",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "C-Faux, La recherche des bénéficies secondaires concernent les troubles de conversions (Trouble à symptomatologie neurologique fonctionnelle)",
+      "original_id": 51025,
+      "clinical_case": null,
+      "display_title": "Question 12",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">C-Faux,</strong> La recherche des bénéficies secondaires concernent les troubles de conversions (Trouble à symptomatologie neurologique fonctionnelle)</p>"
+    },
+    {
+      "id": 13,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252637,
+          "text": "Falsification de signes ou de symptômes, ou induction de blessures ou de maladies chez autrui",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 252638,
+          "text": "Le sujet fait passer une autre personne présente pour malade",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252639,
+          "text": "Ne s'accompagne pas de comportement de tromperie.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252640,
+          "text": "Peut-être expliqué par un trouble psychotique",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252641,
+          "text": "Le sujet cause consciemment un symptôme pour sa personne, sans but conscient",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le syndrome de Münchhausen (RJ):",
+      "has_media": false,
+      "statement": "Le syndrome de Münchhausen (RJ):",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Trouble factice : (Syndrome de Münchhausen) :Trouble factice auto-induit :A. Falsification de signes ou de symptômes physiques ou psychologiques, ou induction de blessures ou de maladies, associées à une tromperie identifiéeB. L’individu se présente aux autres comme malade, invalide ou blesséC. Le comportement de tromperie est évident, même en l’absence de bénéfices objectivables.D. N’est pas mieux expliqué par un autre trouble mental tel qu’un trouble délirant ou un autre trouble psychotique.⇒ Spécifier si : épisode unique/ épisodes répétés.Trouble factice imposé à autrui (T.F. par procuration) :Même critères que T.F. auto-induit mais provoqué chez autrui (son enfant par exemple).",
+      "original_id": 51024,
+      "clinical_case": null,
+      "display_title": "Question 13",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong><u>Trouble factice : (Syndrome de Münchhausen) :</u></strong></p><p><u>Trouble factice auto-induit :</u></p><p>A. Falsification de signes ou de symptômes physiques ou psychologiques, ou induction de blessures ou de maladies, associées à une tromperie identifiée</p><p>B. L’individu se présente aux autres comme malade, invalide ou blessé</p><p>C. Le comportement de tromperie est évident, même en l’absence de bénéfices objectivables.</p><p>D. N’est pas mieux expliqué par un autre trouble mental tel qu’un trouble délirant ou un autre trouble psychotique.</p><p>⇒ Spécifier si : épisode unique/ épisodes répétés.</p><p><u>Trouble factice imposé à autrui (T.F. par procuration) :</u></p><p>Même critères que T.F. auto-induit mais provoqué chez autrui (son enfant par exemple).</p>"
+    },
+    {
+      "id": 14,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252632,
+          "text": "Crainte persistante d'être atteint d'une maladie grave ou d'en développer une",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252633,
+          "text": "Persiste malgré les propos rassurants des médecins",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252634,
+          "text": "L’évolution est le plus souvent chronique",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252635,
+          "text": "Multiplication des consultations et des examens complémentaires peut amener à la résolution de la symptomatologie",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 252636,
+          "text": "Altère le fonctionnement socio-professionnel du patient",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'hypochondrie est (RF):",
+      "has_media": false,
+      "statement": "L'hypochondrie est (RF):",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 51023,
+      "clinical_case": null,
+      "display_title": "Question 14",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 15,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252602,
+          "text": "Inventés volontairement en toute conscience.",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 252603,
+          "text": "Peuvent être vécus avec une belle indifférence",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252604,
+          "text": "S'accompagnent de bénéfices secondaires",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252605,
+          "text": "Sont à début brutal",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252606,
+          "text": "L'évolution est le plus souvent favorable",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les symptômes des troubles de conversion sont (RF) :",
+      "has_media": false,
+      "statement": "Les symptômes des troubles de conversion sont (RF) :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 51017,
+      "clinical_case": null,
+      "display_title": "Question 15",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "16.1",
+      "case_id": 16,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229425,
+          "text": "Trouble à symptomatologie neurologique fonctionnelle",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 229426,
+          "text": "Trouble à symptomatologie somatique",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229427,
+          "text": "Trouble factice auto-induit",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229428,
+          "text": "Trouble factice par procuration",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229429,
+          "text": "Hypocondrie",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le diagnostic le plus probable est:",
+      "has_media": false,
+      "statement": "Le diagnostic le plus probable est:",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46562,
+      "clinical_case": "M.A est une femme, âgée de 32 ans, hospitalisée en neurologie pour des douleurs dans les jambes et une faiblesse musculaire, Elle n'arrive plus à marcher. \r\nSans antécédents ni médicaux ni chirurgicaux ou psychiatriques particuliers. Ses douleurs sont apparues, il y a quelques jours, brutalement, tandis qu’elle s'apprêtait à descendre des escaliers. \r\nAu cours de son séjour hospitalier, aucune anomalie n'a été détectée par les examens médicaux et MA est rentrée chez elle avec des béquilles. Quelques jours plus tard, les troubles s’intensifient et nécessitent son immobilisation en fauteuil roulant et une ré-hospitalisation a été décidée pour une autre exploration. Aucune cause organique n'a pu être décelée et elle a été aussitôt adressée pour un avis psychiatrique. \r\nL'entretien psychiatrique est très difficile, Lorsque nous lui soumettons l’hypothèse d'une causalité psychique à l'origine de ses troubles, elle n'est pas convaincue et se questionne : « Ce n’est pas possible, ça veut dire que quelque chose m'a choqué, ou que j'ai mal vécu quelque chose?» Les accompagnateurs ont révélés que le déclenchement de ce tableau clinique est survenu suite à une déception sentimentale qui l'a rendu très agressive avec crise d'agitation envers son entourage. \r\nL'approche dimensionnelle de sa personnalité est en faveur d'une tendance d'émotivité excessive, de recherche d'attention et une tendance à la dramatisation avec l'expression des émotions peu profonde de manière exagérée. \r\nL'hospitalisation semble améliorée les manifestations cliniques.",
+      "display_title": "Question 16 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "16.2",
+      "case_id": 16,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229430,
+          "text": "Le déficit pseudo-neurologique",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229431,
+          "text": "L'absence d'anomalie anatomique",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229432,
+          "text": "La présence de facteurs psychologiques",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229433,
+          "text": "L'origine psychique des troubles échappe au sujet",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229434,
+          "text": "La croyance d'être atteint d'une maladie sérieuse",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Sur quel élément posé vous le diagnostic ? (RF)",
+      "has_media": false,
+      "statement": "Sur quel élément posé vous le diagnostic ? (RF)",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46563,
+      "clinical_case": "M.A est une femme, âgée de 32 ans, hospitalisée en neurologie pour des douleurs dans les jambes et une faiblesse musculaire, Elle n'arrive plus à marcher. \r\nSans antécédents ni médicaux ni chirurgicaux ou psychiatriques particuliers. Ses douleurs sont apparues, il y a quelques jours, brutalement, tandis qu’elle s'apprêtait à descendre des escaliers. \r\nAu cours de son séjour hospitalier, aucune anomalie n'a été détectée par les examens médicaux et MA est rentrée chez elle avec des béquilles. Quelques jours plus tard, les troubles s’intensifient et nécessitent son immobilisation en fauteuil roulant et une ré-hospitalisation a été décidée pour une autre exploration. Aucune cause organique n'a pu être décelée et elle a été aussitôt adressée pour un avis psychiatrique. \r\nL'entretien psychiatrique est très difficile, Lorsque nous lui soumettons l’hypothèse d'une causalité psychique à l'origine de ses troubles, elle n'est pas convaincue et se questionne : « Ce n’est pas possible, ça veut dire que quelque chose m'a choqué, ou que j'ai mal vécu quelque chose?» Les accompagnateurs ont révélés que le déclenchement de ce tableau clinique est survenu suite à une déception sentimentale qui l'a rendu très agressive avec crise d'agitation envers son entourage. \r\nL'approche dimensionnelle de sa personnalité est en faveur d'une tendance d'émotivité excessive, de recherche d'attention et une tendance à la dramatisation avec l'expression des émotions peu profonde de manière exagérée. \r\nL'hospitalisation semble améliorée les manifestations cliniques.",
+      "display_title": "Question 16 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "16.3",
+      "case_id": 16,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229435,
+          "text": "Un retentissement du trouble",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229436,
+          "text": "L'existence de substratum organique",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 229437,
+          "text": "La non-imputabilité un autre trouble mental",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229438,
+          "text": "Une participation psychologique à l'étiopathogénie",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229439,
+          "text": "La non valorisation des soins par les patients",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Une telle catégorie diagnostique implique toutes ces propositions, sauf une, laquelle ?",
+      "has_media": false,
+      "statement": "Une telle catégorie diagnostique implique toutes ces propositions, sauf une, laquelle ?",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46564,
+      "clinical_case": "M.A est une femme, âgée de 32 ans, hospitalisée en neurologie pour des douleurs dans les jambes et une faiblesse musculaire, Elle n'arrive plus à marcher. \r\nSans antécédents ni médicaux ni chirurgicaux ou psychiatriques particuliers. Ses douleurs sont apparues, il y a quelques jours, brutalement, tandis qu’elle s'apprêtait à descendre des escaliers. \r\nAu cours de son séjour hospitalier, aucune anomalie n'a été détectée par les examens médicaux et MA est rentrée chez elle avec des béquilles. Quelques jours plus tard, les troubles s’intensifient et nécessitent son immobilisation en fauteuil roulant et une ré-hospitalisation a été décidée pour une autre exploration. Aucune cause organique n'a pu être décelée et elle a été aussitôt adressée pour un avis psychiatrique. \r\nL'entretien psychiatrique est très difficile, Lorsque nous lui soumettons l’hypothèse d'une causalité psychique à l'origine de ses troubles, elle n'est pas convaincue et se questionne : « Ce n’est pas possible, ça veut dire que quelque chose m'a choqué, ou que j'ai mal vécu quelque chose?» Les accompagnateurs ont révélés que le déclenchement de ce tableau clinique est survenu suite à une déception sentimentale qui l'a rendu très agressive avec crise d'agitation envers son entourage. \r\nL'approche dimensionnelle de sa personnalité est en faveur d'une tendance d'émotivité excessive, de recherche d'attention et une tendance à la dramatisation avec l'expression des émotions peu profonde de manière exagérée. \r\nL'hospitalisation semble améliorée les manifestations cliniques.",
+      "display_title": "Question 16 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "16.4",
+      "case_id": 16,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229440,
+          "text": "Un ou plusieurs symptômes d'altération de la motricité volontaire ou des fonctions sensorielles",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229441,
+          "text": "L'incompatibilité des symptômes et une affection neurologique ou médicale reconnue.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229442,
+          "text": "Ne sont pas expliqués par un autre trouble médical ou mental",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229443,
+          "text": "Entraine une détresse ou une altération cliniquement significative.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229444,
+          "text": "Ils ne sont pas à spécifier",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Pour ce trouble, les critères diagnostics selon le DSM5 sont toutes ces propositions sauf une, laquelle ?",
+      "has_media": false,
+      "statement": "Pour ce trouble, les critères diagnostics selon le DSM5 sont toutes ces propositions sauf une, laquelle ?",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46565,
+      "clinical_case": "M.A est une femme, âgée de 32 ans, hospitalisée en neurologie pour des douleurs dans les jambes et une faiblesse musculaire, Elle n'arrive plus à marcher. \r\nSans antécédents ni médicaux ni chirurgicaux ou psychiatriques particuliers. Ses douleurs sont apparues, il y a quelques jours, brutalement, tandis qu’elle s'apprêtait à descendre des escaliers. \r\nAu cours de son séjour hospitalier, aucune anomalie n'a été détectée par les examens médicaux et MA est rentrée chez elle avec des béquilles. Quelques jours plus tard, les troubles s’intensifient et nécessitent son immobilisation en fauteuil roulant et une ré-hospitalisation a été décidée pour une autre exploration. Aucune cause organique n'a pu être décelée et elle a été aussitôt adressée pour un avis psychiatrique. \r\nL'entretien psychiatrique est très difficile, Lorsque nous lui soumettons l’hypothèse d'une causalité psychique à l'origine de ses troubles, elle n'est pas convaincue et se questionne : « Ce n’est pas possible, ça veut dire que quelque chose m'a choqué, ou que j'ai mal vécu quelque chose?» Les accompagnateurs ont révélés que le déclenchement de ce tableau clinique est survenu suite à une déception sentimentale qui l'a rendu très agressive avec crise d'agitation envers son entourage. \r\nL'approche dimensionnelle de sa personnalité est en faveur d'une tendance d'émotivité excessive, de recherche d'attention et une tendance à la dramatisation avec l'expression des émotions peu profonde de manière exagérée. \r\nL'hospitalisation semble améliorée les manifestations cliniques.",
+      "display_title": "Question 16 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "16.5",
+      "case_id": 16,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229445,
+          "text": "Apparition récente des symptômes",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229446,
+          "text": "Trouble anxieux ou dépressif coexistant",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229447,
+          "text": "Précipitation par un facteur de stress",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229448,
+          "text": "Début brutal des symptômes",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229449,
+          "text": "Trouble psychiatrique associer",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les facteurs de bon pronostic à rechercher sont toutes ces propositions sauf une, laquelle ?",
+      "has_media": false,
+      "statement": "Les facteurs de bon pronostic à rechercher sont toutes ces propositions sauf une, laquelle ?",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46566,
+      "clinical_case": "M.A est une femme, âgée de 32 ans, hospitalisée en neurologie pour des douleurs dans les jambes et une faiblesse musculaire, Elle n'arrive plus à marcher. \r\nSans antécédents ni médicaux ni chirurgicaux ou psychiatriques particuliers. Ses douleurs sont apparues, il y a quelques jours, brutalement, tandis qu’elle s'apprêtait à descendre des escaliers. \r\nAu cours de son séjour hospitalier, aucune anomalie n'a été détectée par les examens médicaux et MA est rentrée chez elle avec des béquilles. Quelques jours plus tard, les troubles s’intensifient et nécessitent son immobilisation en fauteuil roulant et une ré-hospitalisation a été décidée pour une autre exploration. Aucune cause organique n'a pu être décelée et elle a été aussitôt adressée pour un avis psychiatrique. \r\nL'entretien psychiatrique est très difficile, Lorsque nous lui soumettons l’hypothèse d'une causalité psychique à l'origine de ses troubles, elle n'est pas convaincue et se questionne : « Ce n’est pas possible, ça veut dire que quelque chose m'a choqué, ou que j'ai mal vécu quelque chose?» Les accompagnateurs ont révélés que le déclenchement de ce tableau clinique est survenu suite à une déception sentimentale qui l'a rendu très agressive avec crise d'agitation envers son entourage. \r\nL'approche dimensionnelle de sa personnalité est en faveur d'une tendance d'émotivité excessive, de recherche d'attention et une tendance à la dramatisation avec l'expression des émotions peu profonde de manière exagérée. \r\nL'hospitalisation semble améliorée les manifestations cliniques.",
+      "display_title": "Question 16 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "16.6",
+      "case_id": 16,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229450,
+          "text": "Troubles dépressifs",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229451,
+          "text": "Troubles anxieux",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229452,
+          "text": "Troubles de la personnalité",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229453,
+          "text": "Trouble délirant",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 229454,
+          "text": "Altération du fonctionnement prémorbide",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les comorbidités peuvent être toutes ces propositions sauf une, laquelle ?",
+      "has_media": false,
+      "statement": "Les comorbidités peuvent être toutes ces propositions sauf une, laquelle ?",
+      "sub_index": 6,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46567,
+      "clinical_case": "M.A est une femme, âgée de 32 ans, hospitalisée en neurologie pour des douleurs dans les jambes et une faiblesse musculaire, Elle n'arrive plus à marcher. \r\nSans antécédents ni médicaux ni chirurgicaux ou psychiatriques particuliers. Ses douleurs sont apparues, il y a quelques jours, brutalement, tandis qu’elle s'apprêtait à descendre des escaliers. \r\nAu cours de son séjour hospitalier, aucune anomalie n'a été détectée par les examens médicaux et MA est rentrée chez elle avec des béquilles. Quelques jours plus tard, les troubles s’intensifient et nécessitent son immobilisation en fauteuil roulant et une ré-hospitalisation a été décidée pour une autre exploration. Aucune cause organique n'a pu être décelée et elle a été aussitôt adressée pour un avis psychiatrique. \r\nL'entretien psychiatrique est très difficile, Lorsque nous lui soumettons l’hypothèse d'une causalité psychique à l'origine de ses troubles, elle n'est pas convaincue et se questionne : « Ce n’est pas possible, ça veut dire que quelque chose m'a choqué, ou que j'ai mal vécu quelque chose?» Les accompagnateurs ont révélés que le déclenchement de ce tableau clinique est survenu suite à une déception sentimentale qui l'a rendu très agressive avec crise d'agitation envers son entourage. \r\nL'approche dimensionnelle de sa personnalité est en faveur d'une tendance d'émotivité excessive, de recherche d'attention et une tendance à la dramatisation avec l'expression des émotions peu profonde de manière exagérée. \r\nL'hospitalisation semble améliorée les manifestations cliniques.",
+      "display_title": "Question 16 - Question 6",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "16.7",
+      "case_id": 16,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229455,
+          "text": "2.3.4",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229456,
+          "text": "1.2.3",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 229457,
+          "text": "2.4.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229458,
+          "text": "3.4.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229459,
+          "text": "4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "La prise en charge repose sur l'une des associations, laquelle ?\n1. Valorisation de la guérison\n2. Recherche des bénéfices secondaires\n3. Alliance médecin-malade\n4. Insérer les éléments de la réalité\n5. Abrasion des troubles moteurs",
+      "has_media": false,
+      "statement": "La prise en charge repose sur l'une des associations, laquelle ?\n1. Valorisation de la guérison\n2. Recherche des bénéfices secondaires\n3. Alliance médecin-malade\n4. Insérer les éléments de la réalité\n5. Abrasion des troubles moteurs",
+      "sub_index": 7,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46568,
+      "clinical_case": "M.A est une femme, âgée de 32 ans, hospitalisée en neurologie pour des douleurs dans les jambes et une faiblesse musculaire, Elle n'arrive plus à marcher. \r\nSans antécédents ni médicaux ni chirurgicaux ou psychiatriques particuliers. Ses douleurs sont apparues, il y a quelques jours, brutalement, tandis qu’elle s'apprêtait à descendre des escaliers. \r\nAu cours de son séjour hospitalier, aucune anomalie n'a été détectée par les examens médicaux et MA est rentrée chez elle avec des béquilles. Quelques jours plus tard, les troubles s’intensifient et nécessitent son immobilisation en fauteuil roulant et une ré-hospitalisation a été décidée pour une autre exploration. Aucune cause organique n'a pu être décelée et elle a été aussitôt adressée pour un avis psychiatrique. \r\nL'entretien psychiatrique est très difficile, Lorsque nous lui soumettons l’hypothèse d'une causalité psychique à l'origine de ses troubles, elle n'est pas convaincue et se questionne : « Ce n’est pas possible, ça veut dire que quelque chose m'a choqué, ou que j'ai mal vécu quelque chose?» Les accompagnateurs ont révélés que le déclenchement de ce tableau clinique est survenu suite à une déception sentimentale qui l'a rendu très agressive avec crise d'agitation envers son entourage. \r\nL'approche dimensionnelle de sa personnalité est en faveur d'une tendance d'émotivité excessive, de recherche d'attention et une tendance à la dramatisation avec l'expression des émotions peu profonde de manière exagérée. \r\nL'hospitalisation semble améliorée les manifestations cliniques.",
+      "display_title": "Question 16 - Question 7",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "16.8",
+      "case_id": 16,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229460,
+          "text": "Anxiolytiques et antidépresseurs",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229461,
+          "text": "Hypnose",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229462,
+          "text": "Relaxation",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229463,
+          "text": "Psychothérapies",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229464,
+          "text": "Neuroleptiques",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Chimiothérapie: (RF)",
+      "has_media": false,
+      "statement": "Chimiothérapie: (RF)",
+      "sub_index": 8,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46569,
+      "clinical_case": "M.A est une femme, âgée de 32 ans, hospitalisée en neurologie pour des douleurs dans les jambes et une faiblesse musculaire, Elle n'arrive plus à marcher. \r\nSans antécédents ni médicaux ni chirurgicaux ou psychiatriques particuliers. Ses douleurs sont apparues, il y a quelques jours, brutalement, tandis qu’elle s'apprêtait à descendre des escaliers. \r\nAu cours de son séjour hospitalier, aucune anomalie n'a été détectée par les examens médicaux et MA est rentrée chez elle avec des béquilles. Quelques jours plus tard, les troubles s’intensifient et nécessitent son immobilisation en fauteuil roulant et une ré-hospitalisation a été décidée pour une autre exploration. Aucune cause organique n'a pu être décelée et elle a été aussitôt adressée pour un avis psychiatrique. \r\nL'entretien psychiatrique est très difficile, Lorsque nous lui soumettons l’hypothèse d'une causalité psychique à l'origine de ses troubles, elle n'est pas convaincue et se questionne : « Ce n’est pas possible, ça veut dire que quelque chose m'a choqué, ou que j'ai mal vécu quelque chose?» Les accompagnateurs ont révélés que le déclenchement de ce tableau clinique est survenu suite à une déception sentimentale qui l'a rendu très agressive avec crise d'agitation envers son entourage. \r\nL'approche dimensionnelle de sa personnalité est en faveur d'une tendance d'émotivité excessive, de recherche d'attention et une tendance à la dramatisation avec l'expression des émotions peu profonde de manière exagérée. \r\nL'hospitalisation semble améliorée les manifestations cliniques.",
+      "display_title": "Question 16 - Question 8",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "16.9",
+      "case_id": 16,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229465,
+          "text": "Borderline",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229466,
+          "text": "Paranoïaque",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229467,
+          "text": "Évitante",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229468,
+          "text": "Histrionique",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 229469,
+          "text": "Sensitive",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "La personnalité de la patiente est de type :",
+      "has_media": false,
+      "statement": "La personnalité de la patiente est de type :",
+      "sub_index": 9,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46570,
+      "clinical_case": "M.A est une femme, âgée de 32 ans, hospitalisée en neurologie pour des douleurs dans les jambes et une faiblesse musculaire, Elle n'arrive plus à marcher. \r\nSans antécédents ni médicaux ni chirurgicaux ou psychiatriques particuliers. Ses douleurs sont apparues, il y a quelques jours, brutalement, tandis qu’elle s'apprêtait à descendre des escaliers. \r\nAu cours de son séjour hospitalier, aucune anomalie n'a été détectée par les examens médicaux et MA est rentrée chez elle avec des béquilles. Quelques jours plus tard, les troubles s’intensifient et nécessitent son immobilisation en fauteuil roulant et une ré-hospitalisation a été décidée pour une autre exploration. Aucune cause organique n'a pu être décelée et elle a été aussitôt adressée pour un avis psychiatrique. \r\nL'entretien psychiatrique est très difficile, Lorsque nous lui soumettons l’hypothèse d'une causalité psychique à l'origine de ses troubles, elle n'est pas convaincue et se questionne : « Ce n’est pas possible, ça veut dire que quelque chose m'a choqué, ou que j'ai mal vécu quelque chose?» Les accompagnateurs ont révélés que le déclenchement de ce tableau clinique est survenu suite à une déception sentimentale qui l'a rendu très agressive avec crise d'agitation envers son entourage. \r\nL'approche dimensionnelle de sa personnalité est en faveur d'une tendance d'émotivité excessive, de recherche d'attention et une tendance à la dramatisation avec l'expression des émotions peu profonde de manière exagérée. \r\nL'hospitalisation semble améliorée les manifestations cliniques.",
+      "display_title": "Question 16 - Question 9",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": "16.10",
+      "case_id": 16,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229470,
+          "text": "Tendance d'émotivité excessive",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229471,
+          "text": "Recherche d'attention",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229472,
+          "text": "Dramatisation",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229473,
+          "text": "Expression émotionnelle peu profonde",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229474,
+          "text": "Susceptibilité",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Toutes ces propositions ont permis pour poser le diagnostic de la personnalité sauf une, laquelle ?",
+      "has_media": false,
+      "statement": "Toutes ces propositions ont permis pour poser le diagnostic de la personnalité sauf une, laquelle ?",
+      "sub_index": 10,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 46571,
+      "clinical_case": "M.A est une femme, âgée de 32 ans, hospitalisée en neurologie pour des douleurs dans les jambes et une faiblesse musculaire, Elle n'arrive plus à marcher. \r\nSans antécédents ni médicaux ni chirurgicaux ou psychiatriques particuliers. Ses douleurs sont apparues, il y a quelques jours, brutalement, tandis qu’elle s'apprêtait à descendre des escaliers. \r\nAu cours de son séjour hospitalier, aucune anomalie n'a été détectée par les examens médicaux et MA est rentrée chez elle avec des béquilles. Quelques jours plus tard, les troubles s’intensifient et nécessitent son immobilisation en fauteuil roulant et une ré-hospitalisation a été décidée pour une autre exploration. Aucune cause organique n'a pu être décelée et elle a été aussitôt adressée pour un avis psychiatrique. \r\nL'entretien psychiatrique est très difficile, Lorsque nous lui soumettons l’hypothèse d'une causalité psychique à l'origine de ses troubles, elle n'est pas convaincue et se questionne : « Ce n’est pas possible, ça veut dire que quelque chose m'a choqué, ou que j'ai mal vécu quelque chose?» Les accompagnateurs ont révélés que le déclenchement de ce tableau clinique est survenu suite à une déception sentimentale qui l'a rendu très agressive avec crise d'agitation envers son entourage. \r\nL'approche dimensionnelle de sa personnalité est en faveur d'une tendance d'émotivité excessive, de recherche d'attention et une tendance à la dramatisation avec l'expression des émotions peu profonde de manière exagérée. \r\nL'hospitalisation semble améliorée les manifestations cliniques.",
+      "display_title": "Question 16 - Question 10",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": 17,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220437,
+          "text": "1+2+3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220438,
+          "text": "2+3+4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220439,
+          "text": "1+5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220440,
+          "text": "1+4",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220441,
+          "text": "1+2",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "La somatisation est caractérisée par : \n\n1 L'absence d'explication par un trouble somatique identifiable\n2 L'acceptation de l'avis médical confirmant l’absence de toute cause organique\n3 Un début après l'âge de 30 ans\n4 Les plaintes sont exprimées de manière exagérée\n5 Evolution chronique et fluctuante sans périodes d’accalmies",
+      "has_media": false,
+      "statement": "La somatisation est caractérisée par : \n\n1 L'absence d'explication par un trouble somatique identifiable\n2 L'acceptation de l'avis médical confirmant l’absence de toute cause organique\n3 Un début après l'âge de 30 ans\n4 Les plaintes sont exprimées de manière exagérée\n5 Evolution chronique et fluctuante sans périodes d’accalmies",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44811,
+      "clinical_case": null,
+      "display_title": "Question 17",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 18,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 218916,
+          "text": "Augmente le risque médical",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 218917,
+          "text": "Aggrave une affection médicale sous-jacente",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 218918,
+          "text": "N'entraine pas une hospitalisation",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 218919,
+          "text": "Entraine une visite aux urgences",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 218920,
+          "text": "Entraine un risque grave menaçant la vie",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Un trouble à symptomatologie neurologique fonctionnelle grave :",
+      "has_media": false,
+      "statement": "Un trouble à symptomatologie neurologique fonctionnelle grave :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44508,
+      "clinical_case": null,
+      "display_title": "Question 18",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": "19.1",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220442,
+          "text": "Troubles à symptomatologie somatique et apparentée",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 220443,
+          "text": " Trouble schizophrénique",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220444,
+          "text": " Trouble anxieux",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220445,
+          "text": " Trouble délirant",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220446,
+          "text": " Trouble dépressif",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les symptômes relatés dans ce cas clinique sont en faveur de quel trouble psychiatrique ?",
+      "has_media": false,
+      "statement": "Les symptômes relatés dans ce cas clinique sont en faveur de quel trouble psychiatrique ?",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44812,
+      "clinical_case": "Amelia 35 ans célibataire, secrétaire, présente une aphonie au lendemain d'une demande en mariage. Ses parents ont tenté cette fois de faire pression sur elle car c'est le nième prétendant qu’elle refuse. Après cette altercation avec ses parents, Amelia s’est endormie en pleurant et le matin à son réveil, elle n’avait plus de voix. Elle consule un ORL, l’examen du larynx, cardiovasculaire et neurologique ne montrent aucune anomalie ainsi que l'IRM. Le neurologue, recommande un repos évitant tout stress et orientation vers une consultation de psychiatre car pour lui, il s’agit d’un symptôme sans lésion décelable, en lien avec un problème émotionnel. Malgré l'aspect troublant et inexpliqué du symptôme. Amelia a pris le temps de s'arranger et de se maquiller avant de se présenter à notre consultation. A l’entretien, elle est décrite par ses parents très coquette, toujours bien apprêtée, elle a beaucoup d'amis mais jamais de relation durable. Par écrit, Amelia nous demande si son état est grave et s'il existe un traitement, esquivant un sourire en nous remettant la feuille",
+      "display_title": "Question 19 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "19.2",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220447,
+          "text": " Trouble à symptomatologie somatique à prédominance douloureuse",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220448,
+          "text": " Trouble à symptomatologie somatique",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220449,
+          "text": " Trouble à symptomatologie neurologique fonctionnel",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 220450,
+          "text": " Trouble psychosomatique",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220451,
+          "text": "Trouble hypocondriaque",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans quelle catégorie de trouble les symptômes d'Amelia se rangent ?",
+      "has_media": false,
+      "statement": "Dans quelle catégorie de trouble les symptômes d'Amelia se rangent ?",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44813,
+      "clinical_case": "Amelia 35 ans célibataire, secrétaire, présente une aphonie au lendemain d'une demande en mariage. Ses parents ont tenté cette fois de faire pression sur elle car c'est le nième prétendant qu’elle refuse. Après cette altercation avec ses parents, Amelia s’est endormie en pleurant et le matin à son réveil, elle n’avait plus de voix. Elle consule un ORL, l’examen du larynx, cardiovasculaire et neurologique ne montrent aucune anomalie ainsi que l'IRM. Le neurologue, recommande un repos évitant tout stress et orientation vers une consultation de psychiatre car pour lui, il s’agit d’un symptôme sans lésion décelable, en lien avec un problème émotionnel. Malgré l'aspect troublant et inexpliqué du symptôme. Amelia a pris le temps de s'arranger et de se maquiller avant de se présenter à notre consultation. A l’entretien, elle est décrite par ses parents très coquette, toujours bien apprêtée, elle a beaucoup d'amis mais jamais de relation durable. Par écrit, Amelia nous demande si son état est grave et s'il existe un traitement, esquivant un sourire en nous remettant la feuille",
+      "display_title": "Question 19 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "19.3",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220452,
+          "text": "1+2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220453,
+          "text": "1+3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220454,
+          "text": " 2+3",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220455,
+          "text": "2+4",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220456,
+          "text": " 1+2+4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quels sont les arguments en faveur de votre diagnostic ? (Cochez l'association juste)\n\n1 Des symptômes neurologiques avérés\n2 Présence d'un facteur de stress psychologique\n3 Pas de répercussion sur plan fonctionnelle\n4 Négativité du bilan biologique",
+      "has_media": false,
+      "statement": "Quels sont les arguments en faveur de votre diagnostic ? (Cochez l'association juste)\n\n1 Des symptômes neurologiques avérés\n2 Présence d'un facteur de stress psychologique\n3 Pas de répercussion sur plan fonctionnelle\n4 Négativité du bilan biologique",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44814,
+      "clinical_case": "Amelia 35 ans célibataire, secrétaire, présente une aphonie au lendemain d'une demande en mariage. Ses parents ont tenté cette fois de faire pression sur elle car c'est le nième prétendant qu’elle refuse. Après cette altercation avec ses parents, Amelia s’est endormie en pleurant et le matin à son réveil, elle n’avait plus de voix. Elle consule un ORL, l’examen du larynx, cardiovasculaire et neurologique ne montrent aucune anomalie ainsi que l'IRM. Le neurologue, recommande un repos évitant tout stress et orientation vers une consultation de psychiatre car pour lui, il s’agit d’un symptôme sans lésion décelable, en lien avec un problème émotionnel. Malgré l'aspect troublant et inexpliqué du symptôme. Amelia a pris le temps de s'arranger et de se maquiller avant de se présenter à notre consultation. A l’entretien, elle est décrite par ses parents très coquette, toujours bien apprêtée, elle a beaucoup d'amis mais jamais de relation durable. Par écrit, Amelia nous demande si son état est grave et s'il existe un traitement, esquivant un sourire en nous remettant la feuille",
+      "display_title": "Question 19 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "19.4",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220457,
+          "text": " 1+2+3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220458,
+          "text": " 1+2+4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220459,
+          "text": "2+3+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220460,
+          "text": " 2+3+5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220461,
+          "text": " 3+4+5",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Parmi ces propositions, quels sont les troubles à symptomatologie somatique et apparentée du DSM-5 ?\n\n1 Trouble anxiété généralisée\n2 Trouble dépressif névrotique\n3 Trouble à symptomatologie neurologique fonctionnel\n4 Troubles à symptomatologie somatique à prédominance douloureux\n5 Crainte excessive d'avoir une maladie",
+      "has_media": false,
+      "statement": "Parmi ces propositions, quels sont les troubles à symptomatologie somatique et apparentée du DSM-5 ?\n\n1 Trouble anxiété généralisée\n2 Trouble dépressif névrotique\n3 Trouble à symptomatologie neurologique fonctionnel\n4 Troubles à symptomatologie somatique à prédominance douloureux\n5 Crainte excessive d'avoir une maladie",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44815,
+      "clinical_case": "Amelia 35 ans célibataire, secrétaire, présente une aphonie au lendemain d'une demande en mariage. Ses parents ont tenté cette fois de faire pression sur elle car c'est le nième prétendant qu’elle refuse. Après cette altercation avec ses parents, Amelia s’est endormie en pleurant et le matin à son réveil, elle n’avait plus de voix. Elle consule un ORL, l’examen du larynx, cardiovasculaire et neurologique ne montrent aucune anomalie ainsi que l'IRM. Le neurologue, recommande un repos évitant tout stress et orientation vers une consultation de psychiatre car pour lui, il s’agit d’un symptôme sans lésion décelable, en lien avec un problème émotionnel. Malgré l'aspect troublant et inexpliqué du symptôme. Amelia a pris le temps de s'arranger et de se maquiller avant de se présenter à notre consultation. A l’entretien, elle est décrite par ses parents très coquette, toujours bien apprêtée, elle a beaucoup d'amis mais jamais de relation durable. Par écrit, Amelia nous demande si son état est grave et s'il existe un traitement, esquivant un sourire en nous remettant la feuille",
+      "display_title": "Question 19 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "19.5",
+      "case_id": 19,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220462,
+          "text": " Des troubles psychosomatiques",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 220463,
+          "text": " Le trouble obsessionnel compulsif",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220464,
+          "text": " La confusion mentale",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220465,
+          "text": " La phobie sociale",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220466,
+          "text": "Le trouble délirant",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Parmi les troubles solvants quel est le diagnostic différentiel du trouble à symptomatologie somatique et apparentée du DSM-5 ?",
+      "has_media": false,
+      "statement": "Parmi les troubles solvants quel est le diagnostic différentiel du trouble à symptomatologie somatique et apparentée du DSM-5 ?",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44816,
+      "clinical_case": "Amelia 35 ans célibataire, secrétaire, présente une aphonie au lendemain d'une demande en mariage. Ses parents ont tenté cette fois de faire pression sur elle car c'est le nième prétendant qu’elle refuse. Après cette altercation avec ses parents, Amelia s’est endormie en pleurant et le matin à son réveil, elle n’avait plus de voix. Elle consule un ORL, l’examen du larynx, cardiovasculaire et neurologique ne montrent aucune anomalie ainsi que l'IRM. Le neurologue, recommande un repos évitant tout stress et orientation vers une consultation de psychiatre car pour lui, il s’agit d’un symptôme sans lésion décelable, en lien avec un problème émotionnel. Malgré l'aspect troublant et inexpliqué du symptôme. Amelia a pris le temps de s'arranger et de se maquiller avant de se présenter à notre consultation. A l’entretien, elle est décrite par ses parents très coquette, toujours bien apprêtée, elle a beaucoup d'amis mais jamais de relation durable. Par écrit, Amelia nous demande si son état est grave et s'il existe un traitement, esquivant un sourire en nous remettant la feuille",
+      "display_title": "Question 19 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": 20,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 232331,
+          "text": "Les symptômes d'allure neurologique respectent l'organisation anatomique du SNC.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 232332,
+          "text": "Le trouble à symptomatologie somatique, la crainte excessive d’avoir une maladie et le trouble de conversion font tous partie des troubles somatoforme.",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 232333,
+          "text": "Pour poser le diagnostic d'hypocondrie, les préoccupations présentent depuis au moins 6 mois.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 232334,
+          "text": "Le trouble à symptomatologie somatique nécessite une prise en charge par de multiples thérapeutes.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 232335,
+          "text": "La recherche des bénéfices secondaires de la conversion est importante.",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P4 2022"
+        ],
+        "type": "QCM",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans les troubles somatoformes : (la ou les RJ)",
+      "has_media": false,
+      "statement": "Dans les troubles somatoformes : (la ou les RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44819,
+      "clinical_case": null,
+      "display_title": "Question 20",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 21,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220482,
+          "text": "Dans le contexte de l'urgence, il s'agit avant tout : de « réveiller » les patients.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220483,
+          "text": "L'évaluation du risque de passages à l'acte auto ou hétéro-agressifs est un temps important.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220484,
+          "text": "A pour but de diminuer les symptômes dissociatifs aigus en favorisant une réafférentation spatiotemporelle.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220485,
+          "text": "L'hospitalisation psychiatrique est souvent primordiale",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220486,
+          "text": "Un diagnostic différentiel somatique est à envisager devant une désorientation spatio-temporelle.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P4 2022"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans la prise en charge des troubles dissociatifs : (la ou les RF)",
+      "has_media": false,
+      "statement": "Dans la prise en charge des troubles dissociatifs : (la ou les RF)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44820,
+      "clinical_case": null,
+      "display_title": "Question 21",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 22,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220472,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220473,
+          "text": "1.3",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 220474,
+          "text": "2.3",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220475,
+          "text": "2.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220476,
+          "text": "3.4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2022"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "L’une de ces propositions suivantes concerne les troubles somatoformes, laquelle ? (RJ)\n\n1 Désignant les troubles à symptomatologie somatique et apparentés dans le DSM 5\n2 Désignent des pathologies iatrogènes dans la nosographie des autres spécialités\n3 Associe des symptômes physiques et une sémiologie mentale positive\n4 Ne sont pas favorisés par un trouble médical non psychiatrique\n5 Toutes ces réponses sont justes",
+      "has_media": false,
+      "statement": "L’une de ces propositions suivantes concerne les troubles somatoformes, laquelle ? (RJ)\n\n1 Désignant les troubles à symptomatologie somatique et apparentés dans le DSM 5\n2 Désignent des pathologies iatrogènes dans la nosographie des autres spécialités\n3 Associe des symptômes physiques et une sémiologie mentale positive\n4 Ne sont pas favorisés par un trouble médical non psychiatrique\n5 Toutes ces réponses sont justes",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44818,
+      "clinical_case": null,
+      "display_title": "Question 22",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 23,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220467,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220468,
+          "text": "1.3",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 220469,
+          "text": "1.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220470,
+          "text": "3.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220471,
+          "text": "1.3.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2022"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Les troubles à symptomatologie somatique",
+        "series": "Mystidia Exams"
+      },
+      "question": "Laquelle des propositions suivantes concernant le trouble dissociatif de l’identité ? (RJ)\n\n1 Appelé auparavant trouble de personnalité multiple\n2 Caractérisé par la présence de seulement deux états de personnalité distincts ou bien une expérience de possession et des épisodes récurrents d’amnésie selon le DSM-5\n3 Le stress provoque souvent l’aggravation transitoires des symptômes dissociatifs en le rendant plus évident\n4 Touche uniquement les femmes\n5 Le symptôme est induit par l’effet d’un abus de drogue",
+      "has_media": false,
+      "statement": "Laquelle des propositions suivantes concernant le trouble dissociatif de l’identité ? (RJ)\n\n1 Appelé auparavant trouble de personnalité multiple\n2 Caractérisé par la présence de seulement deux états de personnalité distincts ou bien une expérience de possession et des épisodes récurrents d’amnésie selon le DSM-5\n3 Le stress provoque souvent l’aggravation transitoires des symptômes dissociatifs en le rendant plus évident\n4 Touche uniquement les femmes\n5 Le symptôme est induit par l’effet d’un abus de drogue",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44817,
+      "clinical_case": null,
+      "display_title": "Question 23",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    }
+  ]
+}

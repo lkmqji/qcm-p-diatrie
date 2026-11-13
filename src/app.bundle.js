@@ -97,12 +97,12 @@ const MEDICAL_YEARS = [
     coursesCount: 212,
     qcmCount: 9035,
     modules: [
-      { id: "pediatrie", title: "Pédiatrie & Chirurgie Pédiatrique", courses: 35, qcm: 1905, available: true, active: true },
+      { id: "pediatrie", title: "Pédiatrie & Chirurgie Pédiatrique", courses: 35, qcm: 1905, available: true },
       { id: "locomoteur_5", title: "Appareil Locomoteur (Ortho & Rhumato)", courses: 47, qcm: 2089, available: false },
       { id: "gynecologie_5", title: "Gynécologie - Obstétrique", courses: 44, qcm: 1977, available: false },
       { id: "urologie_nephro_5", title: "Urologie & Néphrologie", courses: 42, qcm: 1789, available: false },
       { id: "endocrinologie_5", title: "Endocrinologie - Diabétologie", courses: 23, qcm: 915, available: false },
-      { id: "psychiatrie_5", title: "Psychiatrie & Pédopsychiatrie", courses: 21, qcm: 702, available: false }
+      { id: "psychiatrie", title: "Psychiatrie & Pédopsychiatrie", courses: 20, qcm: 862, available: true }
     ]
   },
   {
@@ -154,9 +154,10 @@ function setActiveModuleId(moduleId) {
 }
 
 function findModuleById(moduleId) {
+  const targetId = (moduleId === 'psychiatrie_5') ? 'psychiatrie' : moduleId;
   for (const y of MEDICAL_YEARS) {
     for (const m of y.modules) {
-      if (m.id === moduleId) {
+      if (m.id === targetId) {
         return { ...m, yearNumber: y.year, yearTitle: y.title, cycle: y.cycle };
       }
     }
@@ -287,12 +288,19 @@ if (typeof window !== 'undefined') {
 
 
 const LEGACY_PEDIA_KEY_MAP = {
+  drill_state: 'pedia_drill_state_v1',
   today_tracker: 'pedia_today_tracker',
-  first_pass_records: 'pedia_first_pass_records_v1',
+  first_pass_records: 'pedia_first_pass_records_v2',
+  first_pass_records_v1: 'pedia_first_pass_records_v1',
   lesson_tracker: 'pedia_lesson_tracker_v1',
+  lesson_tracker_state: 'pedia_lesson_tracker_state_v1',
+  lesson_sessions: 'pedia_lesson_sessions_v1',
   reasoning_notes: 'pedia_drill_reasoning_notes_v1',
+  study_history: 'pedia_study_history_v1',
   ai_cache: 'pedia_ai_explanations_cache',
-  lesson_timer_cleared: 'pedia_lesson_timer_cleared_at'
+  lesson_timer_cleared: 'pedia_lesson_timer_cleared_at',
+  selected_chapters: 'pedia_selected_chapters_v1',
+  snoozed_questions: 'pedia_snoozed_questions_v1'
 };
 
 function resolveStorageKey(baseKey, moduleId) {
@@ -1003,8 +1011,17 @@ const geminiService = new GeminiService();
 
 // Spaced Repetition Queue Engine with Dynamic Penalty & Mastery Thresholds
 
-const STORAGE_KEY = 'pedia_drill_state_v1';
-const REASONING_KEY = 'pedia_drill_reasoning_notes_v1';
+function getStorageKey() {
+  return typeof resolveStorageKey === 'function' ? resolveStorageKey('drill_state') : 'pedia_drill_state_v1';
+}
+
+function getReasoningKey() {
+  return typeof resolveStorageKey === 'function' ? resolveStorageKey('reasoning_notes') : 'pedia_drill_reasoning_notes_v1';
+}
+
+function getTodayTrackerKey() {
+  return typeof resolveStorageKey === 'function' ? resolveStorageKey('today_tracker') : 'pedia_today_tracker';
+}
 
 /**
  * Strips redundant static question data (questionText, options, clinicalCase, explanation)
@@ -1111,7 +1128,7 @@ class QueueEngine {
   loadState() {
     try {
       this.sanitizeReasoningNotesStorage();
-      const saved = localStorage.getItem(STORAGE_KEY);
+      const saved = localStorage.getItem(getStorageKey());
       if (saved) {
         const parsed = JSON.parse(saved);
         this.stats = parsed.stats || {};
@@ -1141,7 +1158,7 @@ class QueueEngine {
    */
   sanitizeReasoningNotesStorage() {
     try {
-      const raw = localStorage.getItem(REASONING_KEY);
+      const raw = localStorage.getItem(getReasoningKey());
       if (!raw) return;
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
@@ -1149,7 +1166,7 @@ class QueueEngine {
         if (hasBloated) {
           console.log(`[Storage] Optimizing ${parsed.length} reasoning notes to lean format...`);
           const slimmed = parsed.map(n => slimNote(n));
-          localStorage.setItem(REASONING_KEY, JSON.stringify(slimmed));
+          localStorage.setItem(getReasoningKey(), JSON.stringify(slimmed));
         }
       }
     } catch (e) {
@@ -1170,7 +1187,7 @@ class QueueEngine {
         snoozedQuestions: this.snoozedQuestions || {},
         lastUpdated: Date.now()
       };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      localStorage.setItem(getStorageKey(), JSON.stringify(data));
     } catch (err) {
       console.warn("Failed to save state:", err);
     }
@@ -1527,7 +1544,7 @@ class QueueEngine {
       const existing = this.getRawReasoningNotes();
       const slimmed = slimNote(noteData);
       const updated = [slimmed, ...existing.filter(n => n.questionUid !== noteData.questionUid || n.id !== noteData.id)];
-      localStorage.setItem(REASONING_KEY, JSON.stringify(updated.slice(0, 500))); // Keep up to 500 notes
+      localStorage.setItem(getReasoningKey(), JSON.stringify(updated.slice(0, 500))); // Keep up to 500 notes
     } catch (err) {
       console.warn("Failed to save reasoning note:", err);
     }
@@ -1535,7 +1552,7 @@ class QueueEngine {
 
   getRawReasoningNotes() {
     try {
-      const raw = localStorage.getItem(REASONING_KEY);
+      const raw = localStorage.getItem(getReasoningKey());
       if (!raw) return [];
       const parsed = JSON.parse(raw);
       return Array.isArray(parsed) ? parsed : [];
@@ -1557,7 +1574,7 @@ class QueueEngine {
   deleteReasoningNote(id) {
     try {
       const notes = this.getRawReasoningNotes().filter(n => n.id !== id);
-      localStorage.setItem(REASONING_KEY, JSON.stringify(notes));
+      localStorage.setItem(getReasoningKey(), JSON.stringify(notes));
     } catch {}
   }
 
@@ -1565,7 +1582,7 @@ class QueueEngine {
     if (!questionUid) return;
     try {
       const notes = this.getRawReasoningNotes().filter(n => n.questionUid !== questionUid);
-      localStorage.setItem(REASONING_KEY, JSON.stringify(notes));
+      localStorage.setItem(getReasoningKey(), JSON.stringify(notes));
     } catch {}
   }
 
@@ -1586,7 +1603,7 @@ class QueueEngine {
   getTodayTracker() {
     const todayStr = new Date().toISOString().slice(0, 10);
     try {
-      const raw = localStorage.getItem('pedia_today_tracker');
+      const raw = localStorage.getItem(getTodayTrackerKey());
       if (raw) {
         const parsed = JSON.parse(raw);
         if (parsed.dateStr === todayStr) {
@@ -1596,7 +1613,7 @@ class QueueEngine {
     } catch {}
     const fresh = { dateStr: todayStr, count: 0 };
     try {
-      localStorage.setItem('pedia_today_tracker', JSON.stringify(fresh));
+      localStorage.setItem(getTodayTrackerKey(), JSON.stringify(fresh));
     } catch {}
     return fresh;
   }
@@ -1605,9 +1622,28 @@ class QueueEngine {
     const tracker = this.getTodayTracker();
     tracker.count = (tracker.count || 0) + 1;
     try {
-      localStorage.setItem('pedia_today_tracker', JSON.stringify(tracker));
+      localStorage.setItem(getTodayTrackerKey(), JSON.stringify(tracker));
     } catch {}
     return tracker.count;
+  }
+
+  /**
+   * Switch active module dataset and reinitialize queue/stats
+   */
+  switchModule(newQuestions, newChapters) {
+    this.saveState();
+    this.allQuestions = newQuestions || [];
+    this.chapters = newChapters || [];
+    this.questionsMap = getQuestionsMap(this.allQuestions);
+    this._cachedMetrics = null;
+    this.stats = {};
+    this.queue = [];
+    this.cursor = 0;
+    this.totalMistakesCount = 0;
+    this.selectedChapterIds = [];
+    this.snoozedQuestions = {};
+    this.loadState();
+    this.initSession(this.selectedChapterIds);
   }
 
   /**
@@ -1664,13 +1700,13 @@ class QueueEngine {
       }
       if (Array.isArray(merged.reasoningNotes)) {
         const slimmed = merged.reasoningNotes.map(n => slimNote(n));
-        localStorage.setItem(REASONING_KEY, JSON.stringify(slimmed.slice(0, 500)));
+        localStorage.setItem(getReasoningKey(), JSON.stringify(slimmed.slice(0, 500)));
       }
       if (merged.todayTracker && typeof merged.todayTracker === 'object') {
         const currentTracker = this.getTodayTracker();
         if (merged.todayTracker.dateStr === currentTracker.dateStr) {
           currentTracker.count = Math.max(currentTracker.count, merged.todayTracker.count || 0);
-          localStorage.setItem('pedia_today_tracker', JSON.stringify(currentTracker));
+          localStorage.setItem(getTodayTrackerKey(), JSON.stringify(currentTracker));
         }
       }
       this.saveState();
@@ -1699,8 +1735,14 @@ class QueueEngine {
 // Study Progress & Analytics Tracking Service for PédiaDrill
 // Manages daily study history, intelligent sessions, precise question timers, streaks, first-pass discovery tracking, and analytics.
 
-const STUDY_HISTORY_KEY = 'pedia_study_history_v1';
-const FIRST_PASS_KEY = 'pedia_first_pass_records_v2';
+function getStudyHistoryKey() {
+  return typeof resolveStorageKey === 'function' ? resolveStorageKey('study_history') : 'pedia_study_history_v1';
+}
+
+function getFirstPassKey() {
+  return typeof resolveStorageKey === 'function' ? resolveStorageKey('first_pass_records') : 'pedia_first_pass_records_v2';
+}
+
 const INACTIVITY_THRESHOLD_MS = 2 * 60 * 1000; // 2 minutes: pause timer
 const SESSION_GAP_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes: new session
 const MAX_QUESTION_TIME_CAP_SEC = 180; // 3 minutes cap per question to prevent outlier skew
@@ -1717,10 +1759,21 @@ class StudyTracker {
     this.lastActionTimestamp = Date.now();
   }
 
+  reloadForModule() {
+    this.history = this.loadHistory();
+    this.firstPassRecords = this.loadFirstPassRecords();
+    this.currentQuestionStartTime = null;
+    this.accumulatedQuestionTimeMs = 0;
+    this.isTimerPaused = false;
+    this.lastPauseTimestamp = null;
+    this.activeSessionStarted = false;
+    this.lastActionTimestamp = Date.now();
+  }
+
   loadHistory() {
     try {
       if (typeof localStorage === 'undefined') return {};
-      const raw = localStorage.getItem(STUDY_HISTORY_KEY);
+      const raw = localStorage.getItem(getStudyHistoryKey());
       if (!raw) return {};
       const parsed = JSON.parse(raw);
       return (parsed && typeof parsed === 'object') ? parsed : {};
@@ -1733,7 +1786,7 @@ class StudyTracker {
   saveHistory() {
     try {
       if (typeof localStorage === 'undefined') return;
-      localStorage.setItem(STUDY_HISTORY_KEY, JSON.stringify(this.history));
+      localStorage.setItem(getStudyHistoryKey(), JSON.stringify(this.history));
     } catch (e) {
       console.warn("Failed to save study history:", e);
     }
@@ -1743,10 +1796,10 @@ class StudyTracker {
     try {
       if (typeof localStorage === 'undefined') return {};
       // Purge legacy biased v1 store if migrating to v2
-      if (localStorage.getItem('pedia_first_pass_records_v1') && !localStorage.getItem(FIRST_PASS_KEY)) {
+      if (localStorage.getItem('pedia_first_pass_records_v1') && !localStorage.getItem(getFirstPassKey())) {
         localStorage.removeItem('pedia_first_pass_records_v1');
       }
-      const raw = localStorage.getItem(FIRST_PASS_KEY);
+      const raw = localStorage.getItem(getFirstPassKey());
       if (!raw) return {};
       const parsed = JSON.parse(raw);
       return (parsed && typeof parsed === 'object') ? parsed : {};
@@ -1759,7 +1812,7 @@ class StudyTracker {
   saveFirstPassRecords() {
     try {
       if (typeof localStorage === 'undefined') return;
-      localStorage.setItem(FIRST_PASS_KEY, JSON.stringify(this.firstPassRecords));
+      localStorage.setItem(getFirstPassKey(), JSON.stringify(this.firstPassRecords));
     } catch (e) {
       console.warn("Failed to save first-pass records:", e);
     }
@@ -2304,20 +2357,35 @@ const studyTracker = new StudyTracker();
 // Lesson Timer & Study Time Tracking Service for PédiaDrill
 // Tracks focused study time per lesson/chapter with persistent stopwatch, background tracking, and summary analytics.
 
-const LESSON_TRACKER_STATE_KEY = 'pedia_lesson_tracker_state_v1';
-const LESSON_SESSIONS_KEY = 'pedia_lesson_sessions_v1';
+function getLessonStateKey() {
+  return typeof resolveStorageKey === 'function' ? resolveStorageKey('lesson_tracker_state') : 'pedia_lesson_tracker_state_v1';
+}
+
+function getLessonSessionsKey() {
+  return typeof resolveStorageKey === 'function' ? resolveStorageKey('lesson_sessions') : 'pedia_lesson_sessions_v1';
+}
+
+function getLessonClearedKey() {
+  return typeof resolveStorageKey === 'function' ? resolveStorageKey('lesson_timer_cleared') : 'pedia_lesson_timer_cleared_at';
+}
 
 class LessonTracker {
   constructor() {
     this.activeTimer = this.loadActiveTimer();
     this.sessions = this.loadSessions();
-    this.lastTimerClearedAt = Number(localStorage.getItem('pedia_lesson_timer_cleared_at') || 0);
+    this.lastTimerClearedAt = Number(localStorage.getItem(getLessonClearedKey()) || 0);
+  }
+
+  reloadForModule() {
+    this.activeTimer = this.loadActiveTimer();
+    this.sessions = this.loadSessions();
+    this.lastTimerClearedAt = Number(localStorage.getItem(getLessonClearedKey()) || 0);
   }
 
   loadActiveTimer() {
     try {
       if (typeof localStorage === 'undefined') return null;
-      const raw = localStorage.getItem(LESSON_TRACKER_STATE_KEY);
+      const raw = localStorage.getItem(getLessonStateKey());
       if (!raw) return null;
       const parsed = JSON.parse(raw);
       if (parsed && typeof parsed === 'object' && parsed.lessonName) {
@@ -2334,10 +2402,10 @@ class LessonTracker {
     try {
       if (typeof localStorage === 'undefined') return;
       if (this.activeTimer) {
-        localStorage.setItem(LESSON_TRACKER_STATE_KEY, JSON.stringify(this.activeTimer));
+        localStorage.setItem(getLessonStateKey(), JSON.stringify(this.activeTimer));
       } else {
-        localStorage.removeItem(LESSON_TRACKER_STATE_KEY);
-        localStorage.setItem('pedia_lesson_timer_cleared_at', String(this.lastTimerClearedAt || Date.now()));
+        localStorage.removeItem(getLessonStateKey());
+        localStorage.setItem(getLessonClearedKey(), String(this.lastTimerClearedAt || Date.now()));
       }
     } catch (e) {
       console.warn('Failed to save active lesson timer:', e);
@@ -2347,7 +2415,7 @@ class LessonTracker {
   loadSessions() {
     try {
       if (typeof localStorage === 'undefined') return [];
-      const raw = localStorage.getItem(LESSON_SESSIONS_KEY);
+      const raw = localStorage.getItem(getLessonSessionsKey());
       if (!raw) return [];
       const parsed = JSON.parse(raw);
       return Array.isArray(parsed) ? parsed : [];
@@ -2360,7 +2428,7 @@ class LessonTracker {
   saveSessions() {
     try {
       if (typeof localStorage === 'undefined') return;
-      localStorage.setItem(LESSON_SESSIONS_KEY, JSON.stringify(this.sessions));
+      localStorage.setItem(getLessonSessionsKey(), JSON.stringify(this.sessions));
     } catch (e) {
       console.warn('Failed to save lesson sessions:', e);
     }
@@ -3434,7 +3502,7 @@ class FirebaseSyncService {
 // Update Management Service for PédiaDrill
 // Checks GitHub Releases for new APK versions, notifies the user, and triggers direct download.
 
-const CURRENT_APP_VERSION = '1.5.3';
+const CURRENT_APP_VERSION = '1.5.4';
 const GITHUB_REPO = 'lkmqji/qcm-p-diatrie';
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
 const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours auto-check cooldown
@@ -3676,10 +3744,25 @@ const updateService = new UpdateService();
 // PédiaDrill - Application Controller & Orchestration
 
 // Global Data Access & O(1) Fast Lookup Maps
-const allQuestions = window.PEDIA_QUESTIONS || [];
-const allChapters = window.PEDIA_CHAPTERS || [];
-const questionsMap = new Map(allQuestions.map(q => [q.uid, q]));
-const chaptersMap = new Map(allChapters.map(c => [c.id, c]));
+function getDatasetForModule(moduleId) {
+  const modId = moduleId || getActiveModuleId();
+  if ((modId === 'psychiatrie' || modId === 'psychiatrie_5') && typeof window !== 'undefined' && window.PSY_QUESTIONS && window.PSY_CHAPTERS) {
+    return {
+      questions: window.PSY_QUESTIONS,
+      chapters: window.PSY_CHAPTERS
+    };
+  }
+  return {
+    questions: (typeof window !== 'undefined' && window.PEDIA_QUESTIONS) || [],
+    chapters: (typeof window !== 'undefined' && window.PEDIA_CHAPTERS) || []
+  };
+}
+
+let activeDataset = getDatasetForModule(getActiveModuleId());
+let allQuestions = activeDataset.questions;
+let allChapters = activeDataset.chapters;
+let questionsMap = new Map(allQuestions.map(q => [q.uid, q]));
+let chaptersMap = new Map(allChapters.map(c => [c.id, c]));
 
 // Services
 const queueEngine = new QueueEngine(allQuestions, allChapters);
@@ -3996,6 +4079,44 @@ function updateSettingsCountdownPreview(dateStr) {
   }
 }
 
+function switchActiveModule(moduleId) {
+  const mod = setActiveModuleId(moduleId);
+  activeDataset = getDatasetForModule(mod.id);
+  allQuestions = activeDataset.questions;
+  allChapters = activeDataset.chapters;
+  questionsMap = new Map(allQuestions.map(q => [q.uid, q]));
+  chaptersMap = new Map(allChapters.map(c => [c.id, c]));
+
+  queueEngine.switchModule(allQuestions, allChapters);
+  if (studyTracker && typeof studyTracker.reloadForModule === 'function') {
+    studyTracker.reloadForModule();
+  }
+  if (lessonTracker && typeof lessonTracker.reloadForModule === 'function') {
+    lessonTracker.reloadForModule();
+  }
+
+  // Update header subtitle if element exists
+  const headerSubtitle = document.querySelector('.brand-subtitle');
+  if (headerSubtitle) {
+    headerSubtitle.textContent = `${mod.title} • Répétition Espacée & Raisonnement IA`;
+  }
+
+  updateActiveModuleBadge();
+  renderModuleSelectorUI();
+  updateDashboardUI();
+  updateArenaDailyBadge();
+
+  if (currentView === 'arena') {
+    loadNextArenaQuestion();
+  } else if (currentView === 'notebook') {
+    renderNotebookUI();
+  } else if (currentView === 'stats') {
+    renderStatsUI();
+  }
+
+  showAppToast(`✅ Module ${mod.title} activé ! (${allQuestions.length} QCM)`);
+}
+
 function renderModuleSelectorUI() {
   const container = document.getElementById('settings-years-accordion');
   if (!container) return;
@@ -4092,11 +4213,7 @@ function renderModuleSelectorUI() {
       e.preventDefault();
       const modId = card.getAttribute('data-module-select');
       try {
-        setActiveModuleId(modId);
-        showAppToast(`✅ Module Pédiatrie actif !`);
-        updateActiveModuleBadge();
-        renderModuleSelectorUI();
-        updateDashboardUI();
+        switchActiveModule(modId);
       } catch (err) {
         showAppToast(err.message);
       }

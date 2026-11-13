@@ -34,7 +34,7 @@ qcm-p-diatrie/
 │   └── MASTER_PRODUCT_TECHNICAL_CONTEXT.md # Contexte technique global (source unique de vérité)
 ├── android/                              # Projet natif Android Capacitor 8
 │   ├── app/
-│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 20, versionName 1.5.3)
+│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 21, versionName 1.5.4)
 │   │   ├── debug.keystore                # Keystore de signature unifié (local & CI/CD)
 │   │   ├── google-services.json          # Configuration Firebase Android (qcm-pediatr, com.pediadrill.app)
 │   │   └── src/main/
@@ -56,12 +56,17 @@ qcm-p-diatrie/
 │   ├── icon-192.svg                      # Icône PWA 192x192
 │   └── icon-512.svg                      # Icône PWA 512x512
 ├── public/                               # Assets statiques publics (favicons, icônes)
+├── qcm-psy/                              # Fichiers sources JSON des 20 cours de psychiatrie (862 QCM)
 ├── src/
 │   ├── data/
 │   │   ├── chapters.js                   # Déclaration ES module des 35 chapitres de pédiatrie
-│   │   ├── chapters.json                 # Format JSON des chapitres avec décompte de QCM
-│   │   ├── questions.js                  # Déclaration ES module de la base de données (1905 questions)
-│   │   └── questions.json                # Format JSON brut des 1905 questions
+│   │   ├── chapters.json                 # Format JSON des chapitres de pédiatrie
+│   │   ├── questions.js                  # Déclaration ES module de la base pédiatrie (1905 questions)
+│   │   ├── questions.json                # Format JSON brut des 1905 questions de pédiatrie
+│   │   ├── psy_chapters.js               # Déclaration ES module des 20 chapitres de psychiatrie
+│   │   ├── psy_chapters.json             # Format JSON des chapitres de psychiatrie
+│   │   ├── psy_questions.js              # Déclaration ES module des 862 questions de psychiatrie
+│   │   └── psy_questions.json            # Format JSON brut des 862 questions de psychiatrie
 │   ├── services/
 │   │   ├── moduleCatalog.js              # Référentiel du cursus (6 années, 46 modules, squelettes et dates)
 │   │   ├── storageScope.js               # Partitionnement transparent des données d'étude par module
@@ -336,7 +341,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ### 3.9. Système de Mises à Jour Automatiques & GitHub Releases (`src/services/updateService.js` & CI/CD)
 - **Service d'Orchestration des Mises à Jour (`UpdateService`)** :
-  - Version déclarée : `CURRENT_APP_VERSION = '1.5.3'` synchronisée avec `package.json` et `build.gradle` (`versionCode 20`).
+  - Version déclarée : `CURRENT_APP_VERSION = '1.5.4'` synchronisée avec `package.json` et `build.gradle` (`versionCode 21`).
   - Comparaison sémantique universelle (`compareVersions`) ignorant les préfixes `v`.
   - Interrogation de l'API GitHub Releases (`https://api.github.com/repos/lkmqji/qcm-p-diatrie/releases/latest`) avec cooldown de 4 heures (`pedia_last_update_check_ts`).
   - Extraction de l'asset `.apk` direct (`PediaDrill.apk`). En environnement natif Android Capacitor, l'URL est ouverte via `_system` pour lancer le gestionnaire de téléchargement Android natif.
@@ -461,18 +466,31 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 - **Référentiel Cursus Médical (`src/services/moduleCatalog.js`)** :
   - Cartographie exhaustive issue de l'extraction certifiée de **Mystidia Exams** couvrant 6 années de médecine (PCEM 1 à DCEM 4), 46 modules/unités d'enseignement et 1 161 cours.
   - **Statut de Disponibilité** :
-    - **Pédiatrie (5ème Année)** : `available: true`, `active: true` avec la banque complète de 35 cours et 1 905 questions.
-    - **45 Autres Modules** : `available: false`, rendus visuellement sous forme de cartes squelettes grisées (`.skeleton-disabled`) avec badge sombre *"Bientôt"*, curseur interdit (`not-allowed`) et micro-animation de secousse (*shake*) en cas de tentative d'accès avec infobulle pédagogique.
+    - **Pédiatrie (5ème Année)** : `available: true`, 35 cours et 1 905 questions.
+    - **Psychiatrie & Pédopsychiatrie (5ème Année)** : `available: true`, 20 cours et 862 questions.
+    - **44 Autres Modules** : `available: false`, rendus visuellement sous forme de cartes squelettes grisées (`.skeleton-disabled`) avec badge sombre *"Bientôt"*, curseur interdit (`not-allowed`) et micro-animation de secousse (*shake*) en cas de tentative d'accès avec infobulle pédagogique.
 - **Modale Paramètres Reworkée (`#modal-settings`)** :
-  - Section 1 : Accordéon hiérarchique par année d'études avec compteurs de cours et de QCM. La 5ème année est dépliée par défaut.
+  - Section 1 : Accordéon hiérarchique par année d'études avec compteurs de cours et de QCM. La 5ème année est dépliée par défaut avec les cartes actives néon pour Pédiatrie et Psychiatrie.
   - Section 2 : Datepicker natif stylisé avec prévisualisation en temps réel du badge dynamique (`J-XX`, `Jour J !`, ou `Examen passé`).
   - Section 3 : Clé API Google Gemini & cascade Flash automatique.
   - Section 4 : Gestion des versions et vérification GitHub Releases.
 - **Bannière Compte à Rebours sur le Dashboard (`#dashboard-exam-banner-container`)** :
   - Affiche en tête du Dashboard le module d'étude actif, le badge `J-XX` néon violet/cyan et la cadence quotidienne requise (QCM/jour) calculée automatiquement en fonction des questions restantes et du nombre de jours avant l'épreuve.
   - Bouton d'accès direct pour ajuster la date ou explorer le cursus.
+
+## 3.18. Moteur Multi-Modules Dynamique & Partitionnement de Stockage Étanche
+- **Commutation Dynamique Sans Rechargement (`src/app.js` -> `switchActiveModule`)** :
+  - Charge dynamiquement les banques de données correspondantes :
+    - `pediatrie` -> `window.PEDIA_QUESTIONS` / `window.PEDIA_CHAPTERS`
+    - `psychiatrie` -> `window.PSY_QUESTIONS` / `window.PSY_CHAPTERS`
+  - Reconfigure à chaud les singletons :
+    - `queueEngine.switchModule(newQuestions, newChapters)` : recalcule la file active, recharge l'état SRS et le journal du jour.
+    - `studyTracker.reloadForModule()` : réinitialise l'historique de sessions et le premier passage (First Pass).
+    - `lessonTracker.reloadForModule()` : recharge les chronomètres de cours et le cumul du temps d'étude par chapitre.
+  - Réactualise instantanément toutes les vues UI : Dashboard (métriques, anneaux de complétion, bannière J-XX), Sélecteur de chapitres de l'Arène, Carnet de Raisonnement / Erreurs et Écran Statistiques avec toast d'alerte néon.
 - **Partitionnement Sécurisé des Données (`src/services/storageScope.js`)** :
-  - Prévient tout conflit entre modules futurs (`mod_${moduleId}_...`) tout en assurant une rétrocompatibilité à 100% avec les clés existantes de la Pédiatrie (`pedia_today_tracker`, `pedia_first_pass_records_v1`, etc.) garantissant zéro perte de données.
+  - Prévient tout conflit entre modules (`mod_${moduleId}_...`) tout en assurant une rétrocompatibilité à 100% avec les clés existantes de la Pédiatrie (`pedia_today_tracker`, `pedia_first_pass_records_v1`, etc.) garantissant zéro perte de données.
+  - Clés partitionnées pour la Psychiatrie : `mod_psychiatrie_drill_state`, `mod_psychiatrie_today_tracker`, `mod_psychiatrie_first_pass_records`, `mod_psychiatrie_lesson_tracker`, `mod_psychiatrie_reasoning_notes`, `mod_psychiatrie_study_history`, `mod_psychiatrie_lesson_sessions`.
 
 ---
 
@@ -548,7 +566,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.5.3` (`versionCode 20`)
+- **Version native** : `versionName 1.5.4` (`versionCode 21`)
 - **Empreinte SHA-1 (Debug Keystore Gradle & GitHub Actions)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
 - **Empreinte SHA-256 (Debug Keystore Gradle & GitHub Actions)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
 - **Keystore unifié** : `android/app/debug.keystore` (Alias : `AndroidDebugKey`, mot de passe `android`, garantissant une empreinte cryptographique identique entre les compilations locales et la CI/CD GitHub Actions).

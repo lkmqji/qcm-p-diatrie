@@ -1,0 +1,1409 @@
+{
+  "version": "2.0",
+  "exported_at": "2026-11-13T09:30:30.407Z",
+  "app": "Mystidia Cursus Medical Explorer",
+  "course": {
+    "title": "Carences de soins maternels",
+    "module": "Psychiatrie",
+    "year": "5ème Année (DFASM2)",
+    "session_id": "session_1792187365932_7j6ofyi",
+    "questions_count": 24
+  },
+  "questions": [
+    {
+      "id": 1,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 315806,
+          "text": "Le stade préopératoire est caractérisé par le symbolisme et l'acquisition de la notion de conservation des quantités.",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 315807,
+          "text": "Le langage apparaît très tôt.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 315808,
+          "text": "Le raisonnement hypothético-déductif est caractéristique du dernier stade de développement.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 315809,
+          "text": "La permanence de l'objet est acquise vers l'âge de 5 à 8 mois.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 315810,
+          "text": "On observe un égocentrisme important dans le stade préopératoire.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Carences de soins maternels",
+        "series": "Mystidia Exams"
+      },
+      "question": "Toutes ces propositions concernent les hypothèses selon Piaget sauf une :",
+      "has_media": true,
+      "statement": "Toutes ces propositions concernent les hypothèses selon Piaget sauf une :",
+      "sub_index": null,
+      "media_urls": [
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187365932_7j6ofyi/session_1792187365932_7j6ofyi_q_0_1792187395703_img_0.jpg",
+        "https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187365932_7j6ofyi/session_1792187365932_7j6ofyi_q_0_1792187395703_img_1.jpg"
+      ],
+      "croq_answer": null,
+      "explanation": "A.Fausse, certe le stade préopératoire est caractérisé par le symbolisme mais l’acquisition de la notion de conservation des quantités se voit lors du stade des opérations concrètes.",
+      "original_id": 64664,
+      "clinical_case": null,
+      "display_title": "Question 1",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">A.Fausse, </strong>certe le stade préopératoire est caractérisé par le symbolisme mais l’acquisition de la notion de conservation des quantités se voit lors du stade des opérations concrètes.</p><p><br></p><p><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187365932_7j6ofyi/session_1792187365932_7j6ofyi_q_0_1792187395703_img_0.jpg\"><img src=\"https://mmrusadmemqimglqgtzf.supabase.co/storage/v1/object/public/mystidia-media/sessions/session_1792187365932_7j6ofyi/session_1792187365932_7j6ofyi_q_0_1792187395703_img_1.jpg\"></p>"
+    },
+    {
+      "id": 2,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 315801,
+          "text": "Attachement.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 315802,
+          "text": "Conditionnement.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 315803,
+          "text": "Mémoire et perception.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 315804,
+          "text": "Symbolisme.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 315805,
+          "text": "Assimilation et accommodation.",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Carences de soins maternels",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des propositions concerne le processus de développement des structures cognitives selon Piaget, laquelle ?",
+      "has_media": false,
+      "statement": "L'une des propositions concerne le processus de développement des structures cognitives selon Piaget, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "E.Vrai, Pour Piaget le développement des structures cognitives repose sur 2 mécanismes indissociables :• L'assimilation : L'enfant intègre une nouvelle information ou un nouvel objet de son environnement dans ses structures cognitives existantes sans les modifier. • L'accommodation : Face à une résistance de l'environnement l'enfant est obligé de modifier, de réajuster ou de créer de nouvelles structures cognitives pour s'adapter à la réalité. ",
+      "original_id": 64663,
+      "clinical_case": null,
+      "display_title": "Question 2",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(0, 138, 0);\">E.Vrai,</strong> Pour Piaget le développement des structures cognitives repose sur 2 mécanismes indissociables :</p><p>•&nbsp;<strong>L'assimilation</strong> : L'enfant intègre une nouvelle information ou un nouvel objet de son environnement dans ses structures cognitives existantes sans les modifier. </p><p>•&nbsp;<strong>L'accommodation</strong> : Face à une résistance de l'environnement l'enfant est obligé de modifier, de réajuster ou de créer de nouvelles structures cognitives pour s'adapter à la réalité. </p><p><br></p><p><br></p>"
+    },
+    {
+      "id": "3.1",
+      "case_id": 3,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 308496,
+          "text": "1+2+3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 308497,
+          "text": "1+2+5",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 308498,
+          "text": "2+3+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 308499,
+          "text": "2+3+5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 308500,
+          "text": "3+4+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "S2 2026"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Carences de soins maternels",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les soins maternels : (RJ)\n1. Assurent la satisfaction des besoins physiologiques\n2. Apportent une détente à l’enfant\n3. L’interaction sociale avec l’enfant ne fait pas partie des soins\n4. N’assurent pas les besoins psychologiques de l’enfant\n5. Répondent aux besoins émotionnels de l’enfant",
+      "has_media": false,
+      "statement": "Les soins maternels : (RJ)\n1. Assurent la satisfaction des besoins physiologiques\n2. Apportent une détente à l’enfant\n3. L’interaction sociale avec l’enfant ne fait pas partie des soins\n4. N’assurent pas les besoins psychologiques de l’enfant\n5. Répondent aux besoins émotionnels de l’enfant",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "QUESTION 1 :                                                                                                           1- VraiLes soins maternels assurent les besoins physiologiques de base2-Vrai Ils apportent détente et apaisement à l'enfant3-Faux L'interaction sociale fait partie intégrante des soins maternels.4-FauxLes soins maternels assurent aussi les besoins psychologiques.5-Vrai Ils répondent aux besoins émotionnels (sécurité affective)QUESTION 2 :                                                                                                             1-VraiLes conflits parentaux sont un facteur de risque de la carence affective chez l'enfant2-VraiL'absence fréquente des parents est un facteur de risque majeur de la carence affective3-FauxL'encadrement affectif suffisant est un facteur protecteur, pas de risque.4-VraiLe manque de stabilité familiale est un facteur de risque de la carence affective.5-FauxLes familles nombreuses ne sont pas en soi un facteur de risque; tout dépend de la qualité des interactions.QUESTION 3:                                                                                                            1-FauxLe TSA n'est pas une conséquence de la carence affective; c'est un trouble neurodéveloppemental2-Vrai Les troubles du comportement (agitation, agressivité) sont des manifestations fréquentes.3-VraiLe retard du développement émotionnel est une conséquence directe.4-Vrai Les difficultés scolaires sont fréquentes (manque de concentration, etc.) en cas de carence affective5-Faux Une maladie organique n'est pas une manifestation de carence affective.QUESTION 4:                                                                                                        1-Faux L'âge des parents n'est pas l'information la plus pertinente dans ce contexte.2- VraiL'histoire du développement ( language, acquisition de la proprete, comportement sociaux, ...) est essentielle pour identifier le retard psychomotrice et orienter le diagnostic3-FauxLes conditions socio-familiales sont au contraire très importantes.4- VraiLes antécédents psychiatriques familiaux sont importants poue l'evaluation psychiatrique ( TSA, TDAH, depression, trbl bipolaires, anxiété...)5- Vrai La qualité de la relation parent-enfant est cruciale à évaluer.QUESTION 5:                                                                                                            1-FauxC'est un outil therapeutique important; proposée si necessaire apres evaluation 2- VraiLa psychothérapie de l'enfant (therapie cognitive, therapie par le jeu) est un principe de prise en charge de la carence affective.3- Vrai L'amélioration du climat familial est fondamentale.4-FauxLes antidépresseurs ne sont pas systématiques; ils ne sont indiqués qu'en cas de dépression caractérisée.5- Vrai Le suivi scolaire est important (collaboration avec l'école : l'enseignant).",
+      "original_id": 63104,
+      "clinical_case": "Wassim, un garçon âgé de 6 ans, est amené en consultation pour difficultés scolaires et troubles du comportement. L’enseignante rapporte qu’il est agité en classe, agressif avec ses camarades et très demandeur d’attention.\r\nLors de la consultation, l’enfant apparaît anxieux, évite le regard et présente des comportements régressifs comme sucer son pouce.\r\nL’histoire familiale montre que les parents sont en conflit fréquent, la mère travaille la nuit et le père est souvent absent. L’enfant passe la majorité de son temps avec une voisine.\r\nL’examen somatique est sans particularité. Cochez la réponse juste :",
+      "display_title": "Question 3 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(204, 224, 245);\">QUESTION 1 :   </strong><span style=\"background-color: rgb(204, 224, 245);\">                                                                                                        </span></p><p><strong style=\"color: rgb(0, 138, 0);\">1- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les soins maternels assurent les besoins physiologiques de base</span></p><p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Ils apportent détente et apaisement à l'enfant</span></p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;L'interaction sociale fait partie intégrante des soins maternels.</span></p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les soins maternels assurent aussi les besoins psychologiques.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">5-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Ils répondent aux besoins émotionnels (</span><strong style=\"color: rgb(161, 0, 0); background-color: rgb(255, 255, 102);\">sécurité affective</strong><span style=\"color: rgb(15, 17, 21);\">)</span></p><p><br></p><p><strong style=\"color: rgb(15, 17, 21); background-color: rgb(204, 224, 245);\">QUESTION 2 :                                                                                                             </strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les conflits parentaux sont un facteur de risque de la carence affective chez l'enfant</span></p><p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">L'absence fréquente des parents est un facteur de risque majeur de la carence affective</span></p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">L'encadrement affectif suffisant est</span><strong style=\"color: rgb(15, 17, 21);\"> un facteur protecteur,</strong><span style=\"color: rgb(15, 17, 21);\"> pas de risque.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">4-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Le manque de stabilité familiale est un facteur de risque de la carence affective.</span></p><p><strong style=\"color: rgb(230, 0, 0);\">5-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les familles nombreuses ne sont pas en soi un facteur de risque; tout dépend de la qualité des interactions.</span></p><p><br></p><p><strong style=\"background-color: rgb(204, 224, 245);\">QUESTION 3:                                                                                                            </strong></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Le </span><strong style=\"color: rgb(15, 17, 21);\">TSA </strong><span style=\"color: rgb(15, 17, 21);\">n'est pas une conséquence de la carence affective; </span><strong style=\"color: rgb(161, 0, 0); background-color: rgb(255, 255, 102);\">c'est un trouble neurodéveloppemental</strong></p><p><span style=\"color: rgb(0, 138, 0); font-weight: bolder;\">2-Vrai</span></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Les troubles du comportement (agitation, agressivité) sont des manifestations fréquentes.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">3-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Le retard du développement émotionnel est une conséquence directe.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">4-Vrai </strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les difficultés scolaires sont fréquentes (manque de concentration, etc.) en cas de carence affective</span></p><p><span style=\"color: rgb(230, 0, 0); font-weight: bolder;\">5-Faux</span></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Une maladie organique n'est pas une manifestation de carence affective.</span></p><p><br></p><p><strong style=\"color: rgb(15, 17, 21); background-color: rgb(204, 224, 245);\">QUESTION 4:                                                                                                        </strong></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux</strong><span style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 255);\">&nbsp;</span><span style=\"color: rgb(15, 17, 21);\">L'âge des parents n'est pas l'information la plus pertinente dans ce contexte.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">2- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">L'histoire du développement ( language, acquisition de la proprete, comportement sociaux, ...) est essentielle pour </span><strong style=\"color: rgb(15, 17, 21);\">identifier le retard psychomotrice et orienter le diagnostic</strong></p><p><span style=\"border-color: rgb(229, 231, 235); --tw-shadow: 0 0 transparent; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgba(59,130,246,0.5); --tw-ring-offset-shadow: 0 0 transparent; --tw-ring-shadow: 0 0 transparent; font-weight: bolder; color: rgb(230, 0, 0);\">3-Faux</span></p><p><span style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 255);\">Les conditions socio-familiales sont au contraire très importantes.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">4- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les antécédents psychiatriques familiaux sont importants poue l'evaluation psychiatrique (</span><strong style=\"color: rgb(15, 17, 21);\"> TSA, TDAH, depression, trbl bipolaires, anxiété...</strong><span style=\"color: rgb(15, 17, 21);\">)</span></p><p><strong style=\"color: rgb(0, 138, 0);\">5- Vrai</strong><span style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 255);\">&nbsp;</span></p><p><span style=\"color: rgb(15, 17, 21);\">La qualité de la relation parent-enfant est cruciale à évaluer.</span></p><p><br></p><p><strong style=\"color: rgb(15, 17, 21); background-color: rgb(204, 224, 245);\">QUESTION 5:                                                                                                            </strong></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux</strong></p><p>C'est un outil therapeutique important; proposée si necessaire apres evaluation </p><p><strong style=\"color: rgb(0, 138, 0);\">2- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">La psychothérapie de l'enfant (</span><strong style=\"color: rgb(15, 17, 21);\">therapie cognitive, therapie par le jeu</strong><span style=\"color: rgb(15, 17, 21);\">) est un principe de prise en charge de la carence affective.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">3- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;L'amélioration du climat familial est fondamentale.</span></p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les antidépresseurs </span><strong style=\"color: rgb(15, 17, 21);\">ne sont pas systématiques</strong><span style=\"color: rgb(15, 17, 21);\">; ils ne sont indiqués qu'en cas de dépression caractérisée.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">5- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Le suivi scolaire est important (</span><strong style=\"color: rgb(15, 17, 21);\">collaboration avec l'école : l'enseignant</strong><span style=\"color: rgb(15, 17, 21);\">).</span></p>"
+    },
+    {
+      "id": "3.2",
+      "case_id": 3,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 308501,
+          "text": "1+3+5",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 308502,
+          "text": "1+2+4",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 308503,
+          "text": "2+3+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 308504,
+          "text": "2+3+5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 308505,
+          "text": "4+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "S2 2026"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Carences de soins maternels",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les facteurs de risque de carence affective dans ce cas sont : (RJ)\n1. Conflits parentaux\n2. Absence fréquente des parents\n3. Encadrement affectif suffisant\n4. Manque de stabilité familiale\n5. Familles nombreuses",
+      "has_media": false,
+      "statement": "Les facteurs de risque de carence affective dans ce cas sont : (RJ)\n1. Conflits parentaux\n2. Absence fréquente des parents\n3. Encadrement affectif suffisant\n4. Manque de stabilité familiale\n5. Familles nombreuses",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "QUESTION 1 :                                                                                                           1- VraiLes soins maternels assurent les besoins physiologiques de base2-Vrai Ils apportent détente et apaisement à l'enfant3-Faux L'interaction sociale fait partie intégrante des soins maternels.4-FauxLes soins maternels assurent aussi les besoins psychologiques.5-Vrai Ils répondent aux besoins émotionnels (sécurité affective)QUESTION 2 :                                                                                                             1-VraiLes conflits parentaux sont un facteur de risque de la carence affective chez l'enfant2-VraiL'absence fréquente des parents est un facteur de risque majeur de la carence affective3-FauxL'encadrement affectif suffisant est un facteur protecteur, pas de risque.4-VraiLe manque de stabilité familiale est un facteur de risque de la carence affective.5-FauxLes familles nombreuses ne sont pas en soi un facteur de risque; tout dépend de la qualité des interactions.QUESTION 3:                                                                                                            1-FauxLe TSA n'est pas une conséquence de la carence affective; c'est un trouble neurodéveloppemental2-Vrai Les troubles du comportement (agitation, agressivité) sont des manifestations fréquentes.3-VraiLe retard du développement émotionnel est une conséquence directe.4-Vrai Les difficultés scolaires sont fréquentes (manque de concentration, etc.) en cas de carence affective5-Faux Une maladie organique n'est pas une manifestation de carence affective.QUESTION 4:                                                                                                        1-Faux L'âge des parents n'est pas l'information la plus pertinente dans ce contexte.2- VraiL'histoire du développement ( language, acquisition de la proprete, comportement sociaux, ...) est essentielle pour identifier le retard psychomotrice et orienter le diagnostic3-FauxLes conditions socio-familiales sont au contraire très importantes.4- VraiLes antécédents psychiatriques familiaux sont importants poue l'evaluation psychiatrique ( TSA, TDAH, depression, trbl bipolaires, anxiété...)5- Vrai La qualité de la relation parent-enfant est cruciale à évaluer.QUESTION 5:                                                                                                            1-FauxC'est un outil therapeutique important; proposée si necessaire apres evaluation 2- VraiLa psychothérapie de l'enfant (therapie cognitive, therapie par le jeu) est un principe de prise en charge de la carence affective.3- Vrai L'amélioration du climat familial est fondamentale.4-FauxLes antidépresseurs ne sont pas systématiques; ils ne sont indiqués qu'en cas de dépression caractérisée.5- Vrai Le suivi scolaire est important (collaboration avec l'école : l'enseignant).",
+      "original_id": 63105,
+      "clinical_case": "Wassim, un garçon âgé de 6 ans, est amené en consultation pour difficultés scolaires et troubles du comportement. L’enseignante rapporte qu’il est agité en classe, agressif avec ses camarades et très demandeur d’attention.\r\nLors de la consultation, l’enfant apparaît anxieux, évite le regard et présente des comportements régressifs comme sucer son pouce.\r\nL’histoire familiale montre que les parents sont en conflit fréquent, la mère travaille la nuit et le père est souvent absent. L’enfant passe la majorité de son temps avec une voisine.\r\nL’examen somatique est sans particularité. Cochez la réponse juste :",
+      "display_title": "Question 3 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(204, 224, 245);\">QUESTION 1 :   </strong><span style=\"background-color: rgb(204, 224, 245);\">                                                                                                        </span></p><p><strong style=\"color: rgb(0, 138, 0);\">1- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les soins maternels assurent les besoins physiologiques de base</span></p><p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Ils apportent détente et apaisement à l'enfant</span></p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;L'interaction sociale fait partie intégrante des soins maternels.</span></p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les soins maternels assurent aussi les besoins psychologiques.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">5-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Ils répondent aux besoins émotionnels (</span><strong style=\"color: rgb(161, 0, 0); background-color: rgb(255, 255, 102);\">sécurité affective</strong><span style=\"color: rgb(15, 17, 21);\">)</span></p><p><br></p><p><strong style=\"color: rgb(15, 17, 21); background-color: rgb(204, 224, 245);\">QUESTION 2 :                                                                                                             </strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les conflits parentaux sont un facteur de risque de la carence affective chez l'enfant</span></p><p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">L'absence fréquente des parents est un facteur de risque majeur de la carence affective</span></p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">L'encadrement affectif suffisant est</span><strong style=\"color: rgb(15, 17, 21);\"> un facteur protecteur,</strong><span style=\"color: rgb(15, 17, 21);\"> pas de risque.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">4-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Le manque de stabilité familiale est un facteur de risque de la carence affective.</span></p><p><strong style=\"color: rgb(230, 0, 0);\">5-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les familles nombreuses ne sont pas en soi un facteur de risque; tout dépend de la qualité des interactions.</span></p><p><br></p><p><strong style=\"background-color: rgb(204, 224, 245);\">QUESTION 3:                                                                                                            </strong></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Le </span><strong style=\"color: rgb(15, 17, 21);\">TSA </strong><span style=\"color: rgb(15, 17, 21);\">n'est pas une conséquence de la carence affective; </span><strong style=\"color: rgb(161, 0, 0); background-color: rgb(255, 255, 102);\">c'est un trouble neurodéveloppemental</strong></p><p><span style=\"color: rgb(0, 138, 0); font-weight: bolder;\">2-Vrai</span></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Les troubles du comportement (agitation, agressivité) sont des manifestations fréquentes.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">3-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Le retard du développement émotionnel est une conséquence directe.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">4-Vrai </strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les difficultés scolaires sont fréquentes (manque de concentration, etc.) en cas de carence affective</span></p><p><span style=\"color: rgb(230, 0, 0); font-weight: bolder;\">5-Faux</span></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Une maladie organique n'est pas une manifestation de carence affective.</span></p><p><br></p><p><strong style=\"color: rgb(15, 17, 21); background-color: rgb(204, 224, 245);\">QUESTION 4:                                                                                                        </strong></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux</strong><span style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 255);\">&nbsp;</span><span style=\"color: rgb(15, 17, 21);\">L'âge des parents n'est pas l'information la plus pertinente dans ce contexte.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">2- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">L'histoire du développement ( language, acquisition de la proprete, comportement sociaux, ...) est essentielle pour </span><strong style=\"color: rgb(15, 17, 21);\">identifier le retard psychomotrice et orienter le diagnostic</strong></p><p><span style=\"border-color: rgb(229, 231, 235); --tw-shadow: 0 0 transparent; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgba(59,130,246,0.5); --tw-ring-offset-shadow: 0 0 transparent; --tw-ring-shadow: 0 0 transparent; font-weight: bolder; color: rgb(230, 0, 0);\">3-Faux</span></p><p><span style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 255);\">Les conditions socio-familiales sont au contraire très importantes.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">4- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les antécédents psychiatriques familiaux sont importants poue l'evaluation psychiatrique (</span><strong style=\"color: rgb(15, 17, 21);\"> TSA, TDAH, depression, trbl bipolaires, anxiété...</strong><span style=\"color: rgb(15, 17, 21);\">)</span></p><p><strong style=\"color: rgb(0, 138, 0);\">5- Vrai</strong><span style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 255);\">&nbsp;</span></p><p><span style=\"color: rgb(15, 17, 21);\">La qualité de la relation parent-enfant est cruciale à évaluer.</span></p><p><br></p><p><strong style=\"color: rgb(15, 17, 21); background-color: rgb(204, 224, 245);\">QUESTION 5:                                                                                                            </strong></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux</strong></p><p>C'est un outil therapeutique important; proposée si necessaire apres evaluation </p><p><strong style=\"color: rgb(0, 138, 0);\">2- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">La psychothérapie de l'enfant (</span><strong style=\"color: rgb(15, 17, 21);\">therapie cognitive, therapie par le jeu</strong><span style=\"color: rgb(15, 17, 21);\">) est un principe de prise en charge de la carence affective.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">3- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;L'amélioration du climat familial est fondamentale.</span></p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les antidépresseurs </span><strong style=\"color: rgb(15, 17, 21);\">ne sont pas systématiques</strong><span style=\"color: rgb(15, 17, 21);\">; ils ne sont indiqués qu'en cas de dépression caractérisée.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">5- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Le suivi scolaire est important (</span><strong style=\"color: rgb(15, 17, 21);\">collaboration avec l'école : l'enseignant</strong><span style=\"color: rgb(15, 17, 21);\">).</span></p>"
+    },
+    {
+      "id": "3.3",
+      "case_id": 3,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 308506,
+          "text": "1+3+5",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 308507,
+          "text": "1+2+4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 308508,
+          "text": "2+3+4",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 308509,
+          "text": "2+3+5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 308510,
+          "text": "3+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "S2 2026"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Carences de soins maternels",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les manifestations possibles de la carence affective chez l’enfant comprennent : (RJ)\n1. Troubles du spectre de l’autisme\n2. Troubles du comportement\n3. Retard du développement émotionnel\n4. Difficultés scolaires\n5. Une maladie organique",
+      "has_media": false,
+      "statement": "Les manifestations possibles de la carence affective chez l’enfant comprennent : (RJ)\n1. Troubles du spectre de l’autisme\n2. Troubles du comportement\n3. Retard du développement émotionnel\n4. Difficultés scolaires\n5. Une maladie organique",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "QUESTION 1 :                                                                                                           1- VraiLes soins maternels assurent les besoins physiologiques de base2-Vrai Ils apportent détente et apaisement à l'enfant3-Faux L'interaction sociale fait partie intégrante des soins maternels.4-FauxLes soins maternels assurent aussi les besoins psychologiques.5-Vrai Ils répondent aux besoins émotionnels (sécurité affective)QUESTION 2 :                                                                                                             1-VraiLes conflits parentaux sont un facteur de risque de la carence affective chez l'enfant2-VraiL'absence fréquente des parents est un facteur de risque majeur de la carence affective3-FauxL'encadrement affectif suffisant est un facteur protecteur, pas de risque.4-VraiLe manque de stabilité familiale est un facteur de risque de la carence affective.5-FauxLes familles nombreuses ne sont pas en soi un facteur de risque; tout dépend de la qualité des interactions.QUESTION 3:                                                                                                            1-FauxLe TSA n'est pas une conséquence de la carence affective; c'est un trouble neurodéveloppemental2-Vrai Les troubles du comportement (agitation, agressivité) sont des manifestations fréquentes.3-VraiLe retard du développement émotionnel est une conséquence directe.4-Vrai Les difficultés scolaires sont fréquentes (manque de concentration, etc.) en cas de carence affective5-Faux Une maladie organique n'est pas une manifestation de carence affective.QUESTION 4:                                                                                                        1-Faux L'âge des parents n'est pas l'information la plus pertinente dans ce contexte.2- VraiL'histoire du développement ( language, acquisition de la proprete, comportement sociaux, ...) est essentielle pour identifier le retard psychomotrice et orienter le diagnostic3-FauxLes conditions socio-familiales sont au contraire très importantes.4- VraiLes antécédents psychiatriques familiaux sont importants poue l'evaluation psychiatrique ( TSA, TDAH, depression, trbl bipolaires, anxiété...)5- Vrai La qualité de la relation parent-enfant est cruciale à évaluer.QUESTION 5:                                                                                                            1-FauxC'est un outil therapeutique important; proposée si necessaire apres evaluation 2- VraiLa psychothérapie de l'enfant (therapie cognitive, therapie par le jeu) est un principe de prise en charge de la carence affective.3- Vrai L'amélioration du climat familial est fondamentale.4-FauxLes antidépresseurs ne sont pas systématiques; ils ne sont indiqués qu'en cas de dépression caractérisée.5- Vrai Le suivi scolaire est important (collaboration avec l'école : l'enseignant).",
+      "original_id": 63106,
+      "clinical_case": "Wassim, un garçon âgé de 6 ans, est amené en consultation pour difficultés scolaires et troubles du comportement. L’enseignante rapporte qu’il est agité en classe, agressif avec ses camarades et très demandeur d’attention.\r\nLors de la consultation, l’enfant apparaît anxieux, évite le regard et présente des comportements régressifs comme sucer son pouce.\r\nL’histoire familiale montre que les parents sont en conflit fréquent, la mère travaille la nuit et le père est souvent absent. L’enfant passe la majorité de son temps avec une voisine.\r\nL’examen somatique est sans particularité. Cochez la réponse juste :",
+      "display_title": "Question 3 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(204, 224, 245);\">QUESTION 1 :   </strong><span style=\"background-color: rgb(204, 224, 245);\">                                                                                                        </span></p><p><strong style=\"color: rgb(0, 138, 0);\">1- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les soins maternels assurent les besoins physiologiques de base</span></p><p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Ils apportent détente et apaisement à l'enfant</span></p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;L'interaction sociale fait partie intégrante des soins maternels.</span></p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les soins maternels assurent aussi les besoins psychologiques.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">5-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Ils répondent aux besoins émotionnels (</span><strong style=\"color: rgb(161, 0, 0); background-color: rgb(255, 255, 102);\">sécurité affective</strong><span style=\"color: rgb(15, 17, 21);\">)</span></p><p><br></p><p><strong style=\"color: rgb(15, 17, 21); background-color: rgb(204, 224, 245);\">QUESTION 2 :                                                                                                             </strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les conflits parentaux sont un facteur de risque de la carence affective chez l'enfant</span></p><p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">L'absence fréquente des parents est un facteur de risque majeur de la carence affective</span></p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">L'encadrement affectif suffisant est</span><strong style=\"color: rgb(15, 17, 21);\"> un facteur protecteur,</strong><span style=\"color: rgb(15, 17, 21);\"> pas de risque.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">4-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Le manque de stabilité familiale est un facteur de risque de la carence affective.</span></p><p><strong style=\"color: rgb(230, 0, 0);\">5-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les familles nombreuses ne sont pas en soi un facteur de risque; tout dépend de la qualité des interactions.</span></p><p><br></p><p><strong style=\"background-color: rgb(204, 224, 245);\">QUESTION 3:                                                                                                            </strong></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Le </span><strong style=\"color: rgb(15, 17, 21);\">TSA </strong><span style=\"color: rgb(15, 17, 21);\">n'est pas une conséquence de la carence affective; </span><strong style=\"color: rgb(161, 0, 0); background-color: rgb(255, 255, 102);\">c'est un trouble neurodéveloppemental</strong></p><p><span style=\"color: rgb(0, 138, 0); font-weight: bolder;\">2-Vrai</span></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Les troubles du comportement (agitation, agressivité) sont des manifestations fréquentes.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">3-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Le retard du développement émotionnel est une conséquence directe.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">4-Vrai </strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les difficultés scolaires sont fréquentes (manque de concentration, etc.) en cas de carence affective</span></p><p><span style=\"color: rgb(230, 0, 0); font-weight: bolder;\">5-Faux</span></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Une maladie organique n'est pas une manifestation de carence affective.</span></p><p><br></p><p><strong style=\"color: rgb(15, 17, 21); background-color: rgb(204, 224, 245);\">QUESTION 4:                                                                                                        </strong></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux</strong><span style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 255);\">&nbsp;</span><span style=\"color: rgb(15, 17, 21);\">L'âge des parents n'est pas l'information la plus pertinente dans ce contexte.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">2- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">L'histoire du développement ( language, acquisition de la proprete, comportement sociaux, ...) est essentielle pour </span><strong style=\"color: rgb(15, 17, 21);\">identifier le retard psychomotrice et orienter le diagnostic</strong></p><p><span style=\"border-color: rgb(229, 231, 235); --tw-shadow: 0 0 transparent; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgba(59,130,246,0.5); --tw-ring-offset-shadow: 0 0 transparent; --tw-ring-shadow: 0 0 transparent; font-weight: bolder; color: rgb(230, 0, 0);\">3-Faux</span></p><p><span style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 255);\">Les conditions socio-familiales sont au contraire très importantes.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">4- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les antécédents psychiatriques familiaux sont importants poue l'evaluation psychiatrique (</span><strong style=\"color: rgb(15, 17, 21);\"> TSA, TDAH, depression, trbl bipolaires, anxiété...</strong><span style=\"color: rgb(15, 17, 21);\">)</span></p><p><strong style=\"color: rgb(0, 138, 0);\">5- Vrai</strong><span style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 255);\">&nbsp;</span></p><p><span style=\"color: rgb(15, 17, 21);\">La qualité de la relation parent-enfant est cruciale à évaluer.</span></p><p><br></p><p><strong style=\"color: rgb(15, 17, 21); background-color: rgb(204, 224, 245);\">QUESTION 5:                                                                                                            </strong></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux</strong></p><p>C'est un outil therapeutique important; proposée si necessaire apres evaluation </p><p><strong style=\"color: rgb(0, 138, 0);\">2- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">La psychothérapie de l'enfant (</span><strong style=\"color: rgb(15, 17, 21);\">therapie cognitive, therapie par le jeu</strong><span style=\"color: rgb(15, 17, 21);\">) est un principe de prise en charge de la carence affective.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">3- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;L'amélioration du climat familial est fondamentale.</span></p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les antidépresseurs </span><strong style=\"color: rgb(15, 17, 21);\">ne sont pas systématiques</strong><span style=\"color: rgb(15, 17, 21);\">; ils ne sont indiqués qu'en cas de dépression caractérisée.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">5- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Le suivi scolaire est important (</span><strong style=\"color: rgb(15, 17, 21);\">collaboration avec l'école : l'enseignant</strong><span style=\"color: rgb(15, 17, 21);\">).</span></p>"
+    },
+    {
+      "id": "3.4",
+      "case_id": 3,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 308511,
+          "text": "1+2+5",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 308512,
+          "text": "1+3+4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 308513,
+          "text": "2+3+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 308514,
+          "text": "2+4+5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 308515,
+          "text": "3+4+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "S2 2026"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Carences de soins maternels",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les informations importantes à rechercher dans l’anamnèse sont : (RJ)\n1. L’âge des parents\n2. Histoire du développement de l’enfant\n3. Conditions socio-familiales ne sont pas nécessaires\n4. Antecedents psychiatriques familiaux \n5. Qualite de la relation parent-enfant.",
+      "has_media": false,
+      "statement": "Les informations importantes à rechercher dans l’anamnèse sont : (RJ)\n1. L’âge des parents\n2. Histoire du développement de l’enfant\n3. Conditions socio-familiales ne sont pas nécessaires\n4. Antecedents psychiatriques familiaux \n5. Qualite de la relation parent-enfant.",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "QUESTION 1 :                                                                                                           1- VraiLes soins maternels assurent les besoins physiologiques de base2-Vrai Ils apportent détente et apaisement à l'enfant3-Faux L'interaction sociale fait partie intégrante des soins maternels.4-FauxLes soins maternels assurent aussi les besoins psychologiques.5-Vrai Ils répondent aux besoins émotionnels (sécurité affective)QUESTION 2 :                                                                                                             1-VraiLes conflits parentaux sont un facteur de risque de la carence affective chez l'enfant2-VraiL'absence fréquente des parents est un facteur de risque majeur de la carence affective3-FauxL'encadrement affectif suffisant est un facteur protecteur, pas de risque.4-VraiLe manque de stabilité familiale est un facteur de risque de la carence affective.5-FauxLes familles nombreuses ne sont pas en soi un facteur de risque; tout dépend de la qualité des interactions.QUESTION 3:                                                                                                            1-FauxLe TSA n'est pas une conséquence de la carence affective; c'est un trouble neurodéveloppemental2-Vrai Les troubles du comportement (agitation, agressivité) sont des manifestations fréquentes.3-VraiLe retard du développement émotionnel est une conséquence directe.4-Vrai Les difficultés scolaires sont fréquentes (manque de concentration, etc.) en cas de carence affective5-Faux Une maladie organique n'est pas une manifestation de carence affective.QUESTION 4:                                                                                                        1-Faux L'âge des parents n'est pas l'information la plus pertinente dans ce contexte.2- VraiL'histoire du développement ( language, acquisition de la proprete, comportement sociaux, ...) est essentielle pour identifier le retard psychomotrice et orienter le diagnostic3-FauxLes conditions socio-familiales sont au contraire très importantes.4- VraiLes antécédents psychiatriques familiaux sont importants poue l'evaluation psychiatrique ( TSA, TDAH, depression, trbl bipolaires, anxiété...)5- Vrai La qualité de la relation parent-enfant est cruciale à évaluer.QUESTION 5:                                                                                                            1-FauxC'est un outil therapeutique important; proposée si necessaire apres evaluation 2- VraiLa psychothérapie de l'enfant (therapie cognitive, therapie par le jeu) est un principe de prise en charge de la carence affective.3- Vrai L'amélioration du climat familial est fondamentale.4-FauxLes antidépresseurs ne sont pas systématiques; ils ne sont indiqués qu'en cas de dépression caractérisée.5- Vrai Le suivi scolaire est important (collaboration avec l'école : l'enseignant).",
+      "original_id": 63107,
+      "clinical_case": "Wassim, un garçon âgé de 6 ans, est amené en consultation pour difficultés scolaires et troubles du comportement. L’enseignante rapporte qu’il est agité en classe, agressif avec ses camarades et très demandeur d’attention.\r\nLors de la consultation, l’enfant apparaît anxieux, évite le regard et présente des comportements régressifs comme sucer son pouce.\r\nL’histoire familiale montre que les parents sont en conflit fréquent, la mère travaille la nuit et le père est souvent absent. L’enfant passe la majorité de son temps avec une voisine.\r\nL’examen somatique est sans particularité. Cochez la réponse juste :",
+      "display_title": "Question 3 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(204, 224, 245);\">QUESTION 1 :   </strong><span style=\"background-color: rgb(204, 224, 245);\">                                                                                                        </span></p><p><strong style=\"color: rgb(0, 138, 0);\">1- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les soins maternels assurent les besoins physiologiques de base</span></p><p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Ils apportent détente et apaisement à l'enfant</span></p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;L'interaction sociale fait partie intégrante des soins maternels.</span></p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les soins maternels assurent aussi les besoins psychologiques.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">5-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Ils répondent aux besoins émotionnels (</span><strong style=\"color: rgb(161, 0, 0); background-color: rgb(255, 255, 102);\">sécurité affective</strong><span style=\"color: rgb(15, 17, 21);\">)</span></p><p><br></p><p><strong style=\"color: rgb(15, 17, 21); background-color: rgb(204, 224, 245);\">QUESTION 2 :                                                                                                             </strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les conflits parentaux sont un facteur de risque de la carence affective chez l'enfant</span></p><p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">L'absence fréquente des parents est un facteur de risque majeur de la carence affective</span></p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">L'encadrement affectif suffisant est</span><strong style=\"color: rgb(15, 17, 21);\"> un facteur protecteur,</strong><span style=\"color: rgb(15, 17, 21);\"> pas de risque.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">4-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Le manque de stabilité familiale est un facteur de risque de la carence affective.</span></p><p><strong style=\"color: rgb(230, 0, 0);\">5-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les familles nombreuses ne sont pas en soi un facteur de risque; tout dépend de la qualité des interactions.</span></p><p><br></p><p><strong style=\"background-color: rgb(204, 224, 245);\">QUESTION 3:                                                                                                            </strong></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Le </span><strong style=\"color: rgb(15, 17, 21);\">TSA </strong><span style=\"color: rgb(15, 17, 21);\">n'est pas une conséquence de la carence affective; </span><strong style=\"color: rgb(161, 0, 0); background-color: rgb(255, 255, 102);\">c'est un trouble neurodéveloppemental</strong></p><p><span style=\"color: rgb(0, 138, 0); font-weight: bolder;\">2-Vrai</span></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Les troubles du comportement (agitation, agressivité) sont des manifestations fréquentes.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">3-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Le retard du développement émotionnel est une conséquence directe.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">4-Vrai </strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les difficultés scolaires sont fréquentes (manque de concentration, etc.) en cas de carence affective</span></p><p><span style=\"color: rgb(230, 0, 0); font-weight: bolder;\">5-Faux</span></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Une maladie organique n'est pas une manifestation de carence affective.</span></p><p><br></p><p><strong style=\"color: rgb(15, 17, 21); background-color: rgb(204, 224, 245);\">QUESTION 4:                                                                                                        </strong></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux</strong><span style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 255);\">&nbsp;</span><span style=\"color: rgb(15, 17, 21);\">L'âge des parents n'est pas l'information la plus pertinente dans ce contexte.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">2- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">L'histoire du développement ( language, acquisition de la proprete, comportement sociaux, ...) est essentielle pour </span><strong style=\"color: rgb(15, 17, 21);\">identifier le retard psychomotrice et orienter le diagnostic</strong></p><p><span style=\"border-color: rgb(229, 231, 235); --tw-shadow: 0 0 transparent; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgba(59,130,246,0.5); --tw-ring-offset-shadow: 0 0 transparent; --tw-ring-shadow: 0 0 transparent; font-weight: bolder; color: rgb(230, 0, 0);\">3-Faux</span></p><p><span style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 255);\">Les conditions socio-familiales sont au contraire très importantes.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">4- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les antécédents psychiatriques familiaux sont importants poue l'evaluation psychiatrique (</span><strong style=\"color: rgb(15, 17, 21);\"> TSA, TDAH, depression, trbl bipolaires, anxiété...</strong><span style=\"color: rgb(15, 17, 21);\">)</span></p><p><strong style=\"color: rgb(0, 138, 0);\">5- Vrai</strong><span style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 255);\">&nbsp;</span></p><p><span style=\"color: rgb(15, 17, 21);\">La qualité de la relation parent-enfant est cruciale à évaluer.</span></p><p><br></p><p><strong style=\"color: rgb(15, 17, 21); background-color: rgb(204, 224, 245);\">QUESTION 5:                                                                                                            </strong></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux</strong></p><p>C'est un outil therapeutique important; proposée si necessaire apres evaluation </p><p><strong style=\"color: rgb(0, 138, 0);\">2- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">La psychothérapie de l'enfant (</span><strong style=\"color: rgb(15, 17, 21);\">therapie cognitive, therapie par le jeu</strong><span style=\"color: rgb(15, 17, 21);\">) est un principe de prise en charge de la carence affective.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">3- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;L'amélioration du climat familial est fondamentale.</span></p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les antidépresseurs </span><strong style=\"color: rgb(15, 17, 21);\">ne sont pas systématiques</strong><span style=\"color: rgb(15, 17, 21);\">; ils ne sont indiqués qu'en cas de dépression caractérisée.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">5- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Le suivi scolaire est important (</span><strong style=\"color: rgb(15, 17, 21);\">collaboration avec l'école : l'enseignant</strong><span style=\"color: rgb(15, 17, 21);\">).</span></p>"
+    },
+    {
+      "id": "3.5",
+      "case_id": 3,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 308516,
+          "text": "1+3+5",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 308517,
+          "text": "1+2+4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 308518,
+          "text": "2+3+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 308519,
+          "text": "2+3+5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 308520,
+          "text": "2+4+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "S2 2026"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Carences de soins maternels",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les principes de prise en charge comrennent : (RJ)\n1. Guidance parentale si necessaire\n2. Psychotherapie de l'enfant \n3. Amelioration du climat familial\n4. Antidepresseur systematique \n5. Suivi scholaire ",
+      "has_media": false,
+      "statement": "Les principes de prise en charge comrennent : (RJ)\n1. Guidance parentale si necessaire\n2. Psychotherapie de l'enfant \n3. Amelioration du climat familial\n4. Antidepresseur systematique \n5. Suivi scholaire ",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "QUESTION 1 :                                                                                                           1- VraiLes soins maternels assurent les besoins physiologiques de base2-Vrai Ils apportent détente et apaisement à l'enfant3-Faux L'interaction sociale fait partie intégrante des soins maternels.4-FauxLes soins maternels assurent aussi les besoins psychologiques.5-Vrai Ils répondent aux besoins émotionnels (sécurité affective)QUESTION 2 :                                                                                                             1-VraiLes conflits parentaux sont un facteur de risque de la carence affective chez l'enfant2-VraiL'absence fréquente des parents est un facteur de risque majeur de la carence affective3-FauxL'encadrement affectif suffisant est un facteur protecteur, pas de risque.4-VraiLe manque de stabilité familiale est un facteur de risque de la carence affective.5-FauxLes familles nombreuses ne sont pas en soi un facteur de risque; tout dépend de la qualité des interactions.QUESTION 3:                                                                                                            1-FauxLe TSA n'est pas une conséquence de la carence affective; c'est un trouble neurodéveloppemental2-Vrai Les troubles du comportement (agitation, agressivité) sont des manifestations fréquentes.3-VraiLe retard du développement émotionnel est une conséquence directe.4-Vrai Les difficultés scolaires sont fréquentes (manque de concentration, etc.) en cas de carence affective5-Faux Une maladie organique n'est pas une manifestation de carence affective.QUESTION 4:                                                                                                        1-Faux L'âge des parents n'est pas l'information la plus pertinente dans ce contexte.2- VraiL'histoire du développement ( language, acquisition de la proprete, comportement sociaux, ...) est essentielle pour identifier le retard psychomotrice et orienter le diagnostic3-FauxLes conditions socio-familiales sont au contraire très importantes.4- VraiLes antécédents psychiatriques familiaux sont importants poue l'evaluation psychiatrique ( TSA, TDAH, depression, trbl bipolaires, anxiété...)5- Vrai La qualité de la relation parent-enfant est cruciale à évaluer.QUESTION 5:                                                                                                            1-FauxC'est un outil therapeutique important; proposée si necessaire apres evaluation 2- VraiLa psychothérapie de l'enfant (therapie cognitive, therapie par le jeu) est un principe de prise en charge de la carence affective.3- Vrai L'amélioration du climat familial est fondamentale.4-FauxLes antidépresseurs ne sont pas systématiques; ils ne sont indiqués qu'en cas de dépression caractérisée.5- Vrai Le suivi scolaire est important (collaboration avec l'école : l'enseignant).",
+      "original_id": 63108,
+      "clinical_case": "Wassim, un garçon âgé de 6 ans, est amené en consultation pour difficultés scolaires et troubles du comportement. L’enseignante rapporte qu’il est agité en classe, agressif avec ses camarades et très demandeur d’attention.\r\nLors de la consultation, l’enfant apparaît anxieux, évite le regard et présente des comportements régressifs comme sucer son pouce.\r\nL’histoire familiale montre que les parents sont en conflit fréquent, la mère travaille la nuit et le père est souvent absent. L’enfant passe la majorité de son temps avec une voisine.\r\nL’examen somatique est sans particularité. Cochez la réponse juste :",
+      "display_title": "Question 3 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(204, 224, 245);\">QUESTION 1 :   </strong><span style=\"background-color: rgb(204, 224, 245);\">                                                                                                        </span></p><p><strong style=\"color: rgb(0, 138, 0);\">1- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les soins maternels assurent les besoins physiologiques de base</span></p><p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Ils apportent détente et apaisement à l'enfant</span></p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;L'interaction sociale fait partie intégrante des soins maternels.</span></p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les soins maternels assurent aussi les besoins psychologiques.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">5-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Ils répondent aux besoins émotionnels (</span><strong style=\"color: rgb(161, 0, 0); background-color: rgb(255, 255, 102);\">sécurité affective</strong><span style=\"color: rgb(15, 17, 21);\">)</span></p><p><br></p><p><strong style=\"color: rgb(15, 17, 21); background-color: rgb(204, 224, 245);\">QUESTION 2 :                                                                                                             </strong></p><p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les conflits parentaux sont un facteur de risque de la carence affective chez l'enfant</span></p><p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">L'absence fréquente des parents est un facteur de risque majeur de la carence affective</span></p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">L'encadrement affectif suffisant est</span><strong style=\"color: rgb(15, 17, 21);\"> un facteur protecteur,</strong><span style=\"color: rgb(15, 17, 21);\"> pas de risque.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">4-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Le manque de stabilité familiale est un facteur de risque de la carence affective.</span></p><p><strong style=\"color: rgb(230, 0, 0);\">5-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les familles nombreuses ne sont pas en soi un facteur de risque; tout dépend de la qualité des interactions.</span></p><p><br></p><p><strong style=\"background-color: rgb(204, 224, 245);\">QUESTION 3:                                                                                                            </strong></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Le </span><strong style=\"color: rgb(15, 17, 21);\">TSA </strong><span style=\"color: rgb(15, 17, 21);\">n'est pas une conséquence de la carence affective; </span><strong style=\"color: rgb(161, 0, 0); background-color: rgb(255, 255, 102);\">c'est un trouble neurodéveloppemental</strong></p><p><span style=\"color: rgb(0, 138, 0); font-weight: bolder;\">2-Vrai</span></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Les troubles du comportement (agitation, agressivité) sont des manifestations fréquentes.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">3-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Le retard du développement émotionnel est une conséquence directe.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">4-Vrai </strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les difficultés scolaires sont fréquentes (manque de concentration, etc.) en cas de carence affective</span></p><p><span style=\"color: rgb(230, 0, 0); font-weight: bolder;\">5-Faux</span></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Une maladie organique n'est pas une manifestation de carence affective.</span></p><p><br></p><p><strong style=\"color: rgb(15, 17, 21); background-color: rgb(204, 224, 245);\">QUESTION 4:                                                                                                        </strong></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux</strong><span style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 255);\">&nbsp;</span><span style=\"color: rgb(15, 17, 21);\">L'âge des parents n'est pas l'information la plus pertinente dans ce contexte.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">2- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">L'histoire du développement ( language, acquisition de la proprete, comportement sociaux, ...) est essentielle pour </span><strong style=\"color: rgb(15, 17, 21);\">identifier le retard psychomotrice et orienter le diagnostic</strong></p><p><span style=\"border-color: rgb(229, 231, 235); --tw-shadow: 0 0 transparent; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgba(59,130,246,0.5); --tw-ring-offset-shadow: 0 0 transparent; --tw-ring-shadow: 0 0 transparent; font-weight: bolder; color: rgb(230, 0, 0);\">3-Faux</span></p><p><span style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 255);\">Les conditions socio-familiales sont au contraire très importantes.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">4- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les antécédents psychiatriques familiaux sont importants poue l'evaluation psychiatrique (</span><strong style=\"color: rgb(15, 17, 21);\"> TSA, TDAH, depression, trbl bipolaires, anxiété...</strong><span style=\"color: rgb(15, 17, 21);\">)</span></p><p><strong style=\"color: rgb(0, 138, 0);\">5- Vrai</strong><span style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 255);\">&nbsp;</span></p><p><span style=\"color: rgb(15, 17, 21);\">La qualité de la relation parent-enfant est cruciale à évaluer.</span></p><p><br></p><p><strong style=\"color: rgb(15, 17, 21); background-color: rgb(204, 224, 245);\">QUESTION 5:                                                                                                            </strong></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux</strong></p><p>C'est un outil therapeutique important; proposée si necessaire apres evaluation </p><p><strong style=\"color: rgb(0, 138, 0);\">2- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">La psychothérapie de l'enfant (</span><strong style=\"color: rgb(15, 17, 21);\">therapie cognitive, therapie par le jeu</strong><span style=\"color: rgb(15, 17, 21);\">) est un principe de prise en charge de la carence affective.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">3- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;L'amélioration du climat familial est fondamentale.</span></p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les antidépresseurs </span><strong style=\"color: rgb(15, 17, 21);\">ne sont pas systématiques</strong><span style=\"color: rgb(15, 17, 21);\">; ils ne sont indiqués qu'en cas de dépression caractérisée.</span></p><p><strong style=\"color: rgb(0, 138, 0);\">5- Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Le suivi scolaire est important (</span><strong style=\"color: rgb(15, 17, 21);\">collaboration avec l'école : l'enseignant</strong><span style=\"color: rgb(15, 17, 21);\">).</span></p>"
+    },
+    {
+      "id": 4,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295327,
+          "text": "1+2+3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 295328,
+          "text": "1+2+4",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 295329,
+          "text": "1+3+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 295330,
+          "text": "2+3+4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 295331,
+          "text": "1+2+3+4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026 "
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Carences de soins maternels",
+        "series": "Mystidia Exams"
+      },
+      "question": "La carence peut être liée à :\n1-Un défaut de stimulation maternelle\n2-L'absence d'une figure maternelle stable\n3-Une seule séparation courte et bien compensée\n4-Des séparations précoces et répétées",
+      "has_media": false,
+      "statement": "La carence peut être liée à :\n1-Un défaut de stimulation maternelle\n2-L'absence d'une figure maternelle stable\n3-Une seule séparation courte et bien compensée\n4-Des séparations précoces et répétées",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "1-Vrai: Le manque de stimulation affective et cognitive constitue une carence affective.2 Vrai ; L’absence d’un lien sécurisant avec une figure d’attachement ( maternelle) favorise la carence.3-Faux: Une séparation brève et compensée ne provoque pas de carence affective.4-Vrai:  les ruptures multiples en institution ou famille d'accueil causent carences et perturbent l'enfantdiapo 2026 :carence de soins maternels.pdf - Google Drive",
+      "original_id": 60398,
+      "clinical_case": null,
+      "display_title": "Question 4",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(0, 138, 0);\">1-Vrai: </strong>Le manque de stimulation affective et cognitive constitue une <strong>carence affective</strong>.</p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">2 Vrai&nbsp;;</strong> L’absence d’un lien sécurisant avec une figure d’attachement ( maternelle) favorise la carence.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux: </strong>Une séparation brève et compensée <strong style=\"background-color: rgb(255, 235, 204);\">ne provoque pas de carence affective</strong><span style=\"background-color: rgb(255, 235, 204);\">.</span></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">4-Vrai:</strong><strong style=\"color: rgb(230, 0, 0);\"> </strong> les ruptures multiples en institution ou famille d'accueil causent carences et perturbent l'enfant</p><p><br></p><p><strong style=\"color: rgb(0, 102, 204);\"><u>diapo 2026 :</u></strong></p><p><a href=\"https://drive.google.com/file/d/1-bpvfSbca1Bv1BAqBkvlvzJXiWg0-XFN/view\" rel=\"noopener noreferrer\" target=\"_blank\">carence de soins maternels.pdf - Google Drive</a></p>"
+    },
+    {
+      "id": 5,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295322,
+          "text": "1+2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 295323,
+          "text": "1+3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 295324,
+          "text": "2+3",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 295325,
+          "text": "2+4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 295326,
+          "text": "3+4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026 "
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Carences de soins maternels",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quels critères aggravent le pronostic d'une carence affective ?\n 1-Survenue après 3 ans \n2-Carence prolongée > 6 mois \n3-Multiples ruptures de liens précoces\n4-Intervention précoce de professionnels",
+      "has_media": false,
+      "statement": "Quels critères aggravent le pronostic d'une carence affective ?\n 1-Survenue après 3 ans \n2-Carence prolongée > 6 mois \n3-Multiples ruptures de liens précoces\n4-Intervention précoce de professionnels",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "1-Faux : La carence affective avant 3 ans est plus grave, car les premières années sont critiques pour le développement affectif et cognitif.2 Vrai ; Une privation longue aggrave le pronostic3-Vrai:  Des ruptures répétées perturbent la capacité d’attachement et augmentent le risque de troubles émotionnels et relationnels et leurs séquelles sur l'enfant. 4-Faux ; Au contraire, une intervention précoce améliore le pronostic. diapo 2026 :carence de soins maternels.pdf - Google Drive",
+      "original_id": 60397,
+      "clinical_case": null,
+      "display_title": "Question 5",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux&nbsp;: </strong>La carence affective avant 3 ans est <strong style=\"background-color: rgb(250, 204, 204);\">plus grave</strong>,<span style=\"background-color: rgb(255, 255, 204);\"> car les premières années sont critiques pour le développement affectif et cognitif.</span></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">2 Vrai&nbsp;;</strong> Une privation longue <strong style=\"background-color: rgb(255, 255, 204);\">aggrave </strong>le pronostic</p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">3-Vrai:</strong><strong style=\"color: rgb(230, 0, 0);\"> </strong> Des ruptures répétées perturbent la capacité d’attachement et augmentent le risque de troubles émotionnels et relationnels et leurs séquelles sur l'enfant.</p><p> </p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux&nbsp;;</strong> <strong>Au contraire</strong>, <span style=\"background-color: rgb(250, 204, 204);\">une intervention précoce </span><strong style=\"background-color: rgb(250, 204, 204);\">améliore</strong><span style=\"background-color: rgb(250, 204, 204);\"> le pronostic.</span></p><p> </p><p><br></p><p><strong style=\"color: rgb(0, 102, 204);\"><u>diapo 2026 :</u></strong></p><p><a href=\"https://drive.google.com/file/d/1-bpvfSbca1Bv1BAqBkvlvzJXiWg0-XFN/view\" rel=\"noopener noreferrer\" target=\"_blank\">carence de soins maternels.pdf - Google Drive</a></p>"
+    },
+    {
+      "id": 6,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295317,
+          "text": "L'hospitalisme est une forme atténuée de dépression anaclitique",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 295318,
+          "text": "L'hospitalisme désigne l'aggravation de la dépression anaclitique lorsqu'aucun lien de substitution n’est trouvé",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 295319,
+          "text": "Ces deux tableaux sont synonymes",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 295320,
+          "text": "L'hospitalisme concerne uniquement les enfants de plus de 5 ans",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 295321,
+          "text": "Toutes les réponses sont fausses",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026 "
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Carences de soins maternels",
+        "series": "Mystidia Exams"
+      },
+      "question": "Laquelle des affirmations suivantes est correcte ?",
+      "has_media": false,
+      "statement": "Laquelle des affirmations suivantes est correcte ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "1-Faux : l'hospitalisme représente une une aggravation de la privation affective prolongée, avec détérioration physique et psychique.2 Vrai ; L’hospitalisme c'est un état d'altération physique grave qui s'installe progressivement chez le très jeune enfant suite à une carence affective importante tandis qu'il est placé en institutionTableau d’hospitalisme : tableau grave qui peut progressivementinduire à la mort. Il est fait de :-Retard moteur et intellectuel grave-Perte de l’appétit; absence des jeux; désintérêt-Infections fréquentes (ORL+++)-Stéréotypies gestuelles (gestes répétitifs sans but précis)-Stupeur catatonique-Marasme (état de dénutrition grave)3-Faux :  la dépression anaclitique est réversible si réparée tôt, contrairement à l'hospitalisme qui est plus grave et qui peut progressivement induire à la mort.4-Faux ; il touche  surtout les nourrissons et jeunes enfants séparés précocement de tout lien affectif. diapo 2026 :carence de soins maternels.pdf - Google Drive",
+      "original_id": 60396,
+      "clinical_case": null,
+      "display_title": "Question 6",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">1-Faux&nbsp;:</strong> l'hospitalisme représente une une aggravation de la privation affective prolongée, avec détérioration physique et psychique.</p><p><br></p><p class=\"ql-align-justify\"><strong style=\"color: rgb(0, 138, 0);\">2 Vrai&nbsp;;</strong> <strong style=\"background-color: rgb(204, 232, 204);\">L’hospitalisme c'est un état d'altération physique grave qui s'installe progressivement chez le très jeune enfant suite à une carence affective importante tandis qu'il est placé en institution</strong></p><p><br></p><p><br></p><p><strong style=\"background-color: rgb(204, 224, 245);\">Tableau d’hospitalisme :</strong><span style=\"background-color: rgb(204, 224, 245);\"> tableau grave qui peut progressivement</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">induire à la mort. Il est fait de :</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">-Retard moteur et intellectuel grave</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">-Perte de l’appétit; absence des jeux; désintérêt</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">-Infections fréquentes (ORL+++)</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">-Stéréotypies gestuelles (gestes répétitifs sans but précis)</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">-Stupeur catatonique</span></p><p><span style=\"background-color: rgb(204, 224, 245);\">-Marasme (état de dénutrition grave)</span></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux&nbsp;: </strong> la dépression anaclitique est réversible si réparée tôt, contrairement à l'hospitalisme qui est plus grave et qui peut progressivement induire à la mort.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux&nbsp;;</strong> il touche &nbsp;surtout les nourrissons et jeunes enfants séparés précocement de tout lien affectif.</p><p> </p><p><br></p><p><strong style=\"color: rgb(0, 102, 204);\"><u>diapo 2026 :</u></strong></p><p><a href=\"https://drive.google.com/file/d/1-bpvfSbca1Bv1BAqBkvlvzJXiWg0-XFN/view\" rel=\"noopener noreferrer\" target=\"_blank\">carence de soins maternels.pdf - Google Drive</a></p>"
+    },
+    {
+      "id": 7,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295312,
+          "text": "Retour à un développement normal spontané",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 295313,
+          "text": "Évolution vers un état de marasme et d'hospitalisme",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 295314,
+          "text": "Apparition d'un tableau autistique irréversible",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 295315,
+          "text": "Accélération du développement psychomoteur",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 295316,
+          "text": "Toutes les réponses sont fausses",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Carences de soins maternels",
+        "series": "Mystidia Exams"
+      },
+      "question": "En l'absence de réparation relationnelle, quel est le risque évolutif de la dépression anaclitique ?",
+      "has_media": false,
+      "statement": "En l'absence de réparation relationnelle, quel est le risque évolutif de la dépression anaclitique ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "1-Faux ;  sans réparation relationnelle rapide, la dépression anaclitique ne se résout pas spontanément et progresse vers des stades plus grave2-Vrai : elle évolue vers le marasme qualifié d'hospitalisme selon Spitz3-Faux ; L'autisme n'est pas l'évolution systématique .4-Faux : le développement est plutôt ralenti.  diapo 2026 :carence de soins maternels.pdf - Google Drive",
+      "original_id": 60395,
+      "clinical_case": null,
+      "display_title": "Question 7",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">1-Faux&nbsp;;</strong>  sans réparation relationnelle rapide, la dépression anaclitique ne se résout pas spontanément et progresse vers des stades plus grave</p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">2-Vrai&nbsp;:</strong> <strong>elle évolue vers le marasme qualifié d'hospitalisme selon Spitz</strong></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">3-Faux&nbsp;;</strong> L'autisme n'est pas<span style=\"background-color: rgb(255, 235, 204);\"> l'évolution systématique .</span></p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">4-Faux&nbsp;:</strong> le développement est plutôt <strong style=\"background-color: rgb(255, 255, 0);\">ralenti.</strong></p><p> </p><p> </p><p><br></p><p><strong style=\"color: rgb(0, 102, 204);\"><u>diapo 2026 :</u></strong></p><p><a href=\"https://drive.google.com/file/d/1-bpvfSbca1Bv1BAqBkvlvzJXiWg0-XFN/view\" rel=\"noopener noreferrer\" target=\"_blank\">carence de soins maternels.pdf - Google Drive</a></p>"
+    },
+    {
+      "id": 8,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 295307,
+          "text": "La carence affective désigne une rupture brutale et courte du lien mère-enfant.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 295308,
+          "text": "La séparation entraîne systématiquement une carence",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 295309,
+          "text": "La carence affective implique un manque quantitatif d'interactions mère-enfant.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 295310,
+          "text": "Toutes les réponses sont justes",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 295311,
+          "text": "Toutes les réponses sont fausses",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Carences de soins maternels",
+        "series": "Mystidia Exams"
+      },
+      "question": "Laquelle des affirmations suivantes est correcte ?",
+      "has_media": false,
+      "statement": "Laquelle des affirmations suivantes est correcte ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A-Faux;  La carence affective ne concerne pas une rupture brève, mais un manque durable et significatif d’affection, de soins ou d’interactions affectivesB-Faux ; Une séparation n’entraîne pas forcément une carence si le lien affectif est compensé par d’autres soins ou relations sécurisantes.C-Vrai;  La carence affective : est une carence quantitative de soins maternels = une situation dans laquelle un enfant ne jouit pas du lien affectif à sa mère (biologique ou de substitution).diapo 2026 :carence de soins maternels.pdf - Google Drive",
+      "original_id": 60394,
+      "clinical_case": null,
+      "display_title": "Question 8",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">A-Faux; </strong> <strong>La carence affective</strong><span style=\"background-color: rgb(240, 102, 102);\"> ne concerne pas une rupture brève</span>, mais un manque <strong style=\"background-color: rgb(255, 194, 102);\">durable</strong> et significatif d’affection, de soins ou d’interactions affectives</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">B-Faux ;</strong><strong> </strong>Une séparation n’entraîne pas forcément une carence <strong style=\"background-color: rgb(255, 255, 0);\">si le lien affectif est compensé par d’autres soins ou relations sécurisantes.</strong></p><p><br></p><p><strong style=\"color: rgb(0, 138, 0);\">C-Vrai</strong><span style=\"color: rgb(102, 185, 102);\">; </span><strong style=\"background-color: rgb(204, 232, 204);\"><u> La carence affective :</u></strong> est une carence quantitative de soins maternels = une situation dans laquelle un enfant ne jouit pas du lien affectif à sa mère (biologique ou de substitution).</p><p><br></p><p><strong style=\"color: rgb(0, 102, 204);\"><u>diapo 2026 :</u></strong></p><p><a href=\"https://drive.google.com/file/d/1-bpvfSbca1Bv1BAqBkvlvzJXiWg0-XFN/view\" rel=\"noopener noreferrer\" target=\"_blank\">carence de soins maternels.pdf - Google Drive</a></p>"
+    },
+    {
+      "id": 9,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 268818,
+          "text": "Un trouble de l'attention",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 268819,
+          "text": "Une insuffisance qualitative de liens affectifs sécurisants",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 268820,
+          "text": "Une hyperactivité émotionnelle",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 268821,
+          "text": "Une dépendance à l'affection",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 268822,
+          "text": "Un déficit quantitatif en soins maternels",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Carences de soins maternels",
+        "series": "Mystidia Exams"
+      },
+      "question": "Qu'est-ce que la carence affective ? (RJ)",
+      "has_media": false,
+      "statement": "Qu'est-ce que la carence affective ? (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": " Carence affective une carence quantitative de soins maternels qui est:  Une situation dans laquelle un enfant  ne jouit pas du lien affectif à sa mère (biologique ou de substitution).  C’est un processus morbide qui risque d’apparaître lorsque l’enfant a subi une rupture de ses premiers investissements avec les personnes significatives de son entourage sans que cette rupture ait pu être réparée. ",
+      "original_id": 54717,
+      "clinical_case": null,
+      "display_title": "Question 9",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p> Carence affective une carence <strong style=\"background-color: rgb(255, 255, 102);\">quantitative</strong> de soins maternels qui est: </p><ul><li> Une situation dans laquelle un enfant  ne jouit pas du lien affectif à sa mère (biologique ou de substitution). </li><li> C’est un processus morbide qui risque d’apparaître lorsque l’enfant a subi une rupture de ses premiers investissements avec les personnes significatives de son entourage <strong>sans </strong>que cette rupture <strong>ait pu être réparée. </strong></li></ul><p><br></p>"
+    },
+    {
+      "id": 10,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266177,
+          "text": "Une confiance en soi renforcée",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 266178,
+          "text": "Des troubles de l'attachement et du comportement",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 266179,
+          "text": "Une sociabilité limitée",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266180,
+          "text": "Une faible estime de soi",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266181,
+          "text": "Déficit intellectuel",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Carences de soins maternels",
+        "series": "Mystidia Exams"
+      },
+      "question": "Parmi les conséquences possibles de la carence affective, laquelle est fausse ?",
+      "has_media": false,
+      "statement": "Parmi les conséquences possibles de la carence affective, laquelle est fausse ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 54141,
+      "clinical_case": null,
+      "display_title": "Question 10",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 11,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266172,
+          "text": "Traitement médicamenteux anxiolytique",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266173,
+          "text": "Prise en charge psychologique et restauration des liens affectifs",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 266174,
+          "text": "Isolement temporaire dans un cadre neutre",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266175,
+          "text": "Hypnothérapie exclusive",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266176,
+          "text": "Hospitalisation de l'enfant",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Carences de soins maternels",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est le traitement de première intention pour une carence affective sévère chez un enfant ? (RJ)",
+      "has_media": false,
+      "statement": "Quel est le traitement de première intention pour une carence affective sévère chez un enfant ? (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 54140,
+      "clinical_case": null,
+      "display_title": "Question 11",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 12,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265777,
+          "text": "Hyperactivité",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265778,
+          "text": "Retard psychomoteur",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 265779,
+          "text": "Augmentation du quotient intellectuel",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 265780,
+          "text": "Amélioration de l'autonomie",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265781,
+          "text": "Insomnie",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Carences de soins maternels",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle est la principale conséquence d'une carence affective prolongée chez l'enfant ? (RJ)",
+      "has_media": false,
+      "statement": "Quelle est la principale conséquence d'une carence affective prolongée chez l'enfant ? (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "B- Vrai, L'absence d'une figure d'attachement stable peut nuire à l'évolution normale des compétences motrices et cognitives. Les enfants peuvent avoir des retards dans leur développement moteur, social et cognitif. Ils peuvent aussi rencontrer des difficultés à établir des relations sociales ou à apprendre à réguler leurs émotions",
+      "original_id": 54061,
+      "clinical_case": null,
+      "display_title": "Question 12",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> L'absence d'une figure d'attachement stable peut nuire à l'évolution normale des <strong>compétences motrices et cognitives</strong>. Les enfants peuvent avoir des retards dans leur développement moteur, social et cognitif. Ils peuvent aussi rencontrer des difficultés à établir des relations sociales ou à apprendre à réguler leurs émotions</p>"
+    },
+    {
+      "id": 13,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265782,
+          "text": "Enfant dans son milieu familial et ayant une mère déprimée",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265783,
+          "text": "La séparation prolongée des figures d'attachement",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265784,
+          "text": "Un cadre familial structuré",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 265785,
+          "text": "Placements répétés de l'enfant",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265786,
+          "text": "Enfant dans une pouponnière avec un maternage insuffisant",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Carences de soins maternels",
+        "series": "Mystidia Exams"
+      },
+      "question": "Parmi les situations suivantes, laquelle n'est pas en lien avec la carence affective chez l'enfant ? (RJ)",
+      "has_media": false,
+      "statement": "Parmi les situations suivantes, laquelle n'est pas en lien avec la carence affective chez l'enfant ? (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A- Vrai, Une mère déprimée peut être émotionnellement indisponible, ce qui limite la réponse affective à l’enfant.B- Vrai, L’enfant privé durablement de ses figures d’attachement risque un trouble du lien affectif.C- Faux, C'est un milieu propice pour le développement. D- Vrai, Multiples séparations, instabilité affective → risque accru de carence affective.E- Vrai, Manque de soins individualisés → attachement insécure ou désorganisé.Rappel : On reconnait 03 satiations de carences : 1- L’insuffisance d’interaction qui renvoie à l’absence de la mère ou du substitut maternel (placement institutionnel); le nourrisson n’a pas de substitut maternel approprié ou reçoit un maternage insuffisant, par conséquent il n’a pas de possibilités adéquates d’interaction avec une figure maternelle2- La discontinuité des liens qui met en cause les séparations /ruptures antérieurs répétées quels qu’en soient les motifs (ex : placements temporaires et répétitifs). Le nourrisson est dans l’incapacité d’avoir une figure maternelle pourtant présente et disponible, des échanges insuffisants en raison de ruptures antérieures répétées qu’il a eues dans ses liens avec des figures maternelles.3- Nourrisson vit avec sa mère ou substitut mais pas d’apports suffisants. (Dépression, trouble de la personnalité, psychose, addiction, insuffisance intellectuelle...)Sources :Polycopie officiel P1 2025",
+      "original_id": 54062,
+      "clinical_case": null,
+      "display_title": "Question 13",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(0, 138, 0);\">A- Vrai,</strong> Une mère déprimée peut être émotionnellement indisponible, ce qui limite la réponse affective à l’enfant.</p><p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> L’enfant privé durablement de ses figures d’attachement risque un trouble du lien affectif.</p><p><strong style=\"color: rgb(230, 0, 0);\">C- Faux,</strong> C'est un milieu propice pour le développement. </p><p><strong style=\"color: rgb(0, 138, 0);\">D- Vrai,</strong> Multiples séparations, instabilité affective → risque accru de carence affective.</p><p><strong style=\"color: rgb(0, 138, 0);\">E- Vrai,</strong> Manque de soins individualisés → attachement insécure ou désorganisé.</p><p><br></p><p><br></p><p>Rappel : On reconnait 03 satiations de carences : </p><p><strong><u>1- L’insuffisance d’interaction</u></strong> qui renvoie à l’absence de la mère ou du substitut maternel (placement institutionnel); le nourrisson n’a pas de substitut maternel approprié ou reçoit un maternage insuffisant, par conséquent il n’a pas de possibilités adéquates d’interaction avec une figure maternelle</p><p><strong><u>2- La discontinuité des liens</u></strong> qui met en cause les séparations /ruptures antérieurs répétées quels qu’en soient les motifs (ex : placements temporaires et répétitifs). Le nourrisson est dans l’incapacité d’avoir une figure maternelle pourtant présente et disponible, des échanges insuffisants en raison de ruptures antérieures répétées qu’il a eues dans ses liens avec des figures maternelles.</p><p><strong><u>3- Nourrisson vit avec sa mère ou substitut mais pas d’apports suffisants</u></strong>. (Dépression, trouble de la personnalité, psychose, addiction, insuffisance intellectuelle...)</p><p><br></p><p>Sources :</p><p><a href=\"https://drive.google.com/file/d/1Xg_lRektGS-uglfQQDm9AFpYgyGTkBO4/view?usp=sharing\" rel=\"noopener noreferrer\" target=\"_blank\">Polycopie officiel P1 2025</a></p>"
+    },
+    {
+      "id": 14,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265787,
+          "text": "L'isolement social pour favoriser l'autonomie",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265788,
+          "text": "La thérapie par le jeu et les approches relationnelles",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 265789,
+          "text": "L'absence de prise en charge pour éviter la dépendance",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 265790,
+          "text": "L'exposition à des environnements stressants pour renforcer la résilience",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265791,
+          "text": "Traitement avec un antidépresseur",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Carences de soins maternels",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle approche thérapeutique est recommandée pour traiter les séquelles d'une carence affective ? (RJ)",
+      "has_media": false,
+      "statement": "Quelle approche thérapeutique est recommandée pour traiter les séquelles d'une carence affective ? (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "B- Vrai, La thérapie par le jeu est le langage naturel de l’enfant : elle permet l’expression de ce qu’il ne peut pas encore verbaliser. Le jeu favorise la mise en scène des conflits internes, des insécurités, et des traumas vécus. Le thérapeute, par une relation sécurisante, permet à l’enfant de réexpérimenter un lien affectif fiable.",
+      "original_id": 54063,
+      "clinical_case": null,
+      "display_title": "Question 14",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(0, 138, 0);\">B- Vrai,</strong> La <strong>thérapie par le jeu</strong> est le <strong>langage naturel de l’enfant</strong> : elle permet l’expression de ce qu’il ne peut pas encore verbaliser. Le jeu favorise la <strong>mise en scène des conflits internes</strong>, des insécurités, et des traumas vécus. Le thérapeute, par une relation sécurisante, permet à l’enfant de <strong>réexpérimenter un lien affectif fiable</strong>.</p>"
+    },
+    {
+      "id": 15,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266162,
+          "text": "L'absence de stimulation cognitive",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266163,
+          "text": "L'absence prolongée de contact affectif avec une figure maternelle",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 266164,
+          "text": "Une hyperstimulation sensorielle dès la naissance",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266165,
+          "text": "Une exposition insuffisante au langage",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266166,
+          "text": "La séparation temporaire avec la mère",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Carences de soins maternels",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans le cadre du syndrome d'hospitalisme décrit par René Spitz, quel facteur clé est impliqué ?(RJ)",
+      "has_media": false,
+      "statement": "Dans le cadre du syndrome d'hospitalisme décrit par René Spitz, quel facteur clé est impliqué ?(RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Le syndrome d’hospitalisme, décrit par René Spitz dans les années 1940, concerne les nourrissons placés en institution, souvent privés de lien affectif stable, malgré une prise en charge physique correcte (alimentation, hygiène…).Spitz a montré que l’absence de stimulation affective, en particulier le manque de relation constante avec une figure d’attachement, entraîne chez l’enfant :un ralentissement du développement,une détérioration de la santé physique,des troubles émotionnels graves,et dans certains cas, la mort.",
+      "original_id": 54138,
+      "clinical_case": null,
+      "display_title": "Question 15",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>Le syndrome d’hospitalisme, décrit par <strong>René Spitz </strong>dans les années 1940, concerne les nourrissons placés en institution, souvent privés de lien affectif stable, malgré une prise en charge physique correcte (alimentation, hygiène…).</p><p>Spitz a montré que <strong style=\"background-color: rgb(255, 255, 0);\">l’absence de stimulation affective</strong>, en particulier le manque de relation constante avec une figure d’attachement, entraîne chez l’enfant :</p><ul><li>un ralentissement du développement,</li><li>une détérioration de la santé physique,</li><li>des troubles émotionnels graves,</li><li>et dans certains cas, la mort.</li></ul>"
+    },
+    {
+      "id": 16,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266167,
+          "text": "Un retard de croissance staturo-pondérale avec des troubles relationnels",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266168,
+          "text": "Une absence d'interactions sociales et des troubles somatiques récurrents",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 266169,
+          "text": "Un arrêt de progression du langage et du développement psychomoteur",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266170,
+          "text": "Une insomnie isolée sans impact diurne",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 266171,
+          "text": "Une hypotonie avec une apathie",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Carences de soins maternels",
+        "series": "Mystidia Exams"
+      },
+      "question": "Lors d'une consultation, quel élément doit alerter sur une carence affective chez un enfant ? (RF)",
+      "has_media": false,
+      "statement": "Lors d'une consultation, quel élément doit alerter sur une carence affective chez un enfant ? (RF)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Clinique des carences de soins maternelschez l'enfant plus grand:L'avidité affective est souvent manifeste.Se développent instantanément des conduites d'attachement passionnel à l'égard de tout adulte manifestant un peu d'intérêt, L'enfant< carencé > instaure d'emblée un lien de familiarité. .Une intolérance à la frustration, de brusques renversements d'humeur, des manifestations agressives, des conduites d'opposition ou d'hostilité affichées à l'égard de la personne d'abord surinvestieLa négligence de son corps et de ses intérêts propres contribue à accentuer sa situation de grande dépendance affective •Il se montre désordonné, disperse ou casse ses jouets, oublie ses affaires personnellesLes conséquences de les carences de soins maternels: Conséquences de carence aiguë:Manifestations réactionnelles directement provoquées par la séparation: • Les manifestations réactionnelles directement provoquées par la séparation sont bien connues depuis les travaux de Spitz [2] et Bowlby. •Les phases de protestation puis de désespoir se rencontrent banalement chez des enfants de 12 mois à 3 ans < éloignés de la figure maternelle à laquelle ils sont attachés et placés auprès d'étrangers dans un lieu inconnu Séquelles à court termeLes < séquelles > à court terme ne sont habituellement pas très marquées après les retrouvailles avec la mère ou l'investissement d'une autre figure d'attachement suffisamment fiable et disponible. Au-delà d'une période < sensitive > de quelques jours, les expériences brutales de séparation pourraient cependant prédisposer l'enfant à développer un mode d'attachement anxieux et ambivalent, voire à souffrir d'une angoisse de séparation plus ou moins invalidante.Séquelles à long terme• Les < séquelles > à long terme sont plus hypothétiques • La morbidité psychiatrique serait plus élevée parmi les adultes ayant subi des deuils pendant leur enfance,• mais il est probable que d'autres facteurs pathogènes concourent alors à accentuer la fragilité des sujets concernés.Manifestations cliniques rattachables à une carence affective insidieuse et durable: Troubles affectifs : Les troubles affectifs sont toujours présents chez les enfants les plus jeunes. L'angoisse se traduit souvent par des exigences jugées excessives, des craintes d'abandon, une vigilance exacerbée à l'égard des faits et gestes de leur entourage, un besoin de proximité avec l'adulte qui compromet toute initiative autonome,Manifestations somatiques: •l'anorexie, • la perte de poids, .les troubles du sommeil, • les complications infectieuses répétées • les troubles psychosomatiques, comme le mérycisme, le retard de croissance, voire le < nanisme psychogène >, Troubles instrumentaux et cognitifs Les troubles instrumentaux et cognitifs, quasi constants dans un tel contexte, sont parfois considérés comme de simples retards de développement que l'enfant sera en mesure de compenser, si toutefois il bénéficie d'un milieu de vie plus favorable. •Troubles d'articulation, retards de parole et de langage • Retards cognitifs • Difficultés psychomotrices: se traduisent par des troubles du tonus, et de la coordination, une certaine maladresse mais surtout par un défaut souvent durable de l'organisation temporo-spatiale, une instabilité psychomotrice. Troubles du comportement : Les troubles du comportement manifestes dès le plus jeune âge sont souvent plus marqués chez les enfants plus grands et à l' approche de la puberté.• Conduites d'inhibition globale: Les conduites d'inhibition globale prolongent parfois l'atonie motrice du nourrisson carencé Les enfants fonctionnant sur ce registre restent passifs, en retrait, incapables de s'affirmer, de prendre une initiative ou de satisfaire leur curiosité Conduites d'opposition Conduites antisociales",
+      "original_id": 54139,
+      "clinical_case": null,
+      "display_title": "Question 16",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(235, 214, 255);\"><em><u>Clinique des carences de soins maternels</u></em></strong></p><p>chez l'enfant plus grand:</p><ul><li>L'avidité affective est souvent manifeste.Se développent instantanément des conduites d'attachement passionnel à l'égard de tout adulte manifestant un peu d'intérêt, L'enfant&lt; carencé &gt; instaure d'emblée un lien de familiarité. .</li><li>Une intolérance à la frustration, de brusques renversements d'humeur, des manifestations agressives, des conduites d'opposition ou d'hostilité affichées à l'égard de la personne d'abord surinvestie</li><li>La négligence de son corps et de ses intérêts propres contribue à accentuer sa situation de grande dépendance affective •</li><li>Il se montre désordonné, disperse ou casse ses jouets, oublie ses affaires personnelles</li></ul><p><br></p><p><strong style=\"background-color: rgb(235, 214, 255);\"><em><u>Les conséquences de les carences de soins maternels: </u></em></strong></p><p><br></p><p><span style=\"background-color: rgb(255, 255, 204);\">Conséquences de carence aiguë</span>:</p><p><br></p><p><span style=\"background-color: rgb(250, 204, 204);\">Manifestations réactionnelles directement provoquées par la séparation: </span></p><p>• Les manifestations réactionnelles directement provoquées par la séparation sont bien connues depuis les travaux de Spitz [2] et Bowlby. </p><p>•Les phases de protestation puis de désespoir se rencontrent banalement chez des enfants de 12 mois à 3 ans &lt; éloignés de la figure maternelle à laquelle ils sont attachés et placés auprès d'étrangers dans un lieu inconnu </p><p><br></p><p><em style=\"background-color: rgb(250, 204, 204);\"><u>Séquelles à court terme</u></em></p><p><br></p><ul><li>Les &lt; séquelles &gt; à court terme ne sont habituellement pas très marquées après les retrouvailles avec la mère ou l'investissement d'une autre figure d'attachement suffisamment fiable et disponible.</li><li> Au-delà d'une période &lt; sensitive &gt; de quelques jours, les expériences brutales de séparation pourraient cependant prédisposer l'enfant à développer un mode d'attachement anxieux et ambivalent, voire à souffrir d'une angoisse de séparation plus ou moins invalidante.</li></ul><p><br></p><p><em style=\"background-color: rgb(250, 204, 204);\"><u>Séquelles à long terme</u></em></p><p class=\"ql-indent-1\">• Les &lt; séquelles &gt; à long terme sont plus hypothétiques</p><p class=\"ql-indent-1\"> • La morbidité psychiatrique serait plus élevée parmi les adultes ayant subi des deuils pendant leur enfance,</p><p class=\"ql-indent-1\">• mais il est probable que d'autres facteurs pathogènes concourent alors à accentuer la fragilité des sujets concernés.</p><p class=\"ql-indent-1\"><br></p><p><span style=\"background-color: rgb(255, 255, 204);\">Manifestations cliniques rattachables à une carence affective insidieuse et durable: </span></p><ul><li><em style=\"background-color: rgb(250, 204, 204);\"><u>Troubles affectifs :</u></em> Les troubles affectifs sont toujours présents chez les enfants les plus jeunes. L'angoisse se traduit souvent par des exigences jugées excessives, des craintes d'abandon, une vigilance exacerbée à l'égard des faits et gestes de leur entourage, un besoin de proximité avec l'adulte qui compromet toute initiative autonome,</li></ul><p><br></p><ul><li><em style=\"background-color: rgb(250, 204, 204);\"><u>Manifestations somatiques:</u></em> </li></ul><p class=\"ql-indent-2\">•l'anorexie, </p><p class=\"ql-indent-2\">• la perte de poids, .</p><ul><li class=\"ql-indent-1\">les troubles du sommeil,</li></ul><p class=\"ql-indent-2\"> • les complications infectieuses répétées </p><p class=\"ql-indent-2\">• les troubles psychosomatiques, comme le mérycisme, </p><ul><li class=\"ql-indent-1\">le retard de croissance, voire le &lt; nanisme psychogène &gt;,</li></ul><p><br></p><ul><li> <em style=\"background-color: rgb(250, 204, 204);\"><u>Troubles instrumentaux et cognitifs</u></em></li></ul><p class=\"ql-indent-1\"> Les troubles instrumentaux et cognitifs, quasi constants dans un tel contexte, sont parfois considérés comme de simples retards de développement que l'enfant sera en mesure de compenser, si toutefois il bénéficie d'un milieu de vie plus favorable. </p><p class=\"ql-indent-1\">•Troubles d'articulation,</p><p class=\"ql-indent-1\"> retards de parole et de langage</p><p class=\"ql-indent-1\"> • Retards cognitifs </p><p class=\"ql-indent-1\">• Difficultés psychomotrices: se traduisent par des troubles du tonus, et de la coordination, une certaine maladresse mais surtout par un défaut souvent durable de l'organisation temporo-spatiale, une instabilité psychomotrice.</p><p class=\"ql-indent-1\"><br></p><ul><li> <em style=\"background-color: rgb(250, 204, 204);\"><u>Troubles du comportement : </u></em></li></ul><p class=\"ql-indent-1\">Les troubles du comportement manifestes dès le plus jeune âge sont souvent plus marqués chez les enfants plus grands et à l' approche de la puberté.</p><p class=\"ql-indent-1\"><br></p><p class=\"ql-indent-1\">• <span style=\"background-color: rgb(250, 204, 204);\">Conduites d'inhibition globale: </span></p><p class=\"ql-indent-1\">Les conduites d'inhibition globale prolongent parfois l'atonie motrice du nourrisson carencé Les enfants fonctionnant sur ce registre restent passifs, en retrait, incapables de s'affirmer, de prendre une initiative ou de satisfaire leur curiosité Conduites d'opposition Conduites antisociales</p>"
+    },
+    {
+      "id": 17,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252767,
+          "text": "1.2.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252768,
+          "text": "2.3.1",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252769,
+          "text": "2.1.3",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252770,
+          "text": "3.1.2",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 252771,
+          "text": "3.2.1",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Carences de soins maternels",
+        "series": "Mystidia Exams"
+      },
+      "question": "BOWLBY a décrit 3 phases par lesquelles passe un bébé après la séparation de sa mère, cochez le bon ordre de ces phases :\n1- Phase de désespoir\n2- Phase de détachement\n3- Phase de détresse",
+      "has_media": false,
+      "statement": "BOWLBY a décrit 3 phases par lesquelles passe un bébé après la séparation de sa mère, cochez le bon ordre de ces phases :\n1- Phase de désespoir\n2- Phase de détachement\n3- Phase de détresse",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "La triade Dépression-désespoir-détachement décrite par BOWLBY : Cette triade est proche de celle décrite par SPITZ : après la séparation de la mère, l’enfant réagit en passant par les étapes suivantes :1. La détresse : manifestation bruyante de l’enfant.2. Le désespoir : accalmie plus ou moins silencieuse ;3. Détachement : qui peut paraitre faussement une adaptation à la situation.",
+      "original_id": 51050,
+      "clinical_case": null,
+      "display_title": "Question 17",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>La triade Dépression-désespoir-détachement décrite par BOWLBY : Cette triade est proche de celle décrite par SPITZ : après la séparation de la mère, l’enfant réagit en passant par les étapes suivantes :</p><p>1. La détresse : manifestation bruyante de l’enfant.</p><p>2. Le désespoir : accalmie plus ou moins silencieuse ;</p><p>3. Détachement : qui peut paraitre faussement une adaptation à la situation.</p>"
+    },
+    {
+      "id": 18,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252772,
+          "text": "Quand l'enfant refuse de rester à l'hôpital",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252773,
+          "text": "Quand le bébé pleure beaucoup à l'hôpital",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252774,
+          "text": "Une forme de dépression du bébé",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 252775,
+          "text": "Une forme d'autisme",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252776,
+          "text": "Une forme de retard mental",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Carences de soins maternels",
+        "series": "Mystidia Exams"
+      },
+      "question": "Selon SPITZ, l'Hospitalisme est :",
+      "has_media": false,
+      "statement": "Selon SPITZ, l'Hospitalisme est :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 51051,
+      "clinical_case": null,
+      "display_title": "Question 18",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": 19,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220492,
+          "text": "Quand l'enfant refuse de rester à l'hôpital",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220493,
+          "text": "Quand le bébé pleure beaucoup à l'hôpital",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220494,
+          "text": "Une forme de dépression du bébé",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 220495,
+          "text": "Une forme d’autisme",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220496,
+          "text": "Toutes ces propositions sont justes",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Carences de soins maternels",
+        "series": "Mystidia Exams"
+      },
+      "question": "Selon SPITZ, l'Hospitalisme est :",
+      "has_media": false,
+      "statement": "Selon SPITZ, l'Hospitalisme est :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44822,
+      "clinical_case": null,
+      "display_title": "Question 19",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 20,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220507,
+          "text": "1+2+3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220508,
+          "text": "2+1+3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220509,
+          "text": "2+3+1",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220510,
+          "text": "3+1+2",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220511,
+          "text": "3+2+1",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Carences de soins maternels",
+        "series": "Mystidia Exams"
+      },
+      "question": "Bowlby a décrit 3 phases par lesquelles passe un bébé après la séparation de sa mère, cochez le bon ordre de ces phases :\n\n1 Phase de désespoir\n2 Phase de détachement\n3 Phase de détresse",
+      "has_media": false,
+      "statement": "Bowlby a décrit 3 phases par lesquelles passe un bébé après la séparation de sa mère, cochez le bon ordre de ces phases :\n\n1 Phase de désespoir\n2 Phase de détachement\n3 Phase de détresse",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44825,
+      "clinical_case": null,
+      "display_title": "Question 20",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    }
+  ]
+}

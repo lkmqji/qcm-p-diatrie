@@ -1,0 +1,3204 @@
+{
+  "version": "2.0",
+  "exported_at": "2026-11-13T09:30:31.622Z",
+  "app": "Mystidia Cursus Medical Explorer",
+  "course": {
+    "title": "Troubles veille sommeil",
+    "module": "Psychiatrie",
+    "year": "5ème Année (DFASM2)",
+    "session_id": "session_1792187489373_madj4jp",
+    "questions_count": 55
+  },
+  "questions": [
+    {
+      "id": 1,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 318259,
+          "text": "Il permet principalement la récupération de la fatigue physique.",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 318260,
+          "text": "Il est responsable de la production des rêves les plus élaborés.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 318261,
+          "text": "Il favorise l'augmentation de la vigilance et de l'activité cardiovasculaire.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 318262,
+          "text": "Il est associé à une diminution de la sécrétion de l'hormone de croissance.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 318263,
+          "text": "Il survient essentiellement en fin de nuit.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Concernant le sommeil lent profond, laquelle des propositions suivantes est correcte?",
+      "has_media": false,
+      "statement": "Concernant le sommeil lent profond, laquelle des propositions suivantes est correcte?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "B.Faux, Les rêves surviennent durant le sommeil paradoxal (REM sleep).C.Faux, Durant le sommeil lent profond il y a au contraire une baisse de la vigilance, de la fréquence cardiaque et de la tension artérielle (prédominance du système parasympathique).D.Faux, Le sommeil lent profond est associé à un pic de sécrétion de l'hormone de croissance (somatotropine) et non à une diminution.E.Faux, Le sommeil lent profond prédomine durant la première partie de la nuit.",
+      "original_id": 65146,
+      "clinical_case": null,
+      "display_title": "Question 1",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">B.Faux, </strong>Les rêves surviennent durant le sommeil paradoxal (REM sleep).</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">C.Faux, </strong>Durant le sommeil lent profond il y a au contraire une baisse de la vigilance, de la fréquence cardiaque et de la tension artérielle (prédominance du système parasympathique).</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">D.Faux, </strong>Le sommeil lent profond est associé à un pic de sécrétion de l'hormone de croissance (somatotropine) et non à une diminution.</p><p><br></p><p><strong style=\"color: rgb(230, 0, 0);\">E.Faux, </strong>Le sommeil lent profond prédomine durant la première partie de la nuit.</p>"
+    },
+    {
+      "id": 2,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 318254,
+          "text": "1 + 2 + 3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 318255,
+          "text": "1 + 2 + 4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 318256,
+          "text": "1 + 3 + 4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 318257,
+          "text": "1 + 3 + 5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 318258,
+          "text": "1 + 4 + 5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des associations concerne les horloges majeures qui conditionnent notre rythme\nveille-sommeil, laquelle ?\n1. Horloge biologique circadienne endogène\n2. Horloge anatomique\n3. Horloge cosmique\n4. Horloge musculaire\n5. Horloge social",
+      "has_media": false,
+      "statement": "L'une des associations concerne les horloges majeures qui conditionnent notre rythme\nveille-sommeil, laquelle ?\n1. Horloge biologique circadienne endogène\n2. Horloge anatomique\n3. Horloge cosmique\n4. Horloge musculaire\n5. Horloge social",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Rappel : Rythmicité veille-sommeilNotre organisme est dépendant de trois horloges majeures qui conditionnent notre rythme veille- sommeil tout au long de notre vie.• L’horloge biologique interne ou horloge biologique circadienne endogène :Elle est située dans le cerveau dans les noyaux supra-chiasmatiques à la base du 3ème ventricule del’hypothalamus. Elle est en interrelation avec la glande pinéale qui secrète une hormone appelémélatonine (synchroniseur endogène). La sécrétion de mélatonine est bloquée par la lumière du jour et perturbée par l’exposition à la lumière artificielle.La rythmicité circadienne endogène concerne certaines secrétions hormonales (cortisol), mais aussi les oscillations de la température corporelle et alternance veille-sommeil.• L’horloge sociale : rythme notre vie en société. Elle impose des horaires concernant surtout le travail.• L’horloge cosmique : est l’alternanceSource : https://mystidia.com/lecture?uId=16isdTDkVJvivV_RepT2rx-LaScvLknKZ",
+      "original_id": 65145,
+      "clinical_case": null,
+      "display_title": "Question 2",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(153, 51, 255);\">Rappel : Rythmicité veille-sommeil</strong></p><p><br></p><p>Notre organisme est dépendant de trois horloges majeures qui conditionnent notre rythme veille- sommeil tout au long de notre vie.</p><p><br></p><p>• <strong>L’horloge biologique interne ou horloge biologique circadienne endogène :</strong></p><p>Elle est située dans le cerveau dans les noyaux supra-chiasmatiques à la base du 3ème ventricule de</p><p>l’hypothalamus. Elle est en interrelation avec la glande pinéale qui secrète une hormone appelé</p><p>mélatonine (synchroniseur endogène). La sécrétion de mélatonine est bloquée par la lumière du jour et perturbée par l’exposition à la lumière artificielle.</p><p>La rythmicité circadienne endogène concerne certaines secrétions hormonales (cortisol), mais aussi les oscillations de la température corporelle et alternance veille-sommeil.</p><p><br></p><p><strong>• L’horloge sociale : </strong>rythme notre vie en société. Elle impose des horaires concernant surtout le travail.</p><p><br></p><p>• <strong>L’horloge cosmique : </strong>est l’alternance</p><p><br></p><p><strong>Source : </strong><a href=\"https://mystidia.com/lecture?uId=16isdTDkVJvivV_RepT2rx-LaScvLknKZ\" rel=\"noopener noreferrer\" target=\"_blank\">https://mystidia.com/lecture?uId=16isdTDkVJvivV_RepT2rx-LaScvLknKZ</a></p>"
+    },
+    {
+      "id": 3,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 315856,
+          "text": "Récupération psychique.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 315857,
+          "text": "Consolidation mnésique.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 315858,
+          "text": "Maturation du système nerveux central.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 315859,
+          "text": "Sécrétion de l'hormone de croissance.",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 315860,
+          "text": "Activité onirique.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Concernant les fonctions du sommeil paradoxal, toutes les propositions suivantes sont exactes sauf une :",
+      "has_media": false,
+      "statement": "Concernant les fonctions du sommeil paradoxal, toutes les propositions suivantes sont exactes sauf une :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "D.Fausse, La sécrétion d’hormones de croissance se voit lors du sommeil lent.Rappel: La fonction du sommeila/-Le sommeil lent profond : Il permet :- Une récupération de la fatigue physique,- Une augmentation de la synthèse protéique, de la sécrétion de diverses hormones etnotamment l’hormone de croissance et une stimulation du système immunitaire.- Il permet la mise au repos de notre système cardiovasculaire.b/- Le sommeil paradoxal : Il permet :- La récupération de la fatigue nerveuse et la résolution des tensions accumulées etl’organisation et la fixation des informations enregistrées pendant la journée.- Cette phase participe également à la maturation du système nerveux de l’enfant et permet laproduction de rêves.Source diapositive 2026.",
+      "original_id": 64674,
+      "clinical_case": null,
+      "display_title": "Question 3",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">D.Fausse,</strong> La sécrétion d’hormones de croissance se voit lors du sommeil lent.</p><p><br></p><p><strong style=\"color: rgb(153, 51, 255);\">Rappel: La fonction du sommeil</strong></p><p><br></p><p><strong>a/-Le sommeil lent profond : </strong></p><p>Il permet :</p><p>- Une récupération de la fatigue physique,</p><p>- Une augmentation de la synthèse protéique, de la sécrétion de diverses hormones et</p><p>notamment l’hormone de croissance et une stimulation du système immunitaire.</p><p>- Il permet la mise au repos de notre système cardiovasculaire.</p><p><strong>b/- Le sommeil paradoxal :</strong></p><p> Il permet :</p><p>- La récupération de la fatigue nerveuse et la résolution des tensions accumulées et</p><p>l’organisation et la fixation des informations enregistrées pendant la journée.</p><p>- Cette phase participe également à la maturation du système nerveux de l’enfant et permet la</p><p>production de rêves.</p><p><br></p><p><strong>Source diapositive 2026.</strong></p>"
+    },
+    {
+      "id": 4,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 315851,
+          "text": "Cinq stades.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 315852,
+          "text": "Quatre stades.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 315853,
+          "text": "Trois stades.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 315854,
+          "text": "Deux stades.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 315855,
+          "text": "Un stade.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'hypnogramme du sommeil lent comporte :",
+      "has_media": false,
+      "statement": "L'hypnogramme du sommeil lent comporte :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Rappel :Architecture du sommeil ou stades de veille et de sommeil :La structure de sommeil dépend de l’âge. Nous décrirons un sommeil « normal » du sujet adulte jeune âgé de 25 à 40 ans. Le sommeil est complémentaire de l’éveil et l’alternance éveil-sommeil respecte un cycle : le cycle circadien. Actuellement, il est clairement admis que le cycle veille-sommeil doit être classé en 5 stades :- Le stade W qui correspond au stade d’éveil- Les stades lent (SL) du sommeil non REM avec les stades N1, N2 et N3 :  N1 (5% de la totalité du sommeil) : Endormissement  N2 (50 à 55% de la totalité du sommeil) : SL léger  N3 (15-20% de la totalité du sommeil) : SL profond- Le stade P ou REM (sommeil paradoxal) : 20 à 25% du sommeil total et dure 100 mn.Source diapositive 2026.",
+      "original_id": 64673,
+      "clinical_case": null,
+      "display_title": "Question 4",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(153, 51, 255);\">Rappel :</strong></p><p><br></p><p><strong>Architecture du sommeil ou stades de veille et de sommeil </strong>:</p><p>La structure de sommeil dépend de l’âge. Nous décrirons un sommeil « normal » du sujet adulte jeune âgé de 25 à 40 ans. Le sommeil est complémentaire de l’éveil et l’alternance éveil-sommeil respecte un cycle : le cycle circadien. Actuellement, il est clairement admis que le cycle veille-sommeil doit être classé en 5 stades :</p><p><span style=\"color: rgb(0, 138, 0);\">- Le stade W </span>qui correspond au stade d’éveil</p><p><span style=\"color: rgb(0, 138, 0);\">- Les stades lent (SL) du sommeil non REM</span> avec les stades N1, N2 et N3 :</p><ol><li>  N1 (5% de la totalité du sommeil) : Endormissement</li><li>  N2 (50 à 55% de la totalité du sommeil) : SL léger</li><li>  N3 (15-20% de la totalité du sommeil) : SL profond</li></ol><p><span style=\"color: rgb(0, 138, 0);\">- Le stade P ou REM (sommeil paradoxal)</span> : 20 à 25% du sommeil total et dure 100 mn.</p><p><br></p><p><strong>Source diapositive 2026.</strong></p><p><br></p><p><br></p>"
+    },
+    {
+      "id": 5,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 315846,
+          "text": "Persistent de façon prolongée dans le temps.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 315847,
+          "text": "Entraînent un abus de psychotropes à fort potentiel de dépendance.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 315848,
+          "text": "Leur intensité est une source de souffrance.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 315849,
+          "text": "Surconsommation de soins médicaux.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 315850,
+          "text": "Absence de détresse cliniquement significative.",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les troubles veille-sommeil revêtent une signification pathologique lorsqu'ils :",
+      "has_media": false,
+      "statement": "Les troubles veille-sommeil revêtent une signification pathologique lorsqu'ils :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "E.Fausse, L'absence de détresse ou d'altération du fonctionnement élimine le caractère pathologique du trouble.Rappel :Un trouble veille-sommeil devient pathologique lorsqu'il dépasse le simple cadre d'une réaction passagère (comme le stress transitoire avant un examen) pour s'installer durablement dans le temps (critère chronologique) et qu'il génère une souffrance subjective réelle ou un retentissement marqué sur le quotidien (critère clinique). À l'inverse, une modification du sommeil isolée, de courte durée ou parfaitement tolérée sans détresse diurne, reste physiologique et ne constitue pas un trouble médical.",
+      "original_id": 64672,
+      "clinical_case": null,
+      "display_title": "Question 5",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">E.Fausse, </strong>L'absence de détresse ou d'altération du fonctionnement élimine le caractère pathologique du trouble.</p><p><br></p><p><strong style=\"color: rgb(153, 51, 255);\">Rappel :</strong></p><p>Un trouble veille-sommeil devient pathologique lorsqu'il dépasse le simple cadre d'une réaction passagère (comme le stress transitoire avant un examen) pour s'installer durablement dans le temps (critère chronologique) et qu'il génère une souffrance subjective réelle ou un retentissement marqué sur le quotidien (critère clinique). À l'inverse, une modification du sommeil isolée, de courte durée ou parfaitement tolérée sans détresse diurne, reste physiologique et ne constitue pas un trouble médical.</p><p><br></p><p><br></p><p><br></p><p><br></p>"
+    },
+    {
+      "id": 6,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 308591,
+          "text": "Il correspond à une absence totale d’activité motrice pendant le sommeil",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 308592,
+          "text": "Il se caractérise par la survenue d’une activité motrice alors que le sujet est endormi",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 308593,
+          "text": "Il est exceptionnel chez l’enfant",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 308594,
+          "text": "Il survient uniquement au cours du sommeil paradoxal",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 308595,
+          "text": "S’accompagne toujours d’un souvenir précis de l’épisode au réveil",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Concernant le somnambulisme, laquelle des propositions suivantes est correcte ? (RJ)",
+      "has_media": false,
+      "statement": "Concernant le somnambulisme, laquelle des propositions suivantes est correcte ? (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Rappel : Le somnambulisme constitue de la survenue d’une activité motrice pendant que le sujet dort. Il est plus ou moins élaboré, allant de quelques sons ou gestes simples jusqu’au lever et la marche quasi automatiques, donc en étant endormi. 3- Faux Il est fréquent chez l'enfant (pic vers 8-12 ans)4-FauxIl survient en sommeil lent profond (stade N3), pas en sommeil paradoxal.5-Faux Il y a typiquement une amnésie de l'épisode au réveil.",
+      "original_id": 63124,
+      "clinical_case": null,
+      "display_title": "Question 6",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<h2><span style=\"background-color: rgb(204, 224, 245);\">Rappel :</span></h2><p> <strong style=\"color: rgb(240, 102, 102);\">Le somnambulisme</strong> constitue de la survenue d’une <strong>activité motrice</strong> pendant que le sujet dort. Il est plus ou moins élaboré, allant de quelques sons ou gestes simples jusqu’au lever et la marche quasi automatiques, donc&nbsp;<strong>en étant endormi.&nbsp;</strong></p><p><br></p><p><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">3- Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Il est</span><strong style=\"color: rgb(15, 17, 21);\"> fréquent </strong><span style=\"color: rgb(15, 17, 21);\">chez </span><strong style=\"color: rgb(15, 17, 21);\">l'enfant</strong><span style=\"color: rgb(15, 17, 21);\"> (pic vers 8-12 ans)</span></p><p><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">4-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Il survient en</span><span style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 204);\"> sommeil lent profond</span><span style=\"color: rgb(15, 17, 21);\"> (stade N3), pas en sommeil paradoxal.</span></p><p><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">5-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Il y a typiquement </span><strong style=\"color: rgb(15, 17, 21); background-color: rgb(255, 255, 204);\">une amnésie</strong><span style=\"color: rgb(15, 17, 21);\"> de l'épisode au réveil.</span></p>"
+    },
+    {
+      "id": 7,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 308596,
+          "text": "Le traitement repose principalement sur la prescription systématique de benzodiazépines",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 308597,
+          "text": "L’insomnie relève uniquement d’une prise en charge médicamenteuse",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 308598,
+          "text": "Les mesures d’hygiène du sommeil n’ont pas d’intérêt",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 308599,
+          "text": "Elle doit avant tout rechercher la cause afin de proposer un traitement étiologique",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 308600,
+          "text": "Le traitement symptomatique est toujours privilégié",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "S1 2026"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Concernant la conduite à tenir devant une insomnie, laquelle des propositions est correcte ? (RJ)",
+      "has_media": false,
+      "statement": "Concernant la conduite à tenir devant une insomnie, laquelle des propositions est correcte ? (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A- Faux Les benzodiazépines ne sont pas systématiques; risque de dépendance.B- FauxL'insomnie ne relève pas uniquement du médicamenteux.C-FauxLes mesures d'hygiène du sommeil sont au contraire TRÈS importantes (régularité, environnement, éviter écrans/caféine).D-VraiIl est fondamental de rechercher la cause de l'insomnie (stress, anxiété, dépression, douleur, mauvaise hygiène de vie) pour proposer un traitement adapté à l'étiologie.E-FauxLe traitement symptomatique n'est PAS privilégié en première intention; on cherche d'abord la cause.",
+      "original_id": 63125,
+      "clinical_case": null,
+      "display_title": "Question 7",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">A- Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">&nbsp;Les benzodiazépines ne sont pas systématiques; risque de dépendance.</span></p><p><span style=\"border-color: rgb(229, 231, 235); --tw-shadow: 0 0 transparent; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgba(59,130,246,0.5); --tw-ring-offset-shadow: 0 0 transparent; --tw-ring-shadow: 0 0 transparent; font-weight: bolder; color: rgb(230, 0, 0); background-color: rgb(250, 204, 204);\">B- Faux</span></p><p><span style=\"color: rgb(15, 17, 21);\">L'insomnie ne relève pas uniquement du médicamenteux.</span></p><p><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">C-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Les mesures d'hygiène du sommeil sont au contraire TRÈS importantes (régularité, environnement, éviter écrans/caféine).</span></p><p><strong style=\"color: rgb(0, 138, 0); background-color: rgb(204, 232, 204);\">D-Vrai</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Il est fondamental de rechercher la cause de l'insomnie </span><strong style=\"color: rgb(15, 17, 21);\">(stress, anxiété, dépression, douleur, mauvaise hygiène de vie</strong><span style=\"color: rgb(15, 17, 21);\">) pour proposer un traitement adapté à l'étiologie.</span></p><p><strong style=\"background-color: rgb(250, 204, 204); color: rgb(230, 0, 0);\">E-Faux</strong></p><p><span style=\"color: rgb(15, 17, 21);\">Le traitement symptomatique n'est PAS privilégié en première intention; on cherche d'abord la cause.</span></p>"
+    },
+    {
+      "id": 8,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284836,
+          "text": "La présence des accès de catalepsie",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284837,
+          "text": "La parasomnie du sommeil lent",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 284838,
+          "text": "La présence d’hallucinations hypnagogiques",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 284839,
+          "text": "La présence des paralysies du sommeil",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284840,
+          "text": "La contre-indication à la conduite d’automobile",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Toutes ces propositions caractérisent la Narcolepsie sauf une, laquelle ?",
+      "has_media": true,
+      "statement": "Toutes ces propositions caractérisent la Narcolepsie sauf une, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A/ VRAI : La cataplexie est une perte soudaine et brève du tonus musculaire  déclenchée par une émotion forte (rire, surprise, colère). C'est un phénomène caractéristique de la narcolepsie de type 1 et représente l'atonie musculaire du sommeil paradoxal qui survient pendant l'éveil.B/ FAUX : La narcolepsie est un trouble neurologique chronique caractérisé par une dysrégulation du sommeil paradoxal (ou REM)C/ VRAI: Les hallucinations hypnagogiques sont des expériences sensorielles vivantes (souvent effrayantes) qui se produisent à l'endormissement. Elles sont une manifestation de l'entrée brutale en sommeil paradoxal.D/ VRAI : ◦Les paralysies du sommeil sont des épisodes transitoires ou le patient ne peut ni bouger niparler, survenant à l'endormissement (hypnagogique) ou au réveil (hypnopompique). Elles correspondent également à l'atonie du sommeil paradoxal qui persiste au moment de I'éveilE/ VRAI : En raison de la somnolence diurne excessive et des accès de sommeil irrésistibles (symptôme cardinal de la narcolepsie), ainsi que du risque de cataplexie au volant, la conduite automobile est souvent réglementée, surveillée, voire temporairement contre-indiquée jusqu'à stabilisation du traitement.",
+      "original_id": 58167,
+      "clinical_case": null,
+      "display_title": "Question 8",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1761934441.0336.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p>A/ <span style=\"color: rgb(0, 138, 0);\">VRAI</span> : La cataplexie est une perte soudaine et brève du tonus musculaire  déclenchée par une émotion forte (rire, surprise, colère). C'est un phénomène caractéristique de la narcolepsie de type 1 et représente l'atonie musculaire du sommeil paradoxal qui survient pendant l'éveil.</p><p><br></p><p>B/ <span style=\"color: rgb(230, 0, 0);\">FAUX</span> : La narcolepsie est un trouble neurologique chronique caractérisé par une dysrégulation du sommeil paradoxal (ou REM)</p><p><br></p><p>C/ <span style=\"color: rgb(0, 138, 0);\">VRAI</span>: Les hallucinations hypnagogiques sont des expériences sensorielles vivantes (souvent effrayantes) qui se produisent à l'endormissement. Elles sont une manifestation de l'entrée brutale en sommeil paradoxal.</p><p><br></p><p>D/ <span style=\"color: rgb(0, 138, 0);\">VRAI</span> : ◦Les paralysies du sommeil sont des épisodes transitoires ou le patient ne peut ni bouger ni</p><p>parler, survenant à l'endormissement (hypnagogique) ou au réveil (hypnopompique). Elles correspondent également à l'atonie du sommeil paradoxal qui persiste au moment de I'éveil</p><p><br></p><p>E/ <span style=\"color: rgb(0, 138, 0);\">VRAI</span> : En raison de la somnolence diurne excessive et des accès de sommeil irrésistibles (symptôme cardinal de la narcolepsie), ainsi que du risque de cataplexie au volant, la conduite automobile est souvent réglementée, surveillée, voire temporairement contre-indiquée jusqu'à stabilisation du traitement.</p>"
+    },
+    {
+      "id": 9,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284831,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284832,
+          "text": "2.4",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 284833,
+          "text": "3.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 284834,
+          "text": "1.4.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284835,
+          "text": "2.4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des associations caractérise les cauchemars, laquelle ?\n1. Parasomnie associée au sommeil lent stade III\n2. Survenant au cours du sommeil paradoxal\n3. Rêves effrayants et angoissants sans réveil du dormeur\n4. Conserve le souvenir de la scène rêvée.\n5. S'accompagne de troubles neuro- végétatifs",
+      "has_media": false,
+      "statement": "L'une des associations caractérise les cauchemars, laquelle ?\n1. Parasomnie associée au sommeil lent stade III\n2. Survenant au cours du sommeil paradoxal\n3. Rêves effrayants et angoissants sans réveil du dormeur\n4. Conserve le souvenir de la scène rêvée.\n5. S'accompagne de troubles neuro- végétatifs",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A/Faux :Caractérise les terreurs nocturnes ou le somnambulisme, qui sont des Parasomnies du Sommeil Non-Paradoxal.B/ Vrai: Les cauchemars  sont une parasomnie du sommeil paradoxal (REM). lls se produisent surtout en fin de nuit, lorsque la phase de sommeil paradoxal est prédominante.C/ Faux : Les cauchemars typiques provoquent un réveil complet et rapide, avec une pleine vigilance. L'absence de réveil est plus caractéristique de la confusion au réveil ou des terreurs nocturnes (où le réveil est partiel).D/ Vrai:  C'est une caractéristique essentielle des cauchemars. Le dormeur a un souvenir détaillé et vivant du scénario effrayant, contrairement aux terreurs nocturnes qui sont suivies d'une amnésie quasi-complète.E/ Faux: Des signes d'activation neuro-végétative (tachycardie, tachypnée) peuvent survenir, mais ils sont modérés et surtout présents au réveil. L'accompagnement de troubles neuro-végétatifs intenses (cris, panique, sudation massive) caractérise les terreurs nocturnes.",
+      "original_id": 58166,
+      "clinical_case": null,
+      "display_title": "Question 9",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>A/<span style=\"color: rgb(230, 0, 0);\">Faux</span> :Caractérise les terreurs nocturnes ou le somnambulisme, qui sont des Parasomnies du Sommeil Non-Paradoxal.</p><p><br></p><p>B/ <span style=\"color: rgb(0, 138, 0);\">Vrai</span>: Les cauchemars  sont une parasomnie du sommeil paradoxal (REM). lls se produisent surtout en fin de nuit, lorsque la phase de sommeil paradoxal est prédominante.</p><p><br></p><p>C/ <span style=\"color: rgb(230, 0, 0);\">Faux : </span>Les cauchemars typiques provoquent un réveil complet et rapide, avec une pleine vigilance. L'absence de réveil est plus caractéristique de la confusion au réveil ou des terreurs nocturnes (où le réveil est partiel).</p><p><br></p><p>D/ <span style=\"color: rgb(0, 138, 0);\">Vrai:  </span>C'est une caractéristique essentielle des cauchemars. Le dormeur a un souvenir détaillé et vivant du scénario effrayant, contrairement aux terreurs nocturnes qui sont suivies d'une amnésie quasi-complète.</p><p><br></p><p>E/ <span style=\"color: rgb(230, 0, 0);\">Faux: </span>Des signes d'activation neuro-végétative (tachycardie, tachypnée) peuvent survenir, mais ils sont modérés et surtout présents au réveil. L'accompagnement de troubles neuro-végétatifs intenses (cris, panique, sudation massive) caractérise les terreurs nocturnes.</p>"
+    },
+    {
+      "id": 10,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284826,
+          "text": "3 à 5 cycles",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284827,
+          "text": "4 à 6 cycles",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 284828,
+          "text": "5 à 10 cycles",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 284829,
+          "text": "6 à 12 cycles",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284830,
+          "text": "6 à 14 cycles",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est la durée moyenne qui constitue une nuit de sommeil d'un adulte ?",
+      "has_media": false,
+      "statement": "Quel est la durée moyenne qui constitue une nuit de sommeil d'un adulte ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Une nuit de sommeil comporte 4 à 5 cycles, chacun d'une durée d'environ 90 minutes. Dans un cycle, les critères électro-encéphalographiques, électro-myographiques et électro-oculographiques objectivent 5 stades Stade I et II : sommeil léger (50 % de la nuit)Stade II et IV : sommeil lent profond (25 % de la nuit)Stade V :sommeil paradoxal SP ou REM (RapidEyeMovements 25 % de la nuit) Au cours de la nuit ; le sommeil lent profond prédomine en début de nuit, le sommeil paradoxal en fin de nuit. Cette configuration évolue également avec l'âge.",
+      "original_id": 58165,
+      "clinical_case": null,
+      "display_title": "Question 10",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>Une nuit de sommeil comporte 4 à 5 cycles, chacun d'une durée d'environ 90 minutes. Dans un cycle, les critères électro-encéphalographiques, électro-myographiques et électro-oculographiques objectivent 5 stades </p><ul><li>Stade I et II : sommeil léger (50 % de la nuit)</li><li>Stade II et IV : sommeil lent profond (25 % de la nuit)</li><li>Stade V :sommeil paradoxal SP ou REM (RapidEyeMovements 25 % de la nuit) </li></ul><p>Au cours de la nuit ; le sommeil lent profond prédomine en début de nuit, le sommeil paradoxal en fin de nuit. Cette configuration évolue également avec l'âge.</p>"
+    },
+    {
+      "id": 11,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284821,
+          "text": "Une atteinte du système dopaminergique",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284822,
+          "text": ". Une atteinte du système de veille",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 284823,
+          "text": "Une atteinte du système sérotoninergique",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 284824,
+          "text": "Une atteinte du système noradrénergique",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284825,
+          "text": "Une atteinte du système de récompense",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le syndrome de Gélineau est dû à :",
+      "has_media": false,
+      "statement": "Le syndrome de Gélineau est dû à :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "NACROLEPSIE: La maladie de Gélineau a été décrite dès 1880, Elle débute généralement entre 15 et 30 ans mais des formes précoces à partir de 5 ans ou tardives après 50 ans ont été décrites. L'hypersomnie se traduit par une somnolence quasi permanente évoluant par vagues auxquelles se surimposent des attaques de sommeil brutales, incontrôlables.",
+      "original_id": 58164,
+      "clinical_case": null,
+      "display_title": "Question 11",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><em style=\"background-color: rgb(204, 232, 204);\"><u>NACROLEPSIE</u></em>: La maladie de Gélineau a été décrite dès 1880, Elle débute généralement entre 15 et 30 ans mais des formes précoces à partir de 5 ans ou tardives après 50 ans ont été décrites. L'hypersomnie se traduit par une somnolence quasi permanente évoluant par vagues auxquelles se surimposent des attaques de sommeil brutales, incontrôlables.</p>"
+    },
+    {
+      "id": 12,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284816,
+          "text": "2.4",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284817,
+          "text": "1.3.5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 284818,
+          "text": "3.4.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 284819,
+          "text": "1.3.4.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284820,
+          "text": "2.3.4.5",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelles mesures permettent d'améliorer la qualité du sommeil ?\n1- La consommation d'excitants\n2- La pratique d'une activité physique dans la journée\n3- Le coucher à des heures régulières\n4- Assez d'exposition à la lumière la journée, plus tamisée le soir.\n5- Dormir dans une chambre aérée, calme, sombre",
+      "has_media": false,
+      "statement": "Quelles mesures permettent d'améliorer la qualité du sommeil ?\n1- La consommation d'excitants\n2- La pratique d'une activité physique dans la journée\n3- Le coucher à des heures régulières\n4- Assez d'exposition à la lumière la journée, plus tamisée le soir.\n5- Dormir dans une chambre aérée, calme, sombre",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A/ FAUX : La consommation de substances excitantes (comme la caféine, la nicotine ou la théine) est un facteur majeur de troubles du sommeil. Elles sont des stimulants qui interfèrent avec les mécanismes d'endormissement et réduisent la quantité et la qualité du sommeil profond. Elles doivent être évitées plusieurs heures avant le coucher.B/ VRAI : L 'exercice régulier est fortement associé à une amélioration de la qualité et de la durée du sommeil. favorise la fatigue et la dépense énergétique, ce qui peut rendre I'endormissement plus facile.C/ VRAI : C'est un facteur clé pour réguler le rythme circadien. Le fait a de se coucher et de se lever à la même heure, même le week-end, consolide le rythme veille-sommeil, ce qui facilite 'endormissement et améliore la continuité du sommeil D/ VRAI : L'exposition à la lumière naturelle durant la journée aide à caler le rythme circadien et à inhiber la production de mélatonine Le soir, la réduction de l'exposition à la lumière bleue et I'utilisation de lumières tamisées signalent au cerveau qu'il est temps de commencer la production de mélatonine, préparant ainsi le corps au repos.E/ VRAI : L'environnement de sommeil est essentiel",
+      "original_id": 58163,
+      "clinical_case": null,
+      "display_title": "Question 12",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>A/ <span style=\"color: rgb(230, 0, 0);\">FAUX</span> : La consommation de substances excitantes (comme la caféine, la nicotine ou la théine) est un facteur majeur de troubles du sommeil. Elles sont des stimulants qui interfèrent avec les mécanismes d'endormissement et réduisent la quantité et la qualité du sommeil profond. Elles doivent être évitées plusieurs heures avant le coucher.</p><p><br></p><p>B/ <span style=\"color: rgb(0, 138, 0);\">VRAI</span> : L 'exercice régulier est fortement associé à une amélioration de la qualité et de la durée du sommeil. favorise la fatigue et la dépense énergétique, ce qui peut rendre I'endormissement plus facile.</p><p><br></p><p>C/ <span style=\"color: rgb(0, 138, 0);\">VRAI</span> : C'est un facteur clé pour réguler le rythme circadien. Le fait a de se coucher et de se lever à la même heure, même le week-end, consolide le rythme veille-sommeil, ce qui facilite 'endormissement et améliore la continuité du sommeil </p><p><br></p><p>D/ <span style=\"color: rgb(0, 138, 0);\">VRAI</span> : L'exposition à la lumière naturelle durant la journée aide à caler le rythme circadien et à inhiber la production de mélatonine</p><p> Le soir, la réduction de l'exposition à la lumière bleue et I'utilisation de lumières tamisées signalent au cerveau qu'il est temps de commencer la production de mélatonine, préparant ainsi le corps au repos.</p><p><br></p><p>E/ <span style=\"color: rgb(0, 138, 0);\">VRAI</span> : L'environnement de sommeil est essentiel</p>"
+    },
+    {
+      "id": 13,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284691,
+          "text": "1.2.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284692,
+          "text": "1.3.4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 284693,
+          "text": "1.3.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 284694,
+          "text": "1.4.5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 284695,
+          "text": "2.3.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Parmi les propositions suivantes, les quelles correspondent à des Parasomnies :\n1- Les paralysies du sommeil.\n2- La narcolepsie.\n3- Les mouvements périodiques des membres.\n4- Les crampes nocturnes des membres.\n5- Les rythmes nocturnes.",
+      "has_media": true,
+      "statement": "Parmi les propositions suivantes, les quelles correspondent à des Parasomnies :\n1- Les paralysies du sommeil.\n2- La narcolepsie.\n3- Les mouvements périodiques des membres.\n4- Les crampes nocturnes des membres.\n5- Les rythmes nocturnes.",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A/VRAI : les paralysies du sommeil sont des Parasomnie du sommeil Paradoxal et se caractérisent par des épisodes transitoires d'incapacité à bouger ou à parler survenant au début ou à la fin du sommeil. Représente la persistance de l'atonie musculaire du sommeil paradoxal pendant l'éveil.B/ FAUX : La narcolepsie est classée dans les troubles de I'hypersomnie centrale (somnolence diurne excessive). Bien que des symptômes comme la cataplexie ou les paralysies du sommeil soient liés à la dysrégulation du sommeil paradoxal, la narcolepsie elle-même est un trouble primaire de la régulation veille-sommeil, et non une parasomnie.C/ FAUX : Les mouvements périodiques des membres sont des mouvements répétitifs des membres inférieurs pendant le sommeil, causant des micro-éveils. I|s sont classés dans la catégorie des troubles du mouvement liés au sommeil, distincte des parasomnies.D/ VRAI : les crampes nocturnes des membres sont des contractions musculaires douloureuses et soudaines qui surviennent pendant le sommeil et provoquent un réveil. Elles sont incluses dans la classification des troubles du sommeil.E/ VRAI : Les rythmes nocturnes sont des mouvements répétitifs et stéréotypés de la tête, du cou ou du corps avant ou pendant le sommeil. Typique chez I'enfant.",
+      "original_id": 58138,
+      "clinical_case": null,
+      "display_title": "Question 13",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1761932660.5136.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p>A/<span style=\"color: rgb(0, 138, 0);\">VRAI</span> : les paralysies du sommeil sont des Parasomnie du sommeil Paradoxal et se caractérisent par des épisodes transitoires d'incapacité à bouger ou à parler survenant au début ou à la fin du sommeil. Représente la persistance de l'atonie musculaire du sommeil paradoxal pendant l'éveil.</p><p><br></p><p>B/ <span style=\"color: rgb(230, 0, 0);\">FAUX</span> : La narcolepsie est classée dans les troubles de I'hypersomnie centrale (somnolence diurne excessive). Bien que des symptômes comme la cataplexie ou les paralysies du sommeil soient liés à la dysrégulation du sommeil paradoxal, la narcolepsie elle-même est un trouble primaire de la régulation veille-sommeil, et non une parasomnie.</p><p><br></p><p>C/ <span style=\"color: rgb(230, 0, 0);\">FAUX</span> : Les mouvements périodiques des membres sont des mouvements répétitifs des membres inférieurs pendant le sommeil, causant des micro-éveils. I|s sont classés dans la catégorie des troubles du mouvement liés au sommeil, distincte des parasomnies.</p><p><br></p><p>D/ <span style=\"color: rgb(0, 138, 0);\">VRAI</span> : les crampes nocturnes des membres sont des contractions musculaires douloureuses et soudaines qui surviennent pendant le sommeil et provoquent un réveil. Elles sont incluses dans la classification des troubles du sommeil.</p><p><br></p><p>E/ <span style=\"color: rgb(0, 138, 0);\">VRAI</span> : Les rythmes nocturnes sont des mouvements répétitifs et stéréotypés de la tête, du cou ou du corps avant ou pendant le sommeil. Typique chez I'enfant.</p>"
+    },
+    {
+      "id": 14,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 284696,
+          "text": "1.2.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 284697,
+          "text": "1.2.4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 284698,
+          "text": "1.2.5",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 284699,
+          "text": "1.3.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 284700,
+          "text": "2.3.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le sommeil paradoxal :\n1- Correspond au stade P du cycle du sommeil.\n2- Comporte des mouvements oculaires rapides.\n3- La somniloquie fait partie de ses troubles.\n4- Les terreurs nocturnes font partie de ses troubles.\n5- La paralysie du sommeil fait partie de ses troubles.",
+      "has_media": false,
+      "statement": "Le sommeil paradoxal :\n1- Correspond au stade P du cycle du sommeil.\n2- Comporte des mouvements oculaires rapides.\n3- La somniloquie fait partie de ses troubles.\n4- Les terreurs nocturnes font partie de ses troubles.\n5- La paralysie du sommeil fait partie de ses troubles.",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A/ VRAI : Le sommeil  paradoxal est souvent désigné par le stade P (Paradoxal) ou REM ( Rapid Eye Movement). Il est la dernière phase d'un cycle de sommeil complet.B/ VRAI : REM=  l'apparition de mouvements oculaires rapides et saccadés sous les paupières fermées. C'est la phase où se déroulent les rêves les plus vifs.C/ FAUX: La somniloquie (parler en dormant) peut survenir pendant le sommeil paradoxal, mais elle est plus fréquente pendant le sommeil lent (Non-REM), notamment dans les stades légers (N1 et N2). Elle n'est pas un trouble spécifique ou caractéristique du sommeil paradoxal.D/ FAUX : Les terreurs nocturnes sont des parasomnies du sommeil lent (Non-REM), et surviennent le plus souvent lors des stades les plus profonds (N3). Elles sont distinctes des cauchemars car l'enfant ne se réveille généralement pas complètement et n'a aucun souvenir du contenu.E/ VRAI: La paralysie du sommeil est considérée comme une parasomnie du sommeil paradoxal. Elle résulte d'une intrusion ou d'une persistance de I'atonie musculaire qui caractérise le sommeil paradoxal (qui est là pour empêcher de jouer ses rêves) dans la phase d'éveil. ",
+      "original_id": 58139,
+      "clinical_case": null,
+      "display_title": "Question 14",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>A/ <span style=\"color: rgb(102, 185, 102);\">VRAI</span> : Le sommeil  paradoxal est souvent désigné par le stade P (Paradoxal) ou REM ( Rapid Eye Movement). Il est la dernière phase d'un cycle de sommeil complet.</p><p><br></p><p>B/ <span style=\"color: rgb(0, 138, 0);\">VRAI</span> : REM=  l'apparition de mouvements oculaires rapides et saccadés sous les paupières fermées. C'est la phase où se déroulent les rêves les plus vifs.</p><p><br></p><p>C/ <span style=\"color: rgb(230, 0, 0);\">FAUX</span>: La somniloquie (parler en dormant) peut survenir pendant le sommeil paradoxal, mais elle est plus fréquente pendant le sommeil lent (Non-REM), notamment dans les stades légers (N1 et N2). Elle n'est pas un trouble spécifique ou caractéristique du sommeil paradoxal.</p><p><br></p><p>D/ <span style=\"color: rgb(230, 0, 0);\">FAUX</span> : Les terreurs nocturnes sont des parasomnies du sommeil lent (Non-REM), et surviennent le plus souvent lors des stades les plus profonds (N3). Elles sont distinctes des cauchemars car l'enfant ne se réveille généralement pas complètement et n'a aucun souvenir du contenu.</p><p><br></p><p>E/ <span style=\"color: rgb(0, 138, 0);\">VRAI</span>: La paralysie du sommeil est considérée comme une parasomnie du sommeil paradoxal. Elle résulte d'une intrusion ou d'une persistance de I'atonie musculaire qui caractérise le sommeil paradoxal (qui est là pour empêcher de jouer ses rêves) dans la phase d'éveil. </p>"
+    },
+    {
+      "id": 15,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266062,
+          "text": "Elle débute généralement à l'âge adulte",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266063,
+          "text": "Elle s'accompagne de périodes de rémission prolongées",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 266064,
+          "text": "Elle est objectivée par l'actimétrie",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 266065,
+          "text": "Elle est due à une exposition prolongée aux écrans durant l'enfance",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266066,
+          "text": "Un trouble du sommeil lié à des facteurs psychologiques exclusivement",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelle affirmation est correcte concernant l'insomnie idiopathique ?",
+      "has_media": false,
+      "statement": "Quelle affirmation est correcte concernant l'insomnie idiopathique ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Insomnie idiopathique est un profil de mauvais dormeur remontant à l’enfance.  A une évolution chronique sans période de rémission durable, Du probablement à une perturbation des mécanismes neurobiologique régulant la balance veille sommeil.→ L’actimétrie est une mesure de l’activité globale des mouvements corporels pendant plusieurs jours. Les enregistrements permettent d’analyser le rythme veille-sommeil, ses décalages ainsi que la qualité et la quantité de sommeil du sujet).",
+      "original_id": 54118,
+      "clinical_case": null,
+      "display_title": "Question 15",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"background-color: transparent;\">Insomnie idiopathique</strong><span style=\"background-color: transparent;\">&nbsp;est un profil de mauvais dormeur remontant à l’enfance.&nbsp; </span><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">A une évolution chronique sans période de rémission durable,&nbsp;Du probablement à une perturbation des mécanismes neurobiologique régulant la balance veille sommeil.</span></p><p class=\"ql-align-justify\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">→ L’actimétrie</strong><span style=\"background-color: transparent; color: rgb(0, 0, 0);\"> est une</span><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"> </strong><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">mesure de l’activité globale des mouvements corporels pendant plusieurs jours. Les enregistrements permettent d’analyser le rythme veille-sommeil, ses décalages ainsi que la qualité et la quantité de sommeil du sujet).</span></p><p><br></p>"
+    },
+    {
+      "id": 16,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266057,
+          "text": "Récupération physique et sécrétion de l'hormone de croissance",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 266058,
+          "text": "Restauration psychique et mémoire",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 266059,
+          "text": "Faciliter l'endormissement",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266060,
+          "text": "Activation cérébrale intense",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266061,
+          "text": "Il y a une accélération de l'activité cardiaque",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est le rôle principal du sommeil lent profond (stades 3 et 4) ?",
+      "has_media": false,
+      "statement": "Quel est le rôle principal du sommeil lent profond (stades 3 et 4) ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A- Vrai, Le sommeil lent profond permet : Une récupération de la fatigue physique, Une augmentation de la synthèse protéique, de la sécrétion de diverses hormones et notamment l’hormone de croissance et une stimulation du système immunitaire. Permet la mise au repos de notre système cardiovasculaire.",
+      "original_id": 54117,
+      "clinical_case": null,
+      "display_title": "Question 16",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p class=\"ql-align-justify\"><strong style=\"color: rgb(0, 138, 0);\">A- Vrai,</strong><strong> </strong><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Le sommeil lent profond&nbsp;permet&nbsp;:</span></p><ul><li class=\"ql-align-justify\"><span style=\"background-color: transparent;\">&nbsp;Une récupération de la fatigue physique,&nbsp;</span></li><li class=\"ql-align-justify\"><span style=\"background-color: transparent;\">Une augmentation de la synthèse protéique, de la sécrétion de diverses hormones et notamment l’hormone de croissance et une stimulation du système immunitaire.&nbsp;</span></li><li class=\"ql-align-justify\"><span style=\"background-color: transparent;\">Permet la mise au repos de notre système cardiovasculaire.</span></li></ul><p><br></p>"
+    },
+    {
+      "id": 17,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265842,
+          "text": "1.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265843,
+          "text": "2.3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265844,
+          "text": "1.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 265845,
+          "text": "3.5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 265846,
+          "text": "4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le Somnambulisme : (RJ)\n1. Trouble d'hypersomnie\n2. Trouble de l'insomnie\n3. Trouble de parasomnie du sommeil lent profond\n4. Une baisse de niveau intellectuel\n5. Déambulation inconsciente avec désorientation temporo-spatiale",
+      "has_media": true,
+      "statement": "Le Somnambulisme : (RJ)\n1. Trouble d'hypersomnie\n2. Trouble de l'insomnie\n3. Trouble de parasomnie du sommeil lent profond\n4. Une baisse de niveau intellectuel\n5. Déambulation inconsciente avec désorientation temporo-spatiale",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A, B- Faux, Le Somnambulisme est un trouble de parasomnie (ils regroupent un ensemble hétérogène de manifestations comportementales survenant au cours du sommeil).E- Vrai, Le somnambulisme est caractérisé par des manifestations motrices qui sont au premier plan. L’expression comportementale est en général simple, le sujet s’assoit ou se lève et marche dans sa chambre. Les yeux sont ouverts, le regard est vide, les gestes sont lents, souvent maladroits et relevant d’automatismes.",
+      "original_id": 54074,
+      "clinical_case": null,
+      "display_title": "Question 17",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1748869851.0638.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p><strong style=\"color: rgb(230, 0, 0);\">A, B- Faux,</strong><strong> Le Somnambulisme</strong> est un trouble de <strong>parasomnie </strong>(ils regroupent un ensemble hétérogène de manifestations comportementales survenant au cours du sommeil).</p><p><strong style=\"color: rgb(0, 138, 0);\">E- Vrai,</strong> Le somnambulisme est caractérisé par des <strong>manifestations motrices</strong> qui sont au premier plan. L’expression comportementale est en général simple, le sujet s’assoit ou se lève et marche dans sa chambre. Les yeux sont ouverts, le regard est vide, les gestes sont lents, souvent maladroits et relevant d’automatismes.</p>"
+    },
+    {
+      "id": 18,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265852,
+          "text": "Parasomnie pendant le sommeil lent léger",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265853,
+          "text": "Contracture musculaire involontaire des mâchoires",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265854,
+          "text": "Peut être à l'origine d'altération dentaire",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 265855,
+          "text": "Favorisée par des facteurs de stress",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 265856,
+          "text": "Le traitement repose sur les hypnotiques",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des propositions ne caractérise pas le bruxisme, laquelle ?",
+      "has_media": false,
+      "statement": "L'une des propositions ne caractérise pas le bruxisme, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "E- Faux, Les hypnotiques (somnifères) ne sont pas recommandés dans le traitement du bruxisme. → Le traitement repose plutôt sur :Des mesures comportementales (gestion du stress, thérapies cognitives)Le port de gouttières dentaires (protectrices nocturnes)Parfois des injections de toxine botulique dans les muscles masséter",
+      "original_id": 54076,
+      "clinical_case": null,
+      "display_title": "Question 18",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">E- Faux,</strong><strong> </strong>Les <strong>hypnotiques (somnifères)</strong> ne sont <strong>pas recommandés</strong> dans le traitement du bruxisme.</p><p> → Le traitement repose plutôt sur :</p><ul><li>Des <strong>mesures comportementales</strong> (gestion du stress, thérapies cognitives)</li><li>Le <strong>port de gouttières dentaires</strong> (protectrices nocturnes)</li><li>Parfois des <strong>injections de toxine botulique</strong> dans les muscles masséter</li></ul>"
+    },
+    {
+      "id": 19,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 265847,
+          "text": "Sont fréquentes chez l'adulte",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 265848,
+          "text": "Parasomnie du sommeil paradoxal",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 265849,
+          "text": "Provoquent le réveil",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 265850,
+          "text": "S'accompagnent de signes neurovégétatifs intenses",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 265851,
+          "text": "Le patient conserve le souvenir",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les terreurs nocturnes se caractérisent par l'une des propositions, laquelle ? (RJ)",
+      "has_media": false,
+      "statement": "Les terreurs nocturnes se caractérisent par l'une des propositions, laquelle ? (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "A, B- Faux, Les terreurs nocturnes sont des parasomnies du sommeil lent profond et touchent l'enfant.D- Vrai, Les terreurs nocturnes sont généralement initiées par un grand cri. Elles sont caractérisées par l’importance des manifestations comportementales et neurovégétatives de peur (tachycardie, hypersudation, difficultés respiratoires, mydriase, érythrose cutanée). Le sujet est peu accessible à la réassurance. Le contenu mental, lorsqu’il est remémoré, est en général peu élaboré, correspondant à une image ou une situation effrayante.E- Faux, L’enfant n’a pas de souvenir de l’épisode et ne présente pas d’anxiété ; le retour au sommeil est  facile.",
+      "original_id": 54075,
+      "clinical_case": null,
+      "display_title": "Question 19",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">A, B- Faux,</strong><strong> </strong>Les terreurs nocturnes sont des parasomnies du sommeil lent profond et touchent l'enfant.</p><p><strong style=\"color: rgb(0, 138, 0);\">D- Vrai,</strong> Les terreurs nocturnes sont généralement initiées par un grand cri. Elles sont caractérisées par l’importance des manifestations comportementales et neurovégétatives de peur (tachycardie, hypersudation, difficultés respiratoires, mydriase, érythrose cutanée). Le sujet est peu accessible à la réassurance. Le contenu mental, lorsqu’il est remémoré, est en général peu élaboré, correspondant à une image ou une situation effrayante.</p><p><strong style=\"color: rgb(230, 0, 0);\">E- Faux,</strong><strong> L</strong>’enfant n’a pas de souvenir de l’épisode et ne présente pas d’anxiété ; le retour au sommeil est  facile.</p>"
+    },
+    {
+      "id": 20,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266247,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266248,
+          "text": "2.4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 266249,
+          "text": "3.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 266250,
+          "text": "3.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266251,
+          "text": "4.5",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des associations caractérise les cauchemars, laquelle ?\n1- Parasomnie associée au sommeil lent stade III\n2- Rêves effrayants et angoissants sans réveil du dormeur\n3- S'accompagne de troubles neuro-végétatifs\n4- Survenant au cours du sommeil paradoxal\n5- Conserve le souvenir de la scène rêvée",
+      "has_media": true,
+      "statement": "L'une des associations caractérise les cauchemars, laquelle ?\n1- Parasomnie associée au sommeil lent stade III\n2- Rêves effrayants et angoissants sans réveil du dormeur\n3- S'accompagne de troubles neuro-végétatifs\n4- Survenant au cours du sommeil paradoxal\n5- Conserve le souvenir de la scène rêvée",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Les cauchemars sont un type de parasomnie survenant pendant le sommeil paradoxal (REM sleep), et se caractérisent par :🔹 Souvenir du rêve : le patient se réveille souvent avec un souvenir précis et angoissant du rêve.🔹 Réveil facile et complet:  le dormeur se réveille sans confusion.🔹 Composante émotionnelle forte (peur, angoisse) mais sans réaction neurovégétative marquée comme dans les terreurs nocturnes",
+      "original_id": 54155,
+      "clinical_case": null,
+      "display_title": "Question 20",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1749241289.7561.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p>Les cauchemars sont un type de <strong>parasomnie</strong> survenant pendant le <strong>sommeil paradoxal</strong> (REM sleep), et se caractérisent par :</p><p>🔹 <strong>Souvenir du rêve</strong> : le patient se réveille souvent avec un <strong>souvenir précis et angoissant</strong> du rêve.</p><p>🔹 <strong>Réveil facile et complet: </strong> le dormeur se réveille sans confusion.</p><p>🔹 <strong>Composante émotionnelle forte (peur, angoisse)</strong> mais <strong>sans réaction neurovégétative marquée</strong> comme dans les terreurs nocturnes</p>"
+    },
+    {
+      "id": 21,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 266252,
+          "text": "La présence des accès de cataplexie",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 266253,
+          "text": "La présence d'hallucinations hypnagogiques",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 266254,
+          "text": "La parasomnie du sommeil lent",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 266255,
+          "text": "La présence des paralysies du sommeil.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 266256,
+          "text": "La contre-indication à la conduite d'automobile",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2025"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Toutes ces propositions caractérisent la Narcolepsie sauf une, laquelle ?",
+      "has_media": false,
+      "statement": "Toutes ces propositions caractérisent la Narcolepsie sauf une, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "C- Faux, La narcolepsie ne fait pas partie des parasomnies.La narcolepsie est un trouble neurologique chronique du rythme veille-sommeil, caractérisé par une somnolence excessive diurne et une perturbation du contrôle du sommeil paradoxal. Caractérisé par un tétrade classique :Somnolence diurne excessive Endormissements irrépressibles en journée, même dans des situations inappropriées.Cataplexie (Type 1 uniquement) Perte brutale du tonus musculaire déclenchée par une émotion (rire, colère, surprise), sans perte de conscience.Hallucinations hypnagogiques/hypnopompiques Rêves très vifs, souvent effrayants, au moment de l’endormissement ou du réveil.Paralysie du sommeil Incapacité temporaire à bouger ou parler lors de l’endormissement ou du réveil, alors que la conscience est intacte.",
+      "original_id": 54156,
+      "clinical_case": null,
+      "display_title": "Question 21",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><strong style=\"color: rgb(230, 0, 0);\">C- Faux,</strong> La narcolepsie ne fait pas partie des parasomnies.</p><p><br></p><p>La <strong>narcolepsie</strong> est un trouble neurologique chronique du <strong>rythme veille-sommeil</strong>, caractérisé par une <strong>somnolence excessive diurne</strong> et une <strong>perturbation du contrôle du sommeil paradoxal</strong>. Caractérisé par un <strong>tétrade classique :</strong></p><ol><li><strong>Somnolence diurne excessive </strong>Endormissements irrépressibles en journée, même dans des situations inappropriées.</li><li><strong>Cataplexie</strong> (Type 1 uniquement) Perte brutale du tonus musculaire déclenchée par une émotion (rire, colère, surprise), sans perte de conscience.</li><li><strong>Hallucinations hypnagogiques/hypnopompiques </strong>Rêves très vifs, souvent effrayants, au moment de l’endormissement ou du réveil.</li><li><strong>Paralysie du sommeil </strong>Incapacité temporaire à bouger ou parler lors de l’endormissement ou du réveil, alors que la conscience est intacte.</li></ol>"
+    },
+    {
+      "id": 22,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 253042,
+          "text": "1.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 253043,
+          "text": "2.4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 253044,
+          "text": "2.3",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 253045,
+          "text": "3.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 253046,
+          "text": "3.5",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelles caractéristiques décrivent le somnambulisme ?\n1- Paralysie du sommeil prolongée\n2- Réveils précoces et sensation de fatigue\n3- Comportements automatiques pendant le sommeil\n4- Incapacité de se réveiller après des cauchemars\n5- Marcher ou parler pendant le sommeil",
+      "has_media": false,
+      "statement": "Quelles caractéristiques décrivent le somnambulisme ?\n1- Paralysie du sommeil prolongée\n2- Réveils précoces et sensation de fatigue\n3- Comportements automatiques pendant le sommeil\n4- Incapacité de se réveiller après des cauchemars\n5- Marcher ou parler pendant le sommeil",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 51105,
+      "clinical_case": null,
+      "display_title": "Question 22",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 23,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 253037,
+          "text": "1.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 253038,
+          "text": "1.2",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 253039,
+          "text": "1.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 253040,
+          "text": "2.3",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 253041,
+          "text": "2.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quels traitements sont recommandés pour l'insomnie transitoire ?\n1- Benzodiazépines à long terme\n2- Thérapie comportementale\n3- Hypnotiques à demi-vie courte sur une courte période.\n4- Médication antipsychotique.\n5- Aucune intervention spécifique.",
+      "has_media": false,
+      "statement": "Quels traitements sont recommandés pour l'insomnie transitoire ?\n1- Benzodiazépines à long terme\n2- Thérapie comportementale\n3- Hypnotiques à demi-vie courte sur une courte période.\n4- Médication antipsychotique.\n5- Aucune intervention spécifique.",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 51104,
+      "clinical_case": null,
+      "display_title": "Question 23",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 24,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 253032,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 253033,
+          "text": "2.4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 253034,
+          "text": "3.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 253035,
+          "text": "3.5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 253036,
+          "text": "4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des associations caractérise les cauchemars, laquelle ?\n1- Parasomnie associée au sommeil lent stade III\n2- Rêves effrayants et angoissants sans réveil du dormeur\n3- Survenant au cours du sommeil paradoxal\n4- S'accompagnent de troubles neuro-végétatifs\n5- Conserve le souvenir de la scène rêvée",
+      "has_media": false,
+      "statement": "L'une des associations caractérise les cauchemars, laquelle ?\n1- Parasomnie associée au sommeil lent stade III\n2- Rêves effrayants et angoissants sans réveil du dormeur\n3- Survenant au cours du sommeil paradoxal\n4- S'accompagnent de troubles neuro-végétatifs\n5- Conserve le souvenir de la scène rêvée",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 51103,
+      "clinical_case": null,
+      "display_title": "Question 24",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 25,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 253027,
+          "text": "La présence des accès de cataplexie",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 253028,
+          "text": "La présence d'hallucinations hypnagogiques",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 253029,
+          "text": "La présence des paralysies du sommeil",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 253030,
+          "text": "La contre-indication à la conduite d'automobile",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 253031,
+          "text": "La parasomnie du sommeil lent",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Toutes ces propositions caractérisent la Narcolepsie sauf une, laquelle ?",
+      "has_media": true,
+      "statement": "Toutes ces propositions caractérisent la Narcolepsie sauf une, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": " ",
+      "original_id": 51102,
+      "clinical_case": null,
+      "display_title": "Question 25",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1725147899.6726.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p> </p>"
+    },
+    {
+      "id": 26,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 253022,
+          "text": "1.3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 253023,
+          "text": "2.3",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 253024,
+          "text": "2.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 253025,
+          "text": "3.5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 253026,
+          "text": "4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le sommeil est un état caractérisé par :\n1- La conscience accrue et la relaxation musculaire\n2- La suppression de la conscience\n3- La résolution musculaire\n4- L'activité intense de la circulation et de la respiration\n5- La suppression des fonctions végétatives",
+      "has_media": false,
+      "statement": "Le sommeil est un état caractérisé par :\n1- La conscience accrue et la relaxation musculaire\n2- La suppression de la conscience\n3- La résolution musculaire\n4- L'activité intense de la circulation et de la respiration\n5- La suppression des fonctions végétatives",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 51101,
+      "clinical_case": null,
+      "display_title": "Question 26",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": 27,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252597,
+          "text": "1.2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252598,
+          "text": "2.3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 252599,
+          "text": "4.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252600,
+          "text": "2.5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 252601,
+          "text": "1.4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quels symptômes sont associés au syndrome d'apnée du sommeil ? (RJ)\n1. Absence totale de rêves.\n2. Réveils fréquents avec polyurie nocturne.\n3. Endormissement rapide sans réveils.\n4. Mouvements involontaires des membres.\n5. Ronflements bruyants.",
+      "has_media": true,
+      "statement": "Quels symptômes sont associés au syndrome d'apnée du sommeil ? (RJ)\n1. Absence totale de rêves.\n2. Réveils fréquents avec polyurie nocturne.\n3. Endormissement rapide sans réveils.\n4. Mouvements involontaires des membres.\n5. Ronflements bruyants.",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "4- Aussi vrai, Ils peuvent être associés. . SYNDROME DES MOUVEMENTS PERIODIQUES NOCTURNES DES MEMBRES : Survenant  pendant  la  nuit,  à  l'origine  d'éveils,  cette  pathologie  se manifeste par des secousses de quelques secondes, survenant de manière périodique toutes les 30 secondes, qui affectent surtout les membres inférieurs. A ces secousses s'associent une extension du gros orteil, une dorsiflexion du pied, parfois une flexion du genou, de la hanche. Le sujet se plaint d'un sommeil non réparateur, d'insomnie de milieu de nuit, d'une sensation de fatigue des membres inférieurs le matin. La    polysomnographie    montre    les    bouffées    d'activation    sur l'électromyogramme des membres inférieurs. Ces mouvements, dont la fréquence croît avec l'âge, peuvent être associés  à  d'autres  troubles  du  sommeil (narcolepsie,  syndrome  d'apnées  du  sommeil) ;  ils  apparaissent plus fréquement chez les patients traités par antidépresseurs. La thérapeutique de ces deux affections fait appel aux benzodiazépines, en particulier le clonazepam (Rivotril*).",
+      "original_id": 51016,
+      "clinical_case": null,
+      "display_title": "Question 27",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<div class=\"explanation-image-wrapper\" style=\"text-align: center; margin: 10px 0;\"><img class=\"explanation-img\" src=\"https://backend.mystidia-exams.com/storage/images/explanation/1725051659.366.png\" alt=\"Illustration de l'explication\" style=\"max-width: 100%; max-height: 280px; object-fit: contain; border-radius: 6px; border: 1px solid #CBD5E1;\" /></div><p><strong style=\"color: rgb(0, 138, 0);\">4- Aussi vrai</strong>, Ils peuvent être associés. </p><p><br></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">. SYNDROME DES MOUVEMENTS PERIODIQUES NOCTURNES DES MEMBRES&nbsp;:</strong><span style=\"background-color: transparent; color: rgb(0, 0, 0);\"> Survenant&nbsp; pendant&nbsp; la&nbsp; nuit,&nbsp; à&nbsp; l'origine&nbsp; d'éveils,&nbsp; cette&nbsp; pathologie&nbsp; se manifeste par des secousses de quelques secondes, survenant de manière périodique toutes les 30 secondes, qui affectent surtout les membres inférieurs. A ces secousses s'associent une extension du gros orteil, une dorsiflexion du pied, parfois une flexion du genou, de la hanche.&nbsp;</span></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Le sujet se plaint d'un sommeil non réparateur, d'insomnie de milieu de nuit, d'une sensation de fatigue des membres inférieurs le matin.&nbsp;</span></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">La&nbsp; &nbsp; polysomnographie&nbsp; &nbsp; montre&nbsp; &nbsp; les&nbsp; &nbsp; bouffées&nbsp; &nbsp; d'activation&nbsp; &nbsp; sur l'électromyogramme des membres inférieurs.&nbsp;</span></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Ces mouvements, dont la fréquence croît avec l'âge, </span><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\"><u>peuvent être associés  à&nbsp; d'autres&nbsp; troubles&nbsp; du&nbsp; sommeil</u></strong><span style=\"background-color: transparent; color: rgb(0, 0, 0);\"> (narcolepsie,&nbsp; </span><strong style=\"background-color: rgb(102, 185, 102); color: rgb(0, 0, 0);\">syndrome&nbsp; d'apnées&nbsp; du&nbsp; sommeil</strong><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">) ;&nbsp; ils&nbsp; apparaissent plus fréquement chez les patients traités par antidépresseurs.&nbsp;</span></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">La thérapeutique de ces deux affections fait appel aux benzodiazépines, en particulier le clonazepam (Rivotril*).</span></p>"
+    },
+    {
+      "id": 28,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 252592,
+          "text": "1.5",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 252593,
+          "text": "2.4",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 252594,
+          "text": "3.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 252595,
+          "text": "2.3",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 252596,
+          "text": "1.4",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quels sont les rôles principaux de la mélatonine dans le sommeil ?(RJ)\n1. Stimuler l'activité cérébrale pendant la nuit.\n2. Réguler le rythme circadien de 24 heures.\n3. Augmenter la fréquence cardiaque pendant le sommeil.\n4. Induire le sommeil.\n5. Supprimer complètement la respiration.",
+      "has_media": false,
+      "statement": "Quels sont les rôles principaux de la mélatonine dans le sommeil ?(RJ)\n1. Stimuler l'activité cérébrale pendant la nuit.\n2. Réguler le rythme circadien de 24 heures.\n3. Augmenter la fréquence cardiaque pendant le sommeil.\n4. Induire le sommeil.\n5. Supprimer complètement la respiration.",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "",
+      "original_id": 51015,
+      "clinical_case": null,
+      "display_title": "Question 28",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p><br></p>"
+    },
+    {
+      "id": 29,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229358,
+          "text": "Survient chez le sujet jeune",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 229359,
+          "text": "Caractérisé par des accès de sommeil diurne",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229360,
+          "text": "Présence de catalepsie pathognomonique",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229361,
+          "text": "Associé à des hallucinations hypnagogiques ou hypnopompiques",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229362,
+          "text": "Trouble du rythme circadien",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Toute ces propositions concernent le syndrome de Gélineau sauf une, laquelle ?",
+      "has_media": false,
+      "statement": "Toute ces propositions concernent le syndrome de Gélineau sauf une, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 46545,
+      "clinical_case": null,
+      "display_title": "Question 29",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 30,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 229353,
+          "text": "Trouble de l'hypersomnie récurrente",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 229354,
+          "text": "Parasomnie du sommeil lent profond",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 229355,
+          "text": "Caractérisé par des épisodes de sommeil discontinu",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 229356,
+          "text": "Durée moyenne quatre semaines",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 229357,
+          "text": "Affection fréquente",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Cochez la proposition juste concernant le syndrome de Kleine-Levin :",
+      "has_media": false,
+      "statement": "Cochez la proposition juste concernant le syndrome de Kleine-Levin :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "Check the mind map",
+      "original_id": 46544,
+      "clinical_case": null,
+      "display_title": "Question 30",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": "<p>Check the mind map</p>"
+    },
+    {
+      "id": 31,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 221034,
+          "text": "1.2.4",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 221035,
+          "text": "2.3.5",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 221036,
+          "text": "3.4.5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 221037,
+          "text": "2.3.4",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 221038,
+          "text": "1.3.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des associations définit l'insomnie psychophysiologique, laquelle ?\n1. Est une insomnie transitoire\n2. Comprend une anxiété anticipatoire avec un syndrome d'hyperéveil mental\n3. Est la conséquence d'un conditionnement négatif du sommeil\n4. Son traitement repose essentiellement sur les hypnotiques\n5. Est à l'origine de polymédication",
+      "has_media": false,
+      "statement": "L'une des associations définit l'insomnie psychophysiologique, laquelle ?\n1. Est une insomnie transitoire\n2. Comprend une anxiété anticipatoire avec un syndrome d'hyperéveil mental\n3. Est la conséquence d'un conditionnement négatif du sommeil\n4. Son traitement repose essentiellement sur les hypnotiques\n5. Est à l'origine de polymédication",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44931,
+      "clinical_case": null,
+      "display_title": "Question 31",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 32,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 221039,
+          "text": "Est une hypersomnie centrale",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 221040,
+          "text": "Peut-être comorbide au syndrome d'apnée de sommeil",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 221041,
+          "text": "Le traitement de la somnolence et de l'accès de sommeil repose sur les antidépresseurs",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 221042,
+          "text": "La cataplexie peut manquer au tableau clinique",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 221043,
+          "text": "Le diagnostic est souvent porté avec un retard de plusieurs années",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des propositions ne définit pas la narcolepsie, laquelle ?",
+      "has_media": false,
+      "statement": "L'une des propositions ne définit pas la narcolepsie, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44932,
+      "clinical_case": null,
+      "display_title": "Question 32",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 33,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 221044,
+          "text": "1.2.5",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 221045,
+          "text": "1.3.5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 221046,
+          "text": "2.3.4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 221047,
+          "text": "2.3.5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 221048,
+          "text": "3.4.5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "L’une des associations concerne le syndrome de retard de phase du sommeil, laquelle ?\n1. Concerne surtout les personnes âgées\n2. Le rythme veille sommeil échappe aux synchroniseurs externes\n3. Le traitement repose sur la photothérapie et la chronothérapie\n4. Est lié au franchissement de fuseaux horaires\n5. La prescription d'hypnotiques n'est pas indiquée",
+      "has_media": false,
+      "statement": "L’une des associations concerne le syndrome de retard de phase du sommeil, laquelle ?\n1. Concerne surtout les personnes âgées\n2. Le rythme veille sommeil échappe aux synchroniseurs externes\n3. Le traitement repose sur la photothérapie et la chronothérapie\n4. Est lié au franchissement de fuseaux horaires\n5. La prescription d'hypnotiques n'est pas indiquée",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44933,
+      "clinical_case": null,
+      "display_title": "Question 33",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 34,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 221049,
+          "text": "Sont fréquentes chez l'adulte",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 221050,
+          "text": "Surviennent en fin de nuit",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 221051,
+          "text": "S'accompagnent de signes neurovégétatifs intenses",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 221052,
+          "text": "Provoquent le réveil",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 221053,
+          "text": "Le patient conserve le souvenir",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Les terreurs nocturnes se caractérisent par l'une des propositions, laquelle ?",
+      "has_media": false,
+      "statement": "Les terreurs nocturnes se caractérisent par l'une des propositions, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44934,
+      "clinical_case": null,
+      "display_title": "Question 34",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 35,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 221054,
+          "text": "Parasomnie pendant le sommeil léger",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 221055,
+          "text": "Contracture musculaire involontaire des mâchoires",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 221056,
+          "text": "Peut être à l'origine d'altération dentaire",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 221057,
+          "text": "Favorisée par des facteurs de stress",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 221058,
+          "text": "Le traitement repose sur les hypnotiques",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2024"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des propositions ne caractérise pas le bruxisme, laquelle ?",
+      "has_media": false,
+      "statement": "L'une des propositions ne caractérise pas le bruxisme, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44935,
+      "clinical_case": null,
+      "display_title": "Question 35",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 36,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220645,
+          "text": "1+2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220646,
+          "text": "2+4",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 220647,
+          "text": "3+5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220648,
+          "text": "1+4+5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220649,
+          "text": "2+4+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2023",
+          "P3 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des associations caractérise les cauchemars, laquelle ?\n\n1 Parasomnie associée au sommeil lent stade III\n2 Survenant au cours du sommeil paradoxal\n3 Rêves effrayants et angoissants sans réveil du dormeur\n4 Conserve le souvenir de la scène rêvée\n5 S'accompagne de troubles neuro-végétatifs",
+      "has_media": false,
+      "statement": "L'une des associations caractérise les cauchemars, laquelle ?\n\n1 Parasomnie associée au sommeil lent stade III\n2 Survenant au cours du sommeil paradoxal\n3 Rêves effrayants et angoissants sans réveil du dormeur\n4 Conserve le souvenir de la scène rêvée\n5 S'accompagne de troubles neuro-végétatifs",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44853,
+      "clinical_case": null,
+      "display_title": "Question 36",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 37,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220650,
+          "text": "Une atteinte du système dopaminergique",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220651,
+          "text": "Une atteinte du système sérotoninergique",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220652,
+          "text": "Une atteinte du système noradrénergique",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220653,
+          "text": "Une atteinte du système de récompense",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220654,
+          "text": "Une atteinte du système de veille",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le syndrome de Gélineau est dû à :",
+      "has_media": false,
+      "statement": "Le syndrome de Gélineau est dû à :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44854,
+      "clinical_case": null,
+      "display_title": "Question 37",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 38,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220685,
+          "text": "3 à 5 cycles",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220686,
+          "text": "4 à 6 cycles",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 220687,
+          "text": "5 à 10 cycles",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220688,
+          "text": "6 à 12 cycles",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220689,
+          "text": "6 à 14 cycles",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est la durée moyenne qui constitué une nuit de sommeil d'un adulte ?",
+      "has_media": false,
+      "statement": "Quel est la durée moyenne qui constitué une nuit de sommeil d'un adulte ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44861,
+      "clinical_case": null,
+      "display_title": "Question 38",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 39,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220670,
+          "text": "La parasomnie du sommeil lent",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 220671,
+          "text": "La présence des accès de cataplexie",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220672,
+          "text": "La présence d'hallucinations hypnagogiques",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220673,
+          "text": "La présence des paralysies du sommeil",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220674,
+          "text": "La contre-indication à la conduite d'automobile",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Rattrapage 2023",
+          "P3 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Toutes ces propositions caractérisent la Narcolepsie sauf une, laquelle ?",
+      "has_media": false,
+      "statement": "Toutes ces propositions caractérisent la Narcolepsie sauf une, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44858,
+      "clinical_case": null,
+      "display_title": "Question 39",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 40,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220655,
+          "text": "Fréquentes chez l'enfant et rares chez l'adulte",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220656,
+          "text": "C'est une parasomnie par trouble de l'éveil",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220657,
+          "text": "Type de manifestations neuro-végétatives intenses et de hurlements en début de nuit",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220658,
+          "text": "Ne provoquant pas de réveil et laissant des souvenirs",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220659,
+          "text": "En cas de sévérité, un traitement anxiolytique par Benzodiazépine peut être prescrit",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Toutes ces propositions caractérisent les terreurs nocturnes sauf une, laquelle ?",
+      "has_media": false,
+      "statement": "Toutes ces propositions caractérisent les terreurs nocturnes sauf une, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44855,
+      "clinical_case": null,
+      "display_title": "Question 40",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 41,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220675,
+          "text": "Difficulté de maintien du sommeil avec réveil précoce matinal",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220676,
+          "text": "Fatigue diurne associée",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220677,
+          "text": "Dure pendant au moins 3 nuits par semaine durant au moins un mois",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 220678,
+          "text": "Souffrance marquée ou d'une altération du fonctionnement social",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220679,
+          "text": "Cette perturbation n'est pas due à une affection médico-psychiatrique ou toxique",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'insomnie chronique primaire est caractérisée par : (RF)",
+      "has_media": false,
+      "statement": "L'insomnie chronique primaire est caractérisée par : (RF)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44859,
+      "clinical_case": null,
+      "display_title": "Question 41",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 42,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220660,
+          "text": "1+2",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220661,
+          "text": "2+3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220662,
+          "text": "2+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220663,
+          "text": "2+5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220664,
+          "text": "4+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Deux de ces troubles du sommeil n'appartiennent pas au registre des parasomnies du sommeil lent profond, lesquelles ?\n\n1 Somnambulisme\n2 Cauchemars\n3 Terreurs nocturnes\n4 Éveils confusionnels\n5 Paralysies du sommeil",
+      "has_media": false,
+      "statement": "Deux de ces troubles du sommeil n'appartiennent pas au registre des parasomnies du sommeil lent profond, lesquelles ?\n\n1 Somnambulisme\n2 Cauchemars\n3 Terreurs nocturnes\n4 Éveils confusionnels\n5 Paralysies du sommeil",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44856,
+      "clinical_case": null,
+      "display_title": "Question 42",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 43,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220680,
+          "text": "Survient exclusivement chez la femme Jeune",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220681,
+          "text": "Caractérisé par une hyperphagie compulsive",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 220682,
+          "text": "Dure quelques heures",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220683,
+          "text": "Associe une fatigue et Insomnie",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220684,
+          "text": "Trouble du rythme circadien",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Cocher la proposition juste concernant le syndrome de Klein- Levin :",
+      "has_media": false,
+      "statement": "Cocher la proposition juste concernant le syndrome de Klein- Levin :",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44860,
+      "clinical_case": null,
+      "display_title": "Question 43",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 44,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220665,
+          "text": "Abolition transitoire du tonus musculaire",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220666,
+          "text": "Patient est conscient au moment du sommeil paralytique",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220667,
+          "text": "Disparait spontanément",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220668,
+          "text": "Mouvements du corps sont absents",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220669,
+          "text": "Phénomène hallucinatoire peuvent survenir",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P1 2023"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'une des propositions ne concerne pas la paralysie du sommeil, laquelle ?",
+      "has_media": false,
+      "statement": "L'une des propositions ne concerne pas la paralysie du sommeil, laquelle ?",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44857,
+      "clinical_case": null,
+      "display_title": "Question 44",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 45,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220715,
+          "text": "Forme clinique de l’autisme.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220716,
+          "text": "Insomnie idiopathique.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220717,
+          "text": "Parasomnie du sommeil paradoxal.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220718,
+          "text": "Hypersomnies idiopathiques.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220719,
+          "text": "Hypersomnies récurrentes.",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P4 2022"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le syndrome de Klein Levin (la ou les RJ)",
+      "has_media": false,
+      "statement": "Le syndrome de Klein Levin (la ou les RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44867,
+      "clinical_case": null,
+      "display_title": "Question 45",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": "46.1",
+      "case_id": 46,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220690,
+          "text": "Dépression mélancolique.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220691,
+          "text": " Trouble de l'anxiété généralisé.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220692,
+          "text": " Trouble bipolaire.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220693,
+          "text": " Insomnie périodique.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220694,
+          "text": " Insomnie persistante primaire.",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P4 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "De quoi souffre Mme S ? (la ou les RJ)",
+      "has_media": false,
+      "statement": "De quoi souffre Mme S ? (la ou les RJ)",
+      "sub_index": 1,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44862,
+      "clinical_case": "M. Me S, âgée de 52 ans, veuve, mère de 2 enfants, institutrice de profession, sans antécédents médico-psychiatrique, ni toxique, consulte pour des difficultés de maintien de sommeil avec des réveils précoces matinaux se reproduisant au moins quatre nuits sur sept évoluant depuis plus de trois mois avec irritabilité et une asthénie diurne. Elle accomplit difficilement les tâches ménagères et professionnelles devenant très anxieuse à la tombée de la nuit.",
+      "display_title": "Question 46 - Question 1",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "46.2",
+      "case_id": 46,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220695,
+          "text": " Interrogatoire minutieux.",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 220696,
+          "text": " IRM cérébrale.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220697,
+          "text": "Agenda du sommeil.",
+          "letter": "C",
+          "is_correct": true
+        },
+        {
+          "id": 220698,
+          "text": "Actimétrie.",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220699,
+          "text": " Myogramme.",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P4 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Pour confirmer votre diagnostic, qu'envisagez-vous dans un premier temps ? (la ou les RJ)",
+      "has_media": false,
+      "statement": "Pour confirmer votre diagnostic, qu'envisagez-vous dans un premier temps ? (la ou les RJ)",
+      "sub_index": 2,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44863,
+      "clinical_case": "M. Me S, âgée de 52 ans, veuve, mère de 2 enfants, institutrice de profession, sans antécédents médico-psychiatrique, ni toxique, consulte pour des difficultés de maintien de sommeil avec des réveils précoces matinaux se reproduisant au moins quatre nuits sur sept évoluant depuis plus de trois mois avec irritabilité et une asthénie diurne. Elle accomplit difficilement les tâches ménagères et professionnelles devenant très anxieuse à la tombée de la nuit.",
+      "display_title": "Question 46 - Question 2",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "46.3",
+      "case_id": 46,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220700,
+          "text": " Thérapie cognitivo-comportementale.",
+          "letter": "A",
+          "is_correct": true
+        },
+        {
+          "id": 220701,
+          "text": "Prescription d'un hypnotique dans un 1er temps.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220702,
+          "text": "Prescription des thymorégulateurs en 1er intention.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220703,
+          "text": "Conseils de contrôle des stimuli.",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220704,
+          "text": "Conseils hygiéniques",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P4 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Une fois le diagnostic confirmé, quelle est votre approche thérapeutique ? (la ou les RJ)",
+      "has_media": false,
+      "statement": "Une fois le diagnostic confirmé, quelle est votre approche thérapeutique ? (la ou les RJ)",
+      "sub_index": 3,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44864,
+      "clinical_case": "M. Me S, âgée de 52 ans, veuve, mère de 2 enfants, institutrice de profession, sans antécédents médico-psychiatrique, ni toxique, consulte pour des difficultés de maintien de sommeil avec des réveils précoces matinaux se reproduisant au moins quatre nuits sur sept évoluant depuis plus de trois mois avec irritabilité et une asthénie diurne. Elle accomplit difficilement les tâches ménagères et professionnelles devenant très anxieuse à la tombée de la nuit.",
+      "display_title": "Question 46 - Question 3",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "46.4",
+      "case_id": 46,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220705,
+          "text": " Jusqu'à la disparition du trouble.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220706,
+          "text": "Prescription ponctuelle lors de recrudescence des symptômes.",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220707,
+          "text": " 6 mois.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220708,
+          "text": " 3-6 mois.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220709,
+          "text": " Toutes ces propositions sont fausses.",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P4 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Dans le cas où vous prescrivez un somnifère Benzodiazépinique, quelle est la durée de prescription ? (la ou les RJ)",
+      "has_media": false,
+      "statement": "Dans le cas où vous prescrivez un somnifère Benzodiazépinique, quelle est la durée de prescription ? (la ou les RJ)",
+      "sub_index": 4,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44865,
+      "clinical_case": "M. Me S, âgée de 52 ans, veuve, mère de 2 enfants, institutrice de profession, sans antécédents médico-psychiatrique, ni toxique, consulte pour des difficultés de maintien de sommeil avec des réveils précoces matinaux se reproduisant au moins quatre nuits sur sept évoluant depuis plus de trois mois avec irritabilité et une asthénie diurne. Elle accomplit difficilement les tâches ménagères et professionnelles devenant très anxieuse à la tombée de la nuit.",
+      "display_title": "Question 46 - Question 4",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": "46.5",
+      "case_id": 46,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220710,
+          "text": " Conversion histrionique.",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220711,
+          "text": "Phénomènes de tolérance",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 220712,
+          "text": "Apparition d'un trouble obsessionnelle compulsif.",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220713,
+          "text": "Agoraphobie.",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220714,
+          "text": " Pharmacodépendance.",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P4 2022"
+        ],
+        "type": "Cas clinique (QCM)",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelles sont les conséquences à craindre en cas de non-respect de la prescription des somnifères Benzodiazépiniques ? (la ou les RJ)",
+      "has_media": false,
+      "statement": "Quelles sont les conséquences à craindre en cas de non-respect de la prescription des somnifères Benzodiazépiniques ? (la ou les RJ)",
+      "sub_index": 5,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": "null",
+      "original_id": 44866,
+      "clinical_case": "M. Me S, âgée de 52 ans, veuve, mère de 2 enfants, institutrice de profession, sans antécédents médico-psychiatrique, ni toxique, consulte pour des difficultés de maintien de sommeil avec des réveils précoces matinaux se reproduisant au moins quatre nuits sur sept évoluant depuis plus de trois mois avec irritabilité et une asthénie diurne. Elle accomplit difficilement les tâches ménagères et professionnelles devenant très anxieuse à la tombée de la nuit.",
+      "display_title": "Question 46 - Question 5",
+      "is_cas_clinique": true,
+      "croq_answer_html": "",
+      "explanation_html": "<p>null</p>"
+    },
+    {
+      "id": 47,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220725,
+          "text": "2+4",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220726,
+          "text": "1+3+5",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220727,
+          "text": "2+4+5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220728,
+          "text": "2+3+5",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220729,
+          "text": "1+2+3+4+5",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2022"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quelles mesures permettent d’améliorer la qualité du sommeil ? (RJ)\n\n1 La consommation d’excitants\n2 La pratique d’une activité physique dans la journée\n3 Le coucher à des heures régulières\n4 Pas trop d’exposition à la lumière de la journée\n5 Dormir dans une chambre aérée, calme, sombre",
+      "has_media": false,
+      "statement": "Quelles mesures permettent d’améliorer la qualité du sommeil ? (RJ)\n\n1 La consommation d’excitants\n2 La pratique d’une activité physique dans la journée\n3 Le coucher à des heures régulières\n4 Pas trop d’exposition à la lumière de la journée\n5 Dormir dans une chambre aérée, calme, sombre",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44869,
+      "clinical_case": null,
+      "display_title": "Question 47",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 48,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220735,
+          "text": "270 à 360 mn",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220736,
+          "text": "270 à 450 mn",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220737,
+          "text": "360 à 450 mn",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220738,
+          "text": "360 à 540 mn",
+          "letter": "D",
+          "is_correct": true
+        },
+        {
+          "id": 220739,
+          "text": "450 à 540 mn",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2022"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Quel est la durée moyenne qui constitue une nuit de sommeil d’un adulte : (RJ)",
+      "has_media": false,
+      "statement": "Quel est la durée moyenne qui constitue une nuit de sommeil d’un adulte : (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44871,
+      "clinical_case": null,
+      "display_title": "Question 48",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 49,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220730,
+          "text": "1+3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220731,
+          "text": "2+3",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220732,
+          "text": "1+4",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220733,
+          "text": "3+5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220734,
+          "text": "4+5",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P3 2022"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le somnambulisme : (RJ)\n\n1 Se manifeste par un âge de début à l’adolescence\n2 Une baisse de niveau intellectuel\n3 Trouble de l’insomnie\n4 Trouble de parasomnie\n5 Déambulation inconsciente avec désorientation temporo-spatiale",
+      "has_media": false,
+      "statement": "Le somnambulisme : (RJ)\n\n1 Se manifeste par un âge de début à l’adolescence\n2 Une baisse de niveau intellectuel\n3 Trouble de l’insomnie\n4 Trouble de parasomnie\n5 Déambulation inconsciente avec désorientation temporo-spatiale",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44870,
+      "clinical_case": null,
+      "display_title": "Question 49",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 50,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220720,
+          "text": "Une insomnie + hypersexualité + hyperphagie + des troubles psychiques",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220721,
+          "text": "Une hypersomnie + hypersexualité+ hyperphagie + des troubles psychiques",
+          "letter": "B",
+          "is_correct": true
+        },
+        {
+          "id": 220722,
+          "text": "Une hypersomnie + catalepsie + hypersexualité + troubles psychiques",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220723,
+          "text": "Une hypersomnie + hypersexualité + hyperphagie + paralysie du sommeil",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220724,
+          "text": "Toutes ces propositions sont justes",
+          "letter": "E",
+          "is_correct": false
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "P2 2022"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "Le syndrome de KLEIN LEVIN associe les symptômes suivants : (RJ)",
+      "has_media": false,
+      "statement": "Le syndrome de KLEIN LEVIN associe les symptômes suivants : (RJ)",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44868,
+      "clinical_case": null,
+      "display_title": "Question 50",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    },
+    {
+      "id": 51,
+      "case_id": null,
+      "is_croq": false,
+      "options": [
+        {
+          "id": 220740,
+          "text": "1+2+3",
+          "letter": "A",
+          "is_correct": false
+        },
+        {
+          "id": 220741,
+          "text": "1+2+4",
+          "letter": "B",
+          "is_correct": false
+        },
+        {
+          "id": 220742,
+          "text": "1+2+5",
+          "letter": "C",
+          "is_correct": false
+        },
+        {
+          "id": 220743,
+          "text": "1+3+5",
+          "letter": "D",
+          "is_correct": false
+        },
+        {
+          "id": 220744,
+          "text": "1+4+5",
+          "letter": "E",
+          "is_correct": true
+        }
+      ],
+      "metadata": {
+        "tags": [
+          "Résidanat Alger 2018"
+        ],
+        "type": "QCU",
+        "module": "Psychiatrie - Troubles veille sommeil",
+        "series": "Mystidia Exams"
+      },
+      "question": "L'insomnie se caractérise par les propositions suivants : (Cocher la réponse juste)\n\n1 Constitue le trouble du sommeil le plus fréquent\n2 D'origine organique dans 50% des cas\n3 Peut se manifester sans répercussion sur l'activité diurne\n4 Sa prise en charge ne doit en aucun cas être symptomatique\n5 L'essentiel de son traitement consiste en la prescription d'un hypnotique ou d'un tranquillisant type benzodiazépine",
+      "has_media": false,
+      "statement": "L'insomnie se caractérise par les propositions suivants : (Cocher la réponse juste)\n\n1 Constitue le trouble du sommeil le plus fréquent\n2 D'origine organique dans 50% des cas\n3 Peut se manifester sans répercussion sur l'activité diurne\n4 Sa prise en charge ne doit en aucun cas être symptomatique\n5 L'essentiel de son traitement consiste en la prescription d'un hypnotique ou d'un tranquillisant type benzodiazépine",
+      "sub_index": null,
+      "media_urls": [],
+      "croq_answer": null,
+      "explanation": null,
+      "original_id": 44872,
+      "clinical_case": null,
+      "display_title": "Question 51",
+      "is_cas_clinique": false,
+      "croq_answer_html": "",
+      "explanation_html": ""
+    }
+  ]
+}

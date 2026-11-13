@@ -93,12 +93,12 @@ export const MEDICAL_YEARS = [
     coursesCount: 212,
     qcmCount: 9035,
     modules: [
-      { id: "pediatrie", title: "Pédiatrie & Chirurgie Pédiatrique", courses: 35, qcm: 1905, available: true, active: true },
+      { id: "pediatrie", title: "Pédiatrie & Chirurgie Pédiatrique", courses: 35, qcm: 1905, available: true },
       { id: "locomoteur_5", title: "Appareil Locomoteur (Ortho & Rhumato)", courses: 47, qcm: 2089, available: false },
       { id: "gynecologie_5", title: "Gynécologie - Obstétrique", courses: 44, qcm: 1977, available: false },
       { id: "urologie_nephro_5", title: "Urologie & Néphrologie", courses: 42, qcm: 1789, available: false },
       { id: "endocrinologie_5", title: "Endocrinologie - Diabétologie", courses: 23, qcm: 915, available: false },
-      { id: "psychiatrie_5", title: "Psychiatrie & Pédopsychiatrie", courses: 21, qcm: 702, available: false }
+      { id: "psychiatrie", title: "Psychiatrie & Pédopsychiatrie", courses: 20, qcm: 862, available: true }
     ]
   },
   {
@@ -150,9 +150,10 @@ export function setActiveModuleId(moduleId) {
 }
 
 export function findModuleById(moduleId) {
+  const targetId = (moduleId === 'psychiatrie_5') ? 'psychiatrie' : moduleId;
   for (const y of MEDICAL_YEARS) {
     for (const m of y.modules) {
-      if (m.id === moduleId) {
+      if (m.id === targetId) {
         return { ...m, yearNumber: y.year, yearTitle: y.title, cycle: y.cycle };
       }
     }
