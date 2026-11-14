@@ -7429,140 +7429,144 @@ body {
   color: var(--emerald);
 }
 
-/* Bannière Compte à Rebours du Dashboard */
-.dashboard-exam-banner {
-  background: linear-gradient(135deg, rgba(30, 27, 75, 0.6) 0%, rgba(15, 23, 42, 0.85) 100%);
-  border: 1px solid rgba(168, 85, 247, 0.35);
+/* Header Compact du Module Actif & Date sur le Dashboard */
+.dashboard-module-header {
+  background: linear-gradient(135deg, rgba(18, 29, 51, 0.75) 0%, rgba(10, 16, 28, 0.9) 100%);
+  border: 1px solid rgba(0, 212, 255, 0.22);
   border-radius: var(--radius-md);
-  padding: 16px 20px;
+  padding: 14px 20px;
   margin-bottom: 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   overflow: hidden;
 }
 
-.dashboard-exam-banner::before {
+.dashboard-module-header:hover {
+  border-color: rgba(0, 212, 255, 0.45);
+  background: linear-gradient(135deg, rgba(22, 36, 64, 0.85) 0%, rgba(13, 21, 38, 0.95) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px rgba(0, 212, 255, 0.12);
+}
+
+.dashboard-module-header::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   width: 4px;
   height: 100%;
-  background: linear-gradient(to bottom, #c084fc, #00d4ff);
+  background: linear-gradient(to bottom, var(--cyan), var(--purple));
 }
 
-.exam-banner-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex: 1;
-}
-
-.exam-banner-days-pill {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-width: 68px;
-  height: 58px;
-  background: rgba(168, 85, 247, 0.2);
-  border: 1px solid rgba(168, 85, 247, 0.4);
-  border-radius: 12px;
-  padding: 4px 8px;
-  box-shadow: 0 0 14px rgba(168, 85, 247, 0.2);
-}
-
-.exam-banner-days-number {
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: #f3e8ff;
-  line-height: 1;
-}
-
-.exam-banner-days-label {
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: #c084fc;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-top: 2px;
-}
-
-.exam-banner-info {
+.module-header-left {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
+  flex: 1;
 }
 
-.exam-banner-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--text-main);
-}
-
-.exam-banner-module-tag {
-  font-size: 0.7rem;
-  font-weight: 800;
-  padding: 2px 7px;
-  border-radius: 4px;
-  background: rgba(0, 212, 255, 0.15);
-  color: var(--cyan);
-  border: 1px solid rgba(0, 212, 255, 0.3);
-  text-transform: uppercase;
-}
-
-.exam-banner-desc {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  line-height: 1.4;
-}
-
-.exam-banner-right {
+.module-header-title-row {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
-.btn-banner-action {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  color: var(--text-main);
-  padding: 8px 14px;
-  font-size: 0.78rem;
+.module-header-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--cyan);
+  flex-shrink: 0;
+}
+
+.module-header-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.module-header-year-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--cyan);
+  background: rgba(0, 212, 255, 0.12);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.module-header-date-sub {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: var(--text-dim);
+}
+
+.module-header-date-text {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.module-header-date-text strong {
+  color: #f1f5f9;
   font-weight: 600;
-  cursor: pointer;
+}
+
+.module-header-date-text .header-date-badge {
+  color: #c084fc;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+.module-header-right {
+  flex-shrink: 0;
+}
+
+.btn-change-module-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  cursor: pointer;
   transition: all 0.2s ease;
-  white-space: nowrap;
 }
 
-.btn-banner-action:hover {
+.btn-change-module-pill:hover {
   background: rgba(0, 212, 255, 0.15);
   border-color: rgba(0, 212, 255, 0.4);
   color: var(--cyan);
 }
 
 @media (max-width: 640px) {
-  .dashboard-exam-banner {
+  .dashboard-module-header {
     flex-direction: column;
     align-items: flex-start;
-    padding: 14px;
-    gap: 12px;
+    padding: 12px 14px;
+    gap: 10px;
   }
-  .exam-banner-right {
+  .module-header-right {
     width: 100%;
   }
-  .btn-banner-action {
+  .btn-change-module-pill {
     width: 100%;
     justify-content: center;
   }
@@ -7653,19 +7657,19 @@ body {
               <span class="metric-badge" id="badge-pool-info">Sur 1 905</span>
             </div>
             <div class="metric-value" id="stat-remaining-questions">--</div>
-            <div class="metric-desc">Questions distinctes à éliminer sur l'ensemble des 35 cours</div>
+            <div class="metric-desc" id="stat-remaining-desc">Questions distinctes à éliminer sur l'ensemble des cours</div>
           </div>
 
           <!-- Metrique 2: Itérations Totales pour Tout Nettoyer (3x par qcm + pénalités) -->
           <div class="metric-card accent-purple">
             <div class="metric-header">
               <span class="metric-title">Itérations Requises</span>
-              <span class="metric-badge" id="badge-exam-countdown">⏳ J-28 • Examen 10/11</span>
+              <span class="metric-badge" id="badge-exam-countdown">⏳ Objectif Examen</span>
             </div>
             
             <div class="metric-value-row">
               <div class="metric-value" id="stat-required-iterations">--</div>
-              <div class="metric-sub-target" title="Cadence calculée automatiquement pour éliminer tous les QCM avant le 10/11">
+              <div class="metric-sub-target" id="metric-sub-target-cadence" title="Cadence calculée automatiquement pour éliminer tous les QCM avant l'échéance">
                 <span class="sub-target-label">À FAIRE PAR JOUR</span>
                 <span class="sub-target-value">
                   <span id="stat-daily-target">--</span> <small>QCM/j</small>
@@ -7673,7 +7677,7 @@ body {
               </div>
             </div>
 
-            <div class="metric-desc">Réponses justes cumulées pour tout nettoyer (programme complet) avant le 10/11.</div>
+            <div class="metric-desc" id="stat-iterations-desc">Réponses justes cumulées pour tout nettoyer (programme complet).</div>
 
             <!-- Barre de progression quotidienne en direct -->
             <div class="daily-progress-container">
@@ -7777,7 +7781,7 @@ body {
           <div class="arena-pills-wrap">
             <span class="tag-pill" id="arena-type-pill">QCU</span>
             <span class="tag-pill progress-pill" id="arena-progress-pill">0/3</span>
-            <span class="tag-pill daily-pill" id="arena-daily-pill" title="Progression quotidienne (Examen 10/11 • J-28)">🎯 0/-- auj.</span>
+            <span class="tag-pill daily-pill" id="arena-daily-pill" title="Progression quotidienne (Objectif examen)">🎯 0/-- auj.</span>
             <span class="tag-pill snooze-pill" id="arena-snooze-pill" style="display:none;" title="Questions reportées pour aujourd'hui (Cliquer pour gérer)" onclick="window.promptManageSnoozedQuestions()">
               <i data-lucide="moon" style="width:11px;height:11px;"></i>
               <span id="arena-snooze-pill-text">0 reporté</span>
@@ -8259,7 +8263,7 @@ body {
               </div>
               <div class="projection-box" id="stat-exam-projection-box">
                 <i data-lucide="flag" style="color:var(--purple);flex-shrink:0;width:20px;height:20px;"></i>
-                <div id="stat-exam-projection-text">Calcul de projection vers l'échéance du 10/11 en cours...</div>
+                <div id="stat-exam-projection-text">Calcul de projection vers l'échéance en cours...</div>
               </div>
             </div>
           </div>
@@ -8273,7 +8277,7 @@ body {
               </div>
               <div class="course-tracker-pills" id="course-tracker-mode-toggle">
                 <button type="button" class="course-pill-btn active" data-cmode="period" id="btn-cmode-period" title="Questions faites sur la période sélectionnée">Sur la période</button>
-                <button type="button" class="course-pill-btn" data-cmode="global" id="btn-cmode-global" title="Progression globale sur l'ensemble des 35 cours">Tous les cours (35)</button>
+                <button type="button" class="course-pill-btn" data-cmode="global" id="btn-cmode-global" title="Progression globale sur l'ensemble des cours">Tous les cours</button>
               </div>
             </div>
             <div class="course-tracker-toolbar">
@@ -8347,7 +8351,7 @@ body {
               <div class="kpi-icon-wrap"><i data-lucide="book-marked"></i></div>
               <div class="kpi-content">
                 <div class="kpi-label">Couverture Programme</div>
-                <div class="kpi-value" id="kpi-lesson-coverage-val">0 / 35</div>
+                <div class="kpi-value" id="kpi-lesson-coverage-val">0 / --</div>
                 <div class="kpi-subtext" id="kpi-lesson-coverage-sub">0% des cours travaillés</div>
               </div>
             </div>
@@ -8384,7 +8388,7 @@ body {
                   </div>
                   <!-- Dropdown with chapters and custom option -->
                   <div class="lesson-dropdown" id="lesson-dropdown" style="display:none;">
-                    <div class="lesson-dropdown-header">Chapitres de pédiatrie (35) :</div>
+                    <div class="lesson-dropdown-header" id="lesson-dropdown-header">Chapitres du module :</div>
                     <div class="lesson-dropdown-list" id="lesson-dropdown-items">
                       <!-- Injected dynamically -->
                     </div>
@@ -8490,7 +8494,7 @@ body {
               <div class="panel-box-header">
                 <div class="panel-box-title">
                   <i data-lucide="layers" style="color:var(--purple);"></i>
-                  <span>Couverture du Programme (35 Chapitres)</span>
+                  <span id="lesson-matrix-title">Couverture du Programme (Chapitres)</span>
                 </div>
                 <div class="heatmap-legend">
                   <span class="legend-label">0h</span>
@@ -8556,7 +8560,7 @@ body {
         <div class="manual-field-group">
           <label class="lesson-field-label" for="manual-lesson-input">
             <i data-lucide="book-open" style="width:14px;height:14px;color:var(--cyan);"></i>
-            <span>Cours / Leçon de pédiatrie :</span>
+            <span id="manual-lesson-field-label">Cours / Leçon du module :</span>
           </label>
           <div class="lesson-input-combobox">
             <div class="lesson-input-wrap">
@@ -8565,7 +8569,7 @@ body {
             </div>
             <!-- Quick dropdown suggestions -->
             <div class="lesson-dropdown" id="manual-lesson-dropdown" style="display:none;">
-              <div class="lesson-dropdown-header">Chapitres de pédiatrie (35) :</div>
+              <div class="lesson-dropdown-header" id="lesson-dropdown-header">Chapitres du module :</div>
               <div class="lesson-dropdown-list" id="manual-dropdown-items"></div>
             </div>
           </div>
@@ -8985,9 +8989,9 @@ body {
 
       <div class="update-version-banner">
         <div class="update-version-chips">
-          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.5.4</strong></span>
+          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.5.5</strong></span>
           <i data-lucide="arrow-right" style="width:14px;height:14px;color:var(--text-dim);"></i>
-          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.5.4</strong></span>
+          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.5.5</strong></span>
         </div>
         <div class="update-release-date" id="update-modal-date">Publiée sur GitHub Releases</div>
       </div>
@@ -9666,6 +9670,8 @@ function getExamCountdown(moduleId) {
     return {
       hasDate: false,
       dateString: '',
+      formattedDate: '',
+      shortFormattedDate: '',
       daysRemaining: null,
       isToday: false,
       isExpired: false,
@@ -9689,11 +9695,14 @@ function getExamCountdown(moduleId) {
     year: 'numeric'
   });
 
+  const shortFormattedDate = (parts.length >= 3) ? `${parts[2]}/${parts[1]}` : formattedDate;
+
   if (diffDays === 0) {
     return {
       hasDate: true,
       dateString: dateStr,
       formattedDate,
+      shortFormattedDate,
       daysRemaining: 0,
       isToday: true,
       isExpired: false,
@@ -9704,6 +9713,7 @@ function getExamCountdown(moduleId) {
       hasDate: true,
       dateString: dateStr,
       formattedDate,
+      shortFormattedDate,
       daysRemaining: Math.abs(diffDays),
       isToday: false,
       isExpired: true,
@@ -9714,6 +9724,7 @@ function getExamCountdown(moduleId) {
       hasDate: true,
       dateString: dateStr,
       formattedDate,
+      shortFormattedDate,
       daysRemaining: diffDays,
       isToday: false,
       isExpired: false,
@@ -12958,7 +12969,7 @@ class FirebaseSyncService {
 // Update Management Service for PédiaDrill
 // Checks GitHub Releases for new APK versions, notifies the user, and triggers direct download.
 
-const CURRENT_APP_VERSION = '1.5.4';
+const CURRENT_APP_VERSION = '1.5.5';
 const GITHUB_REPO = 'lkmqji/qcm-p-diatrie';
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
 const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours auto-check cooldown
@@ -13456,7 +13467,7 @@ function getExamCountdownMetrics(totalIterationsRequired) {
   let examDateStr = 'Non définie';
 
   if (cd.hasDate) {
-    examDateStr = cd.dateString ? cd.dateString.split('-').reverse().slice(0, 2).join('/') : cd.formattedDate;
+    examDateStr = cd.shortFormattedDate || (cd.dateString ? cd.dateString.split('-').reverse().slice(0, 2).join('/') : cd.formattedDate);
     if (cd.isToday) {
       daysLeft = 1;
     } else if (cd.isExpired) {
@@ -13470,6 +13481,7 @@ function getExamCountdownMetrics(totalIterationsRequired) {
 
   return {
     examDateStr,
+    shortFormattedDate: examDateStr,
     fullFormattedDate: cd.formattedDate || examDateStr,
     daysLeft: cd.hasDate ? (cd.isToday ? 0 : cd.daysRemaining) : null,
     effectiveDaysLeft: daysLeft,
@@ -13550,6 +13562,15 @@ function switchActiveModule(moduleId) {
   if (lessonTracker && typeof lessonTracker.reloadForModule === 'function') {
     lessonTracker.reloadForModule();
   }
+
+  // Reset lesson selection on module switch
+  currentLessonSelected = { name: '', chapterId: null };
+  const searchInput = document.getElementById('lesson-search-input');
+  if (searchInput) searchInput.value = '';
+  const activeNameEl = document.getElementById('active-lesson-name');
+  if (activeNameEl) activeNameEl.textContent = 'Aucune leçon choisie';
+  const clearBtn = document.getElementById('btn-clear-lesson-input');
+  if (clearBtn) clearBtn.style.display = 'none';
 
   // Update header subtitle if element exists
   const headerSubtitle = document.querySelector('.brand-subtitle');
@@ -13697,80 +13718,48 @@ function renderDashboardExamBanner(countdown, metrics) {
 
   const activeMod = getActiveModule();
   const modTitle = activeMod ? activeMod.title : 'Pédiatrie';
-  const yearTitle = activeMod ? ` (${activeMod.yearNumber || 5}ème Année)` : '';
+  const yearTitle = activeMod ? `${activeMod.yearNumber || 5}ème Année` : '5ème Année';
 
-  if (!countdown.hasDate) {
-    container.innerHTML = `
-      <div class="dashboard-exam-banner">
-        <div class="exam-banner-left">
-          <div class="exam-banner-days-pill" style="border-color:rgba(0,212,255,0.4);background:rgba(0,212,255,0.15);box-shadow:0 0 14px rgba(0,212,255,0.2);">
-            <i data-lucide="calendar" style="width:20px;height:20px;color:var(--cyan);"></i>
-            <span class="exam-banner-days-label" style="color:var(--cyan);">OBJECTIF</span>
-          </div>
-          <div class="exam-banner-info">
-            <div class="exam-banner-title">
-              <span>${escapeHtml(modTitle)}${escapeHtml(yearTitle)}</span>
-              <span class="exam-banner-module-tag">Module Actif</span>
-            </div>
-            <div class="exam-banner-desc">
-              Définissez votre date d'examen dans les paramètres pour activer le compte à rebours dynamique (J-XX) et le calcul en temps réel de votre cadence quotidienne.
-            </div>
-          </div>
-        </div>
-        <div class="exam-banner-right">
-          <button type="button" class="btn-banner-action" id="btn-banner-open-settings">
-            <i data-lucide="calendar-plus" style="width:14px;height:14px;"></i>
-            <span>Fixer la date</span>
-          </button>
-        </div>
-      </div>
-    `;
+  let dateText = '';
+  if (countdown.hasDate) {
+    const daysInfo = countdown.isToday ? '• Jour J !' : (countdown.isExpired ? '• Passé' : `• J-${countdown.daysLeft}`);
+    dateText = `Date d'examen : <strong>${escapeHtml(countdown.fullFormattedDate)}</strong> <span class="header-date-badge">${daysInfo}</span>`;
   } else {
-    let pillText = `J-${countdown.daysLeft}`;
-    let pillSub = 'RESTANTS';
-    let pillStyle = '';
-
-    if (countdown.isToday) {
-      pillText = 'JOUR J';
-      pillSub = 'EXAMEN';
-      pillStyle = 'border-color:rgba(16,185,129,0.5);background:rgba(16,185,129,0.2);color:var(--emerald);';
-    } else if (countdown.isExpired) {
-      pillText = `+${Math.abs(countdown.daysLeft)} j`;
-      pillSub = 'PASSÉ';
-      pillStyle = 'border-color:rgba(239,68,68,0.5);background:rgba(239,68,68,0.2);color:#fca5a5;';
-    }
-
-    container.innerHTML = `
-      <div class="dashboard-exam-banner">
-        <div class="exam-banner-left">
-          <div class="exam-banner-days-pill" style="${pillStyle}">
-            <span class="exam-banner-days-number">${pillText}</span>
-            <span class="exam-banner-days-label">${pillSub}</span>
-          </div>
-          <div class="exam-banner-info">
-            <div class="exam-banner-title">
-              <span>${escapeHtml(modTitle)}${escapeHtml(yearTitle)}</span>
-              <span class="exam-banner-module-tag">Module Actif</span>
-            </div>
-            <div class="exam-banner-desc">
-              Épreuve fixée au <strong>${escapeHtml(countdown.fullFormattedDate)}</strong>. Cadence cible : <strong>${formatNumber(countdown.dailyIterationsRequired)} QCM / jour</strong> pour éliminer les ${formatNumber(metrics.remainingDistinctQuestions)} questions restantes.
-            </div>
-          </div>
-        </div>
-        <div class="exam-banner-right">
-          <button type="button" class="btn-banner-action" id="btn-banner-open-settings">
-            <i data-lucide="edit-3" style="width:14px;height:14px;"></i>
-            <span>Changer date / module</span>
-          </button>
-        </div>
-      </div>
-    `;
+    dateText = `Aucune date d'examen définie • <em>Cliquer pour fixer la date</em>`;
   }
 
-  const btnOpen = document.getElementById('btn-banner-open-settings');
-  if (btnOpen) {
-    btnOpen.onclick = () => {
+  container.innerHTML = `
+    <div class="dashboard-module-header" id="btn-banner-open-settings" role="button" tabindex="0" title="Cliquer pour changer de module ou modifier la date d'examen">
+      <div class="module-header-left">
+        <div class="module-header-title-row">
+          <i data-lucide="book-open" class="module-header-icon"></i>
+          <h2 class="module-header-name">${escapeHtml(modTitle)}</h2>
+          <span class="module-header-year-pill">${escapeHtml(yearTitle)}</span>
+        </div>
+        <div class="module-header-date-sub">
+          <i data-lucide="calendar" style="width:13px;height:13px;color:var(--text-dim);flex-shrink:0;"></i>
+          <span class="module-header-date-text">${dateText}</span>
+        </div>
+      </div>
+      <div class="module-header-right">
+        <button type="button" class="btn-change-module-pill">
+          <i data-lucide="sliders-horizontal" style="width:13px;height:13px;"></i>
+          <span>Changer</span>
+        </button>
+      </div>
+    </div>
+  `;
+
+  const headerBtn = document.getElementById('btn-banner-open-settings');
+  if (headerBtn) {
+    headerBtn.onclick = () => {
       openSettingsModal();
+    };
+    headerBtn.onkeydown = (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openSettingsModal();
+      }
     };
   }
 
@@ -13852,6 +13841,28 @@ function updateDashboardUI() {
 
   const poolInfoEl = document.getElementById('badge-pool-info');
   if (poolInfoEl) poolInfoEl.textContent = `Sur ${formatNumber(metrics.totalPoolCount)}`;
+
+  // Metric descriptions synchronized with active module and exam date
+  const remainingDescEl = document.getElementById('stat-remaining-desc');
+  if (remainingDescEl) {
+    remainingDescEl.textContent = `Questions distinctes à éliminer sur l'ensemble des ${allChapters.length} cours`;
+  }
+
+  const iterationsDescEl = document.getElementById('stat-iterations-desc');
+  if (iterationsDescEl) {
+    if (countdown.hasDate) {
+      iterationsDescEl.textContent = `Réponses justes cumulées pour tout nettoyer (programme complet) avant le ${countdown.examDateStr}.`;
+    } else {
+      iterationsDescEl.textContent = `Réponses justes cumulées pour tout nettoyer (programme complet).`;
+    }
+  }
+
+  const cadenceWrapEl = document.getElementById('metric-sub-target-cadence');
+  if (cadenceWrapEl) {
+    cadenceWrapEl.title = countdown.hasDate 
+      ? `Cadence calculée automatiquement pour éliminer tous les QCM avant le ${countdown.examDateStr}`
+      : `Cadence calculée automatiquement pour éliminer tous les QCM avant l'échéance`;
+  }
 
   // Chapters label
   const chaptersBtnLabel = document.getElementById('btn-chapters-label');
@@ -17319,13 +17330,15 @@ function renderStatsVelocityAndProjection(analytics, periodLabel = '') {
     estDate.setDate(estDate.getDate() + daysNeeded);
     const estDateStr = estDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
 
-    if (daysNeeded <= countdown.daysLeft) {
-      projTextEl.innerHTML = `<strong>🏆 Cadence excellente !</strong> Au rythme (${cadenceNote}) de <strong>${effectiveCadence} QCM/jour</strong>, vous aurez validé l'intégralité du programme en <strong>${daysNeeded} jours</strong> (vers le ${estDateStr}), soit avant l'échéance du concours (J-${countdown.daysLeft}) !`;
+    const targetDeadlineText = countdown.hasDate ? `avant le ${countdown.examDateStr} (J-${countdown.daysLeft})` : "avant l'échéance de l'examen";
+    if (daysNeeded <= (countdown.daysLeft || 999)) {
+      projTextEl.innerHTML = `<strong>🏆 Cadence excellente !</strong> Au rythme (${cadenceNote}) de <strong>${effectiveCadence} QCM/jour</strong>, vous aurez validé l'intégralité du programme en <strong>${daysNeeded} jours</strong> (vers le ${estDateStr}), soit ${targetDeadlineText} !`;
     } else {
-      projTextEl.innerHTML = `<strong>⚠️ Recommandation Concours :</strong> Au rythme (${cadenceNote}) de ${effectiveCadence} QCM/j, il faudrait ${daysNeeded} jours pour tout nettoyer. Pour franchir la ligne d'arrivée avant le 10/11 (J-${countdown.daysLeft}), maintenez la cadence cible de <strong>${countdown.dailyIterationsRequired} QCM/jour</strong>.`;
+      projTextEl.innerHTML = `<strong>⚠️ Recommandation Concours :</strong> Au rythme (${cadenceNote}) de ${effectiveCadence} QCM/j, il faudrait ${daysNeeded} jours pour tout nettoyer. Pour franchir la ligne d'arrivée ${targetDeadlineText}, maintenez la cadence cible de <strong>${countdown.dailyIterationsRequired} QCM/jour</strong>.`;
     }
   } else {
-    projTextEl.innerHTML = `<em>Répondez à vos premiers QCM pour activer la projection personnalisée vers l'examen du 10/11. Cadence cible recommandée : <strong>${countdown.dailyIterationsRequired} QCM/jour</strong>.</em>`;
+    const targetExamLabel = countdown.hasDate ? `vers l'examen du ${countdown.fullFormattedDate}` : "vers votre examen";
+    projTextEl.innerHTML = `<em>Répondez à vos premiers QCM pour activer la projection personnalisée ${targetExamLabel}. Cadence cible recommandée : <strong>${countdown.dailyIterationsRequired} QCM/jour</strong>.</em>`;
   }
 }
 
@@ -17337,6 +17350,16 @@ function renderStatsChapters(chapterTotals = {}, periodLabel = '') {
   const badgeEl = document.getElementById('course-tracker-summary-badge');
   const titleEl = document.getElementById('course-tracker-title');
   if (!container) return;
+
+  const activeMod = (typeof getActiveModule === 'function' && getActiveModule()) ? getActiveModule() : null;
+  const modTitle = activeMod ? activeMod.title : 'du module';
+  const chTotalCount = (allChapters && allChapters.length > 0) ? allChapters.length : 35;
+
+  const btnCmodeGlobal = document.getElementById('btn-cmode-global');
+  if (btnCmodeGlobal) {
+    btnCmodeGlobal.textContent = `Tous les cours (${chTotalCount})`;
+    btnCmodeGlobal.title = `Progression globale sur l'ensemble des ${chTotalCount} cours`;
+  }
 
   const query = (courseTrackerSearchQuery || '').trim().toLowerCase();
 
@@ -17390,7 +17413,7 @@ function renderStatsChapters(chapterTotals = {}, periodLabel = '') {
     list.sort((a, b) => b.masteredCount - a.masteredCount || b.attemptedCount - a.attemptedCount || a.title.localeCompare(b.title));
 
     if (badgeEl) {
-      badgeEl.textContent = `${list.length}/35 cours • ${totalMasteredAll}/${allQuestions.length} maîtrisés`;
+      badgeEl.textContent = `${list.length}/${chTotalCount} cours • ${totalMasteredAll}/${allQuestions.length} maîtrisés`;
     }
 
     if (list.length === 0) {
@@ -17475,10 +17498,10 @@ function renderStatsChapters(chapterTotals = {}, periodLabel = '') {
         <div class="course-empty-period-box">
           <div class="empty-period-icon"><i data-lucide="book-marked"></i></div>
           <div class="empty-period-title">Aucun QCM répondu sur cette période (${periodLabel})</div>
-          <div class="empty-period-text">Consultez la progression globale de vos 35 cours de pédiatrie :</div>
+          <div class="empty-period-text">Consultez la progression globale de vos ${chTotalCount} cours (${escapeHtml(modTitle)}) :</div>
           <button type="button" class="btn-switch-cmode-global" id="btn-trigger-global-mode">
             <i data-lucide="layers" style="width:14px;height:14px;"></i>
-            <span>Voir le suivi global des 35 cours</span>
+            <span>Voir le suivi global des ${chTotalCount} cours</span>
           </button>
         </div>
       `;
@@ -17983,18 +18006,24 @@ function renderLessonAnalytics(rangeStr = currentLessonStatsRange) {
     kpiAvgSub.textContent = periodSessions.length > 0 ? `${periodSessions.length} session${periodSessions.length > 1 ? 's' : ''} analysée${periodSessions.length > 1 ? 's' : ''}` : 'Focus régulier';
   }
 
-  // Coverage of 35 chapters
-  const allChs = window.PEDIA_CHAPTERS || [];
+  // Coverage of chapters (synchronized with active module)
+  const allChs = (allChapters && allChapters.length > 0) ? allChapters : (window.PEDIA_CHAPTERS || []);
   const studiedChCount = allChs.filter(ch => {
     return summaries.some(s => (s.chapterId && s.chapterId === ch.id) || (s.lessonName && s.lessonName.trim().toLowerCase() === ch.title.trim().toLowerCase()));
   }).length;
 
   const coveragePct = allChs.length > 0 ? Math.round((studiedChCount / allChs.length) * 100) : 0;
   if (kpiCoverageVal) {
-    kpiCoverageVal.textContent = `${studiedChCount} / ${allChs.length || 35}`;
+    kpiCoverageVal.textContent = `${studiedChCount} / ${allChs.length}`;
   }
   if (kpiCoverageSub) {
     kpiCoverageSub.textContent = `${coveragePct}% des cours travaillés`;
+  }
+
+  // Update Matrix Header Title
+  const matrixTitleEl = document.getElementById('lesson-matrix-title');
+  if (matrixTitleEl) {
+    matrixTitleEl.textContent = `Couverture du Programme (${allChs.length} Chapitres)`;
   }
 
   // 2. Daily SVG Bar Chart
@@ -18003,7 +18032,7 @@ function renderLessonAnalytics(rangeStr = currentLessonStatsRange) {
   // 3. Lesson Distribution (Top 10)
   renderLessonDistribution(summaries);
 
-  // 4. 35 Chapters Matrix
+  // 4. Chapters Matrix
   renderLessonChaptersMatrix(allChs, summaries);
 }
 
@@ -18313,6 +18342,20 @@ function renderLessonTrackerUI() {
       activeBadgeName.textContent = currentLessonSelected.name || 'Aucune leçon choisie';
     }
   }
+
+  // Synchroniser les libellés et dropdowns avec le module actif
+  const activeMod = (typeof getActiveModule === 'function' && getActiveModule()) ? getActiveModule() : null;
+  const modTitle = activeMod ? activeMod.title : 'Pédiatrie';
+  const chCount = (allChapters && allChapters.length > 0) ? allChapters.length : 35;
+
+  const dropHeader = document.getElementById('lesson-dropdown-header');
+  if (dropHeader) dropHeader.textContent = `Chapitres (${chCount}) — ${modTitle} :`;
+
+  const manualDropHeader = document.getElementById('manual-dropdown-header');
+  if (manualDropHeader) manualDropHeader.textContent = `Chapitres (${chCount}) — ${modTitle} :`;
+
+  const manualFieldLabel = document.getElementById('manual-lesson-field-label');
+  if (manualFieldLabel) manualFieldLabel.textContent = `Cours / Leçon (${modTitle}) :`;
 
   // 1. Summary Table per Lesson
   const summaryContainer = document.getElementById('lesson-summary-table-container');

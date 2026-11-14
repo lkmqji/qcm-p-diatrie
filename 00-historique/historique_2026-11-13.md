@@ -102,3 +102,40 @@ Rénovation intégrale de la modale des Paramètres afin de permettre à l'étud
 - **Vercel** : Déploiement automatique du site web de production déclenché dès le push sur `main`.
 - **Android Release (GitHub Actions)** : Compilation de l'APK natif et publication de la Release GitHub déclenchées dès le push du tag `v1.5.4`.
 
+## 20:25:00 — Alignement Visuel du Dashboard, Synchronisation Dynamique des Dates et Suivi de Progression Multi-Modules
+
+### Contexte & Objectif
+À la suite du retour utilisateur sur la page d'accueil et le suivi de progression :
+1. Remplacement de la bannière d'examen volumineuse par un en-tête épuré et compact mettant en avant le nom du module actif avec la date d'examen sélectionnée en petit texte.
+2. Élimination complète de la date codée en dur "10/11" dans les métriques et infographies, et synchronisation dynamique en temps réel avec la date d'examen choisie par l'utilisateur.
+3. Synchronisation intégrale de la page de suivi de progression (`view-stats`), de la matrice de couverture des cours et des minuteurs avec le module médical sélectionné (20 cours pour la Psychiatrie, 35 pour la Pédiatrie).
+
+### Changements Effectués
+1. **Header Épuré du Module Actif & Date (`src/style.css`, `src/app.js`, `template.html`)** :
+   - Suppression du bloc encombrant `.dashboard-exam-banner` (92px avec pastilles multiples).
+   - Création du composant cyber-médical `.dashboard-module-header` :
+     - Titre du module en typographie principale blanche (`1.25rem`, Outfit) avec badge d'année d'études (ex: `5ème Année`).
+     - Ligne de sous-titre en petit texte affichant la date sélectionnée (ex: `Date d'examen : 10 novembre 2026 • J-28` ou message invitant à définir une date si non renseignée).
+     - Bouton épuré « Changer » ouvrant directement la modale des paramètres pour permuter de module ou ajuster la date.
+     - Prise en charge responsive mobile et navigation clavier (accessibilité `role="button"`).
+
+2. **Synchronisation Dynamique des Métriques Hero avec la Date (`src/app.js`, `template.html`)** :
+   - Ajout des identifiants `#stat-remaining-desc` et `#stat-iterations-desc` dans `template.html`.
+   - `updateDashboardUI()` met à jour dynamiquement :
+     - Description de la Métrique 1 : `Questions distinctes à éliminer sur l'ensemble des ${allChapters.length} cours` (s'adapte à 20 ou 35 cours).
+     - Description de la Métrique 2 : `Réponses justes cumulées pour tout nettoyer (programme complet) avant le ${countdown.examDateStr}.` (prend automatiquement la date choisie par l'utilisateur).
+   - Remplacement de toutes les occurrences figées "10/11" dans la projection concours (`stat-exam-projection-text`, `renderStatsVelocityAndProjection`).
+
+3. **Synchronisation Complète du Suivi de Progression (`view-stats`)** :
+   - **Correction critique dans `renderLessonAnalytics`** : Remplacement de la référence statique `window.PEDIA_CHAPTERS` par `allChapters`, permettant d'afficher fidèlement les 20 cours de Psychiatrie ou les 35 cours de Pédiatrie dans la matrice de couverture du programme.
+   - **Mise à jour du KPI de couverture** : Décompte dynamique `${studiedChCount} / ${allChs.length}` (ex: `0 / 20` pour la Psychiatrie).
+   - **Dynamisation des libellés de cours** :
+     - Bouton de mode global `#btn-cmode-global` : `Tous les cours (${allChapters.length})`.
+     - Titre de la matrice : `Couverture du Programme (${allChapters.length} Chapitres)`.
+     - Menus déroulants et modale d'ajout manuel de session : libellés personnalisés selon le nom du module actif.
+   - **Réinitialisation à la commutation (`switchActiveModule`)** : Vidage de la leçon sélectionnée précédente (`currentLessonSelected`) et des champs de recherche pour éviter toute incohérence entre modules.
+
+4. **Compilation & Intégrité** :
+   - `build-bundle.cjs` exécuté avec succès : mise à jour de `src/app.bundle.js` (415 Ko), `index.html` et `dist/index.html` (6.47 Mo).
+   - Contrôle de syntaxe JavaScript `node -c` validé à 100%.
+

@@ -34,7 +34,7 @@ qcm-p-diatrie/
 │   └── MASTER_PRODUCT_TECHNICAL_CONTEXT.md # Contexte technique global (source unique de vérité)
 ├── android/                              # Projet natif Android Capacitor 8
 │   ├── app/
-│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 21, versionName 1.5.4)
+│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 22, versionName 1.5.5)
 │   │   ├── debug.keystore                # Keystore de signature unifié (local & CI/CD)
 │   │   ├── google-services.json          # Configuration Firebase Android (qcm-pediatr, com.pediadrill.app)
 │   │   └── src/main/
@@ -341,7 +341,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ### 3.9. Système de Mises à Jour Automatiques & GitHub Releases (`src/services/updateService.js` & CI/CD)
 - **Service d'Orchestration des Mises à Jour (`UpdateService`)** :
-  - Version déclarée : `CURRENT_APP_VERSION = '1.5.4'` synchronisée avec `package.json` et `build.gradle` (`versionCode 21`).
+  - Version déclarée : `CURRENT_APP_VERSION = '1.5.5'` synchronisée avec `package.json` et `build.gradle` (`versionCode 22`).
   - Comparaison sémantique universelle (`compareVersions`) ignorant les préfixes `v`.
   - Interrogation de l'API GitHub Releases (`https://api.github.com/repos/lkmqji/qcm-p-diatrie/releases/latest`) avec cooldown de 4 heures (`pedia_last_update_check_ts`).
   - Extraction de l'asset `.apk` direct (`PediaDrill.apk`). En environnement natif Android Capacitor, l'URL est ouverte via `_system` pour lancer le gestionnaire de téléchargement Android natif.
@@ -474,9 +474,13 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
   - Section 2 : Datepicker natif stylisé avec prévisualisation en temps réel du badge dynamique (`J-XX`, `Jour J !`, ou `Examen passé`).
   - Section 3 : Clé API Google Gemini & cascade Flash automatique.
   - Section 4 : Gestion des versions et vérification GitHub Releases.
-- **Bannière Compte à Rebours sur le Dashboard (`#dashboard-exam-banner-container`)** :
-  - Affiche en tête du Dashboard le module d'étude actif, le badge `J-XX` néon violet/cyan et la cadence quotidienne requise (QCM/jour) calculée automatiquement en fonction des questions restantes et du nombre de jours avant l'épreuve.
-  - Bouton d'accès direct pour ajuster la date ou explorer le cursus.
+- **En-tête Épuré du Module Actif & Date (`#dashboard-exam-banner-container` -> `.dashboard-module-header`)** :
+  - Composant compact et élégant remplaçant l'ancienne bannière volumineuse : affiche le titre du module sélectionné (ex: *Psychiatrie & Pédopsychiatrie*), son badge d'année (*5ème Année*), et en sous-texte discret la date d'examen sélectionnée (ex: *Date d'examen : 10 novembre 2026 • J-28* ou invitation à fixer une date).
+  - Équipé d'un bouton discret « Changer » ouvrant instantanément la modale des paramètres pour permuter de module ou éditer la date.
+  - Synchronisation dynamique des métriques Hero du Dashboard (`#stat-remaining-desc` sur le nombre exact de cours du module actif et `#stat-iterations-desc` synchronisé avec la date d'échéance réelle au format court).
+- **Synchronisation Dynamique du Suivi de Progression (`view-stats`)** :
+  - La page de suivi s'adapte en temps réel au module actif : la matrice de chapitres (`#lesson-chapters-matrix`) et le KPI de couverture (`#kpi-lesson-coverage-val`) exploitent dynamiquement `allChapters` (20 cours pour la Psychiatrie, 35 pour la Pédiatrie).
+  - Bouton de bascule globale `#btn-cmode-global` et libellés des listes déroulantes de cours actualisés selon le module sélectionné.
 
 ## 3.18. Moteur Multi-Modules Dynamique & Partitionnement de Stockage Étanche
 - **Commutation Dynamique Sans Rechargement (`src/app.js` -> `switchActiveModule`)** :
@@ -566,7 +570,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.5.4` (`versionCode 21`)
+- **Version native** : `versionName 1.5.5` (`versionCode 22`)
 - **Empreinte SHA-1 (Debug Keystore Gradle & GitHub Actions)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
 - **Empreinte SHA-256 (Debug Keystore Gradle & GitHub Actions)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
 - **Keystore unifié** : `android/app/debug.keystore` (Alias : `AndroidDebugKey`, mot de passe `android`, garantissant une empreinte cryptographique identique entre les compilations locales et la CI/CD GitHub Actions).

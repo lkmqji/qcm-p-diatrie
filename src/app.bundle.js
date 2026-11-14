@@ -210,6 +210,8 @@ function getExamCountdown(moduleId) {
     return {
       hasDate: false,
       dateString: '',
+      formattedDate: '',
+      shortFormattedDate: '',
       daysRemaining: null,
       isToday: false,
       isExpired: false,
@@ -233,11 +235,14 @@ function getExamCountdown(moduleId) {
     year: 'numeric'
   });
 
+  const shortFormattedDate = (parts.length >= 3) ? `${parts[2]}/${parts[1]}` : formattedDate;
+
   if (diffDays === 0) {
     return {
       hasDate: true,
       dateString: dateStr,
       formattedDate,
+      shortFormattedDate,
       daysRemaining: 0,
       isToday: true,
       isExpired: false,
@@ -248,6 +253,7 @@ function getExamCountdown(moduleId) {
       hasDate: true,
       dateString: dateStr,
       formattedDate,
+      shortFormattedDate,
       daysRemaining: Math.abs(diffDays),
       isToday: false,
       isExpired: true,
@@ -258,6 +264,7 @@ function getExamCountdown(moduleId) {
       hasDate: true,
       dateString: dateStr,
       formattedDate,
+      shortFormattedDate,
       daysRemaining: diffDays,
       isToday: false,
       isExpired: false,
@@ -3502,7 +3509,7 @@ class FirebaseSyncService {
 // Update Management Service for PédiaDrill
 // Checks GitHub Releases for new APK versions, notifies the user, and triggers direct download.
 
-const CURRENT_APP_VERSION = '1.5.4';
+const CURRENT_APP_VERSION = '1.5.5';
 const GITHUB_REPO = 'lkmqji/qcm-p-diatrie';
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
 const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours auto-check cooldown
@@ -4000,7 +4007,7 @@ function getExamCountdownMetrics(totalIterationsRequired) {
   let examDateStr = 'Non définie';
 
   if (cd.hasDate) {
-    examDateStr = cd.dateString ? cd.dateString.split('-').reverse().slice(0, 2).join('/') : cd.formattedDate;
+    examDateStr = cd.shortFormattedDate || (cd.dateString ? cd.dateString.split('-').reverse().slice(0, 2).join('/') : cd.formattedDate);
     if (cd.isToday) {
       daysLeft = 1;
     } else if (cd.isExpired) {
@@ -4014,6 +4021,7 @@ function getExamCountdownMetrics(totalIterationsRequired) {
 
   return {
     examDateStr,
+    shortFormattedDate: examDateStr,
     fullFormattedDate: cd.formattedDate || examDateStr,
     daysLeft: cd.hasDate ? (cd.isToday ? 0 : cd.daysRemaining) : null,
     effectiveDaysLeft: daysLeft,
@@ -4094,6 +4102,15 @@ function switchActiveModule(moduleId) {
   if (lessonTracker && typeof lessonTracker.reloadForModule === 'function') {
     lessonTracker.reloadForModule();
   }
+
+  // Reset lesson selection on module switch
+  currentLessonSelected = { name: '', chapterId: null };
+  const searchInput = document.getElementById('lesson-search-input');
+  if (searchInput) searchInput.value = '';
+  const activeNameEl = document.getElementById('active-lesson-name');
+  if (activeNameEl) activeNameEl.textContent = 'Aucune leçon choisie';
+  const clearBtn = document.getElementById('btn-clear-lesson-input');
+  if (clearBtn) clearBtn.style.display = 'none';
 
   // Update header subtitle if element exists
   const headerSubtitle = document.querySelector('.brand-subtitle');
@@ -4241,80 +4258,48 @@ function renderDashboardExamBanner(countdown, metrics) {
 
   const activeMod = getActiveModule();
   const modTitle = activeMod ? activeMod.title : 'Pédiatrie';
-  const yearTitle = activeMod ? ` (${activeMod.yearNumber || 5}ème Année)` : '';
+  const yearTitle = activeMod ? `${activeMod.yearNumber || 5}ème Année` : '5ème Année';
 
-  if (!countdown.hasDate) {
-    container.innerHTML = `
-      <div class="dashboard-exam-banner">
-        <div class="exam-banner-left">
-          <div class="exam-banner-days-pill" style="border-color:rgba(0,212,255,0.4);background:rgba(0,212,255,0.15);box-shadow:0 0 14px rgba(0,212,255,0.2);">
-            <i data-lucide="calendar" style="width:20px;height:20px;color:var(--cyan);"></i>
-            <span class="exam-banner-days-label" style="color:var(--cyan);">OBJECTIF</span>
-          </div>
-          <div class="exam-banner-info">
-            <div class="exam-banner-title">
-              <span>${escapeHtml(modTitle)}${escapeHtml(yearTitle)}</span>
-              <span class="exam-banner-module-tag">Module Actif</span>
-            </div>
-            <div class="exam-banner-desc">
-              Définissez votre date d'examen dans les paramètres pour activer le compte à rebours dynamique (J-XX) et le calcul en temps réel de votre cadence quotidienne.
-            </div>
-          </div>
-        </div>
-        <div class="exam-banner-right">
-          <button type="button" class="btn-banner-action" id="btn-banner-open-settings">
-            <i data-lucide="calendar-plus" style="width:14px;height:14px;"></i>
-            <span>Fixer la date</span>
-          </button>
-        </div>
-      </div>
-    `;
+  let dateText = '';
+  if (countdown.hasDate) {
+    const daysInfo = countdown.isToday ? '• Jour J !' : (countdown.isExpired ? '• Passé' : `• J-${countdown.daysLeft}`);
+    dateText = `Date d'examen : <strong>${escapeHtml(countdown.fullFormattedDate)}</strong> <span class="header-date-badge">${daysInfo}</span>`;
   } else {
-    let pillText = `J-${countdown.daysLeft}`;
-    let pillSub = 'RESTANTS';
-    let pillStyle = '';
-
-    if (countdown.isToday) {
-      pillText = 'JOUR J';
-      pillSub = 'EXAMEN';
-      pillStyle = 'border-color:rgba(16,185,129,0.5);background:rgba(16,185,129,0.2);color:var(--emerald);';
-    } else if (countdown.isExpired) {
-      pillText = `+${Math.abs(countdown.daysLeft)} j`;
-      pillSub = 'PASSÉ';
-      pillStyle = 'border-color:rgba(239,68,68,0.5);background:rgba(239,68,68,0.2);color:#fca5a5;';
-    }
-
-    container.innerHTML = `
-      <div class="dashboard-exam-banner">
-        <div class="exam-banner-left">
-          <div class="exam-banner-days-pill" style="${pillStyle}">
-            <span class="exam-banner-days-number">${pillText}</span>
-            <span class="exam-banner-days-label">${pillSub}</span>
-          </div>
-          <div class="exam-banner-info">
-            <div class="exam-banner-title">
-              <span>${escapeHtml(modTitle)}${escapeHtml(yearTitle)}</span>
-              <span class="exam-banner-module-tag">Module Actif</span>
-            </div>
-            <div class="exam-banner-desc">
-              Épreuve fixée au <strong>${escapeHtml(countdown.fullFormattedDate)}</strong>. Cadence cible : <strong>${formatNumber(countdown.dailyIterationsRequired)} QCM / jour</strong> pour éliminer les ${formatNumber(metrics.remainingDistinctQuestions)} questions restantes.
-            </div>
-          </div>
-        </div>
-        <div class="exam-banner-right">
-          <button type="button" class="btn-banner-action" id="btn-banner-open-settings">
-            <i data-lucide="edit-3" style="width:14px;height:14px;"></i>
-            <span>Changer date / module</span>
-          </button>
-        </div>
-      </div>
-    `;
+    dateText = `Aucune date d'examen définie • <em>Cliquer pour fixer la date</em>`;
   }
 
-  const btnOpen = document.getElementById('btn-banner-open-settings');
-  if (btnOpen) {
-    btnOpen.onclick = () => {
+  container.innerHTML = `
+    <div class="dashboard-module-header" id="btn-banner-open-settings" role="button" tabindex="0" title="Cliquer pour changer de module ou modifier la date d'examen">
+      <div class="module-header-left">
+        <div class="module-header-title-row">
+          <i data-lucide="book-open" class="module-header-icon"></i>
+          <h2 class="module-header-name">${escapeHtml(modTitle)}</h2>
+          <span class="module-header-year-pill">${escapeHtml(yearTitle)}</span>
+        </div>
+        <div class="module-header-date-sub">
+          <i data-lucide="calendar" style="width:13px;height:13px;color:var(--text-dim);flex-shrink:0;"></i>
+          <span class="module-header-date-text">${dateText}</span>
+        </div>
+      </div>
+      <div class="module-header-right">
+        <button type="button" class="btn-change-module-pill">
+          <i data-lucide="sliders-horizontal" style="width:13px;height:13px;"></i>
+          <span>Changer</span>
+        </button>
+      </div>
+    </div>
+  `;
+
+  const headerBtn = document.getElementById('btn-banner-open-settings');
+  if (headerBtn) {
+    headerBtn.onclick = () => {
       openSettingsModal();
+    };
+    headerBtn.onkeydown = (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openSettingsModal();
+      }
     };
   }
 
@@ -4396,6 +4381,28 @@ function updateDashboardUI() {
 
   const poolInfoEl = document.getElementById('badge-pool-info');
   if (poolInfoEl) poolInfoEl.textContent = `Sur ${formatNumber(metrics.totalPoolCount)}`;
+
+  // Metric descriptions synchronized with active module and exam date
+  const remainingDescEl = document.getElementById('stat-remaining-desc');
+  if (remainingDescEl) {
+    remainingDescEl.textContent = `Questions distinctes à éliminer sur l'ensemble des ${allChapters.length} cours`;
+  }
+
+  const iterationsDescEl = document.getElementById('stat-iterations-desc');
+  if (iterationsDescEl) {
+    if (countdown.hasDate) {
+      iterationsDescEl.textContent = `Réponses justes cumulées pour tout nettoyer (programme complet) avant le ${countdown.examDateStr}.`;
+    } else {
+      iterationsDescEl.textContent = `Réponses justes cumulées pour tout nettoyer (programme complet).`;
+    }
+  }
+
+  const cadenceWrapEl = document.getElementById('metric-sub-target-cadence');
+  if (cadenceWrapEl) {
+    cadenceWrapEl.title = countdown.hasDate 
+      ? `Cadence calculée automatiquement pour éliminer tous les QCM avant le ${countdown.examDateStr}`
+      : `Cadence calculée automatiquement pour éliminer tous les QCM avant l'échéance`;
+  }
 
   // Chapters label
   const chaptersBtnLabel = document.getElementById('btn-chapters-label');
@@ -7863,13 +7870,15 @@ function renderStatsVelocityAndProjection(analytics, periodLabel = '') {
     estDate.setDate(estDate.getDate() + daysNeeded);
     const estDateStr = estDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
 
-    if (daysNeeded <= countdown.daysLeft) {
-      projTextEl.innerHTML = `<strong>🏆 Cadence excellente !</strong> Au rythme (${cadenceNote}) de <strong>${effectiveCadence} QCM/jour</strong>, vous aurez validé l'intégralité du programme en <strong>${daysNeeded} jours</strong> (vers le ${estDateStr}), soit avant l'échéance du concours (J-${countdown.daysLeft}) !`;
+    const targetDeadlineText = countdown.hasDate ? `avant le ${countdown.examDateStr} (J-${countdown.daysLeft})` : "avant l'échéance de l'examen";
+    if (daysNeeded <= (countdown.daysLeft || 999)) {
+      projTextEl.innerHTML = `<strong>🏆 Cadence excellente !</strong> Au rythme (${cadenceNote}) de <strong>${effectiveCadence} QCM/jour</strong>, vous aurez validé l'intégralité du programme en <strong>${daysNeeded} jours</strong> (vers le ${estDateStr}), soit ${targetDeadlineText} !`;
     } else {
-      projTextEl.innerHTML = `<strong>⚠️ Recommandation Concours :</strong> Au rythme (${cadenceNote}) de ${effectiveCadence} QCM/j, il faudrait ${daysNeeded} jours pour tout nettoyer. Pour franchir la ligne d'arrivée avant le 10/11 (J-${countdown.daysLeft}), maintenez la cadence cible de <strong>${countdown.dailyIterationsRequired} QCM/jour</strong>.`;
+      projTextEl.innerHTML = `<strong>⚠️ Recommandation Concours :</strong> Au rythme (${cadenceNote}) de ${effectiveCadence} QCM/j, il faudrait ${daysNeeded} jours pour tout nettoyer. Pour franchir la ligne d'arrivée ${targetDeadlineText}, maintenez la cadence cible de <strong>${countdown.dailyIterationsRequired} QCM/jour</strong>.`;
     }
   } else {
-    projTextEl.innerHTML = `<em>Répondez à vos premiers QCM pour activer la projection personnalisée vers l'examen du 10/11. Cadence cible recommandée : <strong>${countdown.dailyIterationsRequired} QCM/jour</strong>.</em>`;
+    const targetExamLabel = countdown.hasDate ? `vers l'examen du ${countdown.fullFormattedDate}` : "vers votre examen";
+    projTextEl.innerHTML = `<em>Répondez à vos premiers QCM pour activer la projection personnalisée ${targetExamLabel}. Cadence cible recommandée : <strong>${countdown.dailyIterationsRequired} QCM/jour</strong>.</em>`;
   }
 }
 
@@ -7881,6 +7890,16 @@ function renderStatsChapters(chapterTotals = {}, periodLabel = '') {
   const badgeEl = document.getElementById('course-tracker-summary-badge');
   const titleEl = document.getElementById('course-tracker-title');
   if (!container) return;
+
+  const activeMod = (typeof getActiveModule === 'function' && getActiveModule()) ? getActiveModule() : null;
+  const modTitle = activeMod ? activeMod.title : 'du module';
+  const chTotalCount = (allChapters && allChapters.length > 0) ? allChapters.length : 35;
+
+  const btnCmodeGlobal = document.getElementById('btn-cmode-global');
+  if (btnCmodeGlobal) {
+    btnCmodeGlobal.textContent = `Tous les cours (${chTotalCount})`;
+    btnCmodeGlobal.title = `Progression globale sur l'ensemble des ${chTotalCount} cours`;
+  }
 
   const query = (courseTrackerSearchQuery || '').trim().toLowerCase();
 
@@ -7934,7 +7953,7 @@ function renderStatsChapters(chapterTotals = {}, periodLabel = '') {
     list.sort((a, b) => b.masteredCount - a.masteredCount || b.attemptedCount - a.attemptedCount || a.title.localeCompare(b.title));
 
     if (badgeEl) {
-      badgeEl.textContent = `${list.length}/35 cours • ${totalMasteredAll}/${allQuestions.length} maîtrisés`;
+      badgeEl.textContent = `${list.length}/${chTotalCount} cours • ${totalMasteredAll}/${allQuestions.length} maîtrisés`;
     }
 
     if (list.length === 0) {
@@ -8019,10 +8038,10 @@ function renderStatsChapters(chapterTotals = {}, periodLabel = '') {
         <div class="course-empty-period-box">
           <div class="empty-period-icon"><i data-lucide="book-marked"></i></div>
           <div class="empty-period-title">Aucun QCM répondu sur cette période (${periodLabel})</div>
-          <div class="empty-period-text">Consultez la progression globale de vos 35 cours de pédiatrie :</div>
+          <div class="empty-period-text">Consultez la progression globale de vos ${chTotalCount} cours (${escapeHtml(modTitle)}) :</div>
           <button type="button" class="btn-switch-cmode-global" id="btn-trigger-global-mode">
             <i data-lucide="layers" style="width:14px;height:14px;"></i>
-            <span>Voir le suivi global des 35 cours</span>
+            <span>Voir le suivi global des ${chTotalCount} cours</span>
           </button>
         </div>
       `;
@@ -8527,18 +8546,24 @@ function renderLessonAnalytics(rangeStr = currentLessonStatsRange) {
     kpiAvgSub.textContent = periodSessions.length > 0 ? `${periodSessions.length} session${periodSessions.length > 1 ? 's' : ''} analysée${periodSessions.length > 1 ? 's' : ''}` : 'Focus régulier';
   }
 
-  // Coverage of 35 chapters
-  const allChs = window.PEDIA_CHAPTERS || [];
+  // Coverage of chapters (synchronized with active module)
+  const allChs = (allChapters && allChapters.length > 0) ? allChapters : (window.PEDIA_CHAPTERS || []);
   const studiedChCount = allChs.filter(ch => {
     return summaries.some(s => (s.chapterId && s.chapterId === ch.id) || (s.lessonName && s.lessonName.trim().toLowerCase() === ch.title.trim().toLowerCase()));
   }).length;
 
   const coveragePct = allChs.length > 0 ? Math.round((studiedChCount / allChs.length) * 100) : 0;
   if (kpiCoverageVal) {
-    kpiCoverageVal.textContent = `${studiedChCount} / ${allChs.length || 35}`;
+    kpiCoverageVal.textContent = `${studiedChCount} / ${allChs.length}`;
   }
   if (kpiCoverageSub) {
     kpiCoverageSub.textContent = `${coveragePct}% des cours travaillés`;
+  }
+
+  // Update Matrix Header Title
+  const matrixTitleEl = document.getElementById('lesson-matrix-title');
+  if (matrixTitleEl) {
+    matrixTitleEl.textContent = `Couverture du Programme (${allChs.length} Chapitres)`;
   }
 
   // 2. Daily SVG Bar Chart
@@ -8547,7 +8572,7 @@ function renderLessonAnalytics(rangeStr = currentLessonStatsRange) {
   // 3. Lesson Distribution (Top 10)
   renderLessonDistribution(summaries);
 
-  // 4. 35 Chapters Matrix
+  // 4. Chapters Matrix
   renderLessonChaptersMatrix(allChs, summaries);
 }
 
@@ -8857,6 +8882,20 @@ function renderLessonTrackerUI() {
       activeBadgeName.textContent = currentLessonSelected.name || 'Aucune leçon choisie';
     }
   }
+
+  // Synchroniser les libellés et dropdowns avec le module actif
+  const activeMod = (typeof getActiveModule === 'function' && getActiveModule()) ? getActiveModule() : null;
+  const modTitle = activeMod ? activeMod.title : 'Pédiatrie';
+  const chCount = (allChapters && allChapters.length > 0) ? allChapters.length : 35;
+
+  const dropHeader = document.getElementById('lesson-dropdown-header');
+  if (dropHeader) dropHeader.textContent = `Chapitres (${chCount}) — ${modTitle} :`;
+
+  const manualDropHeader = document.getElementById('manual-dropdown-header');
+  if (manualDropHeader) manualDropHeader.textContent = `Chapitres (${chCount}) — ${modTitle} :`;
+
+  const manualFieldLabel = document.getElementById('manual-lesson-field-label');
+  if (manualFieldLabel) manualFieldLabel.textContent = `Cours / Leçon (${modTitle}) :`;
 
   // 1. Summary Table per Lesson
   const summaryContainer = document.getElementById('lesson-summary-table-container');

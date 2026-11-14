@@ -206,6 +206,8 @@ export function getExamCountdown(moduleId) {
     return {
       hasDate: false,
       dateString: '',
+      formattedDate: '',
+      shortFormattedDate: '',
       daysRemaining: null,
       isToday: false,
       isExpired: false,
@@ -229,11 +231,14 @@ export function getExamCountdown(moduleId) {
     year: 'numeric'
   });
 
+  const shortFormattedDate = (parts.length >= 3) ? `${parts[2]}/${parts[1]}` : formattedDate;
+
   if (diffDays === 0) {
     return {
       hasDate: true,
       dateString: dateStr,
       formattedDate,
+      shortFormattedDate,
       daysRemaining: 0,
       isToday: true,
       isExpired: false,
@@ -244,6 +249,7 @@ export function getExamCountdown(moduleId) {
       hasDate: true,
       dateString: dateStr,
       formattedDate,
+      shortFormattedDate,
       daysRemaining: Math.abs(diffDays),
       isToday: false,
       isExpired: true,
@@ -254,6 +260,7 @@ export function getExamCountdown(moduleId) {
       hasDate: true,
       dateString: dateStr,
       formattedDate,
+      shortFormattedDate,
       daysRemaining: diffDays,
       isToday: false,
       isExpired: false,

@@ -7401,140 +7401,144 @@ body {
   color: var(--emerald);
 }
 
-/* Bannière Compte à Rebours du Dashboard */
-.dashboard-exam-banner {
-  background: linear-gradient(135deg, rgba(30, 27, 75, 0.6) 0%, rgba(15, 23, 42, 0.85) 100%);
-  border: 1px solid rgba(168, 85, 247, 0.35);
+/* Header Compact du Module Actif & Date sur le Dashboard */
+.dashboard-module-header {
+  background: linear-gradient(135deg, rgba(18, 29, 51, 0.75) 0%, rgba(10, 16, 28, 0.9) 100%);
+  border: 1px solid rgba(0, 212, 255, 0.22);
   border-radius: var(--radius-md);
-  padding: 16px 20px;
+  padding: 14px 20px;
   margin-bottom: 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   overflow: hidden;
 }
 
-.dashboard-exam-banner::before {
+.dashboard-module-header:hover {
+  border-color: rgba(0, 212, 255, 0.45);
+  background: linear-gradient(135deg, rgba(22, 36, 64, 0.85) 0%, rgba(13, 21, 38, 0.95) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px rgba(0, 212, 255, 0.12);
+}
+
+.dashboard-module-header::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   width: 4px;
   height: 100%;
-  background: linear-gradient(to bottom, #c084fc, #00d4ff);
+  background: linear-gradient(to bottom, var(--cyan), var(--purple));
 }
 
-.exam-banner-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex: 1;
-}
-
-.exam-banner-days-pill {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-width: 68px;
-  height: 58px;
-  background: rgba(168, 85, 247, 0.2);
-  border: 1px solid rgba(168, 85, 247, 0.4);
-  border-radius: 12px;
-  padding: 4px 8px;
-  box-shadow: 0 0 14px rgba(168, 85, 247, 0.2);
-}
-
-.exam-banner-days-number {
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: #f3e8ff;
-  line-height: 1;
-}
-
-.exam-banner-days-label {
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: #c084fc;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-top: 2px;
-}
-
-.exam-banner-info {
+.module-header-left {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
+  flex: 1;
 }
 
-.exam-banner-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--text-main);
-}
-
-.exam-banner-module-tag {
-  font-size: 0.7rem;
-  font-weight: 800;
-  padding: 2px 7px;
-  border-radius: 4px;
-  background: rgba(0, 212, 255, 0.15);
-  color: var(--cyan);
-  border: 1px solid rgba(0, 212, 255, 0.3);
-  text-transform: uppercase;
-}
-
-.exam-banner-desc {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  line-height: 1.4;
-}
-
-.exam-banner-right {
+.module-header-title-row {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
-.btn-banner-action {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  color: var(--text-main);
-  padding: 8px 14px;
-  font-size: 0.78rem;
+.module-header-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--cyan);
+  flex-shrink: 0;
+}
+
+.module-header-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.module-header-year-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--cyan);
+  background: rgba(0, 212, 255, 0.12);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.module-header-date-sub {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: var(--text-dim);
+}
+
+.module-header-date-text {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.module-header-date-text strong {
+  color: #f1f5f9;
   font-weight: 600;
-  cursor: pointer;
+}
+
+.module-header-date-text .header-date-badge {
+  color: #c084fc;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+.module-header-right {
+  flex-shrink: 0;
+}
+
+.btn-change-module-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  cursor: pointer;
   transition: all 0.2s ease;
-  white-space: nowrap;
 }
 
-.btn-banner-action:hover {
+.btn-change-module-pill:hover {
   background: rgba(0, 212, 255, 0.15);
   border-color: rgba(0, 212, 255, 0.4);
   color: var(--cyan);
 }
 
 @media (max-width: 640px) {
-  .dashboard-exam-banner {
+  .dashboard-module-header {
     flex-direction: column;
     align-items: flex-start;
-    padding: 14px;
-    gap: 12px;
+    padding: 12px 14px;
+    gap: 10px;
   }
-  .exam-banner-right {
+  .module-header-right {
     width: 100%;
   }
-  .btn-banner-action {
+  .btn-change-module-pill {
     width: 100%;
     justify-content: center;
   }
