@@ -1,6 +1,37 @@
 // Lesson Timer & Study Time Tracking Service for PédiaDrill
 // Tracks focused study time per lesson/chapter with persistent stopwatch, background tracking, and summary analytics.
 import { resolveStorageKey } from './storageScope.js';
+import { getActiveModuleId } from './moduleCatalog.js';
+
+export function identifySessionModule(sess) {
+  if (sess && sess.moduleId) {
+    return (sess.moduleId === 'psychiatrie_5') ? 'psychiatrie' : sess.moduleId;
+  }
+  const chId = sess && sess.chapterId;
+  const name = sess && sess.lessonName ? sess.lessonName.trim().toLowerCase() : '';
+
+  // 1. Check psychiatrie chapters
+  if (typeof window !== 'undefined' && Array.isArray(window.PSY_CHAPTERS)) {
+    if (chId && window.PSY_CHAPTERS.some(c => c.id === chId && c.id !== 'autres')) {
+      return 'psychiatrie';
+    }
+    if (name && window.PSY_CHAPTERS.some(c => c.title && c.title.trim().toLowerCase() === name && c.id !== 'autres')) {
+      return 'psychiatrie';
+    }
+  }
+
+  // 2. Check pediatrie chapters
+  if (typeof window !== 'undefined' && Array.isArray(window.PEDIA_CHAPTERS)) {
+    if (chId && window.PEDIA_CHAPTERS.some(c => c.id === chId)) {
+      return 'pediatrie';
+    }
+    if (name && window.PEDIA_CHAPTERS.some(c => c.title && c.title.trim().toLowerCase() === name)) {
+      return 'pediatrie';
+    }
+  }
+
+  return 'pediatrie';
+}
 
 function getLessonStateKey() {
   return typeof resolveStorageKey === 'function' ? resolveStorageKey('lesson_tracker_state') : 'pedia_lesson_tracker_state_v1';
@@ -98,14 +129,16 @@ export class LessonTracker {
   /**
    * Start a new lesson stopwatch timer with optional initial offset in seconds
    */
-  startTimer(lessonName, chapterId = null, offsetSeconds = 0) {
+  startTimer(lessonName, chapterId = null, offsetSeconds = 0, moduleId = null) {
     const cleanName = (lessonName || '').trim() || 'Leçon sans titre';
     const now = Date.now();
     const offsetMs = Math.max(0, Math.floor((Number(offsetSeconds) || 0) * 1000));
+    const activeModId = moduleId || (typeof getActiveModuleId === 'function' ? getActiveModuleId() : 'pediatrie');
 
     this.activeTimer = {
       lessonName: cleanName,
       chapterId: chapterId || null,
+      moduleId: activeModId,
       isRunning: true,
       isPaused: false,
       startTimestamp: now,
@@ -210,11 +243,13 @@ export class LessonTracker {
     const durationSeconds = Math.max(1, Math.floor(Number(sessionData.durationSeconds) || 0));
     const now = Date.now();
     const dateStr = sessionData.dateStr || this.getTodayDateStr();
+    const activeModId = sessionData.moduleId || (typeof getActiveModuleId === 'function' ? getActiveModuleId() : 'pediatrie');
 
     const session = {
       id: `sess_manual_${now}_${Math.random().toString(36).substring(2, 7)}`,
       lessonName: cleanName,
       chapterId: sessionData.chapterId || null,
+      moduleId: activeModId,
       startTime: now - (durationSeconds * 1000),
       endTime: now,
       durationSeconds,
@@ -241,10 +276,12 @@ export class LessonTracker {
     }
 
     const now = Date.now();
+    const activeModId = this.activeTimer.moduleId || (typeof getActiveModuleId === 'function' ? getActiveModuleId() : 'pediatrie');
     const session = {
       id: `sess_${now}_${Math.random().toString(36).substring(2, 7)}`,
       lessonName: this.activeTimer.lessonName,
       chapterId: this.activeTimer.chapterId || null,
+      moduleId: activeModId,
       startTime: this.activeTimer.initialStartTimestamp || (now - durationSeconds * 1000),
       endTime: now,
       durationSeconds,
@@ -271,41 +308,117 @@ export class LessonTracker {
   }
 
   /**
-   * Delete an existing session from history
+   * Delete an existing session from history across memory and storage keys
    */
   deleteSession(sessionId) {
     if (!sessionId) return false;
+    let modified = false;
+
     const initialLen = this.sessions.length;
     this.sessions = this.sessions.filter(s => s && s.id !== sessionId);
     if (this.sessions.length !== initialLen) {
       this.saveSessions();
-      return true;
+      modified = true;
     }
-    return false;
+
+    if (typeof localStorage !== 'undefined') {
+      const storageKeys = ['pedia_lesson_sessions_v1', 'mod_psychiatrie_lesson_sessions'];
+      storageKeys.forEach(k => {
+        try {
+          const raw = localStorage.getItem(k);
+          if (raw) {
+            const list = JSON.parse(raw);
+            if (Array.isArray(list)) {
+              const filtered = list.filter(s => s && s.id !== sessionId);
+              if (filtered.length !== list.length) {
+                localStorage.setItem(k, JSON.stringify(filtered));
+                modified = true;
+              }
+            }
+          }
+        } catch (e) {}
+      });
+    }
+
+    return modified;
   }
 
   /**
-   * Get all recorded sessions
+   * Loads all sessions across all medical modules with deterministic attribution
    */
-  getSessions() {
-    return Array.isArray(this.sessions) ? [...this.sessions] : [];
+  getAllSessions() {
+    try {
+      const sessionMap = new Map();
+
+      // 1. In-memory sessions
+      (this.sessions || []).forEach(s => {
+        if (s && s.id) {
+          const modId = identifySessionModule(s);
+          sessionMap.set(s.id, { ...s, moduleId: modId });
+        }
+      });
+
+      // 2. Module storage partitions in localStorage
+      if (typeof localStorage !== 'undefined') {
+        const storageKeys = ['pedia_lesson_sessions_v1', 'mod_psychiatrie_lesson_sessions'];
+        storageKeys.forEach(k => {
+          try {
+            const raw = localStorage.getItem(k);
+            if (raw) {
+              const parsed = JSON.parse(raw);
+              if (Array.isArray(parsed)) {
+                parsed.forEach(s => {
+                  if (s && s.id && !sessionMap.has(s.id)) {
+                    const fallbackMod = k.includes('psychiatrie') ? 'psychiatrie' : 'pediatrie';
+                    const modId = identifySessionModule(s) || fallbackMod;
+                    sessionMap.set(s.id, { ...s, moduleId: modId });
+                  }
+                });
+              }
+            }
+          } catch (e) {}
+        });
+      }
+
+      const all = Array.from(sessionMap.values());
+      all.sort((a, b) => (b.endTime || 0) - (a.endTime || 0));
+      return all;
+    } catch (e) {
+      console.warn('Failed to load all sessions across modules:', e);
+      return this.sessions || [];
+    }
   }
 
   /**
-   * Aggregates study metrics per lesson
+   * Get recorded sessions, optionally filtered by module ('all' | 'pediatrie' | 'psychiatrie')
+   */
+  getSessions(filterModuleId = 'all') {
+    const all = this.getAllSessions();
+    if (!filterModuleId || filterModuleId === 'all') {
+      return all;
+    }
+    return all.filter(s => (s.moduleId || identifySessionModule(s)) === filterModuleId);
+  }
+
+  /**
+   * Aggregates study metrics per lesson, optionally filtered by module
    * Returns array sorted by total duration descending
    */
-  getLessonSummaries() {
+  getLessonSummaries(filterModuleId = 'all') {
     const map = new Map();
+    const sessions = this.getSessions(filterModuleId);
 
-    (this.sessions || []).forEach(sess => {
+    sessions.forEach(sess => {
       if (!sess || !sess.lessonName) return;
       const key = sess.lessonName.trim().toLowerCase();
 
       if (!map.has(key)) {
+        const modId = sess.moduleId || identifySessionModule(sess);
         map.set(key, {
           lessonName: sess.lessonName.trim(),
           chapterId: sess.chapterId || null,
+          moduleId: modId,
+          moduleTitle: modId === 'psychiatrie' ? 'Psychiatrie' : 'Pédiatrie',
           totalDurationSeconds: 0,
           sessionsCount: 0,
           lastSessionTimestamp: 0,
@@ -367,7 +480,7 @@ export class LessonTracker {
   }
 
   getRawSessions() {
-    return this.sessions;
+    return this.getAllSessions();
   }
 }
 

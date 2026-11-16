@@ -34,7 +34,7 @@ qcm-p-diatrie/
 │   └── MASTER_PRODUCT_TECHNICAL_CONTEXT.md # Contexte technique global (source unique de vérité)
 ├── android/                              # Projet natif Android Capacitor 8
 │   ├── app/
-│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 22, versionName 1.5.5)
+│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 23, versionName 1.5.6)
 │   │   ├── debug.keystore                # Keystore de signature unifié (local & CI/CD)
 │   │   ├── google-services.json          # Configuration Firebase Android (qcm-pediatr, com.pediadrill.app)
 │   │   └── src/main/
@@ -329,11 +329,16 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
     - Génération dynamique des données :
       - *Jour unique* (si filtré spécifiquement) : barre centrée proéminente (largeur 64px) avec durée exacte et mention du jour.
       - *Plages multi-jours* (7, 14, 21, 28, 30 jours, Tout, Personnalisé) : barres proportionnelles, étiquetage intelligent de l'axe X pour éviter les chevauchements, et message d'état si aucune session n'est enregistrée.
-  - **Répartition du Temps par Cours (`#lesson-distribution-container`)** :
-    - Classement des 10 cours les plus travaillés avec barres de progression proportionnelles animées et temps cumulé.
-  - **Matrice de Couverture des 35 Chapitres de Pédiatrie (`#lesson-chapters-matrix`)** :
-    - Grille visuelle des 35 cours du programme avec 5 paliers d'intensité de révision (`level-0` non débuté, `level-1` < 1h, `level-2` 1-2h, `level-3` 2-4h, `level-4` > 4h).
-    - Clic sur n'importe quel chapitre pour le charger automatiquement comme cours actif dans le chronomètre.
+  - **Sélecteurs de Module Dédiés & Indépendants par Section (`lesson-module-pills`)** :
+    - Conformément aux retours ergonomiques, chaque partie de la page dispose de son propre sélecteur modulaire (`course-tracker-pills`) permettant d'isoler un module ou d'afficher l'ensemble des cours :
+      1. **Répartition du Temps par Cours (Top 10)** (`#lesson-dist-module-filter`) : Boutons `[Tous]`, `[Pédiatrie]`, `[Psychiatrie]`. En mode global, chaque cours arbore une pastille néon (`Pédia` cyan ou `Psy` violet).
+      2. **Matrice de Couverture du Programme** (`#lesson-matrix-module-filter`) : Boutons `[Tous (55)]`, `[Pédiatrie (35)]`, `[Psychiatrie (20)]`. En mode `Tous (55)`, les chapitres sont scindés en deux blocs titrés distincts (`Programme Pédiatrie (35 cours)` et `Programme Psychiatrie (20 cours)`).
+      3. **Tableau Récapitulatif du Cumul par Leçon** (`#lesson-summary-module-filter`) : Boutons `[Tous les cours]`, `[Pédiatrie (35)]`, `[Psychiatrie (20)]`. En mode `Tous les cours`, une colonne dédiée `Module` affiche la pastille stylisée (`.session-module-pill`).
+      4. **Sessions Récentes Enregistrées** (`#lesson-recent-module-filter`) : Boutons `[Tous les cours]`, `[Pédiatrie]`, `[Psychiatrie]` avec badge d'appartenance sur chaque ligne de session.
+  - **Moteur d'Attribution & Agrégation Multi-Modules (`src/services/lessonTracker.js`)** :
+    - Fonction `identifySessionModule(sess)` garantissant une attribution déterministe par métadonnée explicite (`sess.moduleId`) ou par correspondance croisée des catalogues de cours (`PEDIA_CHAPTERS` et `PSY_CHAPTERS`).
+    - Méthode `getAllSessions()` agrégeant et dédupliquant de façon étanche les partitions locales (`pedia_lesson_sessions_v1` et `mod_psychiatrie_lesson_sessions`).
+    - Méthodes de requêtage filtrées `getSessions(filterModuleId)` et `getLessonSummaries(filterModuleId)`.
 - **Mini-Badge Flottant dans le Header (`#active-lesson-header-badge`)** :
   - Visible sur tous les écrans dès qu'un chronomètre est actif, avec voyant vert pulsant, libellé abrégé et décompte digital. Clic redirigeant vers la sous-page Chronomètre.
 
@@ -341,7 +346,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ### 3.9. Système de Mises à Jour Automatiques & GitHub Releases (`src/services/updateService.js` & CI/CD)
 - **Service d'Orchestration des Mises à Jour (`UpdateService`)** :
-  - Version déclarée : `CURRENT_APP_VERSION = '1.5.5'` synchronisée avec `package.json` et `build.gradle` (`versionCode 22`).
+  - Version déclarée : `CURRENT_APP_VERSION = '1.5.6'` synchronisée avec `package.json` et `build.gradle` (`versionCode 23`).
   - Comparaison sémantique universelle (`compareVersions`) ignorant les préfixes `v`.
   - Interrogation de l'API GitHub Releases (`https://api.github.com/repos/lkmqji/qcm-p-diatrie/releases/latest`) avec cooldown de 4 heures (`pedia_last_update_check_ts`).
   - Extraction de l'asset `.apk` direct (`PediaDrill.apk`). En environnement natif Android Capacitor, l'URL est ouverte via `_system` pour lancer le gestionnaire de téléchargement Android natif.
@@ -570,7 +575,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.5.5` (`versionCode 22`)
+- **Version native** : `versionName 1.5.6` (`versionCode 23`)
 - **Empreinte SHA-1 (Debug Keystore Gradle & GitHub Actions)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
 - **Empreinte SHA-256 (Debug Keystore Gradle & GitHub Actions)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
 - **Keystore unifié** : `android/app/debug.keystore` (Alias : `AndroidDebugKey`, mot de passe `android`, garantissant une empreinte cryptographique identique entre les compilations locales et la CI/CD GitHub Actions).

@@ -4495,6 +4495,12 @@ let customLessonStatsEnd = '';
 let currentLessonChartRange = 'today';
 let currentLessonOffsetSeconds = 0; // offset in seconds
 
+// Module-specific filters for lesson stats panels ('all' | 'pediatrie' | 'psychiatrie')
+let lessonDistModuleFilter = 'all';
+let lessonMatrixModuleFilter = 'all';
+let lessonSummaryModuleFilter = 'all';
+let lessonRecentModuleFilter = 'all';
+
 function getLessonFilteredSessions(range = currentLessonStatsRange, offset = selectedLessonDayOffset, customStart = customLessonStatsStart, customEnd = customLessonStatsEnd) {
   const sessions = (typeof lessonTracker !== 'undefined' && lessonTracker) ? lessonTracker.getSessions() : [];
   if (range === 'today') {
@@ -4837,10 +4843,10 @@ function renderLessonAnalytics(rangeStr = currentLessonStatsRange) {
   renderLessonDailyChart(chartRangeToRender, chartDailyData);
 
   // 3. Lesson Distribution (Top 10)
-  renderLessonDistribution(summaries);
+  renderLessonDistribution(lessonDistModuleFilter);
 
   // 4. Chapters Matrix
-  renderLessonChaptersMatrix(allChs, summaries);
+  renderLessonChaptersMatrix(lessonMatrixModuleFilter);
 }
 
 function renderLessonDailyChart(rangeStr, dailyData) {
@@ -5004,15 +5010,20 @@ function renderLessonDailyChart(rangeStr, dailyData) {
   container.innerHTML = svgHtml;
 }
 
-function renderLessonDistribution(summaries) {
+function renderLessonDistribution(filterMod = lessonDistModuleFilter) {
   const container = document.getElementById('lesson-distribution-container');
   if (!container) return;
 
+  const summaries = (typeof lessonTracker !== 'undefined' && lessonTracker)
+    ? lessonTracker.getLessonSummaries(filterMod)
+    : [];
+
   const top10 = summaries.slice(0, 10);
   if (top10.length === 0) {
+    const modLabel = filterMod === 'pediatrie' ? ' en Pédiatrie' : (filterMod === 'psychiatrie' ? ' en Psychiatrie' : '');
     container.innerHTML = `
       <div style="text-align:center;padding:24px 16px;color:var(--text-dim);font-size:0.85rem;">
-        Aucune donnée de cours enregistrée pour le moment.
+        Aucune donnée de cours enregistrée${modLabel} pour le moment.
       </div>
     `;
     return;
@@ -5023,12 +5034,17 @@ function renderLessonDistribution(summaries) {
 
   top10.forEach(s => {
     const pct = Math.round((s.totalDurationSeconds / maxSec) * 100);
+    const modTag = (filterMod === 'all')
+      ? `<span class="session-module-pill ${s.moduleId === 'psychiatrie' ? 'mod-psy' : 'mod-pedia'}" style="margin-left:6px;font-size:0.62rem;padding:1px 5px;">${s.moduleId === 'psychiatrie' ? 'Psy' : 'Pédia'}</span>`
+      : '';
+
     html += `
       <div class="lesson-dist-item">
         <div class="lesson-dist-header">
           <span class="lesson-dist-name" title="${escapeHtml(s.lessonName)}">
             <i data-lucide="book-open" style="width:13px;height:13px;color:var(--cyan);display:inline;margin-right:4px;"></i>
             ${escapeHtml(s.lessonName)}
+            ${modTag}
           </span>
           <span class="lesson-dist-time">${formatDuration(s.totalDurationSeconds)}</span>
         </div>
@@ -5042,17 +5058,36 @@ function renderLessonDistribution(summaries) {
   container.innerHTML = html;
 }
 
-function renderLessonChaptersMatrix(allChapters, summaries) {
+function renderLessonChaptersMatrix(filterMod = lessonMatrixModuleFilter) {
   const container = document.getElementById('lesson-chapters-matrix');
+  const titleEl = document.getElementById('lesson-matrix-title');
   if (!container) return;
 
-  if (!allChapters || allChapters.length === 0) {
+  const pediaChs = ((typeof window !== 'undefined' && window.PEDIA_CHAPTERS) || allChapters || []).map(c => ({ ...c, moduleId: 'pediatrie', moduleTitle: 'Pédiatrie' }));
+  const psyChs = ((typeof window !== 'undefined' && window.PSY_CHAPTERS) || []).map(c => ({ ...c, moduleId: 'psychiatrie', moduleTitle: 'Psychiatrie' }));
+
+  let displayChapters = [];
+  if (filterMod === 'pediatrie') {
+    displayChapters = pediaChs;
+    if (titleEl) titleEl.textContent = `Couverture Pédiatrie (${pediaChs.length} Chapitres)`;
+  } else if (filterMod === 'psychiatrie') {
+    displayChapters = psyChs;
+    if (titleEl) titleEl.textContent = `Couverture Psychiatrie (${psyChs.length} Chapitres)`;
+  } else {
+    displayChapters = [...pediaChs, ...psyChs];
+    if (titleEl) titleEl.textContent = `Couverture du Programme (${displayChapters.length} Chapitres)`;
+  }
+
+  if (displayChapters.length === 0) {
     container.innerHTML = `<div style="color:var(--text-dim);font-size:0.8rem;padding:12px;">Chapitres indisponibles</div>`;
     return;
   }
 
-  let html = '';
-  allChapters.forEach((ch, idx) => {
+  const summaries = (typeof lessonTracker !== 'undefined' && lessonTracker)
+    ? lessonTracker.getLessonSummaries(filterMod)
+    : [];
+
+  function renderChapterBadge(ch, idx) {
     const chSum = summaries.find(s => (s.chapterId && s.chapterId === ch.id) || (s.lessonName && s.lessonName.trim().toLowerCase() === ch.title.trim().toLowerCase()));
     const durationSec = chSum ? chSum.totalDurationSeconds : 0;
 
@@ -5063,15 +5098,47 @@ function renderLessonChaptersMatrix(allChapters, summaries) {
     else if (durationSec > 0) levelClass = 'level-1'; // < 1h
 
     const durationText = durationSec > 0 ? formatDuration(durationSec) : '0 min';
+    const modTag = (filterMod === 'all')
+      ? `<span class="session-module-pill ${ch.moduleId === 'psychiatrie' ? 'mod-psy' : 'mod-pedia'}" style="font-size:0.58rem;padding:1px 4px;margin-left:auto;">${ch.moduleId === 'psychiatrie' ? 'Psy' : 'Pédia'}</span>`
+      : '';
 
-    html += `
-      <div class="chapter-matrix-badge ${levelClass}" data-chapter-id="${escapeHtml(ch.id)}" data-chapter-title="${escapeHtml(ch.title)}" title="${escapeHtml(ch.title)} (${durationText})">
-        <span class="matrix-badge-num">#${idx + 1}</span>
+    return `
+      <div class="chapter-matrix-badge ${levelClass}" data-chapter-id="${escapeHtml(ch.id)}" data-chapter-title="${escapeHtml(ch.title)}" data-chapter-module="${escapeHtml(ch.moduleId || 'pediatrie')}" title="${escapeHtml(ch.title)} (${durationText})">
+        <div style="display:flex;align-items:center;justify-content:space-between;width:100%;">
+          <span class="matrix-badge-num">#${idx + 1}</span>
+          ${modTag}
+        </div>
         <span class="matrix-badge-title">${escapeHtml(ch.title)}</span>
         <span class="matrix-badge-duration">${durationText}</span>
       </div>
     `;
-  });
+  }
+
+  let html = '';
+  if (filterMod === 'all') {
+    html = `
+      <div class="matrix-module-group">
+        <div class="matrix-group-title">
+          <span class="session-module-pill mod-pedia">Pédiatrie</span>
+          <span>Programme Pédiatrie (${pediaChs.length} cours)</span>
+        </div>
+        <div class="matrix-group-badges">
+          ${pediaChs.map((ch, idx) => renderChapterBadge(ch, idx)).join('')}
+        </div>
+      </div>
+      <div class="matrix-module-group" style="margin-top:14px;">
+        <div class="matrix-group-title">
+          <span class="session-module-pill mod-psy">Psychiatrie</span>
+          <span>Programme Psychiatrie (${psyChs.length} cours)</span>
+        </div>
+        <div class="matrix-group-badges">
+          ${psyChs.map((ch, idx) => renderChapterBadge(ch, idx)).join('')}
+        </div>
+      </div>
+    `;
+  } else {
+    html = `<div class="matrix-group-badges">${displayChapters.map((ch, idx) => renderChapterBadge(ch, idx)).join('')}</div>`;
+  }
 
   container.innerHTML = html;
 
@@ -5080,8 +5147,10 @@ function renderLessonChaptersMatrix(allChapters, summaries) {
     badge.onclick = () => {
       const chTitle = badge.dataset.chapterTitle;
       const chId = badge.dataset.chapterId;
+      const chMod = badge.dataset.chapterModule;
       currentLessonSelected.name = chTitle;
       currentLessonSelected.chapterId = chId;
+      currentLessonSelected.moduleId = chMod;
       const searchInput = document.getElementById('lesson-search-input');
       if (searchInput) searchInput.value = chTitle;
       const activeNameEl = document.getElementById('active-lesson-name');
@@ -5164,31 +5233,35 @@ function renderLessonTrackerUI() {
   const manualFieldLabel = document.getElementById('manual-lesson-field-label');
   if (manualFieldLabel) manualFieldLabel.textContent = `Cours / Leçon (${modTitle}) :`;
 
-  // 1. Summary Table per Lesson
+  // 1. Summary Table per Lesson (filtered by lessonSummaryModuleFilter)
   const summaryContainer = document.getElementById('lesson-summary-table-container');
-  const summaries = lessonTracker.getLessonSummaries();
+  const summaries = lessonTracker.getLessonSummaries(lessonSummaryModuleFilter);
   if (countBadge) {
-    countBadge.textContent = `${summaries.length} leçon${summaries.length > 1 ? 's' : ''} enregistrée${summaries.length > 1 ? 's' : ''}`;
+    const modSuffix = lessonSummaryModuleFilter === 'pediatrie' ? ' (Pédiatrie)' : (lessonSummaryModuleFilter === 'psychiatrie' ? ' (Psychiatrie)' : ' (Tous modules)');
+    countBadge.textContent = `${summaries.length} leçon${summaries.length > 1 ? 's' : ''} enregistrée${summaries.length > 1 ? 's' : ''}${modSuffix}`;
   }
 
   if (summaryContainer) {
     if (summaries.length === 0) {
+      const modMsg = lessonSummaryModuleFilter === 'pediatrie' ? ' pour le module Pédiatrie' : (lessonSummaryModuleFilter === 'psychiatrie' ? ' pour le module Psychiatrie' : '');
       summaryContainer.innerHTML = `
         <div class="stats-empty-state" style="padding: 24px 16px;">
           <i data-lucide="clock"></i>
           <div>
-            <div style="font-weight:700;color:#ffffff;margin-bottom:4px;">Aucune leçon chronométrée pour le moment</div>
+            <div style="font-weight:700;color:#ffffff;margin-bottom:4px;">Aucune leçon chronométrée${modMsg}</div>
             <div style="font-size:0.8rem;color:var(--text-muted);">Choisissez un cours ci-dessus et cliquez sur <strong>Démarrer</strong> pour lancer votre premier chronomètre !</div>
           </div>
         </div>
       `;
     } else {
       const maxDuration = Math.max(...summaries.map(s => s.totalDurationSeconds || 0), 1);
+      const isAll = (lessonSummaryModuleFilter === 'all');
       let tableHtml = `
         <table class="lesson-summary-table">
           <thead>
             <tr>
               <th>Leçon / Cours</th>
+              ${isAll ? '<th>Module</th>' : ''}
               <th>Temps Cumulé</th>
               <th>Sessions</th>
               <th>Dernière Étude</th>
@@ -5201,6 +5274,8 @@ function renderLessonTrackerUI() {
       summaries.forEach(s => {
         const pct = Math.round((s.totalDurationSeconds / maxDuration) * 100);
         const lastDateFormatted = s.lastSessionDateStr ? formatDateFr(s.lastSessionDateStr) : '--';
+        const modPill = `<span class="session-module-pill ${s.moduleId === 'psychiatrie' ? 'mod-psy' : 'mod-pedia'}">${s.moduleTitle || (s.moduleId === 'psychiatrie' ? 'Psychiatrie' : 'Pédiatrie')}</span>`;
+
         tableHtml += `
           <tr>
             <td>
@@ -5209,6 +5284,7 @@ function renderLessonTrackerUI() {
                 <span>${escapeHtml(s.lessonName)}</span>
               </span>
             </td>
+            ${isAll ? `<td>${modPill}</td>` : ''}
             <td>
               <span class="table-time-pill">${formatDuration(s.totalDurationSeconds)}</span>
             </td>
@@ -5235,15 +5311,16 @@ function renderLessonTrackerUI() {
     }
   }
 
-  // 2. Recent Sessions List
+  // 2. Recent Sessions List (filtered by lessonRecentModuleFilter)
   const sessionsContainer = document.getElementById('lesson-sessions-list');
-  const recentSessions = lessonTracker.getSessions().slice(0, 15);
+  const recentSessions = lessonTracker.getSessions(lessonRecentModuleFilter).slice(0, 15);
 
   if (sessionsContainer) {
     if (recentSessions.length === 0) {
+      const modMsg = lessonRecentModuleFilter === 'pediatrie' ? ' pour le module Pédiatrie' : (lessonRecentModuleFilter === 'psychiatrie' ? ' pour le module Psychiatrie' : '');
       sessionsContainer.innerHTML = `
         <div style="text-align:center;padding:16px;color:var(--text-dim);font-size:0.8rem;">
-          L'historique des sessions apparaîtra ici après votre premier chronométrage.
+          Aucune session enregistrée${modMsg}. L'historique des sessions apparaîtra ici après votre premier chronométrage.
         </div>
       `;
     } else {
@@ -5252,10 +5329,17 @@ function renderLessonTrackerUI() {
         const dateFormatted = sess.dateStr ? formatDateFr(sess.dateStr) : '';
         const timeObj = sess.endTime ? new Date(sess.endTime) : null;
         const timeStr = timeObj ? timeObj.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '';
+        const sessModId = sess.moduleId || (typeof identifySessionModule === 'function' ? identifySessionModule(sess) : 'pediatrie');
+        const sessModTitle = (sessModId === 'psychiatrie') ? 'Psychiatrie' : 'Pédiatrie';
+        const sessModClass = (sessModId === 'psychiatrie') ? 'mod-psy' : 'mod-pedia';
+
         sessionsHtml += `
           <div class="lesson-session-row">
             <div class="session-left-meta">
-              <span class="session-lesson-title">${escapeHtml(sess.lessonName)}</span>
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <span class="session-module-pill ${sessModClass}">${sessModTitle}</span>
+                <span class="session-lesson-title">${escapeHtml(sess.lessonName)}</span>
+              </div>
               <span class="session-date-time">${escapeHtml(dateFormatted)}${timeStr ? ' à ' + timeStr : ''}</span>
             </div>
             <div class="session-right-actions">
@@ -5283,6 +5367,20 @@ function renderLessonTrackerUI() {
       });
     }
   }
+
+  // Synchronize active classes on module filter pill groups
+  document.querySelectorAll('#lesson-dist-module-filter .course-pill-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mod === lessonDistModuleFilter);
+  });
+  document.querySelectorAll('#lesson-matrix-module-filter .course-pill-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mod === lessonMatrixModuleFilter);
+  });
+  document.querySelectorAll('#lesson-summary-module-filter .course-pill-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mod === lessonSummaryModuleFilter);
+  });
+  document.querySelectorAll('#lesson-recent-module-filter .course-pill-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mod === lessonRecentModuleFilter);
+  });
 
   // 3. Synchroniser la classe active sur tous les boutons du sélecteur de période des cours
   const rangeToggleEl = document.getElementById('stats-lesson-range-toggle');
@@ -5680,6 +5778,7 @@ function setupLessonTrackerEventListeners() {
       const session = lessonTracker.addManualSession({
         lessonName,
         chapterId: matchedCh ? matchedCh.id : null,
+        moduleId: matchedCh ? (matchedCh.moduleId || getActiveModuleId()) : getActiveModuleId(),
         durationSeconds,
         dateStr
       });
@@ -5705,7 +5804,7 @@ function setupLessonTrackerEventListeners() {
         return;
       }
       currentLessonSelected.name = name;
-      lessonTracker.startTimer(currentLessonSelected.name, currentLessonSelected.chapterId, currentLessonOffsetSeconds);
+      lessonTracker.startTimer(currentLessonSelected.name, currentLessonSelected.chapterId, currentLessonOffsetSeconds, currentLessonSelected.moduleId || getActiveModuleId());
       
       // Reset offset controls after starting
       currentLessonOffsetSeconds = 0;
@@ -5767,6 +5866,54 @@ function setupLessonTrackerEventListeners() {
       }
     };
   }
+
+  // Module filter buttons for Distribution (Top 10)
+  const distPills = document.querySelectorAll('#lesson-dist-module-filter .course-pill-btn');
+  distPills.forEach(btn => {
+    btn.onclick = () => {
+      distPills.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      lessonDistModuleFilter = btn.dataset.mod || 'all';
+      renderLessonDistribution(lessonDistModuleFilter);
+      refreshLucide();
+    };
+  });
+
+  // Module filter buttons for Matrix (Programme)
+  const matrixPills = document.querySelectorAll('#lesson-matrix-module-filter .course-pill-btn');
+  matrixPills.forEach(btn => {
+    btn.onclick = () => {
+      matrixPills.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      lessonMatrixModuleFilter = btn.dataset.mod || 'all';
+      renderLessonChaptersMatrix(lessonMatrixModuleFilter);
+      refreshLucide();
+    };
+  });
+
+  // Module filter buttons for Summary Table
+  const summaryPills = document.querySelectorAll('#lesson-summary-module-filter .course-pill-btn');
+  summaryPills.forEach(btn => {
+    btn.onclick = () => {
+      summaryPills.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      lessonSummaryModuleFilter = btn.dataset.mod || 'all';
+      renderLessonTrackerUI();
+      refreshLucide();
+    };
+  });
+
+  // Module filter buttons for Recent Sessions
+  const recentPills = document.querySelectorAll('#lesson-recent-module-filter .course-pill-btn');
+  recentPills.forEach(btn => {
+    btn.onclick = () => {
+      recentPills.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      lessonRecentModuleFilter = btn.dataset.mod || 'all';
+      renderLessonTrackerUI();
+      refreshLucide();
+    };
+  });
 
   // Sub-navigation buttons (QCM vs Cours)
   const btnSubnavQcm = document.getElementById('btn-subnav-qcm');

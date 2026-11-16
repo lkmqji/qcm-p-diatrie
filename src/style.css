@@ -6403,6 +6403,15 @@ body {
 }
 
 /* Sub-table Headers */
+.lesson-subtable-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
 .lesson-subtable-title {
   display: flex;
   align-items: center;
@@ -6411,7 +6420,64 @@ body {
   font-weight: 700;
   font-size: 0.95rem;
   color: #ffffff;
-  margin-bottom: 12px;
+  margin-bottom: 0;
+}
+
+/* Module badges for lessons and sessions */
+.session-module-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+
+.session-module-pill.mod-pedia {
+  background: rgba(0, 212, 255, 0.12);
+  color: var(--cyan);
+  border: 1px solid rgba(0, 212, 255, 0.32);
+}
+
+.session-module-pill.mod-psy {
+  background: rgba(168, 85, 247, 0.14);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.35);
+}
+
+.lesson-module-pills .course-pill-btn {
+  font-size: 0.72rem;
+  padding: 3px 9px;
+}
+
+.matrix-module-group {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.matrix-group-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #ffffff;
+  padding: 4px 0 3px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.matrix-group-badges {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
 }
 
 /* Summary Table Wrap */

@@ -6431,6 +6431,15 @@ body {
 }
 
 /* Sub-table Headers */
+.lesson-subtable-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
 .lesson-subtable-title {
   display: flex;
   align-items: center;
@@ -6439,7 +6448,64 @@ body {
   font-weight: 700;
   font-size: 0.95rem;
   color: #ffffff;
-  margin-bottom: 12px;
+  margin-bottom: 0;
+}
+
+/* Module badges for lessons and sessions */
+.session-module-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+
+.session-module-pill.mod-pedia {
+  background: rgba(0, 212, 255, 0.12);
+  color: var(--cyan);
+  border: 1px solid rgba(0, 212, 255, 0.32);
+}
+
+.session-module-pill.mod-psy {
+  background: rgba(168, 85, 247, 0.14);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.35);
+}
+
+.lesson-module-pills .course-pill-btn {
+  font-size: 0.72rem;
+  padding: 3px 9px;
+}
+
+.matrix-module-group {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.matrix-group-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #ffffff;
+  padding: 4px 0 3px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.matrix-group-badges {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
 }
 
 /* Summary Table Wrap */
@@ -8483,6 +8549,11 @@ body {
                   <i data-lucide="pie-chart" style="color:var(--cyan);"></i>
                   <span>Répartition du Temps par Cours (Top 10)</span>
                 </div>
+                <div class="course-tracker-pills lesson-module-pills" id="lesson-dist-module-filter">
+                  <button type="button" class="course-pill-btn active" data-mod="all">Tous</button>
+                  <button type="button" class="course-pill-btn" data-mod="pediatrie">Pédiatrie</button>
+                  <button type="button" class="course-pill-btn" data-mod="psychiatrie">Psychiatrie</button>
+                </div>
               </div>
               <div class="lesson-distribution-list" id="lesson-distribution-container">
                 <!-- Injected dynamically -->
@@ -8496,13 +8567,20 @@ body {
                   <i data-lucide="layers" style="color:var(--purple);"></i>
                   <span id="lesson-matrix-title">Couverture du Programme (Chapitres)</span>
                 </div>
-                <div class="heatmap-legend">
-                  <span class="legend-label">0h</span>
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                  <div class="course-tracker-pills lesson-module-pills" id="lesson-matrix-module-filter">
+                    <button type="button" class="course-pill-btn active" data-mod="all">Tous (55)</button>
+                    <button type="button" class="course-pill-btn" data-mod="pediatrie">Pédiatrie (35)</button>
+                    <button type="button" class="course-pill-btn" data-mod="psychiatrie">Psychiatrie (20)</button>
+                  </div>
+                  <div class="heatmap-legend">
+                    <span class="legend-label">0h</span>
                   <span class="legend-cell level-0" title="Non débuté (0h)"></span>
                   <span class="legend-cell level-1" title="< 1h d'étude"></span>
                   <span class="legend-cell level-2" title="1h - 2h"></span>
                   <span class="legend-cell level-3" title="2h - 4h"></span>
                   <span class="legend-cell level-4" title="> 4h"></span>
+                </div>
                 </div>
               </div>
               <div class="lesson-chapters-matrix" id="lesson-chapters-matrix">
@@ -8513,9 +8591,16 @@ body {
 
           <!-- Tableau Récapitulatif par Leçon -->
           <div class="lesson-summary-table-wrap">
-            <div class="lesson-subtable-title">
-              <i data-lucide="table" style="width:16px;height:16px;color:var(--emerald);"></i>
-              <span>Cumul du Temps Passé par Leçon</span>
+            <div class="lesson-subtable-header">
+              <div class="lesson-subtable-title">
+                <i data-lucide="table" style="width:16px;height:16px;color:var(--emerald);"></i>
+                <span>Cumul du Temps Passé par Leçon</span>
+              </div>
+              <div class="course-tracker-pills lesson-module-pills" id="lesson-summary-module-filter">
+                <button type="button" class="course-pill-btn active" data-mod="all">Tous les cours</button>
+                <button type="button" class="course-pill-btn" data-mod="pediatrie">Pédiatrie (35)</button>
+                <button type="button" class="course-pill-btn" data-mod="psychiatrie">Psychiatrie (20)</button>
+              </div>
             </div>
             <div class="lesson-table-container" id="lesson-summary-table-container">
               <!-- Rendered dynamically -->
@@ -8524,9 +8609,16 @@ body {
 
           <!-- Historique des Sessions Récentes de Leçons -->
           <div class="lesson-recent-sessions-wrap">
-            <div class="lesson-subtable-title">
-              <i data-lucide="history" style="width:16px;height:16px;color:var(--purple);"></i>
-              <span>Sessions Récentes Enregistrées</span>
+            <div class="lesson-subtable-header">
+              <div class="lesson-subtable-title">
+                <i data-lucide="history" style="width:16px;height:16px;color:var(--purple);"></i>
+                <span>Sessions Récentes Enregistrées</span>
+              </div>
+              <div class="course-tracker-pills lesson-module-pills" id="lesson-recent-module-filter">
+                <button type="button" class="course-pill-btn active" data-mod="all">Tous les cours</button>
+                <button type="button" class="course-pill-btn" data-mod="pediatrie">Pédiatrie</button>
+                <button type="button" class="course-pill-btn" data-mod="psychiatrie">Psychiatrie</button>
+              </div>
             </div>
             <div class="lesson-sessions-list" id="lesson-sessions-list">
               <!-- Rendered dynamically -->
@@ -8989,9 +9081,9 @@ body {
 
       <div class="update-version-banner">
         <div class="update-version-chips">
-          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.5.5</strong></span>
+          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.5.6</strong></span>
           <i data-lucide="arrow-right" style="width:14px;height:14px;color:var(--text-dim);"></i>
-          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.5.5</strong></span>
+          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.5.6</strong></span>
         </div>
         <div class="update-release-date" id="update-modal-date">Publiée sur GitHub Releases</div>
       </div>
