@@ -8550,8 +8550,8 @@ body {
                   <span>Répartition du Temps par Cours (Top 10)</span>
                 </div>
                 <div class="course-tracker-pills lesson-module-pills" id="lesson-dist-module-filter">
-                  <button type="button" class="course-pill-btn active" data-mod="all">Tous</button>
-                  <button type="button" class="course-pill-btn" data-mod="pediatrie">Pédiatrie</button>
+                  <button type="button" class="course-pill-btn" data-mod="all">Tous</button>
+                  <button type="button" class="course-pill-btn active" data-mod="pediatrie">Pédiatrie</button>
                   <button type="button" class="course-pill-btn" data-mod="psychiatrie">Psychiatrie</button>
                 </div>
               </div>
@@ -8569,8 +8569,8 @@ body {
                 </div>
                 <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
                   <div class="course-tracker-pills lesson-module-pills" id="lesson-matrix-module-filter">
-                    <button type="button" class="course-pill-btn active" data-mod="all">Tous (55)</button>
-                    <button type="button" class="course-pill-btn" data-mod="pediatrie">Pédiatrie (35)</button>
+                    <button type="button" class="course-pill-btn" data-mod="all">Tous (55)</button>
+                    <button type="button" class="course-pill-btn active" data-mod="pediatrie">Pédiatrie (35)</button>
                     <button type="button" class="course-pill-btn" data-mod="psychiatrie">Psychiatrie (20)</button>
                   </div>
                   <div class="heatmap-legend">
@@ -8597,8 +8597,8 @@ body {
                 <span>Cumul du Temps Passé par Leçon</span>
               </div>
               <div class="course-tracker-pills lesson-module-pills" id="lesson-summary-module-filter">
-                <button type="button" class="course-pill-btn active" data-mod="all">Tous les cours</button>
-                <button type="button" class="course-pill-btn" data-mod="pediatrie">Pédiatrie (35)</button>
+                <button type="button" class="course-pill-btn" data-mod="all">Tous les cours</button>
+                <button type="button" class="course-pill-btn active" data-mod="pediatrie">Pédiatrie (35)</button>
                 <button type="button" class="course-pill-btn" data-mod="psychiatrie">Psychiatrie (20)</button>
               </div>
             </div>
@@ -8615,8 +8615,8 @@ body {
                 <span>Sessions Récentes Enregistrées</span>
               </div>
               <div class="course-tracker-pills lesson-module-pills" id="lesson-recent-module-filter">
-                <button type="button" class="course-pill-btn active" data-mod="all">Tous les cours</button>
-                <button type="button" class="course-pill-btn" data-mod="pediatrie">Pédiatrie</button>
+                <button type="button" class="course-pill-btn" data-mod="all">Tous les cours</button>
+                <button type="button" class="course-pill-btn active" data-mod="pediatrie">Pédiatrie</button>
                 <button type="button" class="course-pill-btn" data-mod="psychiatrie">Psychiatrie</button>
               </div>
             </div>
@@ -9081,9 +9081,9 @@ body {
 
       <div class="update-version-banner">
         <div class="update-version-chips">
-          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.5.6</strong></span>
+          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.5.7</strong></span>
           <i data-lucide="arrow-right" style="width:14px;height:14px;color:var(--text-dim);"></i>
-          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.5.6</strong></span>
+          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.5.7</strong></span>
         </div>
         <div class="update-release-date" id="update-modal-date">Publiée sur GitHub Releases</div>
       </div>
@@ -13173,7 +13173,7 @@ class FirebaseSyncService {
 // Update Management Service for PédiaDrill
 // Checks GitHub Releases for new APK versions, notifies the user, and triggers direct download.
 
-const CURRENT_APP_VERSION = '1.5.6';
+const CURRENT_APP_VERSION = '1.5.7';
 const GITHUB_REPO = 'lkmqji/qcm-p-diatrie';
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
 const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours auto-check cooldown
@@ -13775,6 +13775,12 @@ function switchActiveModule(moduleId) {
   if (activeNameEl) activeNameEl.textContent = 'Aucune leçon choisie';
   const clearBtn = document.getElementById('btn-clear-lesson-input');
   if (clearBtn) clearBtn.style.display = 'none';
+
+  // Synchroniser les filtres du suivi des cours sur le module sélectionné par défaut
+  lessonDistModuleFilter = mod.id;
+  lessonMatrixModuleFilter = mod.id;
+  lessonSummaryModuleFilter = mod.id;
+  lessonRecentModuleFilter = mod.id;
 
   // Update header subtitle if element exists
   const headerSubtitle = document.querySelector('.brand-subtitle');
@@ -17893,10 +17899,11 @@ let currentLessonChartRange = 'today';
 let currentLessonOffsetSeconds = 0; // offset in seconds
 
 // Module-specific filters for lesson stats panels ('all' | 'pediatrie' | 'psychiatrie')
-let lessonDistModuleFilter = 'all';
-let lessonMatrixModuleFilter = 'all';
-let lessonSummaryModuleFilter = 'all';
-let lessonRecentModuleFilter = 'all';
+// Par défaut, le module actif du dashboard est sélectionné au lieu de 'all'
+let lessonDistModuleFilter = (typeof getActiveModuleId === 'function' ? getActiveModuleId() : 'pediatrie');
+let lessonMatrixModuleFilter = (typeof getActiveModuleId === 'function' ? getActiveModuleId() : 'pediatrie');
+let lessonSummaryModuleFilter = (typeof getActiveModuleId === 'function' ? getActiveModuleId() : 'pediatrie');
+let lessonRecentModuleFilter = (typeof getActiveModuleId === 'function' ? getActiveModuleId() : 'pediatrie');
 
 function getLessonFilteredSessions(range = currentLessonStatsRange, offset = selectedLessonDayOffset, customStart = customLessonStatsStart, customEnd = customLessonStatsEnd) {
   const sessions = (typeof lessonTracker !== 'undefined' && lessonTracker) ? lessonTracker.getSessions() : [];

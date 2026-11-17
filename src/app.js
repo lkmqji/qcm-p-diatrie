@@ -379,6 +379,12 @@ function switchActiveModule(moduleId) {
   const clearBtn = document.getElementById('btn-clear-lesson-input');
   if (clearBtn) clearBtn.style.display = 'none';
 
+  // Synchroniser les filtres du suivi des cours sur le module sélectionné par défaut
+  lessonDistModuleFilter = mod.id;
+  lessonMatrixModuleFilter = mod.id;
+  lessonSummaryModuleFilter = mod.id;
+  lessonRecentModuleFilter = mod.id;
+
   // Update header subtitle if element exists
   const headerSubtitle = document.querySelector('.brand-subtitle');
   if (headerSubtitle) {
@@ -4496,10 +4502,11 @@ let currentLessonChartRange = 'today';
 let currentLessonOffsetSeconds = 0; // offset in seconds
 
 // Module-specific filters for lesson stats panels ('all' | 'pediatrie' | 'psychiatrie')
-let lessonDistModuleFilter = 'all';
-let lessonMatrixModuleFilter = 'all';
-let lessonSummaryModuleFilter = 'all';
-let lessonRecentModuleFilter = 'all';
+// Par défaut, le module actif du dashboard est sélectionné au lieu de 'all'
+let lessonDistModuleFilter = (typeof getActiveModuleId === 'function' ? getActiveModuleId() : 'pediatrie');
+let lessonMatrixModuleFilter = (typeof getActiveModuleId === 'function' ? getActiveModuleId() : 'pediatrie');
+let lessonSummaryModuleFilter = (typeof getActiveModuleId === 'function' ? getActiveModuleId() : 'pediatrie');
+let lessonRecentModuleFilter = (typeof getActiveModuleId === 'function' ? getActiveModuleId() : 'pediatrie');
 
 function getLessonFilteredSessions(range = currentLessonStatsRange, offset = selectedLessonDayOffset, customStart = customLessonStatsStart, customEnd = customLessonStatsEnd) {
   const sessions = (typeof lessonTracker !== 'undefined' && lessonTracker) ? lessonTracker.getSessions() : [];
