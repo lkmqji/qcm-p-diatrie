@@ -34,7 +34,7 @@ qcm-p-diatrie/
 │   └── MASTER_PRODUCT_TECHNICAL_CONTEXT.md # Contexte technique global (source unique de vérité)
 ├── android/                              # Projet natif Android Capacitor 8
 │   ├── app/
-│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 25, versionName 1.5.8)
+│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 26, versionName 1.5.9)
 │   │   ├── debug.keystore                # Keystore de signature unifié (local & CI/CD)
 │   │   ├── google-services.json          # Configuration Firebase Android (qcm-pediatr, com.pediadrill.app)
 │   │   └── src/main/
@@ -220,8 +220,10 @@ Lorsqu'une réponse est incorrecte (dans la modale d'erreur ou dans le carnet) :
     1. **Mode Séquentiel (Étape par étape, 1 par 1)** :
        - Résolution question par question avec bandeau du cas fixé en haut et barre de progression animée (`#arena-clinical-progress-track`).
        - Stepper de navigation (`#arena-clinical-sequential-stepper`) avec boutons `[← Précédente]` et `[Suivante →]` (et raccourcis flèches clavier) pour revoir ou ajuster ses sélections à tout moment.
-       - Enchaînement sans spoiler : la validation d'une sous-question enregistre la réponse et passe automatiquement à la sous-question suivante.
-       - À la dernière question, le bouton bascule en *« 🏁 Valider tout le cas clinique »*.
+       - **Double système d'actions ergonomique dans `.arena-actions-right`** :
+         - **Option Principale par défaut (`#btn-submit-answer` / `#btn-submit-croq`)** : Grand bouton cyan bien visible. Libellé initial *« Vérifier la réponse »* (ou *« Évaluer par IA (Gemini) »* pour CROQ). Au clic ou `Entrée`, évalue immédiatement la sous-question courante : surbrillance visuelle des options (`.correct-highlight` en vert, `.wrong-highlight` en rouge), verrouillage des choix, affichage de l'explication officielle dans `#arena-explanation-box`, et bascule automatique du bouton en *« Question suivante ➔ »* (ou *« 🏁 Voir le Bilan Final »* sur la dernière question).
+         - **Option Secondaire compacte à gauche (`#btn-clinical-save-next`)** : Bouton compact stylé `.btn-clinical-save-step` placé à gauche du bouton principal. Libellé *« Enregistrer & Suivant »* (ou *« Enregistrer & Bilan »* sur la dernière question). Permet d'enregistrer le choix sans dévoiler la correction ni l'explication et de passer immédiatement à l'étape suivante. Se masque automatiquement si la question a déjà été vérifiée.
+       - À la dernière question vérifiée ou enregistrée, bascule vers la validation globale et la modale de synthèse.
     2. **Mode Déroulant (Liste scrollable tout-en-un)** :
        - Conteneur déroulant `#arena-clinical-scroll-container` présentant l'ensemble des sous-questions du cas sous forme de fiches modulaires (`.clinical-card`).
        - **Validation unitaire avec retour immédiat** : Bouton *« Vérifier cette question »* (`.btn-clinical-card-validate`) sur chaque carte dévoilant immédiatement si la sous-question est juste ou fausse, avec surbrillance dynamique des options et encadré d'explication officielle (`.clinical-card-feedback`).
@@ -366,7 +368,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ### 3.9. Système de Mises à Jour Automatiques & GitHub Releases (`src/services/updateService.js` & CI/CD)
 - **Service d'Orchestration des Mises à Jour (`UpdateService`)** :
-  - Version déclarée : `CURRENT_APP_VERSION = '1.5.8'` synchronisée avec `package.json` et `build.gradle` (`versionCode 25`).
+  - Version déclarée : `CURRENT_APP_VERSION = '1.5.9'` synchronisée avec `package.json` et `build.gradle` (`versionCode 26`).
   - Comparaison sémantique universelle (`compareVersions`) ignorant les préfixes `v`.
   - Interrogation de l'API GitHub Releases (`https://api.github.com/repos/lkmqji/qcm-p-diatrie/releases/latest`) avec cooldown de 4 heures (`pedia_last_update_check_ts`).
   - Extraction de l'asset `.apk` direct (`PediaDrill.apk`). En environnement natif Android Capacitor, l'URL est ouverte via `_system` pour lancer le gestionnaire de téléchargement Android natif.
@@ -595,7 +597,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.5.8` (`versionCode 25`)
+- **Version native** : `versionName 1.5.9` (`versionCode 26`)
 - **Empreinte SHA-1 (Debug Keystore Gradle & GitHub Actions)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
 - **Empreinte SHA-256 (Debug Keystore Gradle & GitHub Actions)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
 - **Keystore unifié** : `android/app/debug.keystore` (Alias : `AndroidDebugKey`, mot de passe `android`, garantissant une empreinte cryptographique identique entre les compilations locales et la CI/CD GitHub Actions).

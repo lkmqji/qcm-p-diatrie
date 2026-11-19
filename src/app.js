@@ -2340,7 +2340,7 @@ function saveSequentialCurrentQuestionState() {
 
 function updateSequentialActionButtons(curNum, total) {
   const defaultActions = document.getElementById('arena-default-actions');
-  if (!defaultActions) return;
+  if (!defaultActions || !clinicalRunState) return;
 
   let stepperBar = document.getElementById('arena-clinical-sequential-stepper');
   if (!stepperBar) {
@@ -2369,20 +2369,63 @@ function updateSequentialActionButtons(curNum, total) {
     </button>
   `;
 
+  const subQ = clinicalRunState.subQuestions[clinicalRunState.currentIndex];
+  const evalData = clinicalRunState.cardEvaluations ? clinicalRunState.cardEvaluations[subQ?.uid] : null;
+  const isAlreadyEvaluated = !!evalData;
+
   const btnSubmitAnswer = document.getElementById('btn-submit-answer');
   const btnSubmitCroq = document.getElementById('btn-submit-croq');
+  const btnClinicalSave = document.getElementById('btn-clinical-save-next');
+  const btnClinicalSaveText = document.getElementById('btn-clinical-save-text');
 
-  const btnText = isLast ? '🏁 Valider tout le cas clinique' : 'Enregistrer & Suivante ➔';
-  if (btnSubmitAnswer) {
-    const span = btnSubmitAnswer.querySelector('span');
-    if (span) span.textContent = btnText;
+  // Option secondaire (à gauche, plus petite) : "Enregistrer & Suivant" ou "Enregistrer & Bilan"
+  if (btnClinicalSave) {
+    if (isAlreadyEvaluated) {
+      btnClinicalSave.style.display = 'none';
+    } else {
+      btnClinicalSave.style.display = 'inline-flex';
+      const saveText = isLast ? 'Enregistrer & Bilan' : 'Enregistrer & Suivant';
+      if (btnClinicalSaveText) btnClinicalSaveText.textContent = saveText;
+      btnClinicalSave.title = isLast ? 'Enregistrer sans corriger et voir le bilan' : 'Enregistrer sans corriger et passer à la suivante';
+
+      if (subQ?.is_croq) {
+        const croqVal = document.getElementById('arena-croq-input')?.value?.trim() || '';
+        btnClinicalSave.disabled = !croqVal;
+      } else {
+        btnClinicalSave.disabled = selectedOptionIds.size === 0;
+      }
+    }
   }
-  if (btnSubmitCroq) {
-    const span = btnSubmitCroq.querySelector('span');
-    if (span) span.textContent = btnText;
+
+  // Option principale par défaut : "Vérifier la réponse" (ou "Question suivante ➔" si déjà vérifiée)
+  if (isAlreadyEvaluated) {
+    const nextBtnText = isLast ? '🏁 Voir le Bilan Final' : 'Question suivante ➔';
+    if (btnSubmitAnswer) {
+      const span = btnSubmitAnswer.querySelector('span');
+      if (span) span.textContent = nextBtnText;
+      btnSubmitAnswer.disabled = false;
+    }
+    if (btnSubmitCroq) {
+      const span = btnSubmitCroq.querySelector('span');
+      if (span) span.textContent = nextBtnText;
+      btnSubmitCroq.disabled = false;
+    }
+  } else {
+    if (btnSubmitAnswer) {
+      const span = btnSubmitAnswer.querySelector('span');
+      if (span) span.textContent = 'Vérifier la réponse';
+      btnSubmitAnswer.disabled = selectedOptionIds.size === 0;
+    }
+    if (btnSubmitCroq) {
+      const span = btnSubmitCroq.querySelector('span');
+      if (span) span.textContent = 'Évaluer par IA (Gemini)';
+      const croqVal = document.getElementById('arena-croq-input')?.value?.trim() || '';
+      btnSubmitCroq.disabled = !croqVal;
+    }
   }
 
   refreshLucide(stepperBar);
+  if (btnClinicalSave) refreshLucide(btnClinicalSave);
 }
 
 window.navClinicalSequentialStep = function(delta) {
@@ -2395,6 +2438,167 @@ window.navClinicalSequentialStep = function(delta) {
   }
 };
 
+window.saveAndAdvanceSequentialClinicalQuestion = function() {
+  if (!isClinicalRunActive || !clinicalRunState || clinicalRunState.mode !== 'sequential') return;
+  saveSequentialCurrentQuestionState();
+
+  const isLast = clinicalRunState.currentIndex === clinicalRunState.subQuestions.length - 1;
+  if (isLast) {
+    window.validateAllClinicalSubQuestions();
+  } else {
+    clinicalRunState.currentIndex++;
+    renderClinicalSequentialView();
+  }
+};
+
+function verifySequentialSubQuestion(subQ) {
+  if (!subQ || !clinicalRunState) return;
+  saveSequentialCurrentQuestionState();
+
+  const ans = clinicalRunState.userAnswers[subQ.uid] || { selectedLetters: [], isCroq: false, croqText: '' };
+  const userLetters = (ans.selectedLetters || []).slice().sort();
+
+  const correctOptions = (subQ.options || []).filter(o => o.is_correct);
+  const correctLetters = correctOptions.map(o => o.letter).sort();
+
+  const isCorrect = userLetters.length > 0 &&
+    correctLetters.length === userLetters.length &&
+    correctLetters.every((l, idx) => l === userLetters[idx]);
+
+  clinicalRunState.cardEvaluations[subQ.uid] = {
+    isEvaluated: true,
+    isCorrect,
+    score: isCorrect ? 100 : 0,
+    feedback: isCorrect ? 'Excellente réponse !' : 'Réponse inexacte.',
+    userText: userLetters.join(', ') || 'Aucune',
+    correctText: correctLetters.join(', ')
+  };
+
+  // Visuel sur les options
+  document.querySelectorAll('.option-item').forEach(el => {
+    const letter = el.dataset.letter;
+    const isSelected = userLetters.includes(letter);
+    const isCor = correctLetters.includes(letter);
+
+    el.classList.remove('selected');
+    if (isSelected && !isCor) {
+      el.classList.add('wrong-highlight');
+    } else if (isCor) {
+      el.classList.add('correct-highlight');
+    }
+  });
+
+  const optionsContainer = document.getElementById('arena-options-container');
+  if (optionsContainer) optionsContainer.style.pointerEvents = 'none';
+
+  // Affichage de l'explication officielle dans l'arène
+  const expBox = document.getElementById('arena-explanation-box');
+  const expText = document.getElementById('arena-explanation-text');
+  if (expBox && expText) {
+    const statusHeader = isCorrect 
+      ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#22c55e;font-weight:800;font-family:var(--font-heading);font-size:0.95rem;">
+           <i data-lucide="check-circle" style="width:18px;height:18px;"></i>
+           <span>Bonne réponse !</span>
+         </div>`
+      : `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#ef4444;font-weight:800;font-family:var(--font-heading);font-size:0.95rem;">
+           <i data-lucide="x-circle" style="width:18px;height:18px;"></i>
+           <span>Réponse incorrecte (Bonne(s) réponse(s) : <strong>${correctLetters.join(', ')}</strong>)</span>
+         </div>`;
+
+    let expContent = '';
+    if (subQ.explanation && subQ.explanation.trim()) {
+      expContent = formatMedicalContent(subQ.explanation.trim());
+    } else {
+      expContent = `<em>Réponse officielle validée conformément aux critères du cours <strong>${escapeHtml(clinicalRunState.chapterTitle || 'Pédiatrie')}</strong>.</em>`;
+    }
+
+    expText.innerHTML = statusHeader + expContent;
+    expBox.style.display = 'flex';
+  }
+
+  const total = clinicalRunState.subQuestions.length;
+  const curNum = clinicalRunState.currentIndex + 1;
+  updateSequentialActionButtons(curNum, total);
+  refreshLucide();
+}
+
+async function verifySequentialCroqSubQuestion(subQ) {
+  if (!subQ || !clinicalRunState) return;
+  saveSequentialCurrentQuestionState();
+
+  const ans = clinicalRunState.userAnswers[subQ.uid];
+  const userInput = ans ? ans.croqText : '';
+  if (!userInput) {
+    alert('Veuillez saisir votre réponse avant de vérifier.');
+    return;
+  }
+
+  const btnSubmitCroq = document.getElementById('btn-submit-croq');
+  if (btnSubmitCroq) {
+    btnSubmitCroq.disabled = true;
+    btnSubmitCroq.innerHTML = `<i data-lucide="loader" class="spin"></i> <span>Évaluation IA en cours...</span>`;
+    refreshLucide(btnSubmitCroq);
+  }
+
+  let isCorrect = false;
+  let score = null;
+  let feedback = '';
+
+  try {
+    const evalResult = await geminiService.evaluateCroq(
+      subQ.question || subQ.statement,
+      clinicalRunState.caseStatement,
+      subQ.croq_answer,
+      userInput
+    );
+    score = evalResult.score;
+    feedback = evalResult.feedback;
+    isCorrect = evalResult.isValid && score >= 75;
+  } catch (err) {
+    console.error('Error evaluating sequential CROQ:', err);
+    isCorrect = false;
+    feedback = 'Évaluation hors-ligne : réponse enregistrée.';
+  }
+
+  clinicalRunState.cardEvaluations[subQ.uid] = {
+    isEvaluated: true,
+    isCorrect,
+    score,
+    feedback,
+    userText: userInput,
+    correctText: subQ.croq_answer
+  };
+
+  const croqInput = document.getElementById('arena-croq-input');
+  if (croqInput) croqInput.disabled = true;
+
+  const expBox = document.getElementById('arena-explanation-box');
+  const expText = document.getElementById('arena-explanation-text');
+  if (expBox && expText) {
+    const scoreBadge = score !== null ? ` (Score : ${score}%)` : '';
+    const statusHeader = isCorrect 
+      ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#22c55e;font-weight:800;font-family:var(--font-heading);font-size:0.95rem;">
+           <i data-lucide="check-circle" style="width:18px;height:18px;"></i>
+           <span>Réponse validée par l'IA${scoreBadge} !</span>
+         </div>`
+      : `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#ef4444;font-weight:800;font-family:var(--font-heading);font-size:0.95rem;">
+           <i data-lucide="alert-circle" style="width:18px;height:18px;"></i>
+           <span>Réponse jugée insuffisante par l'IA${scoreBadge}</span>
+         </div>`;
+
+    const feedbackHtml = feedback ? `<div style="margin: 8px 0; padding: 10px; background: rgba(255,255,255,0.04); border-radius: 8px; font-size: 0.88rem; border-left: 3px solid var(--purple);"><strong>Feedback IA :</strong> ${escapeHtml(feedback)}</div>` : '';
+    const answerRefHtml = subQ.croq_answer ? `<div style="margin: 8px 0; font-size: 0.88rem; color: var(--text-muted);"><strong>Réponse attendue :</strong> ${escapeHtml(subQ.croq_answer)}</div>` : '';
+
+    expText.innerHTML = statusHeader + feedbackHtml + answerRefHtml;
+    expBox.style.display = 'flex';
+  }
+
+  const total = clinicalRunState.subQuestions.length;
+  const curNum = clinicalRunState.currentIndex + 1;
+  updateSequentialActionButtons(curNum, total);
+  refreshLucide();
+}
+
 function renderClinicalSequentialView() {
   if (!isClinicalRunActive || !clinicalRunState) return;
 
@@ -2406,6 +2610,7 @@ function renderClinicalSequentialView() {
   const defaultActions = document.getElementById('arena-default-actions');
   const successBanner = document.getElementById('arena-success-banner');
   const expBox = document.getElementById('arena-explanation-box');
+  const expText = document.getElementById('arena-explanation-text');
   const aiBox = document.getElementById('arena-ai-explanation-box');
   const questionText = document.getElementById('arena-question-text');
   const mediaWrap = document.getElementById('arena-media-wrap');
@@ -2443,45 +2648,113 @@ function renderClinicalSequentialView() {
   }
 
   const savedAns = clinicalRunState.userAnswers[subQ.uid];
+  const evalData = clinicalRunState.cardEvaluations ? clinicalRunState.cardEvaluations[subQ.uid] : null;
+  const isAlreadyEvaluated = !!evalData;
+
   selectedOptionIds.clear();
 
   const btnSubmitAnswer = document.getElementById('btn-submit-answer');
   const btnSubmitCroq = document.getElementById('btn-submit-croq');
   const shortcutHint = document.getElementById('keyboard-shortcuts-hint');
 
-  updateSequentialActionButtons(curNum, total);
-
   if (subQ.is_croq) {
     if (optionsContainer) optionsContainer.style.display = 'none';
     if (croqContainer) croqContainer.style.display = 'flex';
     const croqInput = document.getElementById('arena-croq-input');
     if (croqInput) {
-      croqInput.value = savedAns ? savedAns.croqText : '';
-      croqInput.disabled = false;
+      croqInput.value = isAlreadyEvaluated ? (evalData.userText || '') : (savedAns ? savedAns.croqText : '');
+      croqInput.disabled = isAlreadyEvaluated;
+      croqInput.oninput = () => {
+        const hasText = croqInput.value.trim().length > 0;
+        const btnSave = document.getElementById('btn-clinical-save-next');
+        if (btnSave && !isAlreadyEvaluated) btnSave.disabled = !hasText;
+        if (btnSubmitCroq && !isAlreadyEvaluated) btnSubmitCroq.disabled = !hasText;
+      };
     }
     if (btnSubmitAnswer) btnSubmitAnswer.style.display = 'none';
     if (btnSubmitCroq) btnSubmitCroq.style.display = 'flex';
     if (shortcutHint) shortcutHint.textContent = `Mode Cas Clinique Séquentiel • CROQ (${curNum}/${total})`;
+
+    if (isAlreadyEvaluated && expBox && expText) {
+      const scoreBadge = evalData.score !== null ? ` (Score : ${evalData.score}%)` : '';
+      const statusHeader = evalData.isCorrect 
+        ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#22c55e;font-weight:800;font-family:var(--font-heading);font-size:0.95rem;">
+             <i data-lucide="check-circle" style="width:18px;height:18px;"></i>
+             <span>Réponse validée par l'IA${scoreBadge} !</span>
+           </div>`
+        : `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#ef4444;font-weight:800;font-family:var(--font-heading);font-size:0.95rem;">
+             <i data-lucide="alert-circle" style="width:18px;height:18px;"></i>
+             <span>Réponse jugée insuffisante par l'IA${scoreBadge}</span>
+           </div>`;
+
+      const feedbackHtml = evalData.feedback ? `<div style="margin: 8px 0; padding: 10px; background: rgba(255,255,255,0.04); border-radius: 8px; font-size: 0.88rem; border-left: 3px solid var(--purple);"><strong>Feedback IA :</strong> ${escapeHtml(evalData.feedback)}</div>` : '';
+      const answerRefHtml = subQ.croq_answer ? `<div style="margin: 8px 0; font-size: 0.88rem; color: var(--text-muted);"><strong>Réponse attendue :</strong> ${escapeHtml(subQ.croq_answer)}</div>` : '';
+
+      expText.innerHTML = statusHeader + feedbackHtml + answerRefHtml;
+      expBox.style.display = 'flex';
+    }
   } else {
     if (croqContainer) croqContainer.style.display = 'none';
-    if (optionsContainer) optionsContainer.style.display = 'flex';
+    if (optionsContainer) {
+      optionsContainer.style.display = 'flex';
+      optionsContainer.style.pointerEvents = isAlreadyEvaluated ? 'none' : 'auto';
+    }
     if (btnSubmitAnswer) btnSubmitAnswer.style.display = 'flex';
     if (btnSubmitCroq) btnSubmitCroq.style.display = 'none';
     if (shortcutHint) shortcutHint.textContent = `Mode Cas Clinique Séquentiel • Question ${curNum}/${total}`;
 
     renderOptionsList(subQ.options || []);
 
-    if (savedAns && savedAns.selectedLetters && savedAns.selectedLetters.length > 0) {
+    if (isAlreadyEvaluated) {
+      const correctOptions = (subQ.options || []).filter(o => o.is_correct);
+      const correctLetters = correctOptions.map(o => o.letter).sort();
+      const userLetters = (savedAns?.selectedLetters || []).slice();
+
       document.querySelectorAll('.option-item').forEach(el => {
-        if (savedAns.selectedLetters.includes(el.dataset.letter)) {
-          selectedOptionIds.add(el.dataset.optId);
-          el.classList.add('selected');
+        const letter = el.dataset.letter;
+        const isSelected = userLetters.includes(letter);
+        const isCor = correctLetters.includes(letter);
+        el.classList.remove('selected');
+        if (isSelected && !isCor) {
+          el.classList.add('wrong-highlight');
+        } else if (isCor) {
+          el.classList.add('correct-highlight');
         }
       });
-      if (btnSubmitAnswer) btnSubmitAnswer.disabled = false;
+
+      if (expBox && expText) {
+        const statusHeader = evalData.isCorrect 
+          ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#22c55e;font-weight:800;font-family:var(--font-heading);font-size:0.95rem;">
+               <i data-lucide="check-circle" style="width:18px;height:18px;"></i>
+               <span>Bonne réponse !</span>
+             </div>`
+          : `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#ef4444;font-weight:800;font-family:var(--font-heading);font-size:0.95rem;">
+               <i data-lucide="x-circle" style="width:18px;height:18px;"></i>
+               <span>Réponse incorrecte (Bonne(s) réponse(s) : <strong>${correctLetters.join(', ')}</strong>)</span>
+             </div>`;
+
+        let expContent = '';
+        if (subQ.explanation && subQ.explanation.trim()) {
+          expContent = formatMedicalContent(subQ.explanation.trim());
+        } else {
+          expContent = `<em>Réponse officielle validée conformément aux critères du cours <strong>${escapeHtml(clinicalRunState.chapterTitle || 'Pédiatrie')}</strong>.</em>`;
+        }
+        expText.innerHTML = statusHeader + expContent;
+        expBox.style.display = 'flex';
+      }
+    } else {
+      if (savedAns && savedAns.selectedLetters && savedAns.selectedLetters.length > 0) {
+        document.querySelectorAll('.option-item').forEach(el => {
+          if (savedAns.selectedLetters.includes(el.dataset.letter)) {
+            selectedOptionIds.add(el.dataset.optId);
+            el.classList.add('selected');
+          }
+        });
+      }
     }
   }
 
+  updateSequentialActionButtons(curNum, total);
   updateClinicalRunBarUI();
   refreshLucide();
 }
@@ -2976,6 +3249,12 @@ window.closeClinicalCaseSummaryModal = function() {
   const stepperBar = document.getElementById('arena-clinical-sequential-stepper');
   if (stepperBar) stepperBar.style.display = 'none';
 
+  const btnClinicalSaveNext = document.getElementById('btn-clinical-save-next');
+  if (btnClinicalSaveNext) btnClinicalSaveNext.style.display = 'none';
+
+  const optionsContainer = document.getElementById('arena-options-container');
+  if (optionsContainer) optionsContainer.style.pointerEvents = 'auto';
+
   const scrollContainer = document.getElementById('arena-clinical-scroll-container');
   if (scrollContainer) {
     scrollContainer.style.display = 'none';
@@ -2999,6 +3278,12 @@ window.quitClinicalCaseRun = function() {
 
   const stepperBar = document.getElementById('arena-clinical-sequential-stepper');
   if (stepperBar) stepperBar.style.display = 'none';
+
+  const btnClinicalSaveNext = document.getElementById('btn-clinical-save-next');
+  if (btnClinicalSaveNext) btnClinicalSaveNext.style.display = 'none';
+
+  const optionsContainer = document.getElementById('arena-options-container');
+  if (optionsContainer) optionsContainer.style.pointerEvents = 'auto';
 
   const scrollContainer = document.getElementById('arena-clinical-scroll-container');
   if (scrollContainer) {
@@ -3403,6 +3688,12 @@ function loadNextArenaQuestion() {
   const btnSubmitAnswer = document.getElementById('btn-submit-answer');
   const btnSubmitCroq = document.getElementById('btn-submit-croq');
   const shortcutHint = document.getElementById('keyboard-shortcuts-hint');
+  const btnClinicalSaveNext = document.getElementById('btn-clinical-save-next');
+  if (btnClinicalSaveNext) {
+    btnClinicalSaveNext.style.display = 'none';
+    btnClinicalSaveNext.disabled = true;
+  }
+  if (optionsContainer) optionsContainer.style.pointerEvents = 'auto';
 
   if (currentQuestion.is_croq) {
     // Mode CROQ
@@ -3411,6 +3702,9 @@ function loadNextArenaQuestion() {
     document.getElementById('arena-croq-input').value = '';
     btnSubmitAnswer.style.display = 'none';
     btnSubmitCroq.style.display = 'flex';
+    const croqSpan = btnSubmitCroq.querySelector('span');
+    if (croqSpan) croqSpan.textContent = 'Évaluer par IA (Gemini)';
+    btnSubmitCroq.disabled = false;
     shortcutHint.textContent = 'Mode CROQ : Évaluation IA sémantique';
   } else {
     // Mode QCU / QCM
@@ -3419,6 +3713,8 @@ function loadNextArenaQuestion() {
     btnSubmitAnswer.style.display = 'flex';
     btnSubmitCroq.style.display = 'none';
     btnSubmitAnswer.disabled = true;
+    const ansSpan = btnSubmitAnswer.querySelector('span');
+    if (ansSpan) ansSpan.textContent = 'Valider la réponse';
     shortcutHint.textContent = 'Raccourcis : [1-5] pour cocher, [Entrée] pour valider';
 
     renderOptionsList(currentQuestion.options || []);
@@ -3463,7 +3759,14 @@ function toggleOptionSelection(itemElement) {
   }
 
   const btnSubmit = document.getElementById('btn-submit-answer');
-  btnSubmit.disabled = selectedOptionIds.size === 0;
+  if (btnSubmit) {
+    btnSubmit.disabled = selectedOptionIds.size === 0;
+  }
+
+  const btnClinicalSave = document.getElementById('btn-clinical-save-next');
+  if (btnClinicalSave && isClinicalRunActive && clinicalRunState && clinicalRunState.mode === 'sequential') {
+    btnClinicalSave.disabled = selectedOptionIds.size === 0;
+  }
 }
 
 // Keyboard quick selection
@@ -3479,19 +3782,28 @@ function selectOptionByIndex(index) {
 // ANSWER SUBMISSION (QCU / QCM)
 // ============================================================================
 async function handleSubmitQcm() {
-  if (!currentQuestion || selectedOptionIds.size === 0 || isEvaluating) return;
+  if (!currentQuestion || isEvaluating) return;
 
   if (isClinicalRunActive && clinicalRunState && clinicalRunState.mode === 'sequential') {
-    saveSequentialCurrentQuestionState();
-    const isLast = clinicalRunState.currentIndex === clinicalRunState.subQuestions.length - 1;
-    if (isLast) {
-      window.validateAllClinicalSubQuestions();
-    } else {
-      clinicalRunState.currentIndex++;
-      renderClinicalSequentialView();
+    const subQ = clinicalRunState.subQuestions[clinicalRunState.currentIndex];
+    const isAlreadyEvaluated = !!(clinicalRunState.cardEvaluations && clinicalRunState.cardEvaluations[subQ.uid]);
+    if (isAlreadyEvaluated) {
+      const isLast = clinicalRunState.currentIndex === clinicalRunState.subQuestions.length - 1;
+      if (isLast) {
+        window.validateAllClinicalSubQuestions();
+      } else {
+        clinicalRunState.currentIndex++;
+        renderClinicalSequentialView();
+      }
+      return;
     }
+
+    if (selectedOptionIds.size === 0) return;
+    verifySequentialSubQuestion(subQ);
     return;
   }
+
+  if (selectedOptionIds.size === 0) return;
 
   isEvaluating = true;
 
@@ -3520,21 +3832,28 @@ async function handleSubmitQcm() {
 // ============================================================================
 async function handleSubmitCroq() {
   if (!currentQuestion || !currentQuestion.is_croq || isEvaluating) return;
-  const userInput = document.getElementById('arena-croq-input').value.trim();
-  if (!userInput) {
-    alert('Veuillez saisir votre réponse avant de lancer l\'évaluation.');
+
+  if (isClinicalRunActive && clinicalRunState && clinicalRunState.mode === 'sequential') {
+    const subQ = clinicalRunState.subQuestions[clinicalRunState.currentIndex];
+    const isAlreadyEvaluated = !!(clinicalRunState.cardEvaluations && clinicalRunState.cardEvaluations[subQ.uid]);
+    if (isAlreadyEvaluated) {
+      const isLast = clinicalRunState.currentIndex === clinicalRunState.subQuestions.length - 1;
+      if (isLast) {
+        window.validateAllClinicalSubQuestions();
+      } else {
+        clinicalRunState.currentIndex++;
+        renderClinicalSequentialView();
+      }
+      return;
+    }
+
+    verifySequentialCroqSubQuestion(subQ);
     return;
   }
 
-  if (isClinicalRunActive && clinicalRunState && clinicalRunState.mode === 'sequential') {
-    saveSequentialCurrentQuestionState();
-    const isLast = clinicalRunState.currentIndex === clinicalRunState.subQuestions.length - 1;
-    if (isLast) {
-      window.validateAllClinicalSubQuestions();
-    } else {
-      clinicalRunState.currentIndex++;
-      renderClinicalSequentialView();
-    }
+  const userInput = document.getElementById('arena-croq-input').value.trim();
+  if (!userInput) {
+    alert('Veuillez saisir votre réponse avant de lancer l\'évaluation.');
     return;
   }
 

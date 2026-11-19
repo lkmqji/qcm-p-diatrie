@@ -1626,6 +1626,44 @@ body {
   padding-top: 12px;
 }
 
+.arena-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-clinical-save-step {
+  background: rgba(56, 189, 248, 0.08);
+  color: var(--cyan);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: var(--radius-md);
+  padding: 10px 16px;
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.btn-clinical-save-step:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--text-muted);
+}
+
+.btn-clinical-save-step:not(:disabled):hover {
+  background: rgba(56, 189, 248, 0.18);
+  border-color: var(--cyan);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2);
+}
+
 .btn-validate {
   background: var(--cyan);
   color: #051024;
@@ -3544,6 +3582,27 @@ body {
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
+  }
+
+  .arena-actions-right {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .arena-actions-right .btn-clinical-save-step {
+    flex: 0 0 auto;
+    padding: 12px 14px;
+    font-size: 0.8rem;
+  }
+
+  .arena-actions-right .btn-validate,
+  .arena-actions-right .btn-croq-eval,
+  .arena-actions-right #btn-history-resume-action {
+    flex: 1;
+    width: auto;
   }
 
   #keyboard-shortcuts-hint {
@@ -8499,20 +8558,29 @@ body {
               Raccourcis : [1-5] options, [Entrée] valider
             </span>
 
-            <button class="btn-validate" id="btn-submit-answer" disabled>
-              <span>Valider la réponse</span>
-              <i data-lucide="arrow-right"></i>
-            </button>
+            <div class="arena-actions-right" id="arena-actions-right">
+              <!-- Option secondaire en mode cas clinique séquentiel (à gauche du bouton principal, taille plus petite) -->
+              <button type="button" class="btn-clinical-save-step" id="btn-clinical-save-next" onclick="window.saveAndAdvanceSequentialClinicalQuestion()" style="display:none;" title="Enregistrer sans corriger et passer à la question suivante" disabled>
+                <i data-lucide="bookmark" style="width:13px;height:13px;"></i>
+                <span id="btn-clinical-save-text">Enregistrer & Suivant</span>
+                <i data-lucide="arrow-right" style="width:12px;height:12px;"></i>
+              </button>
 
-            <button class="btn-croq-eval" id="btn-submit-croq" style="display:none;">
-              <i data-lucide="sparkles"></i>
-              <span>Évaluer par IA (Gemini)</span>
-            </button>
+              <button class="btn-validate" id="btn-submit-answer" disabled>
+                <span>Valider la réponse</span>
+                <i data-lucide="arrow-right"></i>
+              </button>
 
-            <button class="btn-resume-drill" id="btn-history-resume-action" onclick="window.resumeActiveDrill()" style="display:none;padding:10px 20px;font-size:0.9rem;">
-              <span>Reprendre le drill en cours</span>
-              <i data-lucide="arrow-right"></i>
-            </button>
+              <button class="btn-croq-eval" id="btn-submit-croq" style="display:none;">
+                <i data-lucide="sparkles"></i>
+                <span>Évaluer par IA (Gemini)</span>
+              </button>
+
+              <button class="btn-resume-drill" id="btn-history-resume-action" onclick="window.resumeActiveDrill()" style="display:none;padding:10px 20px;font-size:0.9rem;">
+                <span>Reprendre le drill en cours</span>
+                <i data-lucide="arrow-right"></i>
+              </button>
+            </div>
           </div>
 
         </div>
@@ -9662,7 +9730,7 @@ body {
             <i data-lucide="github" style="width:16px;height:16px;color:var(--cyan);"></i>
             <span style="font-size:0.78rem;font-weight:700;color:var(--text-main);text-transform:uppercase;">Mises à Jour Application</span>
           </div>
-          <span class="badge" id="settings-current-app-version" style="background:rgba(0,212,255,0.15);color:var(--cyan);font-size:0.72rem;padding:3px 8px;border-radius:10px;font-weight:700;">v1.5.8</span>
+          <span class="badge" id="settings-current-app-version" style="background:rgba(0,212,255,0.15);color:var(--cyan);font-size:0.72rem;padding:3px 8px;border-radius:10px;font-weight:700;">v1.5.9</span>
         </div>
         <div style="font-size:0.75rem;color:var(--text-muted);line-height:1.45;" id="settings-update-status">
           Vérifie automatiquement les nouvelles versions et correctifs disponibles sur GitHub Releases.
@@ -9696,9 +9764,9 @@ body {
 
       <div class="update-version-banner">
         <div class="update-version-chips">
-          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.5.8</strong></span>
+          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.5.9</strong></span>
           <i data-lucide="arrow-right" style="width:14px;height:14px;color:var(--text-dim);"></i>
-          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.5.8</strong></span>
+          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.5.9</strong></span>
         </div>
         <div class="update-release-date" id="update-modal-date">Publiée sur GitHub Releases</div>
       </div>
