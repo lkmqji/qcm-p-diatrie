@@ -482,6 +482,142 @@ export class QueueEngine {
   }
 
   /**
+   * Process full clinical case validation when 100% of questions are answered correctly
+   * - Advances all questions of the case (+1 current success)
+   * - Marks mastered questions if current >= target
+   * - Distributes remaining questions in the queue
+   */
+  handleClinicalCaseSuccess(uids = []) {
+    if (!Array.isArray(uids) || uids.length === 0) return { success: true, count: 0 };
+    const results = [];
+    let masteredCount = 0;
+
+    // Remove all case uids from their current positions in the queue
+    uids.forEach(uid => {
+      let idx;
+      while ((idx = this.queue.indexOf(uid)) !== -1) {
+        this.queue.splice(idx, 1);
+        if (idx < this.cursor && this.cursor > 0) {
+          this.cursor--;
+        }
+      }
+    });
+
+    // Advance each question
+    uids.forEach(uid => {
+      const st = this.getQuestionStats(uid);
+      st.current += 1;
+      let permanentlyRemoved = false;
+      let pushDistance = 0;
+
+      if (st.current >= st.target) {
+        st.done = true;
+        permanentlyRemoved = true;
+        masteredCount++;
+      } else {
+        const remainingNeeded = st.target - st.current;
+        let insertIndex;
+
+        if (remainingNeeded === 1) {
+          const remainingCount = this.queue.length - this.cursor;
+          if (remainingCount <= 2) {
+            insertIndex = this.queue.length;
+          } else {
+            const halfOffset = Math.floor(remainingCount * 0.5);
+            const randomOffset = halfOffset + Math.floor(Math.random() * (remainingCount - halfOffset + 1));
+            insertIndex = Math.min(this.queue.length, this.cursor + randomOffset);
+          }
+          pushDistance = insertIndex - this.cursor;
+        } else {
+          pushDistance = Math.floor(Math.random() * 51) + 50;
+          insertIndex = Math.min(this.queue.length, this.cursor + pushDistance);
+        }
+        this.queue.splice(insertIndex, 0, uid);
+      }
+
+      results.push({
+        uid,
+        newCurrent: st.current,
+        target: st.target,
+        permanentlyRemoved,
+        pushDistance
+      });
+    });
+
+    if (this.cursor >= this.queue.length && this.queue.length > 0) {
+      this.cursor = 0;
+    }
+
+    this.saveState();
+    return {
+      success: true,
+      totalCount: uids.length,
+      masteredCount,
+      results,
+      remainingInQueue: this.queue.length
+    };
+  }
+
+  /**
+   * Process full clinical case validation when at least 1 question is incorrect
+   * Strict Rule:
+   * - ZERO question is credited with a success (none of the questions advance)
+   * - Failed questions get mistakes++ and target incremented (or decremented if target >= 10)
+   * - ALL questions of the clinical case are removed from their current positions
+   *   and re-inserted as a contiguous block in 5 to 7 cards to reappear together for retrieval!
+   */
+  handleClinicalCaseFailure(allCaseUids = [], failedUids = []) {
+    if (!Array.isArray(allCaseUids) || allCaseUids.length === 0) return { success: false, failedCount: 0 };
+    const failedSet = new Set(failedUids);
+
+    // Apply penalties to failed questions
+    failedUids.forEach(uid => {
+      const st = this.getQuestionStats(uid);
+      const targetWasAtMax = st.target >= 10;
+      st.mistakes += 1;
+      this.totalMistakesCount += 1;
+
+      if (targetWasAtMax) {
+        if (st.current > 0) st.current -= 1;
+      } else {
+        st.target = Math.min(10, 3 + st.mistakes);
+      }
+    });
+
+    // Remove ALL questions of the case from the queue first
+    allCaseUids.forEach(uid => {
+      let idx;
+      while ((idx = this.queue.indexOf(uid)) !== -1) {
+        this.queue.splice(idx, 1);
+        if (idx < this.cursor && this.cursor > 0) {
+          this.cursor--;
+        }
+      }
+    });
+
+    // Re-insert the whole clinical case GROUPED CONTIGUOUSLY in 5 to 7 cards
+    const pushDistance = Math.floor(Math.random() * 3) + 5; // 5 to 7
+    const insertIndex = Math.min(this.queue.length, this.cursor + pushDistance);
+
+    // Splice in the contiguous case questions
+    this.queue.splice(insertIndex, 0, ...allCaseUids);
+
+    if (this.cursor >= this.queue.length && this.queue.length > 0) {
+      this.cursor = 0;
+    }
+
+    this.saveState();
+
+    return {
+      success: false,
+      totalCount: allCaseUids.length,
+      failedCount: failedUids.length,
+      pushDistance,
+      remainingInQueue: this.queue.length
+    };
+  }
+
+  /**
    * Compute live dashboard metrics
    * Toujours calculé sur l'intégralité des 1 905 questions (tous les cours confondus)
    * afin que le total d'itérations pour tout clearer (5 715) et la cadence journalière
@@ -608,9 +744,9 @@ export class QueueEngine {
     return fresh;
   }
 
-  incrementTodayCount() {
+  incrementTodayCount(amount = 1) {
     const tracker = this.getTodayTracker();
-    tracker.count = (tracker.count || 0) + 1;
+    tracker.count = (tracker.count || 0) + (amount > 0 ? amount : 1);
     try {
       localStorage.setItem(getTodayTrackerKey(), JSON.stringify(tracker));
     } catch {}

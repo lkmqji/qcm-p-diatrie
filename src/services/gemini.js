@@ -591,6 +591,96 @@ Rédige l'explication clinique complète et approfondie sans aucune coupure. À 
 
 
   /**
+   * Generate a consolidated clinical case synthesis note (Flash models)
+   * Explains the clinical case, highlights the traps of failed questions,
+   * provides clinical reasoning and a high-yield exam memo.
+   */
+  async generateClinicalCaseSynthesisNote(clinicalCaseText, subQuestions = [], results = [], chapterTitle = "Pédiatrie") {
+    let questionsBreakdown = "";
+    subQuestions.forEach((sq, idx) => {
+      const res = results[idx] || {};
+      const statusIcon = res.isCorrect ? "✅ JUSTE" : "❌ FAUX";
+      const userAns = res.userAnswer || "Aucune";
+      const correctAns = res.correctAnswer || sq.croq_answer || "N/A";
+      questionsBreakdown += `Question ${idx + 1} (${statusIcon}) :\n`;
+      questionsBreakdown += `- Énoncé : ${sq.question || sq.statement || ""}\n`;
+      questionsBreakdown += `- Réponse étudiant : ${userAns}\n`;
+      questionsBreakdown += `- Réponse attendue : ${correctAns}\n`;
+      if (sq.explanation) questionsBreakdown += `- Explication base : ${sq.explanation}\n`;
+      questionsBreakdown += `\n`;
+    });
+
+    const failedQuestions = results.filter(r => !r.isCorrect);
+
+    const systemPrompt = `Tu es un Professeur de médecine et membre du jury du concours de résidanat.
+L'étudiant vient de résoudre l'intégralité d'un dossier de Cas Clinique et a commis des erreurs.
+Tu dois rédiger UNE SEULE NOTE DE SYNTHÈSE CLINIQUE CONSOLIDÉE, claire, percutante et haut rendement concours.
+Va droit au but avec un style médical soigné, rigoureux et précis (mots-clés en gras, listes à puces).
+La réponse doit être TOTALE et NE DOIT JAMAIS ÊTRE COUPÉE.
+Structure OBLIGATOIREMENT ton retour selon ces 4 sections détaillées :
+
+1. 🎯 SYNTHÈSE DU CAS CLINIQUE & ERREURS COMMISES :
+Résume la présentation clinique du patient (âge, symptômes cardinaux, terrain) et explique synthétiquement où se situaient les pièges majeurs ayant conduit aux fautes.
+
+2. 📋 ANALYSE POINT PAR POINT DES QUESTIONS ÉCHOUÉES :
+Pour chaque question ratée par l'étudiant, analyse précisément la confusion médicale commise, pourquoi son choix était erroné et la justification formelle de la réponse attendue.
+
+3. 🩺 DÉMARCHE DIAGNOSTIQUE & STRATÉGIE THÉRAPEUTIQUE DU CAS :
+Détaille la conduite clinique pas-à-pas : arbre décisionnel, examens de première intention vs contre-indiqués, hiérarchie de la prise en charge (urgences vitales d'abord).
+
+4. 💡 RÈGLE D'OR CONCOURS & MÉMO DU CAS :
+Formule une règle mémo percutante pour ne plus jamais se faire piéger sur ce type de cas clinique au concours.
+
+5. 🚫 RÈGLE STRICTE SUR LES CALCULS, FORMULES ET UNITÉS :
+- INTERDICTION TOTALE d'utiliser la syntaxe LaTeX (\\text, \\mathbf, \\frac, \\times...).
+- Écris tout en français médical clair ("12 g/dl", "5 mg/kg", "x", "/").`;
+
+    const userPrompt = `MODULE : ${chapterTitle}
+ÉNONCÉ DU CAS CLINIQUE :
+${clinicalCaseText}
+
+BILAN DES SOUS-QUESTIONS (${failedQuestions.length} faute(s) sur ${subQuestions.length} questions) :
+${questionsBreakdown}
+
+Rédige la note de synthèse clinique complète consolidée.`;
+
+    try {
+      const result = await this.callWithFallback(userPrompt, systemPrompt, 2500);
+      return {
+        note: cleanLatexMath(result.text),
+        modelUsed: result.modelUsed
+      };
+    } catch (err) {
+      console.warn("Clinical case synthesis note generation failed, fallback to local summary:", err);
+      let localNote = `### 1. 🎯 SYNTHÈSE DU CAS CLINIQUE & ERREURS COMMISES :\n`;
+      localNote += `* **Cas Clinique :** ${clinicalCaseText.slice(0, 220)}...\n`;
+      localNote += `* **Bilan global :** ${failedQuestions.length} erreur(s) sur ${subQuestions.length} sous-questions.\n\n`;
+
+      localNote += `### 2. 📋 ANALYSE DES QUESTIONS ÉCHOUÉES :\n`;
+      subQuestions.forEach((sq, idx) => {
+        const res = results[idx] || {};
+        if (!res.isCorrect) {
+          localNote += `* **Question ${idx + 1} :** Réponse donnée : *${res.userAnswer || 'Vide'}* | Réponse attendue : **${res.correctAnswer || sq.croq_answer || 'N/A'}**\n`;
+          if (sq.explanation) localNote += `  ↳ *Justification :* ${sq.explanation.trim()}\n`;
+        }
+      });
+      localNote += `\n`;
+
+      localNote += `### 3. 🩺 DÉMARCHE DE RAISONNEMENT GLOBALE :\n`;
+      localNote += `* **Cours associé :** *${chapterTitle}*\n`;
+      localNote += `* **Priorité clinique :** Dans les cas cliniques à questions liées, toujours analyser le tableau dans sa globalité sans se précipiter sur un diagnostic hâtif.\n\n`;
+
+      localNote += `### 4. 💡 RÈGLE D'OR CONCOURS :\n`;
+      localNote += `> **Mémo :** En présence d'un cas clinique progressif, chaque sous-question s'appuie sur la cohérence physiopathologique des précédentes.`;
+
+      return {
+        note: cleanLatexMath(localNote),
+        modelUsed: "Synthèse Clinique Locale (Hors-Ligne)"
+      };
+    }
+  }
+
+  /**
    * Question-in-context AI chat tutor (Flash models only)
    * Answers student queries specifically focused on the current QCM / CROQ
    */

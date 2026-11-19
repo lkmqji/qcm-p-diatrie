@@ -34,7 +34,7 @@ qcm-p-diatrie/
 │   └── MASTER_PRODUCT_TECHNICAL_CONTEXT.md # Contexte technique global (source unique de vérité)
 ├── android/                              # Projet natif Android Capacitor 8
 │   ├── app/
-│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 24, versionName 1.5.7)
+│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 25, versionName 1.5.8)
 │   │   ├── debug.keystore                # Keystore de signature unifié (local & CI/CD)
 │   │   ├── google-services.json          # Configuration Firebase Android (qcm-pediatr, com.pediadrill.app)
 │   │   └── src/main/
@@ -205,7 +205,7 @@ Lorsqu'une réponse est incorrecte (dans la modale d'erreur ou dans le carnet) :
 
 ---
 
-### 3.5. Cas Cliniques : Numérotation des Sous-Questions & Accordéon de Consultation Intégrale (`#view-arena`)
+### 3.5. Cas Cliniques : Numérotation, Consultation & Moteur de Résolution Complète (`#view-arena`)
 - **Numérotation Contextuelle des Sous-Questions (`#arena-subquestion-badge`)** :
   - Pour toute question issue d'un cas clinique (`q.clinical_case` présent, `q.id` au format `CaseNumber.QuestionNumber` comme `37.4`), un badge néon stylisé violet/cyan est injecté au-dessus de l'énoncé.
   - Libellé automatique : `Cas Clinique {X} • Question {Y}/{Total}` (ex: « Cas Clinique 37 • Question 4/10 »).
@@ -214,7 +214,27 @@ Lorsqu'une réponse est incorrecte (dans la modale d'erreur ou dans le carnet) :
   - **En-tête enrichi** : La boîte du cas clinique intègre un en-tête flex (`.clinical-case-header`) avec titre stéthoscope et un bouton interactif `#btn-toggle-clinical-questions` affichant dynamiquement le nombre de sous-questions (ex: *« Voir les 10 questions du cas »*).
   - **Consultation sans quitter le drill** : Le clic sur le bouton déplie un volet accordéon animé sous le texte du cas sans recharger la page ni altérer la position dans la file SRS.
   - **Rendu en lecture seule** : Chaque sous-question est présentée avec son numéro, son énoncé médical formaté (`formatMedicalContent`), ses propositions de réponse (A à E) ou sa pastille CROQ, et un badge distinctif `Question en cours` sur la question active.
-  - **Prise en charge universelle** : Fonctionnel en mode drill actif (`renderQuestion`) ainsi qu'en mode consultation d'historique des QCM précédents (`renderHistoryQuestion`).
+- **Moteur de Résolution Complète du Cas Clinique (`startClinicalCaseRun`, `ClinicalCaseRunController`)** :
+  - **Déclenchement direct** : Bouton néon violet/cyan `#btn-start-clinical-case` (*« 🎯 Résoudre le cas complet (X Q) »*) positionné dans l'en-tête du cas à côté de l'accordéon.
+  - **Deux modes d'affichage complémentaires et commutables en direct** :
+    1. **Mode Séquentiel (Étape par étape, 1 par 1)** :
+       - Résolution question par question avec bandeau du cas fixé en haut et barre de progression animée (`#arena-clinical-progress-track`).
+       - Stepper de navigation (`#arena-clinical-sequential-stepper`) avec boutons `[← Précédente]` et `[Suivante →]` (et raccourcis flèches clavier) pour revoir ou ajuster ses sélections à tout moment.
+       - Enchaînement sans spoiler : la validation d'une sous-question enregistre la réponse et passe automatiquement à la sous-question suivante.
+       - À la dernière question, le bouton bascule en *« 🏁 Valider tout le cas clinique »*.
+    2. **Mode Déroulant (Liste scrollable tout-en-un)** :
+       - Conteneur déroulant `#arena-clinical-scroll-container` présentant l'ensemble des sous-questions du cas sous forme de fiches modulaires (`.clinical-card`).
+       - **Validation unitaire avec retour immédiat** : Bouton *« Vérifier cette question »* (`.btn-clinical-card-validate`) sur chaque carte dévoilant immédiatement si la sous-question est juste ou fausse, avec surbrillance dynamique des options et encadré d'explication officielle (`.clinical-card-feedback`).
+       - **Barre d'action maître sticky** (`.clinical-scroll-master-actions`) au bas de l'écran affichant le décompte des questions renseignées et le bouton maître *« Valider tout le cas clinique & Voir le Bilan »*.
+  - **Bascule instantanée & Paramètres** :
+    - Commutateur à boutons pilules `#btn-mode-sequential` et `#btn-mode-scroll` dans la barre active `#arena-clinical-run-bar` pour permuter de mode à tout moment sans perte des réponses saisies.
+    - Sélecteur de mode par défaut dans les Paramètres (`#settings-clinical-mode-select`) avec persistance dans `localStorage` (`pedia_clinical_case_mode`).
+  - **Règle Stricte « Tout ou Rien » & Repositionnement Groupé SRS (`QueueEngine`)** :
+    - **100% de réussite (0 faute)** : Toutes les sous-questions du cas avancent (+1 palier SRS, `handleClinicalCaseSuccess`), marquage maîtrisé si seuil `target` atteint, et crédit intégral de +N questions au compteur du jour (`incrementTodayCount(N)`). Déclenchement des confettis de célébration.
+    - **En cas d'échec (≥ 1 faute)** : **0 question n'est créditée comme juste** (aucun succès enregistré), pénalités de répétition appliquées aux questions ratées, et l'intégralité des questions du cas est retirée de la file et **réinsérée de façon groupée et contiguë dans 5 à 7 cartes** (`insertIndex = cursor + 5..7`), garantissant que le cas clinique réapparaît complet en bloc lors de la prochaine révision.
+  - **Modale de Bilan & Synthèse IA Consolidée (`#modal-clinical-case-summary`)** :
+    - Modale plein écran avec bannière de verdict (Émeraude en succès, Rose/Ambre en échec), récapitulatif détaillé de chaque sous-question et impact sur la file SRS.
+    - En cas d'échec, appel automatique à `geminiService.generateClinicalCaseSynthesisNote` produisant une démarche clinique consolidée en 4 sections (Synthèse du cas, analyse des questions échouées, stratégie diagnostique/thérapeutique, et règle d'or concours), sauvegardée dans le Carnet de Raisonnement.
 
 ---
 
@@ -346,7 +366,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ### 3.9. Système de Mises à Jour Automatiques & GitHub Releases (`src/services/updateService.js` & CI/CD)
 - **Service d'Orchestration des Mises à Jour (`UpdateService`)** :
-  - Version déclarée : `CURRENT_APP_VERSION = '1.5.7'` synchronisée avec `package.json` et `build.gradle` (`versionCode 24`).
+  - Version déclarée : `CURRENT_APP_VERSION = '1.5.8'` synchronisée avec `package.json` et `build.gradle` (`versionCode 25`).
   - Comparaison sémantique universelle (`compareVersions`) ignorant les préfixes `v`.
   - Interrogation de l'API GitHub Releases (`https://api.github.com/repos/lkmqji/qcm-p-diatrie/releases/latest`) avec cooldown de 4 heures (`pedia_last_update_check_ts`).
   - Extraction de l'asset `.apk` direct (`PediaDrill.apk`). En environnement natif Android Capacitor, l'URL est ouverte via `_system` pour lancer le gestionnaire de téléchargement Android natif.
@@ -575,7 +595,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.5.6` (`versionCode 24`)
+- **Version native** : `versionName 1.5.8` (`versionCode 25`)
 - **Empreinte SHA-1 (Debug Keystore Gradle & GitHub Actions)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
 - **Empreinte SHA-256 (Debug Keystore Gradle & GitHub Actions)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
 - **Keystore unifié** : `android/app/debug.keystore` (Alias : `AndroidDebugKey`, mot de passe `android`, garantissant une empreinte cryptographique identique entre les compilations locales et la CI/CD GitHub Actions).

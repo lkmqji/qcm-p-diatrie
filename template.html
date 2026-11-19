@@ -7641,6 +7641,495 @@ body {
   }
 }
 
+
+/* ============================================================================
+   CLINICAL CASE FULL RESOLUTION ENGINE (PEDIA & PSY)
+   ============================================================================ */
+
+.btn-start-clinical-case {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.32), rgba(0, 212, 255, 0.32));
+  border: 1px solid rgba(0, 212, 255, 0.5);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 14px rgba(0, 212, 255, 0.2);
+}
+
+.btn-start-clinical-case:hover {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.5), rgba(0, 212, 255, 0.5));
+  border-color: var(--cyan);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.clinical-run-bar {
+  background: var(--bg-surface);
+  border: 1px solid rgba(0, 212, 255, 0.35);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  animation: fadeIn 0.25s ease;
+}
+
+.clinical-run-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.clinical-run-badge {
+  background: rgba(139, 92, 246, 0.2);
+  color: var(--purple);
+  border: 1px solid rgba(139, 92, 246, 0.45);
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.clinical-run-step-counter {
+  color: var(--cyan);
+  font-weight: 700;
+  font-size: 0.8rem;
+  font-family: var(--font-heading);
+}
+
+.clinical-run-mode-switcher {
+  display: inline-flex;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.btn-clinical-mode-toggle {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 16px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: var(--transition);
+}
+
+.btn-clinical-mode-toggle:hover {
+  color: var(--text-main);
+}
+
+.btn-clinical-mode-toggle.active {
+  background: rgba(0, 212, 255, 0.22);
+  color: var(--cyan);
+  font-weight: 700;
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.2);
+}
+
+.btn-clinical-run-quit {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.32);
+  color: var(--rose);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 16px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: var(--transition);
+}
+
+.btn-clinical-run-quit:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: var(--rose);
+}
+
+.clinical-run-progress-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.clinical-run-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--purple), var(--cyan));
+  transition: width 0.3s ease;
+  border-radius: 4px;
+}
+
+/* Mode Déroulant (Scroll Container) */
+.clinical-scroll-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 10px;
+  margin-bottom: 24px;
+  animation: fadeIn 0.25s ease;
+}
+
+.clinical-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  transition: var(--transition);
+}
+
+.clinical-card.is-validated-correct {
+  border-color: rgba(16, 185, 129, 0.55);
+  background: rgba(16, 185, 129, 0.05);
+}
+
+.clinical-card.is-validated-wrong {
+  border-color: rgba(239, 68, 68, 0.55);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.clinical-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 8px;
+}
+
+.clinical-card-qnum {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--cyan);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.clinical-card-status-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 12px;
+}
+
+.clinical-card-status-badge.unanswered {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+}
+
+.clinical-card-status-badge.answered {
+  background: rgba(0, 212, 255, 0.15);
+  color: var(--cyan);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+.clinical-card-status-badge.correct {
+  background: rgba(16, 185, 129, 0.18);
+  color: var(--emerald);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.clinical-card-status-badge.wrong {
+  background: rgba(239, 68, 68, 0.18);
+  color: var(--rose);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.clinical-card-statement {
+  font-size: 0.92rem;
+  color: var(--text-main);
+  line-height: 1.55;
+  margin-bottom: 14px;
+}
+
+.clinical-card-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.clinical-card-opt-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.clinical-card-opt-item:hover {
+  background: var(--bg-card-hover);
+  border-color: rgba(0, 212, 255, 0.3);
+  color: var(--text-main);
+}
+
+.clinical-card-opt-item.selected {
+  background: rgba(0, 212, 255, 0.12);
+  border-color: var(--cyan);
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.clinical-card-opt-item.correct-revealed {
+  background: rgba(16, 185, 129, 0.16) !important;
+  border-color: var(--emerald) !important;
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+.clinical-card-opt-item.wrong-revealed {
+  background: rgba(239, 68, 68, 0.16) !important;
+  border-color: var(--rose) !important;
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+.clinical-card-opt-letter {
+  font-weight: 700;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  color: var(--text-main);
+}
+
+.clinical-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.btn-clinical-card-validate {
+  background: rgba(0, 212, 255, 0.12);
+  border: 1px solid rgba(0, 212, 255, 0.35);
+  color: var(--cyan);
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition);
+}
+
+.btn-clinical-card-validate:hover {
+  background: rgba(0, 212, 255, 0.25);
+  border-color: var(--cyan);
+}
+
+.clinical-card-feedback {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  animation: fadeIn 0.2s ease;
+}
+
+.clinical-card-feedback.correct {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #a7f3d0;
+}
+
+.clinical-card-feedback.wrong {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+}
+
+.clinical-scroll-master-actions {
+  position: sticky;
+  bottom: 16px;
+  z-index: 60;
+  background: rgba(13, 21, 39, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(0, 212, 255, 0.4);
+  border-radius: var(--radius-md);
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.clinical-scroll-master-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.btn-master-validate-case {
+  background: linear-gradient(135deg, #10b981, #00d4ff);
+  color: #070b14;
+  font-weight: 800;
+  font-size: 0.92rem;
+  border: none;
+  border-radius: 24px;
+  padding: 12px 24px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: var(--transition);
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.3);
+}
+
+.btn-master-validate-case:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 24px rgba(0, 212, 255, 0.5);
+}
+
+/* Modale Bilan Cas Clinique */
+.clinical-verdict-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+  margin-bottom: 14px;
+}
+
+.clinical-verdict-banner.is-success {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.22), rgba(0, 212, 255, 0.16));
+  border: 1px solid rgba(16, 185, 129, 0.5);
+}
+
+.clinical-verdict-banner.is-failure {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.22), rgba(245, 158, 11, 0.16));
+  border: 1px solid rgba(239, 68, 68, 0.5);
+}
+
+.clinical-verdict-icon {
+  font-size: 2.2rem;
+  flex-shrink: 0;
+}
+
+.clinical-verdict-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  font-family: var(--font-heading);
+  margin-bottom: 4px;
+}
+
+.clinical-verdict-banner.is-success .clinical-verdict-title {
+  color: var(--emerald);
+}
+
+.clinical-verdict-banner.is-failure .clinical-verdict-title {
+  color: var(--rose);
+}
+
+.clinical-verdict-desc {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.clinical-summary-breakdown-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.clinical-summary-breakdown-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 12px;
+}
+
+.clinical-summary-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.clinical-summary-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+}
+
+.clinical-summary-item.is-correct {
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.clinical-summary-item.is-wrong {
+  border-color: rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.clinical-summary-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.clinical-summary-item-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-main);
+}
+
 </style>
 </head>
 <body>
@@ -7888,14 +8377,53 @@ body {
                 <i data-lucide="stethoscope" style="width:13px;height:13px;display:inline;"></i>
                 <span>Cas Clinique</span>
               </div>
-              <button type="button" class="btn-toggle-clinical-accordion" id="btn-toggle-clinical-questions" onclick="window.toggleClinicalQuestionsAccordion()" title="Afficher/masquer toutes les questions du cas clinique" style="display:none;">
-                <i data-lucide="list-ordered" style="width:13px;height:13px;"></i>
-                <span id="btn-toggle-clinical-text">Voir les questions du cas</span>
-                <i data-lucide="chevron-down" id="clinical-accordion-icon" style="width:13px;height:13px;transition:transform 0.2s ease;"></i>
-              </button>
+              <div class="clinical-case-header-actions" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <button type="button" class="btn-start-clinical-case" id="btn-start-clinical-case" onclick="window.startClinicalCaseRun()" title="Résoudre toutes les questions de ce cas clinique" style="display:none;">
+                  <i data-lucide="target" style="width:13px;height:13px;"></i>
+                  <span id="btn-start-clinical-text">Résoudre le cas complet</span>
+                </button>
+                <button type="button" class="btn-toggle-clinical-accordion" id="btn-toggle-clinical-questions" onclick="window.toggleClinicalQuestionsAccordion()" title="Afficher/masquer toutes les questions du cas clinique" style="display:none;">
+                  <i data-lucide="list-ordered" style="width:13px;height:13px;"></i>
+                  <span id="btn-toggle-clinical-text">Voir les questions du cas</span>
+                  <i data-lucide="chevron-down" id="clinical-accordion-icon" style="width:13px;height:13px;transition:transform 0.2s ease;"></i>
+                </button>
+              </div>
             </div>
             <div id="arena-clinical-case-text"></div>
             <div class="clinical-case-accordion" id="arena-clinical-questions-accordion" style="display:none;"></div>
+          </div>
+
+          <!-- Clinical Case Active Run Bar (visible when solving full case) -->
+          <div class="clinical-run-bar" id="arena-clinical-run-bar" style="display:none;">
+            <div class="clinical-run-bar-left">
+              <span class="clinical-run-badge" id="clinical-run-badge">
+                <i data-lucide="target" style="width:13px;height:13px;"></i>
+                <span id="clinical-run-title-text">Cas Clinique</span>
+              </span>
+              <span class="clinical-run-step-counter" id="clinical-run-step-counter">Question 1/5</span>
+            </div>
+            <div class="clinical-run-mode-switcher">
+              <button type="button" class="btn-clinical-mode-toggle active" id="btn-mode-sequential" onclick="window.switchClinicalRunMode('sequential')" title="Mode Séquentiel (1 par 1)">
+                <i data-lucide="play-circle" style="width:12px;height:12px;"></i>
+                <span>1 par 1</span>
+              </button>
+              <button type="button" class="btn-clinical-mode-toggle" id="btn-mode-scroll" onclick="window.switchClinicalRunMode('scroll')" title="Mode Déroulant (Tout sur une page)">
+                <i data-lucide="scroll-text" style="width:12px;height:12px;"></i>
+                <span>Déroulant</span>
+              </button>
+            </div>
+            <button type="button" class="btn-clinical-run-quit" id="btn-quit-clinical-run" onclick="window.quitClinicalCaseRun()" title="Quitter la résolution du cas complet">
+              <i data-lucide="x" style="width:13px;height:13px;"></i>
+              <span>Quitter</span>
+            </button>
+          </div>
+          <div class="clinical-run-progress-track" id="arena-clinical-progress-track" style="display:none;">
+            <div class="clinical-run-progress-fill" id="arena-clinical-progress-fill" style="width:0%;"></div>
+          </div>
+
+          <!-- Mode Déroulant : Scrollable Container pour toutes les questions du cas -->
+          <div class="clinical-scroll-container" id="arena-clinical-scroll-container" style="display:none;">
+            <!-- Dynamically populated cards -->
           </div>
 
           <!-- Subquestion Badge (Cas Clinique • Question Y/N) -->
@@ -8776,6 +9304,71 @@ body {
   </div>
 
   <!-- ─────────────────────────────────────────────────────────────
+       MODALE CLINICAL CASE SUMMARY : BILAN DU CAS CLINIQUE COMPLET
+       ───────────────────────────────────────────────────────────── -->
+  <div class="modal-overlay" id="modal-clinical-case-summary" style="display:none;z-index:9999;">
+    <div class="modal-content" style="max-width: 780px;">
+      
+      <div class="modal-header">
+        <div class="modal-title" id="clinical-summary-modal-title">
+          <i data-lucide="stethoscope"></i>
+          <span>Bilan du Cas Clinique</span>
+        </div>
+        <button class="close-btn" id="btn-close-clinical-summary-modal" onclick="window.closeClinicalCaseSummaryModal()">&times;</button>
+      </div>
+
+      <!-- Verdict Banner -->
+      <div class="clinical-verdict-banner" id="clinical-verdict-banner">
+        <div class="clinical-verdict-icon" id="clinical-verdict-icon">🎉</div>
+        <div>
+          <div class="clinical-verdict-title" id="clinical-verdict-title">Cas Clinique 100% Validé !</div>
+          <div class="clinical-verdict-desc" id="clinical-verdict-desc">Toutes les questions du cas ont été résolues avec succès.</div>
+        </div>
+      </div>
+
+      <!-- SRS & Progression Notice -->
+      <div class="penalty-alert-box" id="clinical-summary-srs-box" style="margin-bottom:14px;">
+        <div class="penalty-icon" id="clinical-summary-srs-icon">⚡</div>
+        <div>
+          <div class="penalty-text-title" id="clinical-summary-srs-title">Impact sur la répétition espacée</div>
+          <div class="penalty-text-desc" id="clinical-summary-srs-desc">Progression enregistrée.</div>
+        </div>
+      </div>
+
+      <!-- Breakdown of all Sub-Questions in Case -->
+      <div class="clinical-summary-breakdown-box">
+        <div class="clinical-summary-breakdown-header">
+          <i data-lucide="list-ordered" style="width:14px;height:14px;"></i>
+          <span>Détail des questions du cas</span>
+          <span class="badge" id="clinical-summary-score-badge" style="margin-left:auto;">5/5</span>
+        </div>
+        <div class="clinical-summary-items" id="clinical-summary-items-list">
+          <!-- Dynamically populated sub-questions list -->
+        </div>
+      </div>
+
+      <!-- AI Synthesis Note (si fautes) -->
+      <div class="reasoning-note-box" id="clinical-summary-ai-box" style="display:none;margin-top:14px;">
+        <div class="reasoning-note-header">
+          <span class="ai-badge">
+            <i data-lucide="sparkles"></i>
+            Synthèse Clinique Consolidée (Dossier Complet)
+          </span>
+          <span class="ai-model-tag" id="clinical-summary-model-tag">Gemini Flash</span>
+        </div>
+        <div class="reasoning-note-content" id="clinical-summary-ai-note">
+          Génération de la synthèse clinique...
+        </div>
+      </div>
+
+      <button class="btn-continue" id="btn-continue-after-clinical-summary" onclick="window.closeClinicalCaseSummaryModal()">
+        <span>Reprendre le Drill (Entrée)</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────────────────
        MODALE 2: SÉLECTION DES CHAPITRES
        ───────────────────────────────────────────────────────────── -->
   <div class="modal-overlay" id="modal-chapters" style="display:none;">
@@ -9040,14 +9633,36 @@ body {
         </div>
       </div>
 
-      <!-- SECTION 4: Mises à Jour de l'Application via GitHub Releases -->
+      <!-- SECTION 4: MODE DE RÉSOLUTION DES CAS CLINIQUES -->
+      <div class="settings-group">
+        <div class="settings-group-header">
+          <div class="settings-group-title">
+            <i data-lucide="stethoscope" style="width:16px;height:16px;"></i>
+            <span>Résolution des Cas Cliniques</span>
+          </div>
+          <span class="badge" id="settings-clinical-mode-badge" style="background:rgba(168,85,247,0.15);color:var(--purple);border:1px solid rgba(168,85,247,0.3);font-size:0.75rem;padding:3px 10px;border-radius:12px;font-weight:700;">
+            Séquentiel
+          </span>
+        </div>
+        <div class="settings-group-desc">
+          Choisissez votre mode d'affichage par défaut lors de la résolution complète d'un cas clinique. Vous pourrez toujours basculer de mode à la volée pendant le drill.
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px;">
+          <select id="settings-clinical-mode-select" class="search-input" style="cursor:pointer;background:var(--bg-card);color:var(--text-main);padding:10px 12px;border:1px solid var(--border-subtle);border-radius:var(--radius-sm);">
+            <option value="sequential">Mode Séquentiel (Question par question, immersion pas-à-pas)</option>
+            <option value="scroll">Mode Déroulant (Toutes les questions sur 1 page avec validation unitaire & globale)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- SECTION 5: Mises à Jour de l'Application via GitHub Releases -->
       <div class="settings-group">
         <div style="display:flex;justify-content:space-between;align-items:center;">
           <div style="display:flex;align-items:center;gap:8px;">
             <i data-lucide="github" style="width:16px;height:16px;color:var(--cyan);"></i>
             <span style="font-size:0.78rem;font-weight:700;color:var(--text-main);text-transform:uppercase;">Mises à Jour Application</span>
           </div>
-          <span class="badge" id="settings-current-app-version" style="background:rgba(0,212,255,0.15);color:var(--cyan);font-size:0.72rem;padding:3px 8px;border-radius:10px;font-weight:700;">v1.5.3</span>
+          <span class="badge" id="settings-current-app-version" style="background:rgba(0,212,255,0.15);color:var(--cyan);font-size:0.72rem;padding:3px 8px;border-radius:10px;font-weight:700;">v1.5.8</span>
         </div>
         <div style="font-size:0.75rem;color:var(--text-muted);line-height:1.45;" id="settings-update-status">
           Vérifie automatiquement les nouvelles versions et correctifs disponibles sur GitHub Releases.
@@ -9081,9 +9696,9 @@ body {
 
       <div class="update-version-banner">
         <div class="update-version-chips">
-          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.5.7</strong></span>
+          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.5.8</strong></span>
           <i data-lucide="arrow-right" style="width:14px;height:14px;color:var(--text-dim);"></i>
-          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.5.7</strong></span>
+          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.5.8</strong></span>
         </div>
         <div class="update-release-date" id="update-modal-date">Publiée sur GitHub Releases</div>
       </div>
