@@ -380,12 +380,78 @@ function removeScopedItem(baseKey, moduleId) {
   }
 }
 
+function migrateReasoningNotesBetweenModules() {
+  if (typeof localStorage === 'undefined') return;
+  try {
+    const pediaKey = 'pedia_drill_reasoning_notes_v1';
+    const psyKey = 'mod_psychiatrie_reasoning_notes';
+    
+    let pediaNotes = [];
+    let psyNotes = [];
+    try { pediaNotes = JSON.parse(localStorage.getItem(pediaKey)) || []; } catch {}
+    try { psyNotes = JSON.parse(localStorage.getItem(psyKey)) || []; } catch {}
+    
+    if (!Array.isArray(pediaNotes)) pediaNotes = [];
+    if (!Array.isArray(psyNotes)) psyNotes = [];
+
+    // Migrate any psychiatry notes found in pediatrics storage
+    const psyInPedia = pediaNotes.filter(n => n && n.questionUid && n.questionUid.startsWith('psy_'));
+    const pediaInPsy = psyNotes.filter(n => n && n.questionUid && !n.questionUid.startsWith('psy_'));
+
+    let pediaChanged = false;
+    let psyChanged = false;
+
+    if (psyInPedia.length > 0) {
+      console.log(`[storageScope] Migrating ${psyInPedia.length} psychiatry note(s) from pediatrics storage to mod_psychiatrie_reasoning_notes...`);
+      const existingPsyUids = new Set(psyNotes.map(n => n.questionUid));
+      psyInPedia.forEach(n => {
+        if (!existingPsyUids.has(n.questionUid)) {
+          psyNotes.push(n);
+          existingPsyUids.add(n.questionUid);
+        }
+      });
+      pediaNotes = pediaNotes.filter(n => !n || !n.questionUid || !n.questionUid.startsWith('psy_'));
+      pediaChanged = true;
+      psyChanged = true;
+    }
+
+    if (pediaInPsy.length > 0) {
+      console.log(`[storageScope] Migrating ${pediaInPsy.length} pediatrics note(s) from psychiatry storage to pedia_drill_reasoning_notes_v1...`);
+      const existingPediaUids = new Set(pediaNotes.map(n => n.questionUid));
+      pediaInPsy.forEach(n => {
+        if (!existingPediaUids.has(n.questionUid)) {
+          pediaNotes.push(n);
+          existingPediaUids.add(n.questionUid);
+        }
+      });
+      psyNotes = psyNotes.filter(n => !n || !n.questionUid || n.questionUid.startsWith('psy_'));
+      pediaChanged = true;
+      psyChanged = true;
+    }
+
+    if (pediaChanged) {
+      localStorage.setItem(pediaKey, JSON.stringify(pediaNotes));
+    }
+    if (psyChanged) {
+      localStorage.setItem(psyKey, JSON.stringify(psyNotes));
+    }
+  } catch (err) {
+    console.warn('[storageScope] Error during reasoning notes cross-module migration:', err);
+  }
+}
+
+// Run cross-module notes migration once at initialization
+if (typeof localStorage !== 'undefined') {
+  migrateReasoningNotesBetweenModules();
+}
+
 if (typeof window !== 'undefined') {
   window.StorageScope = {
     resolveStorageKey,
     getScopedItem,
     setScopedItem,
-    removeScopedItem
+    removeScopedItem,
+    migrateReasoningNotesBetweenModules
   };
 }
 
@@ -911,7 +977,14 @@ ${clinicalCaseContext.chronologySummary}
 `;
     }
 
-    const systemPrompt = `Tu es un Professeur de pédiatrie et jury de concours de résidanat en médecine.
+    const isPsy = (question.uid && question.uid.startsWith('psy_')) ||
+                  (typeof getActiveModuleId === 'function' && getActiveModuleId() === 'psychiatrie');
+    const specialtyTitle = isPsy ? 'psychiatrie et pédopsychiatrie' : 'pédiatrie et chirurgie pédiatrique';
+    const moduleName = isPsy ? 'Psychiatrie' : 'Pédiatrie';
+    const defaultChapter = isPsy ? 'Psychiatrie Générale' : 'Pédiatrie Générale';
+    const populationContext = isPsy ? 'le tableau clinique et les critères diagnostiques (DSM/CIM)' : "les données de l'âge de l'enfant";
+
+    const systemPrompt = `Tu es un Professeur de ${specialtyTitle} et jury de concours de résidanat en médecine.
 L'étudiant s'entraîne sur un QCM/CROQ et a besoin d'une explication CLINIQUE COMPLÈTE, PARFAITEMENT STRUCTURÉE et PERCUTANTE.
 Va directement au but avec un style médical soigné, rigoureux et précis (mots-clés en gras, listes à puces pour une lecture rapide).
 La réponse doit être TOTALE et NE DOIT JAMAIS ÊTRE COUPÉE.
@@ -919,14 +992,14 @@ ${clinicalPromptSection ? "Prends impérativement en compte l'histoire clinique 
 Structure OBLIGATOIREMENT ton retour selon ces 4 sections détaillées :
 
 1. 🎯 PIÈGE CLINIQUE & ANALYSE DE L'ERREUR :
-Explique précisément pourquoi la réponse cochée par l'étudiant est fausse, le piège classique posé dans l'énoncé et la confusion fréquente en pédiatrie.
+Explique précisément pourquoi la réponse cochée par l'étudiant est fausse, le piège classique posé dans l'énoncé et la confusion fréquente en ${moduleName.toLowerCase()}.
 
 2. 📋 JUSTIFICATION PROPOSITION PAR PROPOSITION (EXHAUSTIVE & COMPLÈTE) :
 Passe impérativement en revue TOUTES les propositions (A, B, C, D, E le cas échéant) SANS AUCUNE EXCEPTION NI OUBLI.
 Pour CHAQUE proposition (A, B, C, D, E), donne la lettre, l'énoncé de la proposition et justifie rigoureusement pourquoi elle est VRAIE ou FAUSSE sur les plans sémiologique, physiopathologique ou thérapeutique. Chaque proposition doit avoir sa justification détaillée et complète jusqu'au bout.
 
 3. 🩺 DÉMARCHE DE RAISONNEMENT & CONDUITE CLINIQUE :
-Détaille la démarche diagnostique et thérapeutique pas-à-pas : quel est le maître-symptôme, quelles données de l'âge de l'enfant orientent immédiatement, et comment éliminer les diagnostics différentiels.
+Détaille la démarche diagnostique et thérapeutique pas-à-pas : quel est le maître-symptôme, quelles données (${populationContext}) orientent immédiatement, et comment éliminer les diagnostics différentiels.
 
 4. 💡 RÈGLE D'OR & MÉMO CONCOURS :
 Formule une règle mémo claire, percutante et mémorisable pour ne plus jamais hésiter sur ce dossier au concours.
@@ -937,7 +1010,7 @@ Formule une règle mémo claire, percutante et mémorisable pour ne plus jamais 
 
 Rédige en français médical soigné, rigoureux, direct et complet. Ne coupe aucune phrase, ne saute aucune étape.`;
 
-    const userPrompt = `MODULE : Pédiatrie - ${question.chapterTitle || "Pédiatrie Générale"}
+    const userPrompt = `MODULE : ${moduleName} - ${question.chapterTitle || defaultChapter}
 QUESTION : ${question.question || question.statement}
 ${clinicalPromptSection ? clinicalPromptSection : (question.clinical_case ? `CAS CLINIQUE COMPLET : ${question.clinical_case}\n` : "")}
 PROPOSITIONS PROPOSÉES :
@@ -958,7 +1031,7 @@ Rédige l'explication clinique complète et approfondie sans aucune coupure. ${c
     } catch (err) {
       console.warn("Reasoning note generation failed, fallback to structured official explanation:", err);
       const chosenStr = isCroq ? studentCroq : (selectedLetters.join(", ") || "Aucune");
-      const expStr = question.explanation ? question.explanation.trim() : "Se référer aux critères diagnostiques officiels de pédiatrie.";
+      const expStr = question.explanation ? question.explanation.trim() : `Se référer aux critères diagnostiques officiels de ${moduleName.toLowerCase()}.`;
       const corrStr = correctLetters || question.croq_answer || "Réponse officielle";
 
       let localNote = `### 1. 🎯 PIÈGE CLINIQUE & ANALYSE DE L'ERREUR :\n`;
@@ -1220,11 +1293,23 @@ function getQuestionsMap(questionsList = []) {
 function hydrateNote(note, questionsList = []) {
   if (!note || typeof note !== 'object') return note;
   const qMap = getQuestionsMap(questionsList);
-  const q = qMap.get(note.questionUid) || null;
+  let q = qMap.get(note.questionUid) || null;
+  if (!q && typeof window !== 'undefined') {
+    if (note.questionUid && note.questionUid.startsWith('psy_') && window.PSY_QUESTIONS) {
+      q = window.PSY_QUESTIONS.find(x => x.uid === note.questionUid) || null;
+    } else if (window.PEDIA_QUESTIONS) {
+      q = window.PEDIA_QUESTIONS.find(x => x.uid === note.questionUid) || null;
+    }
+  }
+
+  const defaultChapter = (note.questionUid && note.questionUid.startsWith('psy_'))
+    ? 'Psychiatrie Générale'
+    : 'Pédiatrie Générale';
+
   if (!q) {
     return {
       ...note,
-      chapterTitle: note.chapterTitle || 'Pédiatrie Générale',
+      chapterTitle: note.chapterTitle || defaultChapter,
       options: note.options || [],
       questionText: note.questionText || '',
       clinicalCase: note.clinicalCase || null,
@@ -1233,13 +1318,13 @@ function hydrateNote(note, questionsList = []) {
   }
   return {
     ...note,
-    questionText: note.questionText || q.question || '',
+    questionText: note.questionText || q.question || q.statement || '',
     clinicalCase: note.clinicalCase !== undefined ? note.clinicalCase : (q.clinical_case || null),
-    chapterTitle: note.chapterTitle || q.chapterTitle || 'Pédiatrie Générale',
+    chapterTitle: note.chapterTitle || q.chapterTitle || defaultChapter,
     options: (note.options && note.options.length > 0) ? note.options : (q.options || []),
     media_urls: (note.media_urls && note.media_urls.length > 0) ? note.media_urls : (q.media_urls || []),
     officialExplanation: note.officialExplanation || q.explanation || '',
-    correctAnswer: note.correctAnswer || q.croq_answer || ''
+    correctAnswer: note.correctAnswer || (q.is_croq ? q.croq_answer : '') || ''
   };
 }
 
@@ -1304,8 +1389,82 @@ class QueueEngine {
         this.snoozedQuestions = (parsed.snoozedQuestions && typeof parsed.snoozedQuestions === 'object') ? parsed.snoozedQuestions : {};
         this.cleanExpiredSnoozes();
       }
+      this.autoHealNotesFromMistakes();
     } catch (err) {
       console.warn("Failed to load queue engine state:", err);
+    }
+  }
+
+  /**
+   * Automatically reconstructs baseline reasoning notes for any question
+   * that was missed in training (mistakes >= 1) if no note currently exists in storage.
+   */
+  autoHealNotesFromMistakes() {
+    if (typeof localStorage === 'undefined') return;
+    try {
+      const rawNotes = this.getRawReasoningNotes();
+      const existingUids = new Set(rawNotes.map(n => n && n.questionUid).filter(Boolean));
+      const healedNotes = [];
+
+      for (const [uid, stat] of Object.entries(this.stats || {})) {
+        if (!stat || !stat.mistakes || stat.mistakes <= 0) continue;
+        if (existingUids.has(uid)) continue;
+
+        let q = (this.questionsMap && this.questionsMap.get(uid)) || null;
+        if (!q && typeof window !== 'undefined') {
+          if (uid.startsWith('psy_') && window.PSY_QUESTIONS) {
+            q = window.PSY_QUESTIONS.find(x => x.uid === uid) || null;
+          } else if (window.PEDIA_QUESTIONS) {
+            q = window.PEDIA_QUESTIONS.find(x => x.uid === uid) || null;
+          }
+        }
+        if (!q) continue;
+
+        const isCroq = !!q.is_croq;
+        const correctLetters = isCroq ? [] : (q.options || []).filter(o => o.is_correct).map(o => o.letter);
+        const correctText = isCroq 
+          ? (q.croq_answer || '') 
+          : (q.options || []).filter(o => o.is_correct).map(o => `${o.letter}. ${o.text}`).join(' | ');
+
+        const defaultChap = uid.startsWith('psy_') ? 'Psychiatrie Générale' : 'Pédiatrie Générale';
+        const chapTitle = q.chapterTitle || defaultChap;
+        const expText = (q.explanation && q.explanation.trim()) 
+          ? q.explanation.trim() 
+          : `Référence clinique officielle pour le cours ${chapTitle}.`;
+
+        const noteText = `### 1. 🎯 ANALYSE DE L'ERREUR & CONTEXTE :
+* **Statut de révision :** Question manquée lors de votre entraînement (${stat.mistakes} faute${stat.mistakes > 1 ? 's' : ''}).
+* **Ancrage du bon réflexe :** Vous pouvez déclencher une analyse IA approfondie (Gemini Flash) ou réviser la démarche ci-dessous.
+
+### 2. 📋 EXPLICATION & RÉPONSE OFFICIELLE :
+${expText}`;
+
+        healedNotes.push({
+          id: `note_auto_${uid}`,
+          questionUid: uid,
+          questionText: q.question || q.statement || '',
+          chapterTitle: chapTitle,
+          options: q.options || [],
+          userAnswer: isCroq ? 'Révision nécessaire' : (correctLetters.length > 0 ? `Non cochée (${correctLetters.join(', ')})` : 'Erreur'),
+          userAnswerLetters: [],
+          correctAnswer: correctText,
+          officialExplanation: q.explanation || '',
+          score: null,
+          isCroq: isCroq,
+          reasoningNote: noteText,
+          modelUsed: 'Base Officielle (Auto-Raisonnement)',
+          timestamp: Date.now() - 1000
+        });
+        existingUids.add(uid);
+      }
+
+      if (healedNotes.length > 0) {
+        console.log(`[QueueEngine] Auto-healed ${healedNotes.length} reasoning note(s) from recorded mistakes.`);
+        const updated = [...healedNotes, ...rawNotes].slice(0, 500);
+        localStorage.setItem(getReasoningKey(), JSON.stringify(updated.map(n => slimNote(n))));
+      }
+    } catch (err) {
+      console.warn('[QueueEngine] Auto-heal notes failed:', err);
     }
   }
 
@@ -1878,6 +2037,7 @@ class QueueEngine {
 
   getReasoningNotes() {
     try {
+      this.autoHealNotesFromMistakes();
       const rawNotes = this.getRawReasoningNotes();
       const qMap = this.questionsMap || getQuestionsMap(this.allQuestions);
       return rawNotes.map(n => hydrateNote(n, qMap));
@@ -2025,6 +2185,7 @@ class QueueEngine {
         }
       }
       this.saveState();
+      this.autoHealNotesFromMistakes();
       return true;
     } catch (err) {
       console.error("applyMergedState failed:", err);
@@ -4312,7 +4473,7 @@ class FirebaseSyncService {
 // Update Management Service for PédiaDrill
 // Checks GitHub Releases for new APK versions, notifies the user, and triggers direct download.
 
-const CURRENT_APP_VERSION = '1.6.2';
+const CURRENT_APP_VERSION = '1.6.3';
 const GITHUB_REPO = 'lkmqji/qcm-p-diatrie';
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
 const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours auto-check cooldown
@@ -4932,6 +5093,18 @@ function switchActiveModule(moduleId, fromRemote = false) {
   if (activeNameEl) activeNameEl.textContent = 'Aucune leçon choisie';
   const clearBtn = document.getElementById('btn-clear-lesson-input');
   if (clearBtn) clearBtn.style.display = 'none';
+
+  // Reset Carnet de notes filter & search on module switch
+  notebookSelectedChapter = '';
+  const chapFilterSelect = document.getElementById('notebook-chapter-filter');
+  if (chapFilterSelect) chapFilterSelect.value = '';
+  const notebookSearch = document.getElementById('notebook-search-input');
+  if (notebookSearch) notebookSearch.value = '';
+
+  // Reload AI cache for new active module
+  if (typeof loadAiExplanationsCache === 'function') {
+    aiExplanationsCache = loadAiExplanationsCache();
+  }
 
   // Synchroniser les filtres du suivi des cours sur le module sélectionné par défaut
   lessonDistModuleFilter = mod.id;
@@ -6121,16 +6294,24 @@ function extractQuestionDateOrSession(q) {
 // ============================================================================
 // PERSISTENT AI EXPLANATIONS FOR ARENA QUESTIONS
 // ============================================================================
-let aiExplanationsCache = {};
-try {
-  const rawCache = localStorage.getItem('pedia_ai_explanations_cache');
-  if (rawCache) {
-    const parsed = JSON.parse(rawCache);
-    if (parsed && typeof parsed === 'object') aiExplanationsCache = parsed;
-  }
-} catch (e) {
-  console.warn('Failed to load AI explanations cache:', e);
+function getAiCacheKey() {
+  return typeof resolveStorageKey === 'function' ? resolveStorageKey('ai_cache') : 'pedia_ai_explanations_cache';
 }
+
+function loadAiExplanationsCache() {
+  try {
+    const rawCache = localStorage.getItem(getAiCacheKey());
+    if (rawCache) {
+      const parsed = JSON.parse(rawCache);
+      if (parsed && typeof parsed === 'object') return parsed;
+    }
+  } catch (e) {
+    console.warn('Failed to load AI explanations cache:', e);
+  }
+  return {};
+}
+
+let aiExplanationsCache = loadAiExplanationsCache();
 
 /**
  * Validates that an AI reasoning note semantically matches the target question.
@@ -6190,24 +6371,40 @@ function scrubCorruptedAiExplanations() {
     let purgedCacheCount = 0;
     for (const [uid, item] of Object.entries(aiExplanationsCache)) {
       if (!item || !item.note) continue;
-      const q = questionsMap.get(uid);
-      if (!q || !isExplanationMatchingQuestion(item.note, q)) {
+      let q = questionsMap.get(uid);
+      if (!q && typeof window !== 'undefined') {
+        if (uid.startsWith('psy_') && window.PSY_QUESTIONS) {
+          q = window.PSY_QUESTIONS.find(x => x.uid === uid);
+        } else if (window.PEDIA_QUESTIONS) {
+          q = window.PEDIA_QUESTIONS.find(x => x.uid === uid);
+        }
+      }
+      if (!q) continue; // Don't purge other module notes when not in active questionsMap
+      if (!isExplanationMatchingQuestion(item.note, q)) {
         delete aiExplanationsCache[uid];
         purgedCacheCount++;
       }
     }
     if (purgedCacheCount > 0) {
-      localStorage.setItem('pedia_ai_explanations_cache', JSON.stringify(aiExplanationsCache));
+      localStorage.setItem(getAiCacheKey(), JSON.stringify(aiExplanationsCache));
       console.log(`[Diagnostic IA] Purged ${purgedCacheCount} mismatched AI explanation(s) from local cache.`);
     }
 
-    // Scrub notebook notes in QueueEngine
+    // Scrub notebook notes in QueueEngine for the active module
     const rawNotes = queueEngine.getRawReasoningNotes();
     let purgedNotesCount = 0;
     const cleanedNotes = rawNotes.filter(n => {
       if (!n || !n.questionUid || !n.reasoningNote) return true;
-      const q = questionsMap.get(n.questionUid);
-      if (q && !isExplanationMatchingQuestion(n.reasoningNote, q)) {
+      let q = questionsMap.get(n.questionUid);
+      if (!q && typeof window !== 'undefined') {
+        if (n.questionUid.startsWith('psy_') && window.PSY_QUESTIONS) {
+          q = window.PSY_QUESTIONS.find(x => x.uid === n.questionUid);
+        } else if (window.PEDIA_QUESTIONS) {
+          q = window.PEDIA_QUESTIONS.find(x => x.uid === n.questionUid);
+        }
+      }
+      if (!q) return true; // Keep note safely if question is not in current dataset
+      if (!isExplanationMatchingQuestion(n.reasoningNote, q)) {
         purgedNotesCount++;
         return false;
       }
@@ -6215,7 +6412,8 @@ function scrubCorruptedAiExplanations() {
     });
 
     if (purgedNotesCount > 0) {
-      localStorage.setItem('pedia_drill_reasoning_notes_v1', JSON.stringify(cleanedNotes));
+      const reasoningKey = typeof resolveStorageKey === 'function' ? resolveStorageKey('reasoning_notes') : 'pedia_drill_reasoning_notes_v1';
+      localStorage.setItem(reasoningKey, JSON.stringify(cleanedNotes));
       console.log(`[Diagnostic IA] Purged ${purgedNotesCount} mismatched AI reasoning note(s) from Notebook.`);
       firebaseSyncService.triggerAutoPush();
     }
@@ -6227,7 +6425,14 @@ function scrubCorruptedAiExplanations() {
 function getSavedAiExplanation(questionUid, question = null) {
   if (!questionUid) return null;
 
-  const targetQ = question || (questionsMap.get(questionUid) || null);
+  let targetQ = question || (questionsMap.get(questionUid) || null);
+  if (!targetQ && typeof window !== 'undefined') {
+    if (questionUid.startsWith('psy_') && window.PSY_QUESTIONS) {
+      targetQ = window.PSY_QUESTIONS.find(x => x.uid === questionUid) || null;
+    } else if (window.PEDIA_QUESTIONS) {
+      targetQ = window.PEDIA_QUESTIONS.find(x => x.uid === questionUid) || null;
+    }
+  }
 
   const checkAndClean = (entry, source) => {
     if (!entry || !entry.note) return null;
@@ -6236,7 +6441,7 @@ function getSavedAiExplanation(questionUid, question = null) {
       if (source === 'cache') {
         delete aiExplanationsCache[questionUid];
         try {
-          localStorage.setItem('pedia_ai_explanations_cache', JSON.stringify(aiExplanationsCache));
+          localStorage.setItem(getAiCacheKey(), JSON.stringify(aiExplanationsCache));
         } catch {}
       }
       return null;
@@ -6277,7 +6482,14 @@ function getSavedAiExplanation(questionUid, question = null) {
 function saveAiExplanationForQuestion(questionUid, noteText, modelUsed = 'Gemini 3.8 Flash', question = null) {
   if (!questionUid || !noteText) return;
 
-  const targetQ = question || (questionsMap.get(questionUid) || null);
+  let targetQ = question || (questionsMap.get(questionUid) || null);
+  if (!targetQ && typeof window !== 'undefined') {
+    if (questionUid.startsWith('psy_') && window.PSY_QUESTIONS) {
+      targetQ = window.PSY_QUESTIONS.find(x => x.uid === questionUid) || null;
+    } else if (window.PEDIA_QUESTIONS) {
+      targetQ = window.PEDIA_QUESTIONS.find(x => x.uid === questionUid) || null;
+    }
+  }
   if (targetQ && !isExplanationMatchingQuestion(noteText, targetQ)) {
     console.warn(`[AI Explanation] Refusing to save mismatched note for ${questionUid}`);
     return;
@@ -6291,7 +6503,7 @@ function saveAiExplanationForQuestion(questionUid, noteText, modelUsed = 'Gemini
     timestamp: Date.now()
   };
   try {
-    localStorage.setItem('pedia_ai_explanations_cache', JSON.stringify(aiExplanationsCache));
+    localStorage.setItem(getAiCacheKey(), JSON.stringify(aiExplanationsCache));
   } catch (e) {
     console.warn('Failed to persist AI explanations cache:', e);
   }
@@ -6377,7 +6589,7 @@ window.regenerateArenaAiExplanation = async function() {
 
   delete aiExplanationsCache[targetUid];
   try {
-    localStorage.setItem('pedia_ai_explanations_cache', JSON.stringify(aiExplanationsCache));
+    localStorage.setItem(getAiCacheKey(), JSON.stringify(aiExplanationsCache));
   } catch {}
 
   answeredHistory.forEach(item => {
@@ -7195,7 +7407,7 @@ window.requestClinicalSubQuestionAiExplanation = async function(forceRegen = fal
   if (forceRegen) {
     delete aiExplanationsCache[targetUid];
     try {
-      localStorage.setItem('pedia_ai_explanations_cache', JSON.stringify(aiExplanationsCache));
+      localStorage.setItem(getAiCacheKey(), JSON.stringify(aiExplanationsCache));
     } catch {}
     queueEngine.deleteReasoningNotesByQuestionUid(targetUid);
   }
@@ -7289,7 +7501,7 @@ window.requestClinicalCardAiExplanation = async function(idx, forceRegen = false
   if (forceRegen) {
     delete aiExplanationsCache[targetUid];
     try {
-      localStorage.setItem('pedia_ai_explanations_cache', JSON.stringify(aiExplanationsCache));
+      localStorage.setItem(getAiCacheKey(), JSON.stringify(aiExplanationsCache));
     } catch {}
     queueEngine.deleteReasoningNotesByQuestionUid(targetUid);
   }
@@ -9162,15 +9374,25 @@ function renderQuestionCard(q, gIdx, qIdx, rankNumber = null) {
 
   // Pre-rendered panels for each attempt with complete fiches
   const panelsHtml = q.attempts.map((att, attIdx) => {
-    const fullQ = questionsMap.get(att.questionUid) || {
-      uid: att.questionUid,
-      question: att.questionText,
-      clinical_case: att.clinicalCase || null,
-      chapterTitle: att.chapterTitle || q.chapterTitle,
-      options: att.options || [],
-      explanation: att.officialExplanation || '',
-      croq_answer: att.correctAnswer || ''
-    };
+    let fullQ = questionsMap.get(att.questionUid);
+    if (!fullQ && typeof window !== 'undefined') {
+      if (att.questionUid && att.questionUid.startsWith('psy_') && window.PSY_QUESTIONS) {
+        fullQ = window.PSY_QUESTIONS.find(x => x.uid === att.questionUid);
+      } else if (window.PEDIA_QUESTIONS) {
+        fullQ = window.PEDIA_QUESTIONS.find(x => x.uid === att.questionUid);
+      }
+    }
+    if (!fullQ) {
+      fullQ = {
+        uid: att.questionUid,
+        question: att.questionText,
+        clinical_case: att.clinicalCase || null,
+        chapterTitle: att.chapterTitle || q.chapterTitle,
+        options: att.options || [],
+        explanation: att.officialExplanation || '',
+        croq_answer: att.correctAnswer || ''
+      };
+    }
     if (!fullQ.media_urls && att.media_urls) { fullQ.media_urls = att.media_urls; }
     const letters = att.userAnswerLetters || (att.userAnswer ? att.userAnswer.split(',').map(s => s.trim().toUpperCase()) : []);
     const recapHtml = formatQuestionMistakeRecap(fullQ, letters, q.isCroq, att.userAnswer, att.score);
@@ -9248,10 +9470,20 @@ function renderQuestionCard(q, gIdx, qIdx, rankNumber = null) {
 
 function groupNotesByChapterAndQuestion(notes) {
   const chapterMap = new Map();
+  const currentModId = typeof getActiveModuleId === 'function' ? getActiveModuleId() : 'pediatrie';
+  const defaultGeneralChap = (currentModId === 'psychiatrie' || currentModId === 'psychiatrie_5') ? 'Psychiatrie Générale' : 'Pédiatrie Générale';
 
   notes.forEach(note => {
-    const fullQ = questionsMap.get(note.questionUid);
-    const chap = (fullQ && fullQ.chapterTitle) || (note.chapterTitle && note.chapterTitle.trim()) || "Pédiatrie Générale";
+    let fullQ = questionsMap.get(note.questionUid);
+    if (!fullQ && typeof window !== 'undefined') {
+      if (note.questionUid && note.questionUid.startsWith('psy_') && window.PSY_QUESTIONS) {
+        fullQ = window.PSY_QUESTIONS.find(x => x.uid === note.questionUid);
+      } else if (window.PEDIA_QUESTIONS) {
+        fullQ = window.PEDIA_QUESTIONS.find(x => x.uid === note.questionUid);
+      }
+    }
+    const noteChapFallback = (note.questionUid && note.questionUid.startsWith('psy_')) ? 'Psychiatrie Générale' : defaultGeneralChap;
+    const chap = (fullQ && fullQ.chapterTitle) || (note.chapterTitle && note.chapterTitle.trim()) || noteChapFallback;
     const qKey = note.questionUid || (fullQ && fullQ.question) || note.questionText || note.id;
 
     if (!chapterMap.has(chap)) {
@@ -9400,15 +9632,19 @@ window.toggleAllChapters = function() {
 function renderNotebookUI(filterText = '') {
   const container = document.getElementById('notebook-notes-list');
   const allNotes = queueEngine.getReasoningNotes();
+  const currentModId = typeof getActiveModuleId === 'function' ? getActiveModuleId() : 'pediatrie';
+  const defaultChapter = (currentModId === 'psychiatrie' || currentModId === 'psychiatrie_5') ? 'Psychiatrie Générale' : 'Pédiatrie Générale';
+
+  const getNoteChap = (n) => n.chapterTitle || ((n.questionUid && n.questionUid.startsWith('psy_')) ? 'Psychiatrie Générale' : defaultChapter);
 
   // Populate or update the chapter filter select if it exists
   const chapFilterSelect = document.getElementById('notebook-chapter-filter');
   if (chapFilterSelect) {
-    const existingChapters = Array.from(new Set(allNotes.map(n => n.chapterTitle || 'Pédiatrie Générale'))).sort((a,b) => a.localeCompare(b, 'fr'));
+    const existingChapters = Array.from(new Set(allNotes.map(n => getNoteChap(n)))).sort((a,b) => a.localeCompare(b, 'fr'));
     const currentVal = notebookSelectedChapter;
     let optionsHtml = `<option value="">Tous les cours (${allNotes.length} notes)</option>`;
     existingChapters.forEach(c => {
-      const count = allNotes.filter(n => (n.chapterTitle || 'Pédiatrie Générale') === c).length;
+      const count = allNotes.filter(n => getNoteChap(n) === c).length;
       optionsHtml += `<option value="${escapeHtml(c)}" ${c === currentVal ? 'selected' : ''}>${escapeHtml(c)} (${count})</option>`;
     });
     chapFilterSelect.innerHTML = optionsHtml;
@@ -9423,12 +9659,20 @@ function renderNotebookUI(filterText = '') {
 
   // Filter notes by text & chapter
   const filtered = allNotes.filter(n => {
-    if (notebookSelectedChapter && (n.chapterTitle || 'Pédiatrie Générale') !== notebookSelectedChapter) {
+    const noteChap = getNoteChap(n);
+    if (notebookSelectedChapter && noteChap !== notebookSelectedChapter) {
       return false;
     }
     if (!filterText) return true;
     const q = filterText.toLowerCase();
-    const fullQ = questionsMap.get(n.questionUid);
+    let fullQ = questionsMap.get(n.questionUid);
+    if (!fullQ && typeof window !== 'undefined') {
+      if (n.questionUid && n.questionUid.startsWith('psy_') && window.PSY_QUESTIONS) {
+        fullQ = window.PSY_QUESTIONS.find(x => x.uid === n.questionUid);
+      } else if (window.PEDIA_QUESTIONS) {
+        fullQ = window.PEDIA_QUESTIONS.find(x => x.uid === n.questionUid);
+      }
+    }
     const optionsText = fullQ && fullQ.options ? fullQ.options.map(o => o.text).join(' ').toLowerCase() : '';
     const explanationText = (fullQ && fullQ.explanation ? fullQ.explanation.toLowerCase() : '') || (n.officialExplanation ? n.officialExplanation.toLowerCase() : '');
 

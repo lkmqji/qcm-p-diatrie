@@ -48,3 +48,73 @@
 - Synchronisation Capacitor Android exécutée avec succès (`cmd.exe /c npx.cmd cap sync android`).
 - Compilation de l'APK via `build-apk.bat` (`PediaDrill.apk` à la racine).
 - Déclenchement automatique de la GitHub Release via le tag `v1.6.2` et le workflow GitHub Actions CI/CD (`.github/workflows/build-and-release.yml`).
+
+---
+
+## 00:52:00 — Résolution Intégrale : Restauration et Affichage des Notes du Carnet en Psychiatrie
+
+### Contexte & Problème Signalé
+- **Retour Utilisateur** : *« pourquoi le carnet des notes est vides comme j'ai jms rate une qst de psy »* (Pourquoi le carnet de raisonnement est vide comme si je n'avais jamais raté une question de psychiatrie ?).
+- **Constat** : L'étudiant s'est entraîné et a commis des erreurs sur le module Psychiatrie, mais l'onglet Carnet de Raisonnement (`#view-notebook`) affichait un état désespérément vide avec la mention *« Aucune note de raisonnement pour le moment... »*.
+
+### Causes Racines Identifiées (Root Causes)
+1. **Filtre de Chapitre Rémanent (`notebookSelectedChapter`)** : Lors du changement de module via `switchActiveModule('psychiatrie')`, `notebookSelectedChapter` n'était pas réinitialisé. Si un chapitre de pédiatrie était sélectionné précédemment, toutes les notes de psychiatrie étaient systématiquement masquées par le filtre de chapitre.
+2. **Cloisonnement du Stockage Local sans Migration Rétroactive** : Les notes d'erreurs de psychiatrie créées avant le partitionnement multi-modules étaient stockées dans la clé globale `'pedia_drill_reasoning_notes_v1'`. En passant sur la clé compartimentée `'mod_psychiatrie_reasoning_notes'`, le carnet apparaissait vide.
+3. **Pertes Silencieuses & Purge Involontaire (`scrubCorruptedAiExplanations`)** : La fonction de diagnostic nettoyait le cache et les notes du carnet en utilisant les clés hardcodées de pédiatrie (`'pedia_ai_explanations_cache'`, `'pedia_drill_reasoning_notes_v1'`) et le dictionnaire `questionsMap` du module actif, rejetant ou écrasant les notes d'autres spécialités.
+4. **Hardcodage du Fallback de Chapitre `'Pédiatrie Générale'`** : Dans `hydrateNote` et `renderNotebookUI`, tout QCM dont le chapitre n'était pas résolu immédiatement héritait de `'Pédiatrie Générale'`, faussant le classement et les filtres pour la psychiatrie.
+5. **Absence d'Auto-Guérison (Self-Healing) pour les Questions Échouées** : Si la génération IA avait échoué (réseau, saut de modal ou timeout), la question était bien comptabilisée en faute (`stats[uid].mistakes >= 1`) dans le SRS Spaced Repetition, mais aucun mémo n'était inséré dans le carnet de notes.
+
+### Correctifs & Améliorations Apportés
+
+1. **Migration Automatique Cross-Modules des Notes (`migrateReasoningNotesBetweenModules`)** :
+   - Implémenté dans [`src/services/storageScope.js`](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/src/services/storageScope.js).
+   - Détecte au démarrage de l'application toutes les notes de psychiatrie (`psy_...`) résiduelles dans `'pedia_drill_reasoning_notes_v1'` et les rapatrie de manière transparente et sécurisée dans `'mod_psychiatrie_reasoning_notes'`.
+   - Rapatrie également toute note de pédiatrie égarée dans le stockage psychiatrie.
+
+2. **Moteur d'Auto-Guérison et Reconstitution des Notes (`autoHealNotesFromMistakes`)** :
+   - Implémenté dans [`src/services/queueEngine.js`](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/src/services/queueEngine.js).
+   - Parcourt `this.stats` lors du chargement, du changement de module et de la fusion Firestore.
+   - Dès qu'une question présente des erreurs (`mistakes >= 1`) mais ne possède pas encore de note enregistrée, le moteur reconstitue automatiquement une note structurée complète à partir de l'explication officielle de la base de données, avec rappel du piège, réponse officielle et options.
+   - Les questions manquées en psychiatrie sont ainsi **immédiatement visibles à 100% dans le Carnet de Raisonnement**, avec possibilité de relancer une analyse approfondie Gemini Flash à tout moment.
+
+3. **Hydratation Robuste et Multi-Modules (`hydrateNote`)** :
+   - Dans [`src/services/queueEngine.js`](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/src/services/queueEngine.js), si la question n'est pas dans le dictionnaire actif, recherche de secours dans `window.PSY_QUESTIONS` ou `window.PEDIA_QUESTIONS`.
+   - Fallback dynamique de chapitre : `'Psychiatrie Générale'` pour les questions `psy_`, `'Pédiatrie Générale'` pour les questions de pédiatrie.
+
+4. **Réinitialisation Systématique des Filtres au Changement de Module (`switchActiveModule`)** :
+   - Dans [`src/app.js`](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/src/app.js), remise à zéro de `notebookSelectedChapter = ''`, du sélecteur `#notebook-chapter-filter` et du champ de recherche `#notebook-search-input`.
+   - Rechargement instantané du cache IA scoped (`aiExplanationsCache = loadAiExplanationsCache()`).
+
+5. **Diagnostic et Nettoyage Sécurisé (`scrubCorruptedAiExplanations`)** :
+   - Dans [`src/app.js`](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/src/app.js), utilisation de clés dynamiques `resolveStorageKey('reasoning_notes')` et `resolveStorageKey('ai_cache')`.
+   - Résolution cross-modules des questions évitant toute suppression par erreur des fiches d'autres spécialités.
+
+6. **Prompts Gemini Flash Dédiés à la Psychiatrie** :
+   - Dans [`src/services/gemini.js`](file:///c:/Users/Lenovo/Documents/GitHub/qcm-p-diatrie/src/services/gemini.js), détection automatique de la spécialité : le prompt injecte *« Professeur de psychiatrie et pédopsychiatrie... confusion fréquente en psychiatrie... critères nosographiques DSM/CIM »* au lieu de figer la pédiatrie.
+
+### Validation & Intégrité
+- Syntaxe validée avec succès sur tous les modules (`storageScope.js`, `queueEngine.js`, `gemini.js`, `app.js`, `app.bundle.js`).
+- Test unitaire automatisé avec environnement Node.js simulant la migration et l'auto-guérison : 100% de succès.
+- Compilation de production réexécutée avec succès via `node build-bundle.cjs` (`src/app.bundle.js`, `index.html`, `dist/`).
+
+---
+
+## 00:58:00 — Release v1.6.3 (versionCode 30) : Déploiement Vercel & Publication GitHub Release
+
+### Contexte & Objectif
+- Publication officielle de la version **v1.6.3** (versionCode 30) suite à la commande utilisateur **« update github »**.
+- Déploiement de la restauration complète du Carnet de Raisonnement en Psychiatrie, du moteur d'auto-guérison des notes depuis les statistiques d'erreurs, de la migration automatique cross-modules et des prompts IA dédiés à la psychiatrie.
+
+### Déploiement & Assemblage
+- Version sémantique incrémentée : `1.6.2` ➔ **`1.6.3`**.
+- Android `versionCode` incrémenté : `29` ➔ **`30`**.
+- Fichiers synchronisés :
+  - `package.json` : `"version": "1.6.3"`
+  - `src/services/updateService.js` : `CURRENT_APP_VERSION = '1.6.3'`
+  - `android/app/build.gradle` : `versionCode 30`, `versionName "1.6.3"`
+  - `template.html` : `v1.6.3`
+  - `00-historique/MASTER_PRODUCT_TECHNICAL_CONTEXT.md` : version `1.6.3` (versionCode 30).
+- Bundles de production assemblés via `build-bundle.cjs` (`src/app.bundle.js`, `index.html`, `dist/`).
+- Synchronisation Capacitor Android exécutée via `npx cap sync android`.
+- APK Android compilé localement avec succès via `build-apk.bat` (`PediaDrill.apk` à la racine).
+- Déclenchement automatique de la GitHub Release via le tag annoté `v1.6.3` et déploiement continu Vercel via la branche `main`.

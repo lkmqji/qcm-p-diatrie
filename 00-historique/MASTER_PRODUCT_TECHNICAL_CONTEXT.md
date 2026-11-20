@@ -34,7 +34,7 @@ qcm-p-diatrie/
 │   └── MASTER_PRODUCT_TECHNICAL_CONTEXT.md # Contexte technique global (source unique de vérité)
 ├── android/                              # Projet natif Android Capacitor 8
 │   ├── app/
-│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 29, versionName 1.6.2)
+│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 30, versionName 1.6.3)
 │   │   ├── debug.keystore                # Keystore de signature unifié (local & CI/CD)
 │   │   ├── google-services.json          # Configuration Firebase Android (qcm-pediatr, com.pediadrill.app)
 │   │   └── src/main/
@@ -249,12 +249,23 @@ Lorsqu'une réponse est incorrecte (dans la modale d'erreur ou dans le carnet) :
 
 ---
 
-### 3.7. Carnet de Raisonnement IA : Tri Multi-Critères & Modes de Vue (`view-notebook`)
+### 3.7. Carnet de Raisonnement IA : Tri Multi-Critères, Auto-Guérison & Multi-Modules (`view-notebook`)
+- **Isolation Étanche & Migration Cross-Modules (`migrateReasoningNotesBetweenModules`)** :
+  - Chaque module dispose de sa propre clé de stockage isolée (`pedia_drill_reasoning_notes_v1` pour la Pédiatrie, `mod_psychiatrie_reasoning_notes` pour la Psychiatrie, etc.).
+  - Au démarrage de l'application, un moteur de migration rétroactive rapatrie automatiquement toute note égarée dans la clé legacy vers son module d'appartenance respectif (ex: notes `psy_...` rapatriées vers la psychiatrie), sans aucune perte de données.
+- **Moteur d'Auto-Guérison des Notes d'Erreurs (`autoHealNotesFromMistakes`)** :
+  - Si une question a été manquée lors des séries d'entraînement (`stats[uid].mistakes >= 1`) mais que la note IA n'avait pas pu être enregistrée (saut de modal, coupure réseau, timeout), `QueueEngine` reconstruit automatiquement une note clinique de base complète à partir de l'énoncé, de l'explication officielle et de la réponse type de la base de données.
+  - Garantit que **100% des questions manquées par l'étudiant dans n'importe quel module apparaissent immédiatement dans son Carnet de Raisonnement**, avec possibilité de relancer une analyse approfondie Gemini Flash à tout moment.
+- **Réinitialisation Dynamique des Filtres (`switchActiveModule`)** :
+  - Lors du passage d'un module à un autre, le filtre de chapitre mémorisé (`notebookSelectedChapter`), la valeur du sélecteur `#notebook-chapter-filter` et le champ de recherche `#notebook-search-input` sont automatiquement réinitialisés, évitant de masquer les notes du nouveau module.
+- **Hydratation Multi-Modules Sécurisée (`hydrateNote`)** :
+  - En cas d'absence de la question dans le dictionnaire actif, recherche de secours automatique dans `window.PSY_QUESTIONS` ou `window.PEDIA_QUESTIONS`.
+  - Fallback dynamique du libellé de cours : `'Psychiatrie Générale'` pour les questions de psychiatrie, `'Pédiatrie Générale'` pour la pédiatrie.
 - **Tri Multi-Critères Complet (Croissant & Décroissant)** :
   - **Critères disponibles (`notebookSortBy`)** :
     - 📅 **Date de la faute (`date`)** : Tri par horodatage de la dernière tentative (`latestTimestamp`).
     - ⚠️ **Nombre d'erreurs (`mistakes`)** : Tri par nombre cumulé de fautes (`totalMistakes = Math.max(attemptsCount, stats.mistakes)`).
-    - 📚 **Cours (`chapter`)** : Tri alphabétique des chapitres de pédiatrie.
+    - 📚 **Cours (`chapter`)** : Tri alphabétique des chapitres de la spécialité active.
     - 🎯 **Score d'évaluation CROQ (`score`)** : Tri par score obtenu pour cibler les questions les plus difficiles.
   - **Inversion de l'ordre en 1 clic (`notebookSortOrder`)** :
     - Bouton interactif `#btn-toggle-sort-order` basculant instantanément entre **Décroissant ⬇** (Max ➔ Min) et **Croissant ⬆** (Min ➔ Max).
@@ -372,7 +383,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ### 3.9. Système de Mises à Jour Automatiques & GitHub Releases (`src/services/updateService.js` & CI/CD)
 - **Service d'Orchestration des Mises à Jour (`UpdateService`)** :
-  - Version déclarée : `CURRENT_APP_VERSION = '1.6.2'` synchronisée avec `package.json` et `build.gradle` (`versionCode 29`).
+  - Version déclarée : `CURRENT_APP_VERSION = '1.6.3'` synchronisée avec `package.json` et `build.gradle` (`versionCode 30`).
   - Comparaison sémantique universelle (`compareVersions`) ignorant les préfixes `v`.
   - Interrogation de l'API GitHub Releases (`https://api.github.com/repos/lkmqji/qcm-p-diatrie/releases/latest`) avec cooldown de 4 heures (`pedia_last_update_check_ts`).
   - Extraction de l'asset `.apk` direct (`PediaDrill.apk`). En environnement natif Android Capacitor, l'URL est ouverte via `_system` pour lancer le gestionnaire de téléchargement Android natif.
@@ -627,7 +638,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.6.2` (`versionCode 29`)
+- **Version native** : `versionName 1.6.3` (`versionCode 30`)
 - **Empreinte SHA-1 (Debug Keystore Gradle & GitHub Actions)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
 - **Empreinte SHA-256 (Debug Keystore Gradle & GitHub Actions)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
 - **Keystore unifié** : `android/app/debug.keystore` (Alias : `AndroidDebugKey`, mot de passe `android`, garantissant une empreinte cryptographique identique entre les compilations locales et la CI/CD GitHub Actions).

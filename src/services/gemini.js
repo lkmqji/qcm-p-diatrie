@@ -519,7 +519,14 @@ ${clinicalCaseContext.chronologySummary}
 `;
     }
 
-    const systemPrompt = `Tu es un Professeur de pédiatrie et jury de concours de résidanat en médecine.
+    const isPsy = (question.uid && question.uid.startsWith('psy_')) ||
+                  (typeof getActiveModuleId === 'function' && getActiveModuleId() === 'psychiatrie');
+    const specialtyTitle = isPsy ? 'psychiatrie et pédopsychiatrie' : 'pédiatrie et chirurgie pédiatrique';
+    const moduleName = isPsy ? 'Psychiatrie' : 'Pédiatrie';
+    const defaultChapter = isPsy ? 'Psychiatrie Générale' : 'Pédiatrie Générale';
+    const populationContext = isPsy ? 'le tableau clinique et les critères diagnostiques (DSM/CIM)' : "les données de l'âge de l'enfant";
+
+    const systemPrompt = `Tu es un Professeur de ${specialtyTitle} et jury de concours de résidanat en médecine.
 L'étudiant s'entraîne sur un QCM/CROQ et a besoin d'une explication CLINIQUE COMPLÈTE, PARFAITEMENT STRUCTURÉE et PERCUTANTE.
 Va directement au but avec un style médical soigné, rigoureux et précis (mots-clés en gras, listes à puces pour une lecture rapide).
 La réponse doit être TOTALE et NE DOIT JAMAIS ÊTRE COUPÉE.
@@ -527,14 +534,14 @@ ${clinicalPromptSection ? "Prends impérativement en compte l'histoire clinique 
 Structure OBLIGATOIREMENT ton retour selon ces 4 sections détaillées :
 
 1. 🎯 PIÈGE CLINIQUE & ANALYSE DE L'ERREUR :
-Explique précisément pourquoi la réponse cochée par l'étudiant est fausse, le piège classique posé dans l'énoncé et la confusion fréquente en pédiatrie.
+Explique précisément pourquoi la réponse cochée par l'étudiant est fausse, le piège classique posé dans l'énoncé et la confusion fréquente en ${moduleName.toLowerCase()}.
 
 2. 📋 JUSTIFICATION PROPOSITION PAR PROPOSITION (EXHAUSTIVE & COMPLÈTE) :
 Passe impérativement en revue TOUTES les propositions (A, B, C, D, E le cas échéant) SANS AUCUNE EXCEPTION NI OUBLI.
 Pour CHAQUE proposition (A, B, C, D, E), donne la lettre, l'énoncé de la proposition et justifie rigoureusement pourquoi elle est VRAIE ou FAUSSE sur les plans sémiologique, physiopathologique ou thérapeutique. Chaque proposition doit avoir sa justification détaillée et complète jusqu'au bout.
 
 3. 🩺 DÉMARCHE DE RAISONNEMENT & CONDUITE CLINIQUE :
-Détaille la démarche diagnostique et thérapeutique pas-à-pas : quel est le maître-symptôme, quelles données de l'âge de l'enfant orientent immédiatement, et comment éliminer les diagnostics différentiels.
+Détaille la démarche diagnostique et thérapeutique pas-à-pas : quel est le maître-symptôme, quelles données (${populationContext}) orientent immédiatement, et comment éliminer les diagnostics différentiels.
 
 4. 💡 RÈGLE D'OR & MÉMO CONCOURS :
 Formule une règle mémo claire, percutante et mémorisable pour ne plus jamais hésiter sur ce dossier au concours.
@@ -545,7 +552,7 @@ Formule une règle mémo claire, percutante et mémorisable pour ne plus jamais 
 
 Rédige en français médical soigné, rigoureux, direct et complet. Ne coupe aucune phrase, ne saute aucune étape.`;
 
-    const userPrompt = `MODULE : Pédiatrie - ${question.chapterTitle || "Pédiatrie Générale"}
+    const userPrompt = `MODULE : ${moduleName} - ${question.chapterTitle || defaultChapter}
 QUESTION : ${question.question || question.statement}
 ${clinicalPromptSection ? clinicalPromptSection : (question.clinical_case ? `CAS CLINIQUE COMPLET : ${question.clinical_case}\n` : "")}
 PROPOSITIONS PROPOSÉES :
@@ -566,7 +573,7 @@ Rédige l'explication clinique complète et approfondie sans aucune coupure. ${c
     } catch (err) {
       console.warn("Reasoning note generation failed, fallback to structured official explanation:", err);
       const chosenStr = isCroq ? studentCroq : (selectedLetters.join(", ") || "Aucune");
-      const expStr = question.explanation ? question.explanation.trim() : "Se référer aux critères diagnostiques officiels de pédiatrie.";
+      const expStr = question.explanation ? question.explanation.trim() : `Se référer aux critères diagnostiques officiels de ${moduleName.toLowerCase()}.`;
       const corrStr = correctLetters || question.croq_answer || "Réponse officielle";
 
       let localNote = `### 1. 🎯 PIÈGE CLINIQUE & ANALYSE DE L'ERREUR :\n`;

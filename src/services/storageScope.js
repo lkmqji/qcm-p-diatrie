@@ -61,11 +61,77 @@ export function removeScopedItem(baseKey, moduleId) {
   }
 }
 
+export function migrateReasoningNotesBetweenModules() {
+  if (typeof localStorage === 'undefined') return;
+  try {
+    const pediaKey = 'pedia_drill_reasoning_notes_v1';
+    const psyKey = 'mod_psychiatrie_reasoning_notes';
+    
+    let pediaNotes = [];
+    let psyNotes = [];
+    try { pediaNotes = JSON.parse(localStorage.getItem(pediaKey)) || []; } catch {}
+    try { psyNotes = JSON.parse(localStorage.getItem(psyKey)) || []; } catch {}
+    
+    if (!Array.isArray(pediaNotes)) pediaNotes = [];
+    if (!Array.isArray(psyNotes)) psyNotes = [];
+
+    // Migrate any psychiatry notes found in pediatrics storage
+    const psyInPedia = pediaNotes.filter(n => n && n.questionUid && n.questionUid.startsWith('psy_'));
+    const pediaInPsy = psyNotes.filter(n => n && n.questionUid && !n.questionUid.startsWith('psy_'));
+
+    let pediaChanged = false;
+    let psyChanged = false;
+
+    if (psyInPedia.length > 0) {
+      console.log(`[storageScope] Migrating ${psyInPedia.length} psychiatry note(s) from pediatrics storage to mod_psychiatrie_reasoning_notes...`);
+      const existingPsyUids = new Set(psyNotes.map(n => n.questionUid));
+      psyInPedia.forEach(n => {
+        if (!existingPsyUids.has(n.questionUid)) {
+          psyNotes.push(n);
+          existingPsyUids.add(n.questionUid);
+        }
+      });
+      pediaNotes = pediaNotes.filter(n => !n || !n.questionUid || !n.questionUid.startsWith('psy_'));
+      pediaChanged = true;
+      psyChanged = true;
+    }
+
+    if (pediaInPsy.length > 0) {
+      console.log(`[storageScope] Migrating ${pediaInPsy.length} pediatrics note(s) from psychiatry storage to pedia_drill_reasoning_notes_v1...`);
+      const existingPediaUids = new Set(pediaNotes.map(n => n.questionUid));
+      pediaInPsy.forEach(n => {
+        if (!existingPediaUids.has(n.questionUid)) {
+          pediaNotes.push(n);
+          existingPediaUids.add(n.questionUid);
+        }
+      });
+      psyNotes = psyNotes.filter(n => !n || !n.questionUid || n.questionUid.startsWith('psy_'));
+      pediaChanged = true;
+      psyChanged = true;
+    }
+
+    if (pediaChanged) {
+      localStorage.setItem(pediaKey, JSON.stringify(pediaNotes));
+    }
+    if (psyChanged) {
+      localStorage.setItem(psyKey, JSON.stringify(psyNotes));
+    }
+  } catch (err) {
+    console.warn('[storageScope] Error during reasoning notes cross-module migration:', err);
+  }
+}
+
+// Run cross-module notes migration once at initialization
+if (typeof localStorage !== 'undefined') {
+  migrateReasoningNotesBetweenModules();
+}
+
 if (typeof window !== 'undefined') {
   window.StorageScope = {
     resolveStorageKey,
     getScopedItem,
     setScopedItem,
-    removeScopedItem
+    removeScopedItem,
+    migrateReasoningNotesBetweenModules
   };
 }

@@ -54,11 +54,23 @@ export function getQuestionsMap(questionsList = []) {
 export function hydrateNote(note, questionsList = []) {
   if (!note || typeof note !== 'object') return note;
   const qMap = getQuestionsMap(questionsList);
-  const q = qMap.get(note.questionUid) || null;
+  let q = qMap.get(note.questionUid) || null;
+  if (!q && typeof window !== 'undefined') {
+    if (note.questionUid && note.questionUid.startsWith('psy_') && window.PSY_QUESTIONS) {
+      q = window.PSY_QUESTIONS.find(x => x.uid === note.questionUid) || null;
+    } else if (window.PEDIA_QUESTIONS) {
+      q = window.PEDIA_QUESTIONS.find(x => x.uid === note.questionUid) || null;
+    }
+  }
+
+  const defaultChapter = (note.questionUid && note.questionUid.startsWith('psy_'))
+    ? 'Psychiatrie Générale'
+    : 'Pédiatrie Générale';
+
   if (!q) {
     return {
       ...note,
-      chapterTitle: note.chapterTitle || 'Pédiatrie Générale',
+      chapterTitle: note.chapterTitle || defaultChapter,
       options: note.options || [],
       questionText: note.questionText || '',
       clinicalCase: note.clinicalCase || null,
@@ -67,13 +79,13 @@ export function hydrateNote(note, questionsList = []) {
   }
   return {
     ...note,
-    questionText: note.questionText || q.question || '',
+    questionText: note.questionText || q.question || q.statement || '',
     clinicalCase: note.clinicalCase !== undefined ? note.clinicalCase : (q.clinical_case || null),
-    chapterTitle: note.chapterTitle || q.chapterTitle || 'Pédiatrie Générale',
+    chapterTitle: note.chapterTitle || q.chapterTitle || defaultChapter,
     options: (note.options && note.options.length > 0) ? note.options : (q.options || []),
     media_urls: (note.media_urls && note.media_urls.length > 0) ? note.media_urls : (q.media_urls || []),
     officialExplanation: note.officialExplanation || q.explanation || '',
-    correctAnswer: note.correctAnswer || q.croq_answer || ''
+    correctAnswer: note.correctAnswer || (q.is_croq ? q.croq_answer : '') || ''
   };
 }
 
@@ -138,8 +150,82 @@ export class QueueEngine {
         this.snoozedQuestions = (parsed.snoozedQuestions && typeof parsed.snoozedQuestions === 'object') ? parsed.snoozedQuestions : {};
         this.cleanExpiredSnoozes();
       }
+      this.autoHealNotesFromMistakes();
     } catch (err) {
       console.warn("Failed to load queue engine state:", err);
+    }
+  }
+
+  /**
+   * Automatically reconstructs baseline reasoning notes for any question
+   * that was missed in training (mistakes >= 1) if no note currently exists in storage.
+   */
+  autoHealNotesFromMistakes() {
+    if (typeof localStorage === 'undefined') return;
+    try {
+      const rawNotes = this.getRawReasoningNotes();
+      const existingUids = new Set(rawNotes.map(n => n && n.questionUid).filter(Boolean));
+      const healedNotes = [];
+
+      for (const [uid, stat] of Object.entries(this.stats || {})) {
+        if (!stat || !stat.mistakes || stat.mistakes <= 0) continue;
+        if (existingUids.has(uid)) continue;
+
+        let q = (this.questionsMap && this.questionsMap.get(uid)) || null;
+        if (!q && typeof window !== 'undefined') {
+          if (uid.startsWith('psy_') && window.PSY_QUESTIONS) {
+            q = window.PSY_QUESTIONS.find(x => x.uid === uid) || null;
+          } else if (window.PEDIA_QUESTIONS) {
+            q = window.PEDIA_QUESTIONS.find(x => x.uid === uid) || null;
+          }
+        }
+        if (!q) continue;
+
+        const isCroq = !!q.is_croq;
+        const correctLetters = isCroq ? [] : (q.options || []).filter(o => o.is_correct).map(o => o.letter);
+        const correctText = isCroq 
+          ? (q.croq_answer || '') 
+          : (q.options || []).filter(o => o.is_correct).map(o => `${o.letter}. ${o.text}`).join(' | ');
+
+        const defaultChap = uid.startsWith('psy_') ? 'Psychiatrie Générale' : 'Pédiatrie Générale';
+        const chapTitle = q.chapterTitle || defaultChap;
+        const expText = (q.explanation && q.explanation.trim()) 
+          ? q.explanation.trim() 
+          : `Référence clinique officielle pour le cours ${chapTitle}.`;
+
+        const noteText = `### 1. 🎯 ANALYSE DE L'ERREUR & CONTEXTE :
+* **Statut de révision :** Question manquée lors de votre entraînement (${stat.mistakes} faute${stat.mistakes > 1 ? 's' : ''}).
+* **Ancrage du bon réflexe :** Vous pouvez déclencher une analyse IA approfondie (Gemini Flash) ou réviser la démarche ci-dessous.
+
+### 2. 📋 EXPLICATION & RÉPONSE OFFICIELLE :
+${expText}`;
+
+        healedNotes.push({
+          id: `note_auto_${uid}`,
+          questionUid: uid,
+          questionText: q.question || q.statement || '',
+          chapterTitle: chapTitle,
+          options: q.options || [],
+          userAnswer: isCroq ? 'Révision nécessaire' : (correctLetters.length > 0 ? `Non cochée (${correctLetters.join(', ')})` : 'Erreur'),
+          userAnswerLetters: [],
+          correctAnswer: correctText,
+          officialExplanation: q.explanation || '',
+          score: null,
+          isCroq: isCroq,
+          reasoningNote: noteText,
+          modelUsed: 'Base Officielle (Auto-Raisonnement)',
+          timestamp: Date.now() - 1000
+        });
+        existingUids.add(uid);
+      }
+
+      if (healedNotes.length > 0) {
+        console.log(`[QueueEngine] Auto-healed ${healedNotes.length} reasoning note(s) from recorded mistakes.`);
+        const updated = [...healedNotes, ...rawNotes].slice(0, 500);
+        localStorage.setItem(getReasoningKey(), JSON.stringify(updated.map(n => slimNote(n))));
+      }
+    } catch (err) {
+      console.warn('[QueueEngine] Auto-heal notes failed:', err);
     }
   }
 
@@ -712,6 +798,7 @@ export class QueueEngine {
 
   getReasoningNotes() {
     try {
+      this.autoHealNotesFromMistakes();
       const rawNotes = this.getRawReasoningNotes();
       const qMap = this.questionsMap || getQuestionsMap(this.allQuestions);
       return rawNotes.map(n => hydrateNote(n, qMap));
@@ -859,6 +946,7 @@ export class QueueEngine {
         }
       }
       this.saveState();
+      this.autoHealNotesFromMistakes();
       return true;
     } catch (err) {
       console.error("applyMergedState failed:", err);
