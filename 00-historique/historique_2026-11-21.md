@@ -38,6 +38,7 @@
   - Écouteurs `onSnapshot` découplés pour le profil et pour le module actif.
   - Drapeau `isApplyingRemoteSnapshot` neutralisant tout re-push automatique lors de la réception d'une notification Firestore (élimination des boucles ping-pong).
   - Déclenchement automatique de la synchronisation dès le clic sur « Enregistrer les paramètres ».
+  - Alignement déterministe de la date locale (`getLocalDateStr()`) dans `mergeStates` éliminant tout décalage UTC/CET sur le compteur du jour (`todayTracker`).
 
 #### 3. Compilation, Synchronisation & Assemblage
 - Exécution de `node build-bundle.cjs` :
