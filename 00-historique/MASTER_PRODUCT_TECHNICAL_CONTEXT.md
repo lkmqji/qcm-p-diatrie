@@ -34,7 +34,7 @@ qcm-p-diatrie/
 │   └── MASTER_PRODUCT_TECHNICAL_CONTEXT.md # Contexte technique global (source unique de vérité)
 ├── android/                              # Projet natif Android Capacitor 8
 │   ├── app/
-│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 27, versionName 1.6.0)
+│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 28, versionName 1.6.1)
 │   │   ├── debug.keystore                # Keystore de signature unifié (local & CI/CD)
 │   │   ├── google-services.json          # Configuration Firebase Android (qcm-pediatr, com.pediadrill.app)
 │   │   └── src/main/
@@ -236,7 +236,7 @@ Lorsqu'une réponse est incorrecte (dans la modale d'erreur ou dans le carnet) :
     - Commutateur à boutons pilules `#btn-mode-sequential` et `#btn-mode-scroll` dans la barre active `#arena-clinical-run-bar` pour permuter de mode à tout moment sans perte des réponses saisies.
     - Sélecteur de mode par défaut dans les Paramètres (`#settings-clinical-mode-select`) avec persistance dans `localStorage` (`pedia_clinical_case_mode`).
   - **Règle Stricte « Tout ou Rien » & Repositionnement Groupé SRS (`QueueEngine`)** :
-    - **100% de réussite (0 faute)** : Toutes les sous-questions du cas avancent (+1 palier SRS, `handleClinicalCaseSuccess`), marquage maîtrisé si seuil `target` atteint, et crédit intégral de +N questions au compteur du jour (`incrementTodayCount(N)`). Déclenchement des confettis de célébration.
+    - **100% de réussite (0 faute)** : Toutes les sous-questions actives du cas avancent (+1 palier SRS, `handleClinicalCaseSuccess`), marquage maîtrisé si seuil `target` atteint. **Règle d'intégrité du compteur journalier** : seules les sous-questions qui n'étaient **pas encore nettoyées** sont créditées au compteur quotidien (`incrementTodayCount(activeCreditedCount)`), évitant tout gonflement artificiel des statistiques par des questions déjà acquises. Déclenchement des confettis de célébration.
     - **En cas d'échec (≥ 1 faute)** : **0 question n'est créditée comme juste** (aucun succès enregistré), pénalités de répétition appliquées aux questions ratées, et l'intégralité des questions du cas est retirée de la file et **réinsérée de façon groupée et contiguë dans 5 à 7 cartes** (`insertIndex = cursor + 5..7`), garantissant que le cas clinique réapparaît complet en bloc lors de la prochaine révision.
   - **Modale de Bilan & Synthèse IA Consolidée (`#modal-clinical-case-summary`)** :
     - Modale plein écran avec bannière de verdict (Émeraude en succès, Rose/Ambre en échec), récapitulatif détaillé de chaque sous-question et impact sur la file SRS.
@@ -372,7 +372,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ### 3.9. Système de Mises à Jour Automatiques & GitHub Releases (`src/services/updateService.js` & CI/CD)
 - **Service d'Orchestration des Mises à Jour (`UpdateService`)** :
-  - Version déclarée : `CURRENT_APP_VERSION = '1.6.0'` synchronisée avec `package.json` et `build.gradle` (`versionCode 27`).
+  - Version déclarée : `CURRENT_APP_VERSION = '1.6.1'` synchronisée avec `package.json` et `build.gradle` (`versionCode 28`).
   - Comparaison sémantique universelle (`compareVersions`) ignorant les préfixes `v`.
   - Interrogation de l'API GitHub Releases (`https://api.github.com/repos/lkmqji/qcm-p-diatrie/releases/latest`) avec cooldown de 4 heures (`pedia_last_update_check_ts`).
   - Extraction de l'asset `.apk` direct (`PediaDrill.apk`). En environnement natif Android Capacitor, l'URL est ouverte via `_system` pour lancer le gestionnaire de téléchargement Android natif.
@@ -606,7 +606,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.6.0` (`versionCode 27`)
+- **Version native** : `versionName 1.6.1` (`versionCode 28`)
 - **Empreinte SHA-1 (Debug Keystore Gradle & GitHub Actions)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
 - **Empreinte SHA-256 (Debug Keystore Gradle & GitHub Actions)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
 - **Keystore unifié** : `android/app/debug.keystore` (Alias : `AndroidDebugKey`, mot de passe `android`, garantissant une empreinte cryptographique identique entre les compilations locales et la CI/CD GitHub Actions).

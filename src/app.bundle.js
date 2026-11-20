@@ -1624,9 +1624,11 @@ class QueueEngine {
    * - Distributes remaining questions in the queue
    */
   handleClinicalCaseSuccess(uids = []) {
-    if (!Array.isArray(uids) || uids.length === 0) return { success: true, count: 0 };
+    if (!Array.isArray(uids) || uids.length === 0) return { success: true, count: 0, activeCreditedCount: 0, alreadyMasteredCount: 0, newlyMasteredCount: 0 };
     const results = [];
-    let masteredCount = 0;
+    let newlyMasteredCount = 0;
+    let alreadyMasteredCount = 0;
+    let activeCreditedCount = 0;
 
     // Remove all case uids from their current positions in the queue
     uids.forEach(uid => {
@@ -1639,9 +1641,26 @@ class QueueEngine {
       }
     });
 
-    // Advance each question
+    // Advance each question: ONLY non-cleaned questions advance and count
     uids.forEach(uid => {
       const st = this.getQuestionStats(uid);
+      const wasAlreadyDone = !!st.done;
+
+      if (wasAlreadyDone) {
+        alreadyMasteredCount++;
+        results.push({
+          uid,
+          wasAlreadyDone: true,
+          newCurrent: st.current,
+          target: st.target,
+          permanentlyRemoved: false,
+          pushDistance: 0
+        });
+        return;
+      }
+
+      // Question active (non encore nettoyée)
+      activeCreditedCount++;
       st.current += 1;
       let permanentlyRemoved = false;
       let pushDistance = 0;
@@ -1649,7 +1668,7 @@ class QueueEngine {
       if (st.current >= st.target) {
         st.done = true;
         permanentlyRemoved = true;
-        masteredCount++;
+        newlyMasteredCount++;
       } else {
         const remainingNeeded = st.target - st.current;
         let insertIndex;
@@ -1673,6 +1692,7 @@ class QueueEngine {
 
       results.push({
         uid,
+        wasAlreadyDone: false,
         newCurrent: st.current,
         target: st.target,
         permanentlyRemoved,
@@ -1688,7 +1708,10 @@ class QueueEngine {
     return {
       success: true,
       totalCount: uids.length,
-      masteredCount,
+      activeCreditedCount,
+      alreadyMasteredCount,
+      newlyMasteredCount,
+      masteredCount: newlyMasteredCount,
       results,
       remainingInQueue: this.queue.length
     };
@@ -3876,7 +3899,7 @@ class FirebaseSyncService {
 // Update Management Service for PédiaDrill
 // Checks GitHub Releases for new APK versions, notifies the user, and triggers direct download.
 
-const CURRENT_APP_VERSION = '1.6.0';
+const CURRENT_APP_VERSION = '1.6.1';
 const GITHUB_REPO = 'lkmqji/qcm-p-diatrie';
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
 const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours auto-check cooldown
@@ -7498,9 +7521,27 @@ window.validateAllClinicalSubQuestions = async function() {
   const isAllCorrect = failedUids.length === 0;
   const correctCount = results.filter(r => r.isCorrect).length;
 
+  let activeCreditedCount = 0;
+  let alreadyMasteredCount = 0;
+  const alreadyCleanedUids = [];
+
+  // Identifier avant validation les questions qui étaient déjà nettoyées
+  allCaseUids.forEach(uid => {
+    const st = queueEngine.getQuestionStats(uid);
+    if (st && st.done) {
+      alreadyCleanedUids.push(uid);
+    }
+  });
+
   if (isAllCorrect) {
-    queueEngine.handleClinicalCaseSuccess(allCaseUids);
-    queueEngine.incrementTodayCount(allCaseUids.length);
+    const successResult = queueEngine.handleClinicalCaseSuccess(allCaseUids);
+    activeCreditedCount = successResult.activeCreditedCount || 0;
+    alreadyMasteredCount = successResult.alreadyMasteredCount || 0;
+
+    // Seules les questions qui n'étaient PAS encore nettoyées s'ajoutent au compteur journalier
+    if (activeCreditedCount > 0) {
+      queueEngine.incrementTodayCount(activeCreditedCount);
+    }
 
     allCaseUids.forEach(uid => {
       studyTracker.recordAnswer(true, clinicalRunState.chapterId, uid);
@@ -7528,7 +7569,10 @@ window.validateAllClinicalSubQuestions = async function() {
     results,
     casePrefix: clinicalRunState.casePrefix,
     caseStatement: clinicalRunState.caseStatement,
-    chapterTitle: clinicalRunState.chapterTitle
+    chapterTitle: clinicalRunState.chapterTitle,
+    activeCreditedCount,
+    alreadyMasteredCount,
+    alreadyCleanedUids
   });
 };
 
@@ -7548,7 +7592,7 @@ async function showClinicalCaseSummaryModal(summaryData) {
   const aiNote = document.getElementById('clinical-summary-ai-note');
   const aiModelTag = document.getElementById('clinical-summary-model-tag');
 
-  const { isAllCorrect, totalCount, correctCount, results, casePrefix, caseStatement, chapterTitle, subQuestions } = summaryData;
+  const { isAllCorrect, totalCount, correctCount, results, casePrefix, caseStatement, chapterTitle, subQuestions, activeCreditedCount = 0, alreadyMasteredCount = 0, alreadyCleanedUids = [] } = summaryData;
 
   if (isAllCorrect) {
     verdictBanner.className = 'clinical-verdict-banner is-success';
@@ -7556,8 +7600,13 @@ async function showClinicalCaseSummaryModal(summaryData) {
     verdictTitle.textContent = `Cas Clinique 100% Validé ! (${totalCount}/${totalCount})`;
     verdictDesc.textContent = `Félicitations ! Toutes les ${totalCount} sous-questions ont été répondues sans aucune faute.`;
 
-    srsTitle.textContent = `Progression Complète : +${totalCount} succès enregistrés !`;
-    srsDesc.textContent = `Toutes les questions du cas ont avancé (+1 palier de répétition espacée) et ont été ajoutées à votre quota journalier.`;
+    if (alreadyMasteredCount > 0) {
+      srsTitle.textContent = `Progression : +${activeCreditedCount} question(s) ajoutée(s) au compteur du jour !`;
+      srsDesc.textContent = `${activeCreditedCount} question(s) active(s) ont avancé dans leur répétition espacée (${alreadyMasteredCount} sous-question(s) étaient déjà définitivement nettoyées et ne sont pas recomptées).`;
+    } else {
+      srsTitle.textContent = `Progression Complète : +${totalCount} succès enregistrés !`;
+      srsDesc.textContent = `Toutes les questions du cas ont avancé (+1 palier de répétition espacée) et ont été ajoutées à votre quota journalier.`;
+    }
 
     scoreBadge.textContent = `${totalCount}/${totalCount} (100%)`;
     scoreBadge.style.background = 'rgba(16,185,129,0.2)';
@@ -7616,6 +7665,16 @@ async function showClinicalCaseSummaryModal(summaryData) {
     const statusIcon = isCor ? 'check-circle' : 'x-circle';
     const statusColor = isCor ? 'var(--emerald)' : 'var(--rose)';
     const itemClass = isCor ? 'clinical-summary-item is-correct' : 'clinical-summary-item is-wrong';
+    const wasAlreadyCleaned = isAllCorrect && alreadyCleanedUids.includes(r.question.uid);
+
+    let tagHtml = '';
+    if (isCor) {
+      if (wasAlreadyCleaned) {
+        tagHtml = `<span style="font-size:0.7rem;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,0.08);color:var(--text-muted);margin-right:6px;">Déjà nettoyée</span>`;
+      } else {
+        tagHtml = `<span style="font-size:0.7rem;padding:2px 6px;border-radius:4px;background:rgba(16,185,129,0.18);color:var(--emerald);margin-right:6px;">+1 au jour</span>`;
+      }
+    }
 
     itemsHtml += `
       <div class="${itemClass}">
@@ -7625,8 +7684,9 @@ async function showClinicalCaseSummaryModal(summaryData) {
             <strong>Q${idx + 1} :</strong> ${escapeHtml(r.question.question || r.question.statement || '')}
           </span>
         </div>
-        <div style="font-size:0.75rem;font-weight:700;color:${statusColor};white-space:nowrap;">
-          ${isCor ? 'Juste' : 'Faux'}
+        <div style="font-size:0.75rem;font-weight:700;color:${statusColor};white-space:nowrap;display:flex;align-items:center;">
+          ${tagHtml}
+          <span>${isCor ? 'Juste' : 'Faux'}</span>
         </div>
       </div>
     `;

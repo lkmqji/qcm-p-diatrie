@@ -3398,9 +3398,27 @@ window.validateAllClinicalSubQuestions = async function() {
   const isAllCorrect = failedUids.length === 0;
   const correctCount = results.filter(r => r.isCorrect).length;
 
+  let activeCreditedCount = 0;
+  let alreadyMasteredCount = 0;
+  const alreadyCleanedUids = [];
+
+  // Identifier avant validation les questions qui étaient déjà nettoyées
+  allCaseUids.forEach(uid => {
+    const st = queueEngine.getQuestionStats(uid);
+    if (st && st.done) {
+      alreadyCleanedUids.push(uid);
+    }
+  });
+
   if (isAllCorrect) {
-    queueEngine.handleClinicalCaseSuccess(allCaseUids);
-    queueEngine.incrementTodayCount(allCaseUids.length);
+    const successResult = queueEngine.handleClinicalCaseSuccess(allCaseUids);
+    activeCreditedCount = successResult.activeCreditedCount || 0;
+    alreadyMasteredCount = successResult.alreadyMasteredCount || 0;
+
+    // Seules les questions qui n'étaient PAS encore nettoyées s'ajoutent au compteur journalier
+    if (activeCreditedCount > 0) {
+      queueEngine.incrementTodayCount(activeCreditedCount);
+    }
 
     allCaseUids.forEach(uid => {
       studyTracker.recordAnswer(true, clinicalRunState.chapterId, uid);
@@ -3428,7 +3446,10 @@ window.validateAllClinicalSubQuestions = async function() {
     results,
     casePrefix: clinicalRunState.casePrefix,
     caseStatement: clinicalRunState.caseStatement,
-    chapterTitle: clinicalRunState.chapterTitle
+    chapterTitle: clinicalRunState.chapterTitle,
+    activeCreditedCount,
+    alreadyMasteredCount,
+    alreadyCleanedUids
   });
 };
 
@@ -3448,7 +3469,7 @@ async function showClinicalCaseSummaryModal(summaryData) {
   const aiNote = document.getElementById('clinical-summary-ai-note');
   const aiModelTag = document.getElementById('clinical-summary-model-tag');
 
-  const { isAllCorrect, totalCount, correctCount, results, casePrefix, caseStatement, chapterTitle, subQuestions } = summaryData;
+  const { isAllCorrect, totalCount, correctCount, results, casePrefix, caseStatement, chapterTitle, subQuestions, activeCreditedCount = 0, alreadyMasteredCount = 0, alreadyCleanedUids = [] } = summaryData;
 
   if (isAllCorrect) {
     verdictBanner.className = 'clinical-verdict-banner is-success';
@@ -3456,8 +3477,13 @@ async function showClinicalCaseSummaryModal(summaryData) {
     verdictTitle.textContent = `Cas Clinique 100% Validé ! (${totalCount}/${totalCount})`;
     verdictDesc.textContent = `Félicitations ! Toutes les ${totalCount} sous-questions ont été répondues sans aucune faute.`;
 
-    srsTitle.textContent = `Progression Complète : +${totalCount} succès enregistrés !`;
-    srsDesc.textContent = `Toutes les questions du cas ont avancé (+1 palier de répétition espacée) et ont été ajoutées à votre quota journalier.`;
+    if (alreadyMasteredCount > 0) {
+      srsTitle.textContent = `Progression : +${activeCreditedCount} question(s) ajoutée(s) au compteur du jour !`;
+      srsDesc.textContent = `${activeCreditedCount} question(s) active(s) ont avancé dans leur répétition espacée (${alreadyMasteredCount} sous-question(s) étaient déjà définitivement nettoyées et ne sont pas recomptées).`;
+    } else {
+      srsTitle.textContent = `Progression Complète : +${totalCount} succès enregistrés !`;
+      srsDesc.textContent = `Toutes les questions du cas ont avancé (+1 palier de répétition espacée) et ont été ajoutées à votre quota journalier.`;
+    }
 
     scoreBadge.textContent = `${totalCount}/${totalCount} (100%)`;
     scoreBadge.style.background = 'rgba(16,185,129,0.2)';
@@ -3516,6 +3542,16 @@ async function showClinicalCaseSummaryModal(summaryData) {
     const statusIcon = isCor ? 'check-circle' : 'x-circle';
     const statusColor = isCor ? 'var(--emerald)' : 'var(--rose)';
     const itemClass = isCor ? 'clinical-summary-item is-correct' : 'clinical-summary-item is-wrong';
+    const wasAlreadyCleaned = isAllCorrect && alreadyCleanedUids.includes(r.question.uid);
+
+    let tagHtml = '';
+    if (isCor) {
+      if (wasAlreadyCleaned) {
+        tagHtml = `<span style="font-size:0.7rem;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,0.08);color:var(--text-muted);margin-right:6px;">Déjà nettoyée</span>`;
+      } else {
+        tagHtml = `<span style="font-size:0.7rem;padding:2px 6px;border-radius:4px;background:rgba(16,185,129,0.18);color:var(--emerald);margin-right:6px;">+1 au jour</span>`;
+      }
+    }
 
     itemsHtml += `
       <div class="${itemClass}">
@@ -3525,8 +3561,9 @@ async function showClinicalCaseSummaryModal(summaryData) {
             <strong>Q${idx + 1} :</strong> ${escapeHtml(r.question.question || r.question.statement || '')}
           </span>
         </div>
-        <div style="font-size:0.75rem;font-weight:700;color:${statusColor};white-space:nowrap;">
-          ${isCor ? 'Juste' : 'Faux'}
+        <div style="font-size:0.75rem;font-weight:700;color:${statusColor};white-space:nowrap;display:flex;align-items:center;">
+          ${tagHtml}
+          <span>${isCor ? 'Juste' : 'Faux'}</span>
         </div>
       </div>
     `;

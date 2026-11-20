@@ -488,9 +488,11 @@ export class QueueEngine {
    * - Distributes remaining questions in the queue
    */
   handleClinicalCaseSuccess(uids = []) {
-    if (!Array.isArray(uids) || uids.length === 0) return { success: true, count: 0 };
+    if (!Array.isArray(uids) || uids.length === 0) return { success: true, count: 0, activeCreditedCount: 0, alreadyMasteredCount: 0, newlyMasteredCount: 0 };
     const results = [];
-    let masteredCount = 0;
+    let newlyMasteredCount = 0;
+    let alreadyMasteredCount = 0;
+    let activeCreditedCount = 0;
 
     // Remove all case uids from their current positions in the queue
     uids.forEach(uid => {
@@ -503,9 +505,26 @@ export class QueueEngine {
       }
     });
 
-    // Advance each question
+    // Advance each question: ONLY non-cleaned questions advance and count
     uids.forEach(uid => {
       const st = this.getQuestionStats(uid);
+      const wasAlreadyDone = !!st.done;
+
+      if (wasAlreadyDone) {
+        alreadyMasteredCount++;
+        results.push({
+          uid,
+          wasAlreadyDone: true,
+          newCurrent: st.current,
+          target: st.target,
+          permanentlyRemoved: false,
+          pushDistance: 0
+        });
+        return;
+      }
+
+      // Question active (non encore nettoyée)
+      activeCreditedCount++;
       st.current += 1;
       let permanentlyRemoved = false;
       let pushDistance = 0;
@@ -513,7 +532,7 @@ export class QueueEngine {
       if (st.current >= st.target) {
         st.done = true;
         permanentlyRemoved = true;
-        masteredCount++;
+        newlyMasteredCount++;
       } else {
         const remainingNeeded = st.target - st.current;
         let insertIndex;
@@ -537,6 +556,7 @@ export class QueueEngine {
 
       results.push({
         uid,
+        wasAlreadyDone: false,
         newCurrent: st.current,
         target: st.target,
         permanentlyRemoved,
@@ -552,7 +572,10 @@ export class QueueEngine {
     return {
       success: true,
       totalCount: uids.length,
-      masteredCount,
+      activeCreditedCount,
+      alreadyMasteredCount,
+      newlyMasteredCount,
+      masteredCount: newlyMasteredCount,
       results,
       remainingInQueue: this.queue.length
     };

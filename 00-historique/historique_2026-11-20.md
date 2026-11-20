@@ -95,3 +95,66 @@
 - Synchronisation Capacitor Android exécutée avec succès (`cmd.exe /c npx.cmd cap sync android`).
 - Compilation locale de l'APK via `build-apk.bat` (`PediaDrill.apk` à la racine).
 - Déclenchement automatique de la GitHub Release via le tag `v1.6.0` et GitHub Actions.
+
+---
+
+## 20:20:00 — Ajustement Règle Cas Cliniques : Exclusion des Questions Déjà Nettoyées du Compteur Journalier
+
+### Contexte & Feedback Utilisateur
+- Retour utilisateur : *« non ça est faux normalement tu ne compte pas les question déjas nettoiyé »*.
+- **Règle métier ajustée** : Lorsqu'un étudiant résout un cas clinique complet contenant des sous-questions déjà préalablement nettoyées / éliminées (`st.done === true`), ces questions ne doivent pas être recomptées dans le quota quotidien d'entraînement.
+- **Principe d'intégrité de la progression** : Seules les sous-questions **actives** (qui n'étaient pas encore nettoyées) font avancer le compteur journalier (`incrementTodayCount(activeCreditedCount)`).
+
+### Actions Réalisées
+1. **Moteur SRS (`src/services/queueEngine.js` - `handleClinicalCaseSuccess`)** :
+   - Détection systématique de `wasAlreadyDone = !!st.done` pour chaque question du cas.
+   - Les questions déjà nettoyées ne subissent plus de fausse incrémentation de leur score (`st.current`) et ne sont pas recomptées dans `activeCreditedCount`.
+   - Seules les questions actives avancent (`st.current += 1`) et déclenchent si éligibles le statut maîtrisé (`newlyMasteredCount++`).
+   - Retourne `activeCreditedCount`, `alreadyMasteredCount` et `newlyMasteredCount`.
+2. **Contrôleur de l'Arène (`src/app.js` - `validateAllClinicalSubQuestions` & `showClinicalCaseSummaryModal`)** :
+   - Capture de la liste des questions déjà nettoyées avant validation (`alreadyCleanedUids`).
+   - Appel conditionnel : `if (activeCreditedCount > 0) queueEngine.incrementTodayCount(activeCreditedCount)`.
+   - Modale de bilan : affichage clair de la distinction entre les questions actives ayant progressé et celles déjà nettoyées, avec pastilles distinctes dans la liste des résultats (`Déjà nettoyée` vs `+1 au jour`).
+3. **Compilation & Intégrité** :
+   - Synchronisation et recompilation via `node build-bundle.cjs`.
+   - Validation syntaxique `node -c src/services/queueEngine.js`, `node -c src/app.js`, `node -c src/app.bundle.js` sans aucune erreur.
+
+---
+
+## 20:35:00 — Release v1.6.1 (versionCode 28) : Déploiement Vercel & Publication GitHub Release
+
+### Contexte & Objectif
+- Publication officielle de la version **v1.6.1** (versionCode 28) faisant suite à la commande utilisateur **« update github »**.
+- Intégration de la règle stricte de non-recomptabilisation des questions déjà nettoyées dans les Cas Cliniques (seules les questions encore actives sont ajoutées au compteur journalier).
+- Affichage transparent dans la modale de bilan des questions actives créditées (`+1 au jour`) et des questions déjà maîtrisées (`Déjà nettoyée`).
+
+---
+
+### Actions Réalisées
+
+#### 1. Incrémentation de Version & Alignement Multisupport
+- Passage de la version applicative de `1.6.0` à **`1.6.1`** (+0.0.1).
+- Incrémentation du `versionCode` Android de `27` à **`28`** (+1).
+- Synchronisation rigoureuse dans :
+  - `package.json` : `"version": "1.6.1"`
+  - `src/services/updateService.js` : `CURRENT_APP_VERSION = '1.6.1'`
+  - `android/app/build.gradle` : `versionCode 28`, `versionName "1.6.1"`
+  - `template.html` : `#update-modal-curr-version`, `#update-modal-new-version` et `#settings-current-app-version` en `v1.6.1`.
+  - `00-historique/MASTER_PRODUCT_TECHNICAL_CONTEXT.md` : synchronisé avec `1.6.1` et `versionCode 28`.
+
+#### 2. Fonctionnalités Embarquées dans cette Release (v1.6.1)
+- **Intégrité du Compteur Journalier pour les Cas Cliniques** :
+  - `handleClinicalCaseSuccess` distingue les questions déjà nettoyées (`wasAlreadyDone = !!st.done`) et n'incrémente plus le compteur quotidien que pour les questions actives (`activeCreditedCount`).
+  - Élimination des faux incréments et du gonflement artificiel des statistiques sur des questions déjà maîtrisées.
+- **Rendu Visuel Détaillé du Bilan** :
+  - Modale de synthèse mise à jour : décompte précis des questions actives ajoutées (`+X question(s) ajoutée(s) au compteur du jour`) et rappel des sous-questions déjà acquises.
+  - Étiquettes explicites sur chaque item : `+1 au jour` (vert émeraude) ou `Déjà nettoyée` (gris neutre).
+
+#### 3. Compilation, Synchronisation & Assemblage
+- Exécution réussie de `node build-bundle.cjs` :
+  - Styles `src/style.css` synchronisés dans `template.html`.
+  - Bundle modulaire `src/app.bundle.js` recompilé avec succès.
+  - `index.html` et `dist/index.html` synchronisés pour le déploiement continu Vercel.
+- Synchronisation Capacitor Android exécutée avec succès (`cmd.exe /c npx.cmd cap sync android`).
+- Compilation locale de l'APK via `build-apk.bat` (`PediaDrill.apk` à la racine).
+- Déclenchement automatique de la GitHub Release via le tag `v1.6.1` et GitHub Actions.
