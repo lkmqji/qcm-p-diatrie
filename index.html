@@ -8034,6 +8034,87 @@ body {
   color: #fca5a5;
 }
 
+.btn-card-gen-ai-exp {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.18), rgba(147, 51, 234, 0.22));
+  border: 1px solid var(--cyan);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-card-gen-ai-exp:hover {
+  background: rgba(0, 212, 255, 0.28);
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-card-gen-ai-exp:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.clinical-card-ai-note {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: rgba(10, 16, 32, 0.75);
+  border: 1px solid rgba(0, 212, 255, 0.28);
+  border-radius: var(--radius-sm);
+  max-height: 480px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.clinical-card-ai-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.clinical-card-ai-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--cyan);
+  font-family: var(--font-heading);
+}
+
+.btn-card-regen-ai {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 2px 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: var(--transition);
+}
+
+.btn-card-regen-ai:hover {
+  color: var(--cyan);
+  background: rgba(0, 212, 255, 0.1);
+}
+
+.clinical-card-ai-body {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--text-main);
+}
+
 .clinical-scroll-master-actions {
   position: sticky;
   bottom: 16px;
@@ -9730,7 +9811,7 @@ body {
             <i data-lucide="github" style="width:16px;height:16px;color:var(--cyan);"></i>
             <span style="font-size:0.78rem;font-weight:700;color:var(--text-main);text-transform:uppercase;">Mises à Jour Application</span>
           </div>
-          <span class="badge" id="settings-current-app-version" style="background:rgba(0,212,255,0.15);color:var(--cyan);font-size:0.72rem;padding:3px 8px;border-radius:10px;font-weight:700;">v1.5.9</span>
+          <span class="badge" id="settings-current-app-version" style="background:rgba(0,212,255,0.15);color:var(--cyan);font-size:0.72rem;padding:3px 8px;border-radius:10px;font-weight:700;">v1.6.0</span>
         </div>
         <div style="font-size:0.75rem;color:var(--text-muted);line-height:1.45;" id="settings-update-status">
           Vérifie automatiquement les nouvelles versions et correctifs disponibles sur GitHub Releases.
@@ -9764,9 +9845,9 @@ body {
 
       <div class="update-version-banner">
         <div class="update-version-chips">
-          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.5.9</strong></span>
+          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.6.0</strong></span>
           <i data-lucide="arrow-right" style="width:14px;height:14px;color:var(--text-dim);"></i>
-          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.5.9</strong></span>
+          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.6.0</strong></span>
         </div>
         <div class="update-release-date" id="update-modal-date">Publiée sur GitHub Releases</div>
       </div>
@@ -11099,15 +11180,28 @@ RÉPONSE DONNÉE PAR L'ÉTUDIANT : ${userAnswer}
   /**
    * Generate complete, exhaustive clinical reasoning note for mistake or review
    */
-  async generateReasoningNote(question, selectedLetters, isCroq = false, studentCroq = "") {
+  async generateReasoningNote(question, selectedLetters, isCroq = false, studentCroq = "", clinicalCaseContext = null) {
     const correctOptions = (question.options || []).filter(o => o.is_correct);
     const correctLetters = correctOptions.map(o => o.letter).join(", ");
     const allOptionsText = (question.options || []).map(o => `${o.letter}) ${o.text}`).join("\n");
+
+    let clinicalPromptSection = '';
+    if (clinicalCaseContext && clinicalCaseContext.isClinicalCase) {
+      clinicalPromptSection = `
+DOSSIER CLINIQUE COMPLET (Cas Clinique ${clinicalCaseContext.casePrefix || ''} - Question ${clinicalCaseContext.currentNum}/${clinicalCaseContext.totalCount}) :
+VIGNETTE CLINIQUE :
+"${clinicalCaseContext.caseStatement}"
+
+DÉROULEMENT CHRONOLOGIQUE DU CAS DEPUIS LA QUESTION 1 JUSQU'À CETTE QUESTION (${clinicalCaseContext.currentNum}/${clinicalCaseContext.totalCount}) :
+${clinicalCaseContext.chronologySummary}
+`;
+    }
 
     const systemPrompt = `Tu es un Professeur de pédiatrie et jury de concours de résidanat en médecine.
 L'étudiant s'entraîne sur un QCM/CROQ et a besoin d'une explication CLINIQUE COMPLÈTE, PARFAITEMENT STRUCTURÉE et PERCUTANTE.
 Va directement au but avec un style médical soigné, rigoureux et précis (mots-clés en gras, listes à puces pour une lecture rapide).
 La réponse doit être TOTALE et NE DOIT JAMAIS ÊTRE COUPÉE.
+${clinicalPromptSection ? "Prends impérativement en compte l'histoire clinique évolutive et les décisions prises lors des questions précédentes du cas pour éclairer cette étape." : ''}
 Structure OBLIGATOIREMENT ton retour selon ces 4 sections détaillées :
 
 1. 🎯 PIÈGE CLINIQUE & ANALYSE DE L'ERREUR :
@@ -11130,8 +11224,8 @@ Formule une règle mémo claire, percutante et mémorisable pour ne plus jamais 
 Rédige en français médical soigné, rigoureux, direct et complet. Ne coupe aucune phrase, ne saute aucune étape.`;
 
     const userPrompt = `MODULE : Pédiatrie - ${question.chapterTitle || "Pédiatrie Générale"}
-QUESTION : ${question.question}
-${question.clinical_case ? `CAS CLINIQUE COMPLET : ${question.clinical_case}\n` : ""}
+QUESTION : ${question.question || question.statement}
+${clinicalPromptSection ? clinicalPromptSection : (question.clinical_case ? `CAS CLINIQUE COMPLET : ${question.clinical_case}\n` : "")}
 PROPOSITIONS PROPOSÉES :
 ${allOptionsText || "Question ouverte (CROQ)"}
 
@@ -11139,7 +11233,7 @@ RÉPONSE(S) OFFICIELLEMENT CORRECTE(S) : ${correctLetters || question.croq_answe
 RÉPONSE SÉLECTIONNÉE PAR L'ÉTUDIANT : ${isCroq ? studentCroq : (selectedLetters.join(", ") || "Aucune")}
 EXPLICATION OFFICIELLE DISPONIBLE DANS LA BASE : ${question.explanation || "Aucune explication fournie dans la base."}
 
-Rédige l'explication clinique complète et approfondie sans aucune coupure. À l'étape 2, justifie impérativement et de façon complète chaque proposition une par une.`;
+Rédige l'explication clinique complète et approfondie sans aucune coupure. ${clinicalPromptSection ? "Prends impérativement en compte l'histoire clinique et l'évolution depuis la question 1 pour éclairer cette étape." : ''} À l'étape 2, justifie impérativement et de façon complète chaque proposition une par une.`;
 
     try {
       const result = await this.callWithFallback(userPrompt, systemPrompt, 2500);
@@ -11281,7 +11375,7 @@ Rédige la note de synthèse clinique complète consolidée.`;
    * Question-in-context AI chat tutor (Flash models only)
    * Answers student queries specifically focused on the current QCM / CROQ
    */
-  async askAboutQuestion(question, conversationHistory = [], userMessage) {
+  async askAboutQuestion(question, conversationHistory = [], userMessage, clinicalCaseContext = null) {
     if (!question) {
       return {
         text: "Aucune question active n'est actuellement chargée dans l'Arène.",
@@ -11293,22 +11387,38 @@ Rédige la note de synthèse clinique complète consolidée.`;
     const correctLetters = correctOptions.map(o => o.letter).join(", ");
     const allOptionsText = (question.options || []).map(o => `${o.letter}) ${o.text}`).join("\n");
 
+    let clinicalSection = '';
+    if (clinicalCaseContext && clinicalCaseContext.isClinicalCase) {
+      clinicalSection = `
+================================================================================
+DOSSIER CLINIQUE COMPLET (Cas Clinique ${clinicalCaseContext.casePrefix || ''} - Progression : Question ${clinicalCaseContext.currentNum}/${clinicalCaseContext.totalCount})
+================================================================================
+VIGNETTE CLINIQUE INITIALE DU CAS :
+"${clinicalCaseContext.caseStatement}"
+
+HISTORIQUE & ÉVOLUTION DU CAS DEPUIS LA QUESTION 1 JUSQU'À LA QUESTION ACTUELLE (${clinicalCaseContext.currentNum}/${clinicalCaseContext.totalCount}) :
+${clinicalCaseContext.chronologySummary}
+================================================================================
+`;
+    }
+
     const systemInstruction = `Tu es le Tuteur IA Pédiatrique de PédiaDrill, professeur universitaire et chef de clinique en pédiatrie.
 L'étudiant s'entraîne sur un QCM/CROQ précis et te pose une question directe pour mieux comprendre.
 Tu as le contexte médical complet sous les yeux :
 - Module : Pédiatrie (${question.chapterTitle || 'Pédiatrie Générale'})
-- Énoncé : "${question.question || question.statement || ''}"
-${question.clinical_case ? `- Cas clinique : "${question.clinical_case}"\n` : ''}
-${allOptionsText ? `- Propositions :\n${allOptionsText}\n` : '- Type : Question ouverte (CROQ)\n'}
-- Bonne(s) réponse(s) officielle(s) : ${correctLetters || question.croq_answer || 'Non précisé'}
-${question.explanation ? `- Explication officielle du cours : "${question.explanation}"\n` : ''}
+- Énoncé de la question active : "${question.question || question.statement || ''}"
+${clinicalSection ? clinicalSection : (question.clinical_case ? `- Cas clinique : "${question.clinical_case}"\n` : '')}
+${allOptionsText ? `- Propositions de la question active :\n${allOptionsText}\n` : '- Type : Question ouverte (CROQ)\n'}
+- Bonne(s) réponse(s) officielle(s) de la question active : ${correctLetters || question.croq_answer || 'Non précisé'}
+${question.explanation ? `- Explication officielle de la question active : "${question.explanation}"\n` : ''}
 
 Consignes pédagogiques strictes :
 1. Réponds en français médical rigoureux, clair, bienveillant et concis (va droit au but).
-2. Mets en valeur les mots-clés en gras et structure avec des tirets/puces pour une lecture rapide pendant le drill.
-3. Justifie sur le plan physiopathologique, sémiologique ou thérapeutique pourquoi telle proposition est vraie ou fausse.
-4. Signale les pièges fréquents au concours de résidanat si pertinent.
-5. 🚫 RÈGLE STRICTE SUR LES CALCULS, DOSES ET FORMULES :
+2. Si un DOSSIER CLINIQUE COMPLET est fourni ci-dessus, intègre obligatoirement l'ensemble de l'histoire clinique et l'évolution chronologique depuis la question 1 pour éclairer la question ${clinicalCaseContext ? clinicalCaseContext.currentNum : 'en cours'} avec une rigueur sémiologique et diagnostique absolue.
+3. Mets en valeur les mots-clés en gras et structure avec des tirets/puces pour une lecture rapide pendant le drill.
+4. Justifie sur le plan physiopathologique, sémiologique ou thérapeutique pourquoi telle proposition est vraie ou fausse.
+5. Signale les pièges fréquents au concours de résidanat si pertinent.
+6. 🚫 RÈGLE STRICTE SUR LES CALCULS, DOSES ET FORMULES :
 - INTERDICTION TOTALE d'utiliser la syntaxe ou des balises LaTeX (strictement interdit : \\text{}, \\mathbf{}, \\times, \\frac{}, \\cdot, etc.).
 - Écris TOUJOURS les calculs, posologies, poids et unités en texte français clair et direct (exemples : "14 g/dl" et JAMAIS "14\\text{ g/dl}", "Poids = 3 kg" et JAMAIS "\\mathbf{3}\\text{ kg}", "Déficit = 4 g/dl", "×" ou "x" au lieu de "\\times", "/" au lieu de "\\frac").`;
 
@@ -14082,7 +14192,7 @@ class FirebaseSyncService {
 // Update Management Service for PédiaDrill
 // Checks GitHub Releases for new APK versions, notifies the user, and triggers direct download.
 
-const CURRENT_APP_VERSION = '1.5.9';
+const CURRENT_APP_VERSION = '1.6.0';
 const GITHUB_REPO = 'lkmqji/qcm-p-diatrie';
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
 const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours auto-check cooldown
@@ -16306,6 +16416,106 @@ function getClinicalCaseSubQuestions(question) {
   });
 }
 
+function buildClinicalCaseContext(question) {
+  if (!question) return null;
+
+  const isCase = (isClinicalRunActive && clinicalRunState) || (question.clinical_case && question.clinical_case.trim().length > 0);
+  if (!isCase) return null;
+
+  const caseStatement = (clinicalRunState ? clinicalRunState.caseStatement : question.clinical_case) || '';
+  const subQuestions = (clinicalRunState ? clinicalRunState.subQuestions : getClinicalCaseSubQuestions(question)) || [];
+
+  if (subQuestions.length === 0) {
+    return {
+      isClinicalCase: true,
+      casePrefix: String(question.id || '').split('.')[0] || '',
+      caseStatement: caseStatement,
+      currentNum: 1,
+      totalCount: 1,
+      chronologySummary: `Énoncé du cas clinique :\n"${caseStatement}"`
+    };
+  }
+
+  let curIdx = 0;
+  if (isClinicalRunActive && clinicalRunState) {
+    curIdx = clinicalRunState.currentIndex;
+  } else {
+    const found = subQuestions.findIndex(sq => sq.uid === question.uid || sq.id === question.id);
+    curIdx = found !== -1 ? found : 0;
+  }
+
+  const curNum = curIdx + 1;
+  const totalCount = subQuestions.length;
+  const casePrefix = clinicalRunState ? clinicalRunState.casePrefix : (String(question.id || '').split('.')[0] || '');
+
+  // Questions du cas depuis la première jusqu'à la question actuelle
+  const questionsUpToCurrent = subQuestions.slice(0, curIdx + 1);
+
+  const lines = [];
+  questionsUpToCurrent.forEach((sq, idx) => {
+    const qNum = idx + 1;
+    const isCurrent = idx === curIdx;
+    const tag = isCurrent ? '➡️ [QUESTION ACTUELLE OÙ SE TROUVE L\'ÉTUDIANT]' : `[Question ${qNum}/${totalCount}]`;
+    const qStatement = sq.question || sq.statement || '';
+
+    // Réponse de l'étudiant si disponible
+    let userAnsText = 'Non renseignée';
+    if (clinicalRunState && clinicalRunState.userAnswers && clinicalRunState.userAnswers[sq.uid]) {
+      const uAns = clinicalRunState.userAnswers[sq.uid];
+      userAnsText = uAns.isCroq ? (uAns.croqText || 'Vide') : (uAns.selectedLetters?.join(', ') || 'Vide');
+    }
+
+    // Données d'évaluation
+    const evalData = (clinicalRunState && clinicalRunState.cardEvaluations) ? clinicalRunState.cardEvaluations[sq.uid] : null;
+
+    // Bonne réponse officielle
+    let correctText = '';
+    if (sq.is_croq) {
+      correctText = sq.croq_answer || 'Réponse attendue';
+    } else {
+      const corOpts = (sq.options || []).filter(o => o.is_correct);
+      correctText = corOpts.map(o => `${o.letter}) ${o.text}`).join(' ; ') || corOpts.map(o => o.letter).join(', ');
+    }
+
+    // Liste des propositions
+    let optsText = '';
+    if (!sq.is_croq && sq.options && sq.options.length > 0) {
+      optsText = sq.options.map(o => `   ${o.letter}) ${o.text}`).join('\n');
+    }
+
+    // Explication officielle ou note IA
+    const savedAi = getSavedAiExplanation(sq.uid, sq);
+    let expText = 'Non fournie dans la base';
+    if (sq.explanation && sq.explanation.trim()) {
+      expText = sq.explanation.trim();
+    } else if (savedAi && savedAi.note) {
+      expText = `[Explication IA Flash générée] : ${savedAi.note.slice(0, 250)}...`;
+    }
+
+    lines.push(`
+--- ${tag} : Question ${qNum} sur ${totalCount} ---
+Énoncé : ${qStatement}
+${optsText ? `Propositions :\n${optsText}` : 'Type : Question ouverte (CROQ)'}
+${userAnsText !== 'Non renseignée' ? `Réponse fournie par l'étudiant : ${userAnsText} ${evalData ? (evalData.isCorrect ? '(Validée ✅)' : '(Inexacte ❌)') : ''}` : ''}
+Bonne(s) réponse(s) officielle(s) : ${correctText}
+Explication : ${expText}
+`);
+  });
+
+  if (curIdx + 1 < totalCount) {
+    lines.push(`\n[Note pédagogique : Le cas comporte ${totalCount} questions au total. L'étudiant est actuellement à l'étape ${curNum}/${totalCount}. Ne spoile pas les questions suivantes ${curNum + 1} à ${totalCount} sauf si l'étudiant pose une question directe sur la stratégie thérapeutique globale.]`);
+  }
+
+  return {
+    isClinicalCase: true,
+    casePrefix: casePrefix,
+    caseStatement: caseStatement,
+    currentNum: curNum,
+    totalCount: totalCount,
+    chronologySummary: lines.join('\n')
+  };
+}
+
 let isClinicalAccordionOpen = false;
 
 function updateClinicalCaseUI(q) {
@@ -16757,6 +16967,234 @@ window.saveAndAdvanceSequentialClinicalQuestion = function() {
   }
 };
 
+function renderClinicalExplanationArea(subQ, isCorrect, correctLettersStr = '') {
+  const expBox = document.getElementById('arena-explanation-box');
+  const expText = document.getElementById('arena-explanation-text');
+  if (!expBox || !expText) return;
+
+  const correctStr = correctLettersStr || (subQ.is_croq ? subQ.croq_answer : (subQ.options || []).filter(o => o.is_correct).map(o => o.letter).join(', '));
+  const statusHeader = isCorrect 
+    ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#22c55e;font-weight:800;font-family:var(--font-heading);font-size:0.95rem;">
+         <i data-lucide="check-circle" style="width:18px;height:18px;"></i>
+         <span>Bonne réponse !</span>
+       </div>`
+    : `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#ef4444;font-weight:800;font-family:var(--font-heading);font-size:0.95rem;">
+         <i data-lucide="x-circle" style="width:18px;height:18px;"></i>
+         <span>Réponse incorrecte (Bonne(s) réponse(s) : <strong>${correctStr}</strong>)</span>
+       </div>`;
+
+  const hasOfficial = subQ.explanation && subQ.explanation.trim().length > 0;
+  let expContent = '';
+  if (hasOfficial) {
+    expContent = `<div style="margin-bottom:10px;">${formatMedicalContent(subQ.explanation.trim())}</div>`;
+  } else {
+    expContent = `
+      <div style="margin-bottom:10px;padding:10px 12px;background:rgba(255,255,255,0.03);border-radius:8px;border-left:3px solid var(--amber);">
+        <div style="font-size:0.83rem;color:var(--text-muted);display:flex;align-items:center;gap:6px;">
+          <i data-lucide="alert-circle" style="width:15px;height:15px;color:var(--amber);flex-shrink:0;"></i>
+          <span><strong>Explication officielle manquante :</strong> Aucune justification n'est fournie dans la base pour cette question.</span>
+        </div>
+      </div>
+    `;
+  }
+
+  // If CROQ, include feedback and expected answer
+  let croqExtraHtml = '';
+  if (subQ.is_croq) {
+    const evalData = clinicalRunState?.cardEvaluations ? clinicalRunState.cardEvaluations[subQ.uid] : null;
+    if (evalData) {
+      if (evalData.feedback) {
+        croqExtraHtml += `<div style="margin: 8px 0; padding: 10px; background: rgba(255,255,255,0.04); border-radius: 8px; font-size: 0.88rem; border-left: 3px solid var(--purple);"><strong>Feedback IA :</strong> ${escapeHtml(evalData.feedback)}</div>`;
+      }
+      if (subQ.croq_answer) {
+        croqExtraHtml += `<div style="margin: 8px 0; font-size: 0.88rem; color: var(--text-muted);"><strong>Réponse attendue :</strong> ${escapeHtml(subQ.croq_answer)}</div>`;
+      }
+    }
+  }
+
+  const savedAi = getSavedAiExplanation(subQ.uid, subQ);
+  let aiBtnHtml = '';
+  if (!savedAi || !savedAi.note) {
+    aiBtnHtml = `
+      <div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+        <div style="font-size:0.8rem;color:var(--text-muted);display:flex;align-items:center;gap:6px;">
+          <i data-lucide="sparkles" style="width:14px;height:14px;color:var(--cyan);"></i>
+          <span>${hasOfficial ? 'Besoin d\'un raisonnement plus poussé ?' : 'Explication détaillée manquante :'}</span>
+        </div>
+        <button type="button" class="btn-ask-arena-ai" id="btn-gen-clinical-subq-ai" onclick="window.requestClinicalSubQuestionAiExplanation()" style="padding:8px 16px;font-size:0.82rem;gap:6px;background:linear-gradient(135deg,rgba(0,212,255,0.18),rgba(147,51,234,0.22));border:1px solid var(--cyan);border-radius:8px;color:#ffffff;cursor:pointer;display:inline-flex;align-items:center;font-weight:700;">
+          <i data-lucide="sparkles" style="width:13px;height:13px;color:var(--cyan);"></i>
+          <span>${hasOfficial ? 'Approfondir avec l\'explication IA (Gemini Flash)' : 'Générer l\'explication IA (Gemini Flash)'}</span>
+        </button>
+      </div>
+    `;
+  } else {
+    aiBtnHtml = `
+      <div style="margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;font-size:0.8rem;color:var(--cyan);">
+        <span style="display:flex;align-items:center;gap:6px;">
+          <i data-lucide="check-check" style="width:14px;height:14px;"></i> Explication IA complète disponible ci-dessous
+        </span>
+        <button type="button" onclick="window.requestClinicalSubQuestionAiExplanation(true)" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:0.75rem;display:flex;align-items:center;gap:4px;">
+          <i data-lucide="rotate-cw" style="width:12px;height:12px;"></i> Régénérer
+        </button>
+      </div>
+    `;
+  }
+
+  expText.innerHTML = statusHeader + expContent + croqExtraHtml + aiBtnHtml;
+  expBox.style.display = 'flex';
+
+  // Affichage persistant de la boîte d'explication IA si déjà générée
+  renderArenaAiExplanation(subQ);
+  refreshLucide(expBox);
+}
+
+window.requestClinicalSubQuestionAiExplanation = async function(forceRegen = false) {
+  if (!clinicalRunState) return;
+  const subQ = clinicalRunState.subQuestions[clinicalRunState.currentIndex];
+  if (!subQ) return;
+  const targetUid = subQ.uid;
+
+  if (forceRegen) {
+    delete aiExplanationsCache[targetUid];
+    try {
+      localStorage.setItem('pedia_ai_explanations_cache', JSON.stringify(aiExplanationsCache));
+    } catch {}
+    queueEngine.deleteReasoningNotesByQuestionUid(targetUid);
+  }
+
+  const aiBox = document.getElementById('arena-ai-explanation-box');
+  const aiTextEl = document.getElementById('arena-ai-explanation-text');
+  const modelTag = document.getElementById('arena-ai-model-tag');
+  const regenBtn = document.getElementById('btn-arena-ai-regenerate');
+
+  if (aiBox && aiTextEl) {
+    aiBox.style.display = 'flex';
+    if (regenBtn) regenBtn.style.display = 'none';
+    aiTextEl.innerHTML = `
+      <div class="reasoning-loader-wrap" style="padding:16px;text-align:center;">
+        <i data-lucide="sparkles" class="spin" style="width:20px;height:20px;color:var(--cyan);margin-bottom:8px;"></i>
+        <div style="font-size:0.88rem;color:var(--cyan);font-weight:600;">Génération de l'explication clinique IA complète (Gemini Flash)...</div>
+        <div style="font-size:0.75rem;color:var(--text-dim);margin-top:4px;">Analyse du cas clinique complet, justification proposition par proposition et mémo concours.</div>
+      </div>
+    `;
+    refreshLucide(aiBox);
+    aiBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  const btnGen = document.getElementById('btn-gen-clinical-subq-ai');
+  if (btnGen) {
+    btnGen.disabled = true;
+    btnGen.innerHTML = `<i data-lucide="loader" class="spin" style="width:14px;height:14px;"></i> <span>Génération IA en cours...</span>`;
+    refreshLucide(btnGen);
+  }
+
+  try {
+    const clinicalContext = buildClinicalCaseContext(subQ);
+    const ans = clinicalRunState.userAnswers[subQ.uid];
+    const isCroq = !!subQ.is_croq;
+    const selectedLetters = isCroq ? [] : (ans?.selectedLetters || []);
+    const studentCroq = isCroq ? (ans?.croqText || '') : '';
+
+    const reasoningObj = await geminiService.generateReasoningNote(
+      subQ,
+      selectedLetters,
+      isCroq,
+      studentCroq,
+      clinicalContext
+    );
+
+    saveAiExplanationForQuestion(targetUid, reasoningObj.note, reasoningObj.modelUsed, subQ);
+    if (clinicalRunState.cardEvaluations && clinicalRunState.cardEvaluations[targetUid]) {
+      clinicalRunState.cardEvaluations[targetUid].aiReasoning = reasoningObj.note;
+    }
+
+    const currentSubQ = clinicalRunState.subQuestions[clinicalRunState.currentIndex];
+    if (currentSubQ && currentSubQ.uid === targetUid) {
+      if (aiTextEl) aiTextEl.innerHTML = formatReasoningNote(reasoningObj.note);
+      if (modelTag) modelTag.textContent = reasoningObj.modelUsed;
+      if (regenBtn) {
+        regenBtn.style.display = 'inline-flex';
+        regenBtn.onclick = () => window.requestClinicalSubQuestionAiExplanation(true);
+      }
+      refreshLucide(aiBox);
+
+      const evalData = clinicalRunState.cardEvaluations[targetUid];
+      renderClinicalExplanationArea(subQ, evalData ? evalData.isCorrect : true);
+    }
+  } catch (err) {
+    console.error('Error generating clinical sub-question AI explanation:', err);
+    if (aiTextEl) {
+      aiTextEl.innerHTML = `
+        <div style="color:var(--rose);padding:12px;font-size:0.85rem;">
+          ⚠️ Erreur de génération : ${escapeHtml(err.message || 'Problème de connexion')}
+          <div style="margin-top:8px;">
+            <button type="button" class="btn-ask-arena-ai" onclick="window.requestClinicalSubQuestionAiExplanation(true)">Réessayer</button>
+          </div>
+        </div>
+      `;
+      refreshLucide(aiBox);
+    }
+    if (btnGen) {
+      btnGen.disabled = false;
+      btnGen.innerHTML = `<i data-lucide="sparkles" style="width:13px;height:13px;"></i> <span>Réessayer la génération IA</span>`;
+      refreshLucide(btnGen);
+    }
+  }
+};
+
+window.requestClinicalCardAiExplanation = async function(idx, forceRegen = false) {
+  if (!isClinicalRunActive || !clinicalRunState) return;
+  const subQ = clinicalRunState.subQuestions[idx];
+  if (!subQ) return;
+  const targetUid = subQ.uid;
+
+  if (forceRegen) {
+    delete aiExplanationsCache[targetUid];
+    try {
+      localStorage.setItem('pedia_ai_explanations_cache', JSON.stringify(aiExplanationsCache));
+    } catch {}
+    queueEngine.deleteReasoningNotesByQuestionUid(targetUid);
+  }
+
+  const btn = document.getElementById(`btn-card-ai-exp-${idx}`);
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `<i data-lucide="loader" class="spin" style="width:12px;height:12px;"></i> <span>Génération IA en cours...</span>`;
+    refreshLucide(btn);
+  }
+
+  try {
+    const clinicalContext = buildClinicalCaseContext(subQ);
+    const ans = clinicalRunState.userAnswers[subQ.uid];
+    const isCroq = !!subQ.is_croq;
+    const selectedLetters = isCroq ? [] : (ans?.selectedLetters || []);
+    const studentCroq = isCroq ? (ans?.croqText || '') : '';
+
+    const reasoningObj = await geminiService.generateReasoningNote(
+      subQ,
+      selectedLetters,
+      isCroq,
+      studentCroq,
+      clinicalContext
+    );
+
+    saveAiExplanationForQuestion(targetUid, reasoningObj.note, reasoningObj.modelUsed, subQ);
+    if (clinicalRunState.cardEvaluations && clinicalRunState.cardEvaluations[targetUid]) {
+      clinicalRunState.cardEvaluations[targetUid].aiReasoning = reasoningObj.note;
+    }
+
+    renderClinicalScrollView();
+  } catch (err) {
+    console.error('Error generating card AI explanation:', err);
+    alert('Erreur lors de la génération de l\'explication IA : ' + (err.message || 'Problème de connexion'));
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<i data-lucide="sparkles" style="width:12px;height:12px;"></i> <span>Réessayer la génération IA</span>`;
+      refreshLucide(btn);
+    }
+  }
+};
+
 function verifySequentialSubQuestion(subQ) {
   if (!subQ || !clinicalRunState) return;
   saveSequentialCurrentQuestionState();
@@ -16797,30 +17235,8 @@ function verifySequentialSubQuestion(subQ) {
   const optionsContainer = document.getElementById('arena-options-container');
   if (optionsContainer) optionsContainer.style.pointerEvents = 'none';
 
-  // Affichage de l'explication officielle dans l'arène
-  const expBox = document.getElementById('arena-explanation-box');
-  const expText = document.getElementById('arena-explanation-text');
-  if (expBox && expText) {
-    const statusHeader = isCorrect 
-      ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#22c55e;font-weight:800;font-family:var(--font-heading);font-size:0.95rem;">
-           <i data-lucide="check-circle" style="width:18px;height:18px;"></i>
-           <span>Bonne réponse !</span>
-         </div>`
-      : `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#ef4444;font-weight:800;font-family:var(--font-heading);font-size:0.95rem;">
-           <i data-lucide="x-circle" style="width:18px;height:18px;"></i>
-           <span>Réponse incorrecte (Bonne(s) réponse(s) : <strong>${correctLetters.join(', ')}</strong>)</span>
-         </div>`;
-
-    let expContent = '';
-    if (subQ.explanation && subQ.explanation.trim()) {
-      expContent = formatMedicalContent(subQ.explanation.trim());
-    } else {
-      expContent = `<em>Réponse officielle validée conformément aux critères du cours <strong>${escapeHtml(clinicalRunState.chapterTitle || 'Pédiatrie')}</strong>.</em>`;
-    }
-
-    expText.innerHTML = statusHeader + expContent;
-    expBox.style.display = 'flex';
-  }
+  // Affichage de l'explication officielle et IA dans l'arène
+  renderClinicalExplanationArea(subQ, isCorrect, correctLetters.join(', '));
 
   const total = clinicalRunState.subQuestions.length;
   const curNum = clinicalRunState.currentIndex + 1;
@@ -16878,26 +17294,8 @@ async function verifySequentialCroqSubQuestion(subQ) {
   const croqInput = document.getElementById('arena-croq-input');
   if (croqInput) croqInput.disabled = true;
 
-  const expBox = document.getElementById('arena-explanation-box');
-  const expText = document.getElementById('arena-explanation-text');
-  if (expBox && expText) {
-    const scoreBadge = score !== null ? ` (Score : ${score}%)` : '';
-    const statusHeader = isCorrect 
-      ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#22c55e;font-weight:800;font-family:var(--font-heading);font-size:0.95rem;">
-           <i data-lucide="check-circle" style="width:18px;height:18px;"></i>
-           <span>Réponse validée par l'IA${scoreBadge} !</span>
-         </div>`
-      : `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#ef4444;font-weight:800;font-family:var(--font-heading);font-size:0.95rem;">
-           <i data-lucide="alert-circle" style="width:18px;height:18px;"></i>
-           <span>Réponse jugée insuffisante par l'IA${scoreBadge}</span>
-         </div>`;
-
-    const feedbackHtml = feedback ? `<div style="margin: 8px 0; padding: 10px; background: rgba(255,255,255,0.04); border-radius: 8px; font-size: 0.88rem; border-left: 3px solid var(--purple);"><strong>Feedback IA :</strong> ${escapeHtml(feedback)}</div>` : '';
-    const answerRefHtml = subQ.croq_answer ? `<div style="margin: 8px 0; font-size: 0.88rem; color: var(--text-muted);"><strong>Réponse attendue :</strong> ${escapeHtml(subQ.croq_answer)}</div>` : '';
-
-    expText.innerHTML = statusHeader + feedbackHtml + answerRefHtml;
-    expBox.style.display = 'flex';
-  }
+  // Affichage de l'explication officielle et IA dans l'arène
+  renderClinicalExplanationArea(subQ, isCorrect);
 
   const total = clinicalRunState.subQuestions.length;
   const curNum = clinicalRunState.currentIndex + 1;
@@ -16981,23 +17379,8 @@ function renderClinicalSequentialView() {
     if (btnSubmitCroq) btnSubmitCroq.style.display = 'flex';
     if (shortcutHint) shortcutHint.textContent = `Mode Cas Clinique Séquentiel • CROQ (${curNum}/${total})`;
 
-    if (isAlreadyEvaluated && expBox && expText) {
-      const scoreBadge = evalData.score !== null ? ` (Score : ${evalData.score}%)` : '';
-      const statusHeader = evalData.isCorrect 
-        ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#22c55e;font-weight:800;font-family:var(--font-heading);font-size:0.95rem;">
-             <i data-lucide="check-circle" style="width:18px;height:18px;"></i>
-             <span>Réponse validée par l'IA${scoreBadge} !</span>
-           </div>`
-        : `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#ef4444;font-weight:800;font-family:var(--font-heading);font-size:0.95rem;">
-             <i data-lucide="alert-circle" style="width:18px;height:18px;"></i>
-             <span>Réponse jugée insuffisante par l'IA${scoreBadge}</span>
-           </div>`;
-
-      const feedbackHtml = evalData.feedback ? `<div style="margin: 8px 0; padding: 10px; background: rgba(255,255,255,0.04); border-radius: 8px; font-size: 0.88rem; border-left: 3px solid var(--purple);"><strong>Feedback IA :</strong> ${escapeHtml(evalData.feedback)}</div>` : '';
-      const answerRefHtml = subQ.croq_answer ? `<div style="margin: 8px 0; font-size: 0.88rem; color: var(--text-muted);"><strong>Réponse attendue :</strong> ${escapeHtml(subQ.croq_answer)}</div>` : '';
-
-      expText.innerHTML = statusHeader + feedbackHtml + answerRefHtml;
-      expBox.style.display = 'flex';
+    if (isAlreadyEvaluated) {
+      renderClinicalExplanationArea(subQ, evalData.isCorrect);
     }
   } else {
     if (croqContainer) croqContainer.style.display = 'none';
@@ -17028,26 +17411,7 @@ function renderClinicalSequentialView() {
         }
       });
 
-      if (expBox && expText) {
-        const statusHeader = evalData.isCorrect 
-          ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#22c55e;font-weight:800;font-family:var(--font-heading);font-size:0.95rem;">
-               <i data-lucide="check-circle" style="width:18px;height:18px;"></i>
-               <span>Bonne réponse !</span>
-             </div>`
-          : `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#ef4444;font-weight:800;font-family:var(--font-heading);font-size:0.95rem;">
-               <i data-lucide="x-circle" style="width:18px;height:18px;"></i>
-               <span>Réponse incorrecte (Bonne(s) réponse(s) : <strong>${correctLetters.join(', ')}</strong>)</span>
-             </div>`;
-
-        let expContent = '';
-        if (subQ.explanation && subQ.explanation.trim()) {
-          expContent = formatMedicalContent(subQ.explanation.trim());
-        } else {
-          expContent = `<em>Réponse officielle validée conformément aux critères du cours <strong>${escapeHtml(clinicalRunState.chapterTitle || 'Pédiatrie')}</strong>.</em>`;
-        }
-        expText.innerHTML = statusHeader + expContent;
-        expBox.style.display = 'flex';
-      }
+      renderClinicalExplanationArea(subQ, evalData.isCorrect, correctLetters.join(', '));
     } else {
       if (savedAns && savedAns.selectedLetters && savedAns.selectedLetters.length > 0) {
         document.querySelectorAll('.option-item').forEach(el => {
@@ -17164,14 +17528,59 @@ function renderClinicalScrollView() {
     if (evalData) {
       const fbClass = evalData.isCorrect ? 'correct' : 'wrong';
       const fbIcon = evalData.isCorrect ? 'check-circle' : 'alert-circle';
-      const expText = sq.explanation ? formatMedicalContent(sq.explanation) : 'Réponse officielle validée.';
+      const hasOfficial = sq.explanation && sq.explanation.trim().length > 0;
+      let expText = hasOfficial ? formatMedicalContent(sq.explanation.trim()) : '';
+
+      let croqDetailsHtml = '';
+      if (sq.is_croq) {
+        if (evalData.feedback) {
+          croqDetailsHtml += `<div style="margin: 6px 0; padding: 8px 10px; background: rgba(255,255,255,0.04); border-radius: 6px; font-size: 0.84rem; border-left: 3px solid var(--purple);"><strong>Feedback IA :</strong> ${escapeHtml(evalData.feedback)}</div>`;
+        }
+        if (sq.croq_answer) {
+          croqDetailsHtml += `<div style="margin: 6px 0; font-size: 0.84rem; color: var(--text-muted);"><strong>Réponse attendue :</strong> ${escapeHtml(sq.croq_answer)}</div>`;
+        }
+      } else if (!hasOfficial) {
+        expText = `<span style="color:var(--amber);">⚠️ <em>Explication officielle non disponible dans la base.</em></span>`;
+      }
+
+      const savedAi = getSavedAiExplanation(sq.uid, sq);
+      let aiNoteHtml = '';
+      if (savedAi && savedAi.note) {
+        aiNoteHtml = `
+          <div class="clinical-card-ai-note">
+            <div class="clinical-card-ai-header">
+              <span class="clinical-card-ai-title">
+                <i data-lucide="sparkles" style="width:13px;height:13px;color:var(--cyan);"></i> Explication IA complète (${escapeHtml(savedAi.model || 'Gemini Flash')})
+              </span>
+              <button type="button" class="btn-card-regen-ai" onclick="window.requestClinicalCardAiExplanation(${idx}, true)" title="Régénérer l'explication IA">
+                <i data-lucide="rotate-cw" style="width:12px;height:12px;"></i>
+              </button>
+            </div>
+            <div class="clinical-card-ai-body">
+              ${formatReasoningNote(savedAi.note)}
+            </div>
+          </div>
+        `;
+      } else {
+        aiNoteHtml = `
+          <div style="margin-top:8px;padding-top:8px;border-top:1px dashed rgba(255,255,255,0.1);display:flex;justify-content:flex-end;">
+            <button type="button" class="btn-card-gen-ai-exp" id="btn-card-ai-exp-${idx}" onclick="window.requestClinicalCardAiExplanation(${idx})">
+              <i data-lucide="sparkles" style="width:12px;height:12px;"></i>
+              <span>${hasOfficial ? 'Approfondir avec l\'explication IA (Flash)' : 'Générer l\'explication IA (Flash)'}</span>
+            </button>
+          </div>
+        `;
+      }
+
       feedbackHtml = `
         <div class="clinical-card-feedback ${fbClass}">
           <div style="display:flex;align-items:center;gap:6px;font-weight:700;margin-bottom:4px;">
             <i data-lucide="${fbIcon}" style="width:14px;height:14px;"></i>
             <span>${evalData.isCorrect ? 'Bonne réponse !' : 'Réponse incorrecte !'}</span>
           </div>
-          <div>${expText}</div>
+          ${expText ? `<div style="font-size:0.88rem;line-height:1.45;margin-bottom:4px;">${expText}</div>` : ''}
+          ${croqDetailsHtml}
+          ${aiNoteHtml}
         </div>
       `;
     }
@@ -22221,20 +22630,32 @@ function updateArenaChatContext() {
       }
     }
 
+    const clinicalCtx = buildClinicalCaseContext(effQ);
+
     if (qTextEl) {
-      const qText = effQ.question || effQ.statement || 'Question pédiatrique';
-      qTextEl.textContent = qText.length > 80 ? qText.slice(0, 80) + '...' : qText;
+      if (clinicalCtx && clinicalCtx.isClinicalCase) {
+        const qStatement = effQ.question || effQ.statement || '';
+        qTextEl.textContent = `Cas Clinique (Q${clinicalCtx.currentNum}/${clinicalCtx.totalCount}) : ${qStatement.length > 70 ? qStatement.slice(0, 70) + '...' : qStatement}`;
+      } else {
+        const qText = effQ.question || effQ.statement || 'Question pédiatrique';
+        qTextEl.textContent = qText.length > 80 ? qText.slice(0, 80) + '...' : qText;
+      }
     }
     if (ctxEl) {
-      const isHistory = historyCursor >= 0;
-      const isRevealed = isArenaChapterRevealed();
-      const blurClass = isRevealed ? 'is-revealed' : 'is-blurred';
-      const blurTitle = isRevealed 
-        ? 'Cours visible (Cliquer pour masquer)' 
-        : 'Cours masqué jusqu\'à ce que vous répondiez (Cliquer pour afficher)';
-      const histSuffix = isHistory ? ` (QCM -${historyCursor + 1})` : '';
+      if (clinicalCtx && clinicalCtx.isClinicalCase) {
+        const prefixStr = clinicalCtx.casePrefix ? `Cas Clinique ${clinicalCtx.casePrefix}` : 'Cas Clinique';
+        ctxEl.innerHTML = `<span style="color:var(--cyan);font-weight:700;">${prefixStr}</span> • Question ${clinicalCtx.currentNum}/${clinicalCtx.totalCount} <span style="font-size:0.68rem;background:rgba(0,212,255,0.15);padding:1px 6px;border-radius:4px;color:var(--cyan);margin-left:4px;">Contexte Q1-${clinicalCtx.currentNum} actif</span>`;
+      } else {
+        const isHistory = historyCursor >= 0;
+        const isRevealed = isArenaChapterRevealed();
+        const blurClass = isRevealed ? 'is-revealed' : 'is-blurred';
+        const blurTitle = isRevealed 
+          ? 'Cours visible (Cliquer pour masquer)' 
+          : 'Cours masqué jusqu\'à ce que vous répondiez (Cliquer pour afficher)';
+        const histSuffix = isHistory ? ` (QCM -${historyCursor + 1})` : '';
 
-      ctxEl.innerHTML = `Pédiatrie — <span class="chatbox-chapter-blurred ${blurClass}" onclick="window.toggleArenaChapterTitle()" title="${blurTitle}">${escapeHtml(effQ.chapterTitle || 'Général')}</span>${histSuffix}`;
+        ctxEl.innerHTML = `Pédiatrie — <span class="chatbox-chapter-blurred ${blurClass}" onclick="window.toggleArenaChapterTitle()" title="${blurTitle}">${escapeHtml(effQ.chapterTitle || 'Général')}</span>${histSuffix}`;
+      }
     }
   }
 }
@@ -22251,15 +22672,30 @@ function renderChatWelcome() {
     ? 'Cours visible (Cliquer pour masquer)' 
     : 'Cours masqué jusqu\'à ce que vous répondiez (Cliquer pour afficher)';
 
-  listEl.innerHTML = `
-    <div class="chat-bubble bubble-ai">
-      <p>👋 Bonjour ! Je suis votre <strong>Tuteur IA Pédiatrique</strong>.</p>
-      <p>Je connais par cœur l'énoncé, le cas clinique, les propositions et la justification officielle de ce QCM ${isHistory ? '<strong>en cours de consultation</strong>' : ''} en <strong class="chatbox-chapter-blurred ${blurClass}" onclick="window.toggleArenaChapterTitle()" title="${blurTitle}">${escapeHtml(chapTitle)}</strong>.</p>
-      <p style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">
-        Posez-moi votre question directement ou cliquez sur une suggestion rapide :
-      </p>
-    </div>
-  `;
+  const clinicalCtx = effQ ? buildClinicalCaseContext(effQ) : null;
+
+  if (clinicalCtx && clinicalCtx.isClinicalCase) {
+    listEl.innerHTML = `
+      <div class="chat-bubble bubble-ai">
+        <p>👋 Bonjour ! Je suis votre <strong>Tuteur IA Pédiatrique</strong>.</p>
+        <p>🎯 <strong>Contexte Intégral du Cas Clinique Activé :</strong></p>
+        <p>J'ai sous les yeux l'énoncé complet du cas ainsi que l'évolution des <strong>questions 1 à ${clinicalCtx.currentNum} sur ${clinicalCtx.totalCount}</strong> avec leurs énoncés, propositions, réponses et explications.</p>
+        <p style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">
+          Posez-moi votre question sur ce dossier ou cliquez sur une suggestion rapide :
+        </p>
+      </div>
+    `;
+  } else {
+    listEl.innerHTML = `
+      <div class="chat-bubble bubble-ai">
+        <p>👋 Bonjour ! Je suis votre <strong>Tuteur IA Pédiatrique</strong>.</p>
+        <p>Je connais par cœur l'énoncé, le cas clinique, les propositions et la justification officielle de ce QCM ${isHistory ? '<strong>en cours de consultation</strong>' : ''} en <strong class="chatbox-chapter-blurred ${blurClass}" onclick="window.toggleArenaChapterTitle()" title="${blurTitle}">${escapeHtml(chapTitle)}</strong>.</p>
+        <p style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">
+          Posez-moi votre question directement ou cliquez sur une suggestion rapide :
+        </p>
+      </div>
+    `;
+  }
 }
 
 async function executeSendMessage(userText) {
@@ -22300,7 +22736,8 @@ async function executeSendMessage(userText) {
 
   try {
     const historyForAi = arenaChatHistory.slice(0, -1);
-    const response = await geminiService.askAboutQuestion(effQ, historyForAi, userText);
+    const clinicalContext = buildClinicalCaseContext(effQ);
+    const response = await geminiService.askAboutQuestion(effQ, historyForAi, userText, clinicalContext);
 
     if (targetUid) {
       if (!questionChatHistories[targetUid]) questionChatHistories[targetUid] = [];

@@ -34,7 +34,7 @@ qcm-p-diatrie/
 │   └── MASTER_PRODUCT_TECHNICAL_CONTEXT.md # Contexte technique global (source unique de vérité)
 ├── android/                              # Projet natif Android Capacitor 8
 │   ├── app/
-│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 26, versionName 1.5.9)
+│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 27, versionName 1.6.0)
 │   │   ├── debug.keystore                # Keystore de signature unifié (local & CI/CD)
 │   │   ├── google-services.json          # Configuration Firebase Android (qcm-pediatr, com.pediadrill.app)
 │   │   └── src/main/
@@ -223,10 +223,14 @@ Lorsqu'une réponse est incorrecte (dans la modale d'erreur ou dans le carnet) :
        - **Double système d'actions ergonomique dans `.arena-actions-right`** :
          - **Option Principale par défaut (`#btn-submit-answer` / `#btn-submit-croq`)** : Grand bouton cyan bien visible. Libellé initial *« Vérifier la réponse »* (ou *« Évaluer par IA (Gemini) »* pour CROQ). Au clic ou `Entrée`, évalue immédiatement la sous-question courante : surbrillance visuelle des options (`.correct-highlight` en vert, `.wrong-highlight` en rouge), verrouillage des choix, affichage de l'explication officielle dans `#arena-explanation-box`, et bascule automatique du bouton en *« Question suivante ➔ »* (ou *« 🏁 Voir le Bilan Final »* sur la dernière question).
          - **Option Secondaire compacte à gauche (`#btn-clinical-save-next`)** : Bouton compact stylé `.btn-clinical-save-step` placé à gauche du bouton principal. Libellé *« Enregistrer & Suivant »* (ou *« Enregistrer & Bilan »* sur la dernière question). Permet d'enregistrer le choix sans dévoiler la correction ni l'explication et de passer immédiatement à l'étape suivante. Se masque automatiquement si la question a déjà été vérifiée.
+       - **Option d'Explication IA par Question (`renderClinicalExplanationArea` & `requestClinicalSubQuestionAiExplanation`)** :
+         - Dès la validation de la sous-question, affichage du statut (succès/échec) et de l'explication officielle si disponible (ou encadré d'avertissement stylisé si absente de la base).
+         - Bouton d'action IA intégré : *« Générer l'explication IA (Gemini Flash) »* si l'explication officielle est manquante, ou *« Approfondir avec l'explication IA »* pour enrichir l'analyse.
+         - Génère une note de raisonnement clinique complète en 4 volets alimentée par le contexte du cas, affichée dans `#arena-ai-explanation-box` et persistée dans le Carnet de notes.
        - À la dernière question vérifiée ou enregistrée, bascule vers la validation globale et la modale de synthèse.
     2. **Mode Déroulant (Liste scrollable tout-en-un)** :
        - Conteneur déroulant `#arena-clinical-scroll-container` présentant l'ensemble des sous-questions du cas sous forme de fiches modulaires (`.clinical-card`).
-       - **Validation unitaire avec retour immédiat** : Bouton *« Vérifier cette question »* (`.btn-clinical-card-validate`) sur chaque carte dévoilant immédiatement si la sous-question est juste ou fausse, avec surbrillance dynamique des options et encadré d'explication officielle (`.clinical-card-feedback`).
+       - **Validation unitaire avec retour immédiat & Explication IA (`.clinical-card-feedback`)** : Bouton *« Vérifier cette question »* (`.btn-clinical-card-validate`) sur chaque carte dévoilant immédiatement si la sous-question est juste ou fausse, avec surbrillance dynamique des options, encadré d'explication officielle, et bouton unitaire `.btn-card-gen-ai-exp` pour générer l'explication IA contextualisée directement au sein de la carte.
        - **Barre d'action maître sticky** (`.clinical-scroll-master-actions`) au bas de l'écran affichant le décompte des questions renseignées et le bouton maître *« Valider tout le cas clinique & Voir le Bilan »*.
   - **Bascule instantanée & Paramètres** :
     - Commutateur à boutons pilules `#btn-mode-sequential` et `#btn-mode-scroll` dans la barre active `#arena-clinical-run-bar` pour permuter de mode à tout moment sans perte des réponses saisies.
@@ -368,7 +372,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ### 3.9. Système de Mises à Jour Automatiques & GitHub Releases (`src/services/updateService.js` & CI/CD)
 - **Service d'Orchestration des Mises à Jour (`UpdateService`)** :
-  - Version déclarée : `CURRENT_APP_VERSION = '1.5.9'` synchronisée avec `package.json` et `build.gradle` (`versionCode 26`).
+  - Version déclarée : `CURRENT_APP_VERSION = '1.6.0'` synchronisée avec `package.json` et `build.gradle` (`versionCode 27`).
   - Comparaison sémantique universelle (`compareVersions`) ignorant les préfixes `v`.
   - Interrogation de l'API GitHub Releases (`https://api.github.com/repos/lkmqji/qcm-p-diatrie/releases/latest`) avec cooldown de 4 heures (`pedia_last_update_check_ts`).
   - Extraction de l'asset `.apk` direct (`PediaDrill.apk`). En environnement natif Android Capacitor, l'URL est ouverte via `_system` pour lancer le gestionnaire de téléchargement Android natif.
@@ -434,6 +438,11 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 ---
 
 ### 3.13. Tuteur IA Interactif en Direct dans l'Arène & Mémoire de Conversation par Question (`#arena-ai-chatbox`)
+- **Contextualisation Intégrale des Cas Cliniques (`buildClinicalCaseContext`)** :
+  - Lorsque la question active appartient à un cas clinique (en mode séquentiel ou scroll), le Tuteur IA reçoit comme contexte d'arrière-plan :
+    1. L'énoncé complet du cas clinique (la vignette clinique initiale).
+    2. L'historique chronologique ordonné de toutes les sous-questions de 1 jusqu'à la sous-question courante $k$ : énoncés, propositions A-E / saisie CROQ, réponses de l'étudiant, corrigé officiel et explications.
+  - Permet à l'IA de raisonner avec toute l'évolution du patient sans répétition ni contradiction avec les étapes cliniques déjà franchies.
 - **Objectif clinique** : Permettre à l'étudiant de dialoguer en temps réel avec Gemini Flash sur la question active sans quitter l'Arène.
 - **Protection Anti-Spoiler du Nom de Cours (`.chatbox-chapter-blurred`)** :
   - Tant que la question n'est pas répondue, l'intitulé du cours dans le message d'accueil et le sous-titre du chatbox est automatiquement flouté (`filter: blur(5.5px); opacity: 0.38`). Défloutage instantané dès la réponse.
@@ -597,7 +606,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.5.9` (`versionCode 26`)
+- **Version native** : `versionName 1.6.0` (`versionCode 27`)
 - **Empreinte SHA-1 (Debug Keystore Gradle & GitHub Actions)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
 - **Empreinte SHA-256 (Debug Keystore Gradle & GitHub Actions)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
 - **Keystore unifié** : `android/app/debug.keystore` (Alias : `AndroidDebugKey`, mot de passe `android`, garantissant une empreinte cryptographique identique entre les compilations locales et la CI/CD GitHub Actions).

@@ -502,15 +502,28 @@ RÉPONSE DONNÉE PAR L'ÉTUDIANT : ${userAnswer}
   /**
    * Generate complete, exhaustive clinical reasoning note for mistake or review
    */
-  async generateReasoningNote(question, selectedLetters, isCroq = false, studentCroq = "") {
+  async generateReasoningNote(question, selectedLetters, isCroq = false, studentCroq = "", clinicalCaseContext = null) {
     const correctOptions = (question.options || []).filter(o => o.is_correct);
     const correctLetters = correctOptions.map(o => o.letter).join(", ");
     const allOptionsText = (question.options || []).map(o => `${o.letter}) ${o.text}`).join("\n");
+
+    let clinicalPromptSection = '';
+    if (clinicalCaseContext && clinicalCaseContext.isClinicalCase) {
+      clinicalPromptSection = `
+DOSSIER CLINIQUE COMPLET (Cas Clinique ${clinicalCaseContext.casePrefix || ''} - Question ${clinicalCaseContext.currentNum}/${clinicalCaseContext.totalCount}) :
+VIGNETTE CLINIQUE :
+"${clinicalCaseContext.caseStatement}"
+
+DÉROULEMENT CHRONOLOGIQUE DU CAS DEPUIS LA QUESTION 1 JUSQU'À CETTE QUESTION (${clinicalCaseContext.currentNum}/${clinicalCaseContext.totalCount}) :
+${clinicalCaseContext.chronologySummary}
+`;
+    }
 
     const systemPrompt = `Tu es un Professeur de pédiatrie et jury de concours de résidanat en médecine.
 L'étudiant s'entraîne sur un QCM/CROQ et a besoin d'une explication CLINIQUE COMPLÈTE, PARFAITEMENT STRUCTURÉE et PERCUTANTE.
 Va directement au but avec un style médical soigné, rigoureux et précis (mots-clés en gras, listes à puces pour une lecture rapide).
 La réponse doit être TOTALE et NE DOIT JAMAIS ÊTRE COUPÉE.
+${clinicalPromptSection ? "Prends impérativement en compte l'histoire clinique évolutive et les décisions prises lors des questions précédentes du cas pour éclairer cette étape." : ''}
 Structure OBLIGATOIREMENT ton retour selon ces 4 sections détaillées :
 
 1. 🎯 PIÈGE CLINIQUE & ANALYSE DE L'ERREUR :
@@ -533,8 +546,8 @@ Formule une règle mémo claire, percutante et mémorisable pour ne plus jamais 
 Rédige en français médical soigné, rigoureux, direct et complet. Ne coupe aucune phrase, ne saute aucune étape.`;
 
     const userPrompt = `MODULE : Pédiatrie - ${question.chapterTitle || "Pédiatrie Générale"}
-QUESTION : ${question.question}
-${question.clinical_case ? `CAS CLINIQUE COMPLET : ${question.clinical_case}\n` : ""}
+QUESTION : ${question.question || question.statement}
+${clinicalPromptSection ? clinicalPromptSection : (question.clinical_case ? `CAS CLINIQUE COMPLET : ${question.clinical_case}\n` : "")}
 PROPOSITIONS PROPOSÉES :
 ${allOptionsText || "Question ouverte (CROQ)"}
 
@@ -542,7 +555,7 @@ RÉPONSE(S) OFFICIELLEMENT CORRECTE(S) : ${correctLetters || question.croq_answe
 RÉPONSE SÉLECTIONNÉE PAR L'ÉTUDIANT : ${isCroq ? studentCroq : (selectedLetters.join(", ") || "Aucune")}
 EXPLICATION OFFICIELLE DISPONIBLE DANS LA BASE : ${question.explanation || "Aucune explication fournie dans la base."}
 
-Rédige l'explication clinique complète et approfondie sans aucune coupure. À l'étape 2, justifie impérativement et de façon complète chaque proposition une par une.`;
+Rédige l'explication clinique complète et approfondie sans aucune coupure. ${clinicalPromptSection ? "Prends impérativement en compte l'histoire clinique et l'évolution depuis la question 1 pour éclairer cette étape." : ''} À l'étape 2, justifie impérativement et de façon complète chaque proposition une par une.`;
 
     try {
       const result = await this.callWithFallback(userPrompt, systemPrompt, 2500);
@@ -684,7 +697,7 @@ Rédige la note de synthèse clinique complète consolidée.`;
    * Question-in-context AI chat tutor (Flash models only)
    * Answers student queries specifically focused on the current QCM / CROQ
    */
-  async askAboutQuestion(question, conversationHistory = [], userMessage) {
+  async askAboutQuestion(question, conversationHistory = [], userMessage, clinicalCaseContext = null) {
     if (!question) {
       return {
         text: "Aucune question active n'est actuellement chargée dans l'Arène.",
@@ -696,22 +709,38 @@ Rédige la note de synthèse clinique complète consolidée.`;
     const correctLetters = correctOptions.map(o => o.letter).join(", ");
     const allOptionsText = (question.options || []).map(o => `${o.letter}) ${o.text}`).join("\n");
 
+    let clinicalSection = '';
+    if (clinicalCaseContext && clinicalCaseContext.isClinicalCase) {
+      clinicalSection = `
+================================================================================
+DOSSIER CLINIQUE COMPLET (Cas Clinique ${clinicalCaseContext.casePrefix || ''} - Progression : Question ${clinicalCaseContext.currentNum}/${clinicalCaseContext.totalCount})
+================================================================================
+VIGNETTE CLINIQUE INITIALE DU CAS :
+"${clinicalCaseContext.caseStatement}"
+
+HISTORIQUE & ÉVOLUTION DU CAS DEPUIS LA QUESTION 1 JUSQU'À LA QUESTION ACTUELLE (${clinicalCaseContext.currentNum}/${clinicalCaseContext.totalCount}) :
+${clinicalCaseContext.chronologySummary}
+================================================================================
+`;
+    }
+
     const systemInstruction = `Tu es le Tuteur IA Pédiatrique de PédiaDrill, professeur universitaire et chef de clinique en pédiatrie.
 L'étudiant s'entraîne sur un QCM/CROQ précis et te pose une question directe pour mieux comprendre.
 Tu as le contexte médical complet sous les yeux :
 - Module : Pédiatrie (${question.chapterTitle || 'Pédiatrie Générale'})
-- Énoncé : "${question.question || question.statement || ''}"
-${question.clinical_case ? `- Cas clinique : "${question.clinical_case}"\n` : ''}
-${allOptionsText ? `- Propositions :\n${allOptionsText}\n` : '- Type : Question ouverte (CROQ)\n'}
-- Bonne(s) réponse(s) officielle(s) : ${correctLetters || question.croq_answer || 'Non précisé'}
-${question.explanation ? `- Explication officielle du cours : "${question.explanation}"\n` : ''}
+- Énoncé de la question active : "${question.question || question.statement || ''}"
+${clinicalSection ? clinicalSection : (question.clinical_case ? `- Cas clinique : "${question.clinical_case}"\n` : '')}
+${allOptionsText ? `- Propositions de la question active :\n${allOptionsText}\n` : '- Type : Question ouverte (CROQ)\n'}
+- Bonne(s) réponse(s) officielle(s) de la question active : ${correctLetters || question.croq_answer || 'Non précisé'}
+${question.explanation ? `- Explication officielle de la question active : "${question.explanation}"\n` : ''}
 
 Consignes pédagogiques strictes :
 1. Réponds en français médical rigoureux, clair, bienveillant et concis (va droit au but).
-2. Mets en valeur les mots-clés en gras et structure avec des tirets/puces pour une lecture rapide pendant le drill.
-3. Justifie sur le plan physiopathologique, sémiologique ou thérapeutique pourquoi telle proposition est vraie ou fausse.
-4. Signale les pièges fréquents au concours de résidanat si pertinent.
-5. 🚫 RÈGLE STRICTE SUR LES CALCULS, DOSES ET FORMULES :
+2. Si un DOSSIER CLINIQUE COMPLET est fourni ci-dessus, intègre obligatoirement l'ensemble de l'histoire clinique et l'évolution chronologique depuis la question 1 pour éclairer la question ${clinicalCaseContext ? clinicalCaseContext.currentNum : 'en cours'} avec une rigueur sémiologique et diagnostique absolue.
+3. Mets en valeur les mots-clés en gras et structure avec des tirets/puces pour une lecture rapide pendant le drill.
+4. Justifie sur le plan physiopathologique, sémiologique ou thérapeutique pourquoi telle proposition est vraie ou fausse.
+5. Signale les pièges fréquents au concours de résidanat si pertinent.
+6. 🚫 RÈGLE STRICTE SUR LES CALCULS, DOSES ET FORMULES :
 - INTERDICTION TOTALE d'utiliser la syntaxe ou des balises LaTeX (strictement interdit : \\text{}, \\mathbf{}, \\times, \\frac{}, \\cdot, etc.).
 - Écris TOUJOURS les calculs, posologies, poids et unités en texte français clair et direct (exemples : "14 g/dl" et JAMAIS "14\\text{ g/dl}", "Poids = 3 kg" et JAMAIS "\\mathbf{3}\\text{ kg}", "Déficit = 4 g/dl", "×" ou "x" au lieu de "\\times", "/" au lieu de "\\frac").`;
 

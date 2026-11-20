@@ -8006,6 +8006,87 @@ body {
   color: #fca5a5;
 }
 
+.btn-card-gen-ai-exp {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.18), rgba(147, 51, 234, 0.22));
+  border: 1px solid var(--cyan);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-card-gen-ai-exp:hover {
+  background: rgba(0, 212, 255, 0.28);
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-card-gen-ai-exp:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.clinical-card-ai-note {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: rgba(10, 16, 32, 0.75);
+  border: 1px solid rgba(0, 212, 255, 0.28);
+  border-radius: var(--radius-sm);
+  max-height: 480px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.clinical-card-ai-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.clinical-card-ai-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--cyan);
+  font-family: var(--font-heading);
+}
+
+.btn-card-regen-ai {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 2px 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: var(--transition);
+}
+
+.btn-card-regen-ai:hover {
+  color: var(--cyan);
+  background: rgba(0, 212, 255, 0.1);
+}
+
+.clinical-card-ai-body {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--text-main);
+}
+
 .clinical-scroll-master-actions {
   position: sticky;
   bottom: 16px;
