@@ -13533,6 +13533,14 @@ const DEFAULT_FIREBASE_CONFIG = {
 };
 
 
+function getLocalDateStr() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 function toSlimNote(note) {
   if (typeof slimNote === 'function') return slimNote(note);
   if (!note || typeof note !== 'object') return note;
@@ -13633,11 +13641,14 @@ function mergeStates(local, remote) {
   merged.reasoningNotes = Array.from(notesMap.values()).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
   // Merge today's QCM count non-destructively
-  const todayStr = new Date().toISOString().slice(0, 10);
-  const localToday = (local.todayTracker && local.todayTracker.dateStr === todayStr) ? (local.todayTracker.count || 0) : 0;
-  const remoteToday = (remote.todayTracker && remote.todayTracker.dateStr === todayStr) ? (remote.todayTracker.count || 0) : 0;
+  const todayStr = getLocalDateStr();
+  const effectiveDate = (local.todayTracker?.dateStr === remote.todayTracker?.dateStr && local.todayTracker?.dateStr)
+    ? local.todayTracker.dateStr
+    : todayStr;
+  const localToday = (local.todayTracker && local.todayTracker.dateStr === effectiveDate) ? (local.todayTracker.count || 0) : 0;
+  const remoteToday = (remote.todayTracker && remote.todayTracker.dateStr === effectiveDate) ? (remote.todayTracker.count || 0) : 0;
   merged.todayTracker = {
-    dateStr: todayStr,
+    dateStr: effectiveDate,
     count: Math.max(localToday, remoteToday)
   };
 
