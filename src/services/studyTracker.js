@@ -616,6 +616,28 @@ export class StudyTracker {
   getRawHistory() {
     return this.history;
   }
+
+  getRawFirstPassRecords() {
+    return this.firstPassRecords || {};
+  }
+
+  mergeFirstPassRecords(remoteRecords) {
+    if (!remoteRecords || typeof remoteRecords !== 'object') return false;
+    let modified = false;
+    for (const [uid, remoteVal] of Object.entries(remoteRecords)) {
+      if (typeof this.firstPassRecords[uid] === 'undefined') {
+        this.firstPassRecords[uid] = !!remoteVal;
+        modified = true;
+      } else if (remoteVal === true && this.firstPassRecords[uid] === false) {
+        this.firstPassRecords[uid] = true;
+        modified = true;
+      }
+    }
+    if (modified) {
+      this.saveFirstPassRecords();
+    }
+    return modified;
+  }
 }
 
 export const studyTracker = new StudyTracker();

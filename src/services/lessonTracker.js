@@ -49,13 +49,13 @@ export class LessonTracker {
   constructor() {
     this.activeTimer = this.loadActiveTimer();
     this.sessions = this.loadSessions();
-    this.lastTimerClearedAt = Number(localStorage.getItem(getLessonClearedKey()) || 0);
+    this.lastTimerClearedAt = (typeof localStorage !== 'undefined') ? Number(localStorage.getItem(getLessonClearedKey()) || 0) : 0;
   }
 
   reloadForModule() {
     this.activeTimer = this.loadActiveTimer();
     this.sessions = this.loadSessions();
-    this.lastTimerClearedAt = Number(localStorage.getItem(getLessonClearedKey()) || 0);
+    this.lastTimerClearedAt = (typeof localStorage !== 'undefined') ? Number(localStorage.getItem(getLessonClearedKey()) || 0) : 0;
   }
 
   loadActiveTimer() {
@@ -445,11 +445,11 @@ export class LessonTracker {
    * Merge remote sessions from Firestore multi-device synchronization
    */
   mergeSessions(remoteSessions) {
-    if (!Array.isArray(remoteSessions) || remoteSessions.length === 0) return;
+    if (!Array.isArray(remoteSessions) || remoteSessions.length === 0) return false;
 
-    const existingIds = new Set(this.sessions.map(s => s && s.id).filter(Boolean));
-    const merged = [...this.sessions];
-    let modified = false;
+    const allExisting = this.getAllSessions();
+    const existingIds = new Set(allExisting.map(s => s && s.id).filter(Boolean));
+    const toAdd = [];
 
     remoteSessions.forEach(remoteSess => {
       if (!remoteSess || !remoteSess.lessonName || !remoteSess.durationSeconds) return;
@@ -459,24 +459,45 @@ export class LessonTracker {
       }
 
       // Check for fuzzy duplicate (same lesson, same start time within 5s window)
-      const isDuplicate = merged.some(s => 
+      const isDuplicate = allExisting.some(s => 
         s && s.lessonName === remoteSess.lessonName &&
         Math.abs((s.startTime || 0) - (remoteSess.startTime || 0)) < 5000
       );
 
       if (!isDuplicate) {
-        merged.push(remoteSess);
+        const enriched = { ...remoteSess, moduleId: identifySessionModule(remoteSess) };
+        toAdd.push(enriched);
         if (remoteSess.id) existingIds.add(remoteSess.id);
-        modified = true;
       }
     });
 
-    if (modified) {
-      // Sort newest first
-      merged.sort((a, b) => (b.endTime || 0) - (a.endTime || 0));
-      this.sessions = merged;
-      this.saveSessions();
+    if (toAdd.length > 0) {
+      if (typeof localStorage !== 'undefined') {
+        const pediaToAdd = toAdd.filter(s => s.moduleId === 'pediatrie');
+        const psyToAdd = toAdd.filter(s => s.moduleId === 'psychiatrie');
+
+        if (pediaToAdd.length > 0) {
+          try {
+            const raw = localStorage.getItem('pedia_lesson_sessions_v1');
+            const list = (raw && Array.isArray(JSON.parse(raw))) ? JSON.parse(raw) : [];
+            const combined = [...list, ...pediaToAdd].sort((a, b) => (b.endTime || 0) - (a.endTime || 0));
+            localStorage.setItem('pedia_lesson_sessions_v1', JSON.stringify(combined));
+          } catch (e) {}
+        }
+        if (psyToAdd.length > 0) {
+          try {
+            const raw = localStorage.getItem('mod_psychiatrie_lesson_sessions');
+            const list = (raw && Array.isArray(JSON.parse(raw))) ? JSON.parse(raw) : [];
+            const combined = [...list, ...psyToAdd].sort((a, b) => (b.endTime || 0) - (a.endTime || 0));
+            localStorage.setItem('mod_psychiatrie_lesson_sessions', JSON.stringify(combined));
+          } catch (e) {}
+        }
+      }
+
+      this.sessions = this.loadSessions();
+      return true;
     }
+    return false;
   }
 
   getRawSessions() {

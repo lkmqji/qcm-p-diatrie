@@ -55,6 +55,15 @@ const firebaseSyncService = new FirebaseSyncService(
     renderLessonTrackerUI();
     updateLessonTimerTick();
     refreshLucide();
+  },
+  (newRemoteModuleId) => {
+    // When a remote device switched the active module in real-time
+    if (!newRemoteModuleId || newRemoteModuleId === getActiveModuleId()) return;
+    if (currentView === 'arena' && !isCurrentQuestionAnswered) {
+      showAppToast(`📡 Module ${newRemoteModuleId} activé sur un autre appareil.`);
+    } else {
+      switchActiveModule(newRemoteModuleId, true);
+    }
   }
 );
 
@@ -354,7 +363,7 @@ function updateSettingsCountdownPreview(dateStr) {
   }
 }
 
-function switchActiveModule(moduleId) {
+function switchActiveModule(moduleId, fromRemote = false) {
   const mod = setActiveModuleId(moduleId);
   activeDataset = getDatasetForModule(mod.id);
   allQuestions = activeDataset.questions;
@@ -368,6 +377,15 @@ function switchActiveModule(moduleId) {
   }
   if (lessonTracker && typeof lessonTracker.reloadForModule === 'function') {
     lessonTracker.reloadForModule();
+  }
+
+  // Synchronise Firestore listener with new active module
+  if (typeof firebaseSyncService !== 'undefined' && firebaseSyncService) {
+    if (fromRemote) {
+      firebaseSyncService.setupModuleListener(mod.id);
+    } else {
+      firebaseSyncService.switchListeningModule(mod.id);
+    }
   }
 
   // Reset lesson selection on module switch
@@ -7996,6 +8014,10 @@ function setupEventListeners() {
 
       if (clinicalModeSelect) {
         setClinicalModePreference(clinicalModeSelect.value);
+      }
+
+      if (typeof firebaseSyncService !== 'undefined' && firebaseSyncService) {
+        firebaseSyncService.pushProfileToFirestore();
       }
 
       showAppToast('✅ Paramètres et date d\'examen enregistrés !');

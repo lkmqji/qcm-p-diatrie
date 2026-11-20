@@ -1,5 +1,7 @@
 // Firebase Authentication (Google Sign-In) & Firestore Real-time Sync Service for PédiaDrill
 // Provides seamless multi-device progress sync across PC, Smartphone, and Tablet.
+// Supports multi-modules, global profile sync (exam dates, clinical mode, Gemini API key, timers),
+// and chunked anti-quota reasoning notes.
 
 const FIREBASE_CONFIG_STORAGE_KEY = 'pedia_firebase_config';
 
@@ -16,6 +18,7 @@ const DEFAULT_FIREBASE_CONFIG = {
 import { slimNote } from './queueEngine.js';
 import { studyTracker } from './studyTracker.js';
 import { lessonTracker } from './lessonTracker.js';
+import { getActiveModuleId, getAllExamDates, setAllExamDates } from './moduleCatalog.js';
 
 function toSlimNote(note) {
   if (typeof slimNote === 'function') return slimNote(note);
@@ -37,11 +40,12 @@ function toSlimNote(note) {
 }
 
 /**
- * Intelligent state merger: unites local and remote progress non-destructively.
+ * Intelligent module state merger: unites local and remote progress non-destructively.
  * - Takes highest current mastery hits
  * - Takes highest penalty target and mistakes
  * - Logical OR for question done state
  * - Full union of all unique AI reasoning notes (no notes deleted) in lean format
+ * - Non-destructive merge of study history and first-pass records
  */
 export function mergeStates(local, remote) {
   if (!remote || typeof remote !== 'object') return local;
@@ -131,18 +135,11 @@ export function mergeStates(local, remote) {
     }
   }
 
-  // Merge lesson sessions across devices non-destructively
-  if (remote.lessonSessions && Array.isArray(remote.lessonSessions)) {
-    if (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.mergeSessions === 'function') {
-      lessonTracker.mergeSessions(remote.lessonSessions);
+  // Merge first pass discovery records across devices
+  if (remote.firstPassRecords && typeof remote.firstPassRecords === 'object') {
+    if (typeof studyTracker !== 'undefined' && studyTracker && typeof studyTracker.mergeFirstPassRecords === 'function') {
+      studyTracker.mergeFirstPassRecords(remote.firstPassRecords);
     }
-  }
-
-  // Merge active lesson stopwatch across devices in real-time
-  if (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.mergeActiveTimer === 'function') {
-    const remoteTimer = remote.activeLessonTimer || null;
-    const remoteTimerUpdatedAt = remote.activeLessonTimerUpdatedAt || (remoteTimer ? remoteTimer.updatedAt : null);
-    lessonTracker.mergeActiveTimer(remoteTimer, remoteTimerUpdatedAt);
   }
 
   return merged;
@@ -159,15 +156,25 @@ export function sanitizeForFirestore(obj) {
 }
 
 export class FirebaseSyncService {
-  constructor(queueEngine, onStateChange = null, onDataMerged = null) {
+  constructor(queueEngine, onStateChange = null, onDataMerged = null, onRemoteModuleSwitch = null) {
     this.queueEngine = queueEngine;
     this.onStateChange = onStateChange; // (status, detail, user, lastSyncText) => void
     this.onDataMerged = onDataMerged;   // (mergedState) => void - Re-renders UI
+    this.onRemoteModuleSwitch = onRemoteModuleSwitch; // (newModuleId) => void - Called when another device switched module
     this.user = null;
     this.isInitialized = false;
-    this.firestoreUnsubscribe = null;
+
+    // Separate Firestore listeners
+    this.profileUnsubscribe = null;
+    this.moduleUnsubscribe = null;
+    this.activeListeningModuleId = null;
+
+    // Protection flags
     this.autoPushTimer = null;
     this.isPushing = false;
+    this.isApplyingRemoteSnapshot = false; // Anti ping-pong loop guard
+    this.lastLocalModuleSwitchTimestamp = Date.now();
+
     this.lastSyncedAt = localStorage.getItem('pedia_firebase_last_synced') || null;
     this.status = 'idle'; // 'idle' | 'syncing' | 'synced' | 'error' | 'offline'
   }
@@ -276,18 +283,27 @@ export class FirebaseSyncService {
       if (user) {
         console.log('Firebase User logged in:', user.displayName || user.email);
         this.updateStatus('syncing', `Connecté : ${user.displayName || user.email}`);
-        this.setupFirestoreListener();
-        // Initial sync on sign-in: Pull remote, merge, and push back
+        
+        // Initial sync on sign-in: check migration, pull remote profile & module, and setup listeners
         await this.syncOnLogin();
       } else {
         console.log('Firebase User logged out.');
-        if (this.firestoreUnsubscribe) {
-          this.firestoreUnsubscribe();
-          this.firestoreUnsubscribe = null;
-        }
+        this.unsubscribeAllListeners();
         this.updateStatus('idle', 'Non connecté');
       }
     });
+  }
+
+  unsubscribeAllListeners() {
+    if (this.profileUnsubscribe) {
+      this.profileUnsubscribe();
+      this.profileUnsubscribe = null;
+    }
+    if (this.moduleUnsubscribe) {
+      this.moduleUnsubscribe();
+      this.moduleUnsubscribe = null;
+    }
+    this.activeListeningModuleId = null;
   }
 
   /**
@@ -316,7 +332,6 @@ export class FirebaseSyncService {
         this.updateStatus('syncing', 'Ouverture du compte Google natif...');
         const nativeResult = await nativeAuth.signInWithGoogle();
 
-        // Si un idToken est disponible, authentifier également le SDK Web pour Firestore
         if (nativeResult?.credential?.idToken && window.firebase?.auth) {
           const credential = window.firebase.auth.GoogleAuthProvider.credential(nativeResult.credential.idToken);
           const webUserCred = await window.firebase.auth().signInWithCredential(credential);
@@ -377,10 +392,7 @@ export class FirebaseSyncService {
 
     if (!window.firebase || !window.firebase.auth) return;
     try {
-      if (this.firestoreUnsubscribe) {
-        this.firestoreUnsubscribe();
-        this.firestoreUnsubscribe = null;
-      }
+      this.unsubscribeAllListeners();
       await window.firebase.auth().signOut();
       this.user = null;
       this.updateStatus('idle', 'Déconnecté du compte Google');
@@ -392,18 +404,15 @@ export class FirebaseSyncService {
   }
 
   /**
-   * Real-time Firestore subscription: automatically receives changes made from other devices
+   * Fetch reasoning notes from chunked Firestore subcollection (or fallback to legacy pedia doc chunks)
    */
-  /**
-   * Fetch reasoning notes from chunked Firestore documents (or fallback to legacy single doc array)
-   */
-  async fetchRemoteNotes(pediaCol, remoteData) {
+  async fetchRemoteNotes(moduleDocRef, remoteData) {
     const notes = [];
     if (remoteData && typeof remoteData.notesChunksCount === 'number' && remoteData.notesChunksCount > 0) {
       try {
         const chunkPromises = [];
         for (let i = 0; i < remoteData.notesChunksCount; i++) {
-          chunkPromises.push(pediaCol.doc(`notes_${i}`).get());
+          chunkPromises.push(moduleDocRef.collection('notes_chunks').doc(`chunk_${i}`).get());
         }
         const chunkSnaps = await Promise.all(chunkPromises);
         for (const snap of chunkSnaps) {
@@ -415,11 +424,11 @@ export class FirebaseSyncService {
           }
         }
       } catch (e) {
-        console.warn('Error fetching note chunks from Firestore:', e);
+        console.warn('Error fetching note chunks from Firestore subcollection:', e);
       }
     }
 
-    // Fallback: If no chunk notes were found or legacy single document, check reasoningNotes
+    // Fallback: Check reasoningNotes embedded in remoteData if chunks failed
     if (notes.length === 0 && Array.isArray(remoteData?.reasoningNotes) && remoteData.reasoningNotes.length > 0) {
       notes.push(...remoteData.reasoningNotes);
     }
@@ -428,124 +437,273 @@ export class FirebaseSyncService {
   }
 
   /**
-   * Real-time Firestore subscription: automatically receives changes made from other devices
+   * Migrate legacy data from `users/{uid}/pedia/progress` to `profile/state` + `modules/pediatrie`
    */
-  setupFirestoreListener() {
+  async checkAndMigrateLegacyData(db) {
+    if (!this.user) return false;
+    try {
+      const userDocRef = db.collection('users').doc(this.user.uid);
+      const newProfileDoc = await userDocRef.collection('profile').doc('state').get();
+      const newPediaDoc = await userDocRef.collection('modules').doc('pediatrie').get();
+
+      // If new profile or module already exists, migration is not needed
+      if (newProfileDoc.exists || newPediaDoc.exists) {
+        return false;
+      }
+
+      // Check if legacy data exists
+      const legacyPediaRef = userDocRef.collection('pedia');
+      const legacyProgressSnap = await legacyPediaRef.doc('progress').get();
+
+      if (!legacyProgressSnap.exists) {
+        return false;
+      }
+
+      console.log('🔄 Migrating legacy PediaDrill data to modern multi-module architecture...');
+      this.updateStatus('syncing', 'Migration automatique des données vers le format multi-modules...');
+
+      const legacyData = legacyProgressSnap.data() || {};
+
+      // 1. Fetch legacy notes chunks
+      const legacyNotes = [];
+      const legacyChunksCount = Number(legacyData.notesChunksCount || 0);
+      if (legacyChunksCount > 0) {
+        for (let i = 0; i < legacyChunksCount; i++) {
+          try {
+            const snap = await legacyPediaRef.doc(`notes_${i}`).get();
+            if (snap.exists && Array.isArray(snap.data()?.notes)) {
+              legacyNotes.push(...snap.data().notes);
+            }
+          } catch (e) {}
+        }
+      }
+      if (legacyNotes.length === 0 && Array.isArray(legacyData.reasoningNotes)) {
+        legacyNotes.push(...legacyData.reasoningNotes);
+      }
+
+      // 2. Prepare modern profile document
+      const currentExamDates = typeof getAllExamDates === 'function' ? getAllExamDates() : {};
+      const currentClinicalMode = localStorage.getItem('pedia_clinical_case_mode') || 'sequential';
+      const currentGeminiKey = localStorage.getItem('pedia_gemini_key') || '';
+
+      const profileData = sanitizeForFirestore({
+        activeModuleId: 'pediatrie',
+        activeModuleUpdatedAt: Date.now(),
+        examDates: currentExamDates,
+        examDatesUpdatedAt: Date.now(),
+        settings: {
+          clinicalCaseMode: currentClinicalMode,
+          geminiApiKey: currentGeminiKey
+        },
+        settingsUpdatedAt: Date.now(),
+        activeLessonTimer: legacyData.activeLessonTimer || null,
+        activeLessonTimerUpdatedAt: legacyData.activeLessonTimerUpdatedAt || Date.now(),
+        lessonSessions: legacyData.lessonSessions || [],
+        userEmail: this.user.email || '',
+        userDisplayName: this.user.displayName || '',
+        updatedAt: window.firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      // 3. Prepare modern module document for pediatrie
+      const moduleData = sanitizeForFirestore({
+        moduleId: 'pediatrie',
+        version: 2,
+        exportedAt: legacyData.exportedAt || new Date().toISOString(),
+        stats: legacyData.stats || {},
+        queue: legacyData.queue || [],
+        cursor: legacyData.cursor || 0,
+        selectedChapterIds: legacyData.selectedChapterIds || [],
+        selectedChaptersUpdatedAt: legacyData.selectedChaptersUpdatedAt || Date.now(),
+        totalMistakesCount: legacyData.totalMistakesCount || 0,
+        snoozedQuestions: legacyData.snoozedQuestions || {},
+        todayTracker: legacyData.todayTracker || null,
+        studyHistory: legacyData.studyHistory || {},
+        firstPassRecords: {},
+        notesCount: legacyNotes.length,
+        notesChunksCount: Math.ceil(legacyNotes.length / 50),
+        reasoningNotes: [],
+        updatedAt: window.firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      // Batch write migration
+      const batch = db.batch();
+      batch.set(userDocRef.collection('profile').doc('state'), profileData);
+      
+      const newPediaRef = userDocRef.collection('modules').doc('pediatrie');
+      batch.set(newPediaRef, moduleData);
+
+      // Write chunk notes to subcollection
+      const CHUNK_SIZE = 50;
+      for (let i = 0; i < legacyNotes.length; i += CHUNK_SIZE) {
+        const chunkIndex = Math.floor(i / CHUNK_SIZE);
+        const chunkNotes = legacyNotes.slice(i, i + CHUNK_SIZE).map(n => toSlimNote(n));
+        const chunkRef = newPediaRef.collection('notes_chunks').doc(`chunk_${chunkIndex}`);
+        batch.set(chunkRef, {
+          chunkIndex,
+          totalChunks: Math.ceil(legacyNotes.length / CHUNK_SIZE),
+          notes: chunkNotes,
+          updatedAt: window.firebase.firestore.FieldValue.serverTimestamp()
+        });
+      }
+
+      await batch.commit();
+      console.log('✅ Migration to multi-module Firestore completed successfully!');
+      return true;
+    } catch (e) {
+      console.error('Migration error:', e);
+      return false;
+    }
+  }
+
+  /**
+   * Set up real-time listener on the user's global profile state
+   */
+  setupProfileListener() {
     if (!this.user || !window.firebase || !window.firebase.firestore) return;
 
-    if (this.firestoreUnsubscribe) {
-      this.firestoreUnsubscribe();
+    if (this.profileUnsubscribe) {
+      this.profileUnsubscribe();
+      this.profileUnsubscribe = null;
     }
 
     try {
       const db = window.firebase.firestore();
-      const pediaCol = db.collection('users').doc(this.user.uid).collection('pedia');
-      const docRef = pediaCol.doc('progress');
+      const profileDocRef = db.collection('users').doc(this.user.uid).collection('profile').doc('state');
 
-      this.firestoreUnsubscribe = docRef.onSnapshot(async (doc) => {
-        if (!doc.exists) {
-          console.log('No Firestore progress document yet for user, will create on first push.');
-          return;
-        }
+      this.profileUnsubscribe = profileDocRef.onSnapshot((doc) => {
+        if (!doc.exists || this.isPushing) return;
+        const remoteProfile = doc.data();
+        if (!remoteProfile) return;
 
-        const remoteData = doc.data();
-        if (!remoteData || this.isPushing) return;
-
-        console.log('Real-time update received from Firestore');
-
-        // Fetch chunked reasoning notes
-        const remoteNotes = await this.fetchRemoteNotes(pediaCol, remoteData);
-        remoteData.reasoningNotes = remoteNotes;
-
-        const localState = this.queueEngine.getStateObject();
-        const merged = mergeStates(localState, remoteData);
-        this.queueEngine.applyMergedState(merged);
-
-        this.lastSyncedAt = Date.now().toString();
-        localStorage.setItem('pedia_firebase_last_synced', this.lastSyncedAt);
-
-        // Notify app to re-render UI
-        if (typeof this.onDataMerged === 'function') {
-          this.onDataMerged(merged);
-        }
-
-        const notesCount = (merged.reasoningNotes || []).length;
-        this.updateStatus('synced', `En direct : ${notesCount} note${notesCount > 1 ? 's' : ''} synchronisée${notesCount > 1 ? 's' : ''}`);
+        this.handleRemoteProfileUpdate(remoteProfile);
       }, (err) => {
-        console.warn('Firestore snapshot error:', err);
+        console.warn('Profile snapshot error:', err);
+      });
+    } catch (e) {
+      console.warn('Could not setup profile listener:', e);
+    }
+  }
+
+  /**
+   * Set up real-time listener on the current active module progress
+   */
+  setupModuleListener(moduleId = getActiveModuleId()) {
+    if (!this.user || !window.firebase || !window.firebase.firestore) return;
+
+    if (this.moduleUnsubscribe) {
+      this.moduleUnsubscribe();
+      this.moduleUnsubscribe = null;
+    }
+
+    this.activeListeningModuleId = moduleId;
+
+    try {
+      const db = window.firebase.firestore();
+      const moduleDocRef = db.collection('users').doc(this.user.uid).collection('modules').doc(moduleId);
+
+      this.moduleUnsubscribe = moduleDocRef.onSnapshot(async (doc) => {
+        if (!doc.exists || this.isPushing) return;
+        const remoteData = doc.data();
+        if (!remoteData) return;
+
+        await this.handleRemoteModuleUpdate(moduleId, moduleDocRef, remoteData);
+      }, (err) => {
+        console.warn(`Module snapshot error for ${moduleId}:`, err);
         const friendly = this.getFriendlyFirestoreError(err);
         this.updateStatus('error', friendly);
       });
     } catch (e) {
-      console.warn('Could not setup Firestore listener:', e);
+      console.warn(`Could not setup module listener for ${moduleId}:`, e);
     }
   }
 
   /**
-   * Synchronize on user login: pulls remote progress, merges with current device progress, and uploads
+   * Handle incoming remote profile updates (settings, exam dates, stopwatch, active module)
    */
-  async syncOnLogin() {
-    if (!this.user || !window.firebase || !window.firebase.firestore) return;
+  handleRemoteProfileUpdate(remoteProfile) {
+    if (!remoteProfile || this.isApplyingRemoteSnapshot) return;
+    this.isApplyingRemoteSnapshot = true;
 
     try {
-      const db = window.firebase.firestore();
-      const pediaCol = db.collection('users').doc(this.user.uid).collection('pedia');
-      const docRef = pediaCol.doc('progress');
+      let uiNeedsRefresh = false;
 
-      const doc = await docRef.get();
-      const localState = this.queueEngine.getStateObject();
-
-      let merged = localState;
-      if (doc.exists) {
-        const remoteData = doc.data();
-        const remoteNotes = await this.fetchRemoteNotes(pediaCol, remoteData);
-        remoteData.reasoningNotes = remoteNotes;
-        merged = mergeStates(localState, remoteData);
-        this.queueEngine.applyMergedState(merged);
+      // 1. Sync Exam Dates
+      if (remoteProfile.examDates && typeof remoteProfile.examDates === 'object') {
+        if (typeof setAllExamDates === 'function') {
+          const changed = setAllExamDates(remoteProfile.examDates);
+          if (changed) uiNeedsRefresh = true;
+        }
       }
 
-      // Notify app to re-render UI with merged state
-      if (typeof this.onDataMerged === 'function') {
-        this.onDataMerged(merged);
+      // 2. Sync Settings (Clinical Mode, Gemini API Key)
+      if (remoteProfile.settings && typeof remoteProfile.settings === 'object') {
+        const { clinicalCaseMode, geminiApiKey } = remoteProfile.settings;
+        if (clinicalCaseMode) {
+          const localMode = localStorage.getItem('pedia_clinical_case_mode');
+          if (localMode !== clinicalCaseMode) {
+            localStorage.setItem('pedia_clinical_case_mode', clinicalCaseMode);
+            uiNeedsRefresh = true;
+          }
+        }
+        if (geminiApiKey && typeof geminiApiKey === 'string' && geminiApiKey.trim()) {
+          const localKey = (localStorage.getItem('pedia_gemini_key') || '').trim();
+          if (!localKey || localKey !== geminiApiKey.trim()) {
+            localStorage.setItem('pedia_gemini_key', geminiApiKey.trim());
+            if (typeof window !== 'undefined' && window.geminiService) {
+              window.geminiService.setApiKey(geminiApiKey.trim());
+            }
+          }
+        }
       }
 
-      // Save unified state back to Firestore using chunked architecture
-      await this.pushToFirestore(merged);
-      this.lastSyncedAt = Date.now().toString();
-      localStorage.setItem('pedia_firebase_last_synced', this.lastSyncedAt);
-      
-      const notesCount = (merged.reasoningNotes || []).length;
-      this.updateStatus('synced', `Progression & ${notesCount} note${notesCount > 1 ? 's' : ''} synchronisée${notesCount > 1 ? 's' : ''} avec votre compte Google !`);
-    } catch (err) {
-      console.error('Sync on login error:', err);
-      const friendly = this.getFriendlyFirestoreError(err);
-      this.updateStatus('error', friendly);
+      // 3. Sync Active Stopwatch Timer
+      if (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.mergeActiveTimer === 'function') {
+        const remoteTimer = remoteProfile.activeLessonTimer || null;
+        const remoteTimerUpdatedAt = remoteProfile.activeLessonTimerUpdatedAt || (remoteTimer ? remoteTimer.updatedAt : null);
+        lessonTracker.mergeActiveTimer(remoteTimer, remoteTimerUpdatedAt);
+        uiNeedsRefresh = true;
+      }
+
+      // 4. Sync Lesson Sessions
+      if (Array.isArray(remoteProfile.lessonSessions) && remoteProfile.lessonSessions.length > 0) {
+        if (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.mergeSessions === 'function') {
+          const added = lessonTracker.mergeSessions(remoteProfile.lessonSessions);
+          if (added) uiNeedsRefresh = true;
+        }
+      }
+
+      // 5. Active Module Cross-Device Sync
+      if (remoteProfile.activeModuleId && remoteProfile.activeModuleId !== getActiveModuleId()) {
+        const remoteTs = Number(remoteProfile.activeModuleUpdatedAt || 0);
+        if (remoteTs > this.lastLocalModuleSwitchTimestamp) {
+          console.log(`📡 Remote module switch requested: ${remoteProfile.activeModuleId}`);
+          if (typeof this.onRemoteModuleSwitch === 'function') {
+            this.onRemoteModuleSwitch(remoteProfile.activeModuleId);
+          }
+        }
+      }
+
+      if (uiNeedsRefresh && typeof this.onDataMerged === 'function') {
+        this.onDataMerged(null);
+      }
+    } finally {
+      this.isApplyingRemoteSnapshot = false;
     }
   }
 
   /**
-   * Pull state from Firestore manually
+   * Handle incoming remote module updates (SRS stats, queue, cursor, studyHistory, notes)
    */
-  async pullFromFirestore() {
-    if (!this.user || !window.firebase || !window.firebase.firestore) {
-      return { success: false, error: 'Veuillez vous connecter avec votre compte Google.' };
-    }
+  async handleRemoteModuleUpdate(moduleId, moduleDocRef, remoteData) {
+    if (!remoteData || this.isApplyingRemoteSnapshot) return;
+    if (moduleId !== getActiveModuleId()) return;
 
-    this.updateStatus('syncing', 'Récupération depuis Google Cloud...');
-
+    this.isApplyingRemoteSnapshot = true;
     try {
-      const db = window.firebase.firestore();
-      const pediaCol = db.collection('users').doc(this.user.uid).collection('pedia');
-      const docRef = pediaCol.doc('progress');
+      console.log(`📡 Real-time update received for module ${moduleId}`);
 
-      const doc = await docRef.get();
-      if (!doc.exists) {
-        this.updateStatus('synced', 'Aucune progression distante sur ce compte Google');
-        return { success: true, empty: true };
-      }
-
-      const remoteData = doc.data();
-      const remoteNotes = await this.fetchRemoteNotes(pediaCol, remoteData);
+      // Fetch chunked reasoning notes
+      const remoteNotes = await this.fetchRemoteNotes(moduleDocRef, remoteData);
       remoteData.reasoningNotes = remoteNotes;
 
       const localState = this.queueEngine.getStateObject();
@@ -560,7 +718,116 @@ export class FirebaseSyncService {
       }
 
       const notesCount = (merged.reasoningNotes || []).length;
-      this.updateStatus('synced', `Succès : ${notesCount} note${notesCount > 1 ? 's' : ''} récupérée${notesCount > 1 ? 's' : ''} depuis Google Cloud !`);
+      this.updateStatus('synced', `En direct (${moduleId}) : ${notesCount} note${notesCount > 1 ? 's' : ''} synchronisée${notesCount > 1 ? 's' : ''}`);
+    } finally {
+      this.isApplyingRemoteSnapshot = false;
+    }
+  }
+
+  /**
+   * Switch the active Firestore listener when student changes module
+   */
+  switchListeningModule(newModuleId) {
+    this.lastLocalModuleSwitchTimestamp = Date.now();
+    if (!this.user || !this.isInitialized) return;
+    if (this.activeListeningModuleId === newModuleId) return;
+
+    this.setupModuleListener(newModuleId);
+    // Push new active module to profile in background
+    this.pushProfileToFirestore();
+  }
+
+  /**
+   * Full synchronisation on login: migrates if needed, pulls profile, pulls active module, sets listeners, pushes back
+   */
+  async syncOnLogin() {
+    if (!this.user || !window.firebase || !window.firebase.firestore) return;
+
+    try {
+      const db = window.firebase.firestore();
+      
+      // 1. Run transparent migration if legacy format detected
+      await this.checkAndMigrateLegacyData(db);
+
+      // 2. Setup listeners
+      const currentModId = getActiveModuleId();
+      this.setupProfileListener();
+      this.setupModuleListener(currentModId);
+
+      // 3. Pull and merge initial remote state
+      await this.pullFromFirestore();
+
+      // 4. Push combined state back
+      await this.pushToFirestore();
+
+      this.lastSyncedAt = Date.now().toString();
+      localStorage.setItem('pedia_firebase_last_synced', this.lastSyncedAt);
+      this.updateStatus('synced', `Profil & progression synchronisés avec votre compte Google !`);
+    } catch (err) {
+      console.error('Sync on login error:', err);
+      const friendly = this.getFriendlyFirestoreError(err);
+      this.updateStatus('error', friendly);
+    }
+  }
+
+  /**
+   * Pull global profile and active module state from Firestore
+   */
+  async pullFromFirestore() {
+    if (!this.user || !window.firebase || !window.firebase.firestore) {
+      return { success: false, error: 'Veuillez vous connecter avec votre compte Google.' };
+    }
+
+    this.updateStatus('syncing', 'Récupération depuis Google Cloud...');
+
+    try {
+      const db = window.firebase.firestore();
+      const userDocRef = db.collection('users').doc(this.user.uid);
+      const activeModId = getActiveModuleId();
+
+      // 1. Pull Profile
+      const profileSnap = await userDocRef.collection('profile').doc('state').get();
+      if (profileSnap.exists) {
+        this.handleRemoteProfileUpdate(profileSnap.data());
+      }
+
+      // 2. Pull Active Module Progress
+      const modDocRef = userDocRef.collection('modules').doc(activeModId);
+      const modSnap = await modDocRef.get();
+
+      let merged = null;
+      if (modSnap.exists) {
+        const remoteData = modSnap.data() || {};
+        const remoteNotes = await this.fetchRemoteNotes(modDocRef, remoteData);
+        remoteData.reasoningNotes = remoteNotes;
+
+        const localState = this.queueEngine.getStateObject();
+        merged = mergeStates(localState, remoteData);
+        this.queueEngine.applyMergedState(merged);
+      } else {
+        // Fallback: If modules/pediatrie does not exist yet, check legacy pedia
+        if (activeModId === 'pediatrie') {
+          const legacySnap = await userDocRef.collection('pedia').doc('progress').get();
+          if (legacySnap.exists) {
+            const legacyData = legacySnap.data() || {};
+            const legacyNotes = await this.fetchRemoteNotes(userDocRef.collection('pedia'), legacyData);
+            legacyData.reasoningNotes = legacyNotes;
+            const localState = this.queueEngine.getStateObject();
+            merged = mergeStates(localState, legacyData);
+            this.queueEngine.applyMergedState(merged);
+          }
+        }
+      }
+
+      this.lastSyncedAt = Date.now().toString();
+      localStorage.setItem('pedia_firebase_last_synced', this.lastSyncedAt);
+
+      if (typeof this.onDataMerged === 'function') {
+        this.onDataMerged(merged);
+      }
+
+      const notesCount = (merged?.reasoningNotes || this.queueEngine.getRawReasoningNotes() || []).length;
+      this.updateStatus('synced', `Succès : Données & ${notesCount} note${notesCount > 1 ? 's' : ''} IA synchronisées !`);
       return { success: true, merged };
     } catch (err) {
       console.error('Pull from Firestore error:', err);
@@ -571,41 +838,73 @@ export class FirebaseSyncService {
   }
 
   /**
-   * Push current state to Firestore using Chunked Storage Architecture.
-   * Splits notes into 50-item chunks (~60 KB each) and compacts question stats,
-   * guaranteeing document size remains far below Firestore's 1,048,576 bytes (1 MiB) limit.
+   * Push profile state (exam dates, settings, active module, timer, sessions)
    */
-  async pushToFirestore(explicitState = null) {
+  async pushProfileToFirestore() {
+    if (!this.user || !window.firebase || !window.firebase.firestore) return;
+
+    try {
+      const db = window.firebase.firestore();
+      const profileDocRef = db.collection('users').doc(this.user.uid).collection('profile').doc('state');
+
+      const examDates = typeof getAllExamDates === 'function' ? getAllExamDates() : {};
+      const clinicalMode = localStorage.getItem('pedia_clinical_case_mode') || 'sequential';
+      const geminiKey = localStorage.getItem('pedia_gemini_key') || '';
+
+      const profilePayload = sanitizeForFirestore({
+        activeModuleId: getActiveModuleId(),
+        activeModuleUpdatedAt: this.lastLocalModuleSwitchTimestamp || Date.now(),
+        examDates,
+        examDatesUpdatedAt: Date.now(),
+        settings: {
+          clinicalCaseMode: clinicalMode,
+          geminiApiKey: geminiKey
+        },
+        settingsUpdatedAt: Date.now(),
+        activeLessonTimer: (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.getActiveTimer === 'function')
+          ? lessonTracker.getActiveTimer()
+          : null,
+        activeLessonTimerUpdatedAt: (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.getLastTimerUpdatedAt === 'function')
+          ? lessonTracker.getLastTimerUpdatedAt()
+          : Date.now(),
+        lessonSessions: (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.getRawSessions === 'function')
+          ? lessonTracker.getRawSessions()
+          : [],
+        userEmail: this.user.email || '',
+        userDisplayName: this.user.displayName || '',
+        updatedAt: window.firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      await profileDocRef.set(profilePayload, { merge: true });
+    } catch (e) {
+      console.warn('pushProfileToFirestore error:', e);
+    }
+  }
+
+  /**
+   * Push module state (SRS stats, queue, cursor, studyHistory, firstPassRecords, chunked notes)
+   */
+  async pushModuleToFirestore(moduleId = getActiveModuleId(), explicitState = null) {
     if (!this.user || !window.firebase || !window.firebase.firestore) {
       return { success: false, error: 'Non connecté à Google' };
     }
 
-    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
-      this.updateStatus('offline', 'Hors-ligne');
-      return { success: false, error: 'Hors-ligne' };
-    }
-
-    this.isPushing = true;
-    this.updateStatus('syncing', 'Sauvegarde vers Google Cloud...');
-
     try {
       const db = window.firebase.firestore();
-      const pediaCol = db.collection('users').doc(this.user.uid).collection('pedia');
-      const progressDocRef = pediaCol.doc('progress');
+      const modDocRef = db.collection('users').doc(this.user.uid).collection('modules').doc(moduleId);
 
       const state = explicitState || this.queueEngine.getStateObject();
       const rawNotes = Array.isArray(state.reasoningNotes) ? state.reasoningNotes : [];
       const slimmedNotes = rawNotes.map(n => toSlimNote(n));
 
-      // 1. Chunk reasoning notes into batches of 50
-      // 50 slim notes ~ 60-75 KB, 15x below Firestore's 1MB limit
+      // 1. Chunk reasoning notes into batches of 50 (~60 KB each)
       const CHUNK_SIZE = 50;
       const noteChunks = [];
       for (let i = 0; i < slimmedNotes.length; i += CHUNK_SIZE) {
         noteChunks.push(slimmedNotes.slice(i, i + CHUNK_SIZE));
       }
 
-      // 2. Compact question stats (omit default untouched questions to keep document small)
+      // 2. Compact question stats (omit untouched questions)
       const compactStats = {};
       const rawStats = state.stats || {};
       for (const [uid, st] of Object.entries(rawStats)) {
@@ -620,8 +919,19 @@ export class FirebaseSyncService {
         }
       }
 
-      // 3. Prepare core SRS progress document (~15-20 KB, guaranteed never to exceed 1MB)
-      const progressToSave = sanitizeForFirestore({
+      // 3. Collect module first-pass discovery records
+      const firstPassRecords = (typeof studyTracker !== 'undefined' && studyTracker && typeof studyTracker.getRawFirstPassRecords === 'function')
+        ? studyTracker.getRawFirstPassRecords()
+        : {};
+
+      // 4. Collect study history
+      const studyHistory = (typeof studyTracker !== 'undefined' && studyTracker && typeof studyTracker.getRawHistory === 'function')
+        ? studyTracker.getRawHistory()
+        : (state.studyHistory || {});
+
+      // 5. Build module progress payload (~25-35 KB, guaranteed far below 1MB)
+      const modulePayload = sanitizeForFirestore({
+        moduleId,
         version: 2,
         exportedAt: state.exportedAt || new Date().toISOString(),
         stats: compactStats,
@@ -630,60 +940,82 @@ export class FirebaseSyncService {
         selectedChapterIds: state.selectedChapterIds || [],
         selectedChaptersUpdatedAt: state.selectedChaptersUpdatedAt || Date.now(),
         totalMistakesCount: state.totalMistakesCount || 0,
+        snoozedQuestions: state.snoozedQuestions || {},
         todayTracker: state.todayTracker || null,
-        studyHistory: (typeof studyTracker !== 'undefined' && studyTracker && typeof studyTracker.getRawHistory === 'function')
-          ? studyTracker.getRawHistory()
-          : (state.studyHistory || {}),
-        lessonSessions: (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.getRawSessions === 'function')
-          ? lessonTracker.getRawSessions()
-          : (state.lessonSessions || []),
-        activeLessonTimer: (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.getActiveTimer === 'function')
-          ? lessonTracker.getActiveTimer()
-          : null,
-        activeLessonTimerUpdatedAt: (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.getLastTimerUpdatedAt === 'function')
-          ? lessonTracker.getLastTimerUpdatedAt()
-          : Date.now(),
-        userEmail: this.user.email || '',
-        userDisplayName: this.user.displayName || '',
-        lastClientTimestamp: Date.now(),
+        studyHistory,
+        firstPassRecords,
         notesCount: slimmedNotes.length,
         notesChunksCount: noteChunks.length,
-        reasoningNotes: [] // Explicitly clear legacy bloated array in progress document
+        reasoningNotes: [] // Explicitly cleared from main document
       });
 
-      progressToSave.updatedAt = window.firebase.firestore.FieldValue.serverTimestamp();
+      modulePayload.updatedAt = window.firebase.firestore.FieldValue.serverTimestamp();
 
-      // 4. Atomic batch write for progress doc and all chunk documents
+      // 6. Atomic batch write for module progress doc and all chunk documents
       const batch = db.batch();
-      batch.set(progressDocRef, progressToSave, { merge: true });
+      batch.set(modDocRef, modulePayload, { merge: true });
 
       for (let i = 0; i < noteChunks.length; i++) {
-        const chunkDocRef = pediaCol.doc(`notes_${i}`);
+        const chunkRef = modDocRef.collection('notes_chunks').doc(`chunk_${i}`);
         const chunkData = sanitizeForFirestore({
           chunkIndex: i,
           totalChunks: noteChunks.length,
           notes: noteChunks[i],
           updatedAt: window.firebase.firestore.FieldValue.serverTimestamp()
         });
-        batch.set(chunkDocRef, chunkData);
+        batch.set(chunkRef, chunkData);
       }
 
-      // 5. Clean up any excess chunk docs if note count decreased
-      const prevChunksCount = Number(localStorage.getItem('pedia_firebase_notes_chunks') || 0);
+      // 7. Clean up any excess chunk docs if note count decreased
+      const chunkTrackingKey = `pedia_firebase_chunks_${moduleId}`;
+      const prevChunksCount = Number(localStorage.getItem(chunkTrackingKey) || 0);
       if (prevChunksCount > noteChunks.length) {
         for (let i = noteChunks.length; i < prevChunksCount; i++) {
-          batch.delete(pediaCol.doc(`notes_${i}`));
+          batch.delete(modDocRef.collection('notes_chunks').doc(`chunk_${i}`));
         }
       }
-      localStorage.setItem('pedia_firebase_notes_chunks', String(noteChunks.length));
+      localStorage.setItem(chunkTrackingKey, String(noteChunks.length));
 
       await batch.commit();
+      return { success: true, notesCount: slimmedNotes.length };
+    } catch (err) {
+      console.error(`Push to Firestore error for module ${moduleId}:`, err);
+      throw err;
+    }
+  }
+
+  /**
+   * Push current state (Profile + Active Module) to Firestore atomically
+   */
+  async pushToFirestore(explicitState = null) {
+    if (!this.user || !window.firebase || !window.firebase.firestore) {
+      return { success: false, error: 'Non connecté à Google' };
+    }
+
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      this.updateStatus('offline', 'Hors-ligne');
+      return { success: false, error: 'Hors-ligne' };
+    }
+
+    if (this.isApplyingRemoteSnapshot) {
+      return { success: true, skipped: 'Receiving remote snapshot' };
+    }
+
+    this.isPushing = true;
+    this.updateStatus('syncing', 'Sauvegarde vers Google Cloud...');
+
+    try {
+      const activeModId = getActiveModuleId();
+
+      // Push profile & active module
+      await this.pushProfileToFirestore();
+      const res = await this.pushModuleToFirestore(activeModId, explicitState);
 
       this.lastSyncedAt = Date.now().toString();
       localStorage.setItem('pedia_firebase_last_synced', this.lastSyncedAt);
 
-      const notesCount = slimmedNotes.length;
-      this.updateStatus('synced', `Enregistré : ${notesCount} note${notesCount > 1 ? 's' : ''} sauvegardée${notesCount > 1 ? 's' : ''} sur Google Cloud`);
+      const notesCount = res?.notesCount || 0;
+      this.updateStatus('synced', `Enregistré : Profil & ${notesCount} note${notesCount > 1 ? 's' : ''} sauvegardée${notesCount > 1 ? 's' : ''} sur Google Cloud`);
       this.isPushing = false;
       return { success: true };
     } catch (err) {
@@ -700,6 +1032,7 @@ export class FirebaseSyncService {
    */
   triggerAutoPush(immediate = false) {
     if (!this.user || !this.isInitialized) return;
+    if (this.isApplyingRemoteSnapshot) return;
 
     if (this.autoPushTimer) {
       clearTimeout(this.autoPushTimer);
@@ -716,9 +1049,6 @@ export class FirebaseSyncService {
     }, 1200);
   }
 
-  /**
-   * Push current state to Firestore immediately or debounced
-   */
   pushState(immediate = true) {
     return this.triggerAutoPush(immediate);
   }

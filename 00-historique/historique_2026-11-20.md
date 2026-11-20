@@ -158,3 +158,61 @@
 - Synchronisation Capacitor Android exécutée avec succès (`cmd.exe /c npx.cmd cap sync android`).
 - Compilation locale de l'APK via `build-apk.bat` (`PediaDrill.apk` à la racine).
 - Déclenchement automatique de la GitHub Release via le tag `v1.6.1` et GitHub Actions.
+
+---
+
+## 23:59:00 — Refonte Intégrale de la Synchronisation Multi-Appareils (Profil Global, Multi-Modules & Anti-Écrasement Firestore)
+
+### Contexte & Objectif
+- L'audit approfondi du système de synchronisation inter-appareils a mis en évidence plusieurs failles majeures dans le modèle historique :
+  1. Le chemin Firestore était figé en dur sur `users/{uid}/pedia/progress`, provoquant l'écrasement de la progression de pédiatrie dès qu'un étudiant révisait en psychiatrie.
+  2. Les dates d'examen (`pediadrill_exam_date_*`), le module actif (`pediadrill_active_module_id`), le mode de résolution des cas cliniques (`pedia_clinical_case_mode`) et la clé API Gemini (`pedia_gemini_key`) étaient cantonnés au `localStorage` de chaque machine sans aucune synchronisation inter-appareils.
+  3. Le dictionnaire de découverte au premier passage (`firstPassRecords`) n'était jamais synchronisé avec le Cloud.
+  4. L'historique et le cumul de travail quotidien (`todayTracker`, `studyHistory`) étaient restreints au seul module actif.
+- Déploiement de l'architecture d'élite **Profil Racine + Sous-Collection Modulaire Chunkée** garantissant la synchronisation totale en temps réel de toutes les données du profil étudiant entre PC, Smartphone Android et Tablette.
+
+---
+
+### Actions Réalisées
+
+#### 1. Catalogue Médical (`src/services/moduleCatalog.js`)
+- Ajout de `getAllExamDates()` : exporte l'ensemble des dates d'examen configurées pour tous les modules sous forme de dictionnaire `{ [moduleId]: "YYYY-MM-DD" }`.
+- Ajout de `setAllExamDates(datesMap)` : applique et sauvegarde de manière non destructive toutes les dates d'examen distantes reçues du Cloud.
+- Export dans `window.ModuleCatalog`.
+
+#### 2. Suivi d'Étude & Premier Passage (`src/services/studyTracker.js`)
+- Ajout de `getRawFirstPassRecords()` : extrait le dictionnaire des réussites/échecs à la première confrontation du module actif.
+- Ajout de `mergeFirstPassRecords(remoteRecords)` : fusionne intelligemment les enregistrements de premier passage (une réussite confirmée sur un appareil l'emporte, aucune perte d'historique).
+
+#### 3. Chronomètre & Sessions de Cours (`src/services/lessonTracker.js`)
+- Rénovation de `mergeSessions(remoteSessions)` : partitionne automatiquement les séances de révision synchronisées dans leurs espaces respectifs (`pedia_lesson_sessions_v1` ou `mod_psychiatrie_lesson_sessions`) grâce à `identifySessionModule()`, évitant tout mélange ou écrasement de séances.
+- Sécurisation défensive de `this.lastTimerClearedAt` pour les environnements de test / SSR headless sans `localStorage`.
+
+#### 4. Service de Synchronisation Firebase (`src/services/firebaseSyncService.js` - Refactorisation Complète)
+- **Architecture Distribuée Firestore** :
+  - `users/{uid}/profile/state` : regroupe le module actif, les dates d'examen de tous les modules, le mode de cas clinique, la clé API Gemini, le chronomètre actif en direct, les sessions globales et le cumul du jour.
+  - `users/{uid}/modules/{moduleId}` : document dédié par module pour les statistiques SRS, la file d'attente circulaire, le curseur, les cours sélectionnés, les questions mises en sommeil, l'historique d'entraînement et le premier passage.
+  - `users/{uid}/modules/{moduleId}/notes_chunks/chunk_{i}` : sous-collection partitionnant les notes de raisonnement IA par blocs de 50 items (~60 Ko), éliminant tout risque de dépassement du plafond de 1 Mo de Firestore.
+- **Migration Automatique Rétro-compatible (`checkAndMigrateLegacyData`)** :
+  - Détecte l'ancien format `pedia/progress` lors de la première connexion.
+  - Migre automatiquement et sans perte toutes les données et les paquets de notes vers `profile/state` et `modules/pediatrie`. Conserve l'ancien document comme sauvegarde de secours.
+- **Double Écouteur Temps Réel & Anti-Boucle Infinie** :
+  - `setupProfileListener()` : écoute les modifications de profil (module actif, dates, réglages, chronomètre).
+  - `setupModuleListener(moduleId)` : écoute dynamiquement la progression du module en cours.
+  - Drapeau `isApplyingRemoteSnapshot = true` : neutralise tout re-push automatique lors de la réception d'un événement distant, éliminant les boucles ping-pong de synchronisation.
+- **Synchronisation du Module Actif à la Volée** :
+  - Détection du basculement de module distant (`onRemoteModuleSwitch`) : bascule en douceur l'affichage de l'appareil récepteur s'il est sur le Dashboard/Stats, ou affiche une notification non intrusive s'il est en train de répondre à une question dans l'Arène.
+
+#### 5. Contrôleur Principal (`src/app.js`)
+- `new FirebaseSyncService(...)` : enrichi avec le gestionnaire `onRemoteModuleSwitch`.
+- `switchActiveModule(modId, fromRemote)` : synchronise dynamiquement l'écouteur Firestore vers le nouveau module sélectionné et notifie le Cloud en arrière-plan.
+- `btnSaveSettings.onclick` : appelle immédiatement `firebaseSyncService.pushProfileToFirestore()` dès l'enregistrement des paramètres, répercutant instantanément les dates d'examen, la clé Gemini et le mode de cas clinique sur tous les appareils connectés.
+
+#### 6. Assemblage & Tests de Validation
+- Exécution de `node build-bundle.cjs` :
+  - Bundle unifié `src/app.bundle.js` généré avec succès (523 903 octets).
+  - Fichier de déploiement `index.html` (6,59 Mo) et `dist/index.html` synchronisés.
+- Validation syntaxique Node (`node -c`) sur l'ensemble des sources (`moduleCatalog.js`, `studyTracker.js`, `lessonTracker.js`, `firebaseSyncService.js`, `app.js`, `app.bundle.js`).
+- Validation VM de l'ensemble des 5 balises `<script>` intégrées dans `dist/index.html`.
+- Test unitaire d'intégrité de la fusion non-destructive (`mergeStates`) exécuté avec succès sous Node.js.
+

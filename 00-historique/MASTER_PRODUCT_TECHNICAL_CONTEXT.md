@@ -1,5 +1,5 @@
 # PédiaDrill — Master Product & Technical Context
-*Dernière mise à jour : 2026-11-13 11:45:00 CET*
+*Dernière mise à jour : 2026-11-20 23:59:00 CET*
 *Source unique de vérité technique et fonctionnelle du projet PédiaDrill.*
 
 ---
@@ -34,7 +34,7 @@ qcm-p-diatrie/
 │   └── MASTER_PRODUCT_TECHNICAL_CONTEXT.md # Contexte technique global (source unique de vérité)
 ├── android/                              # Projet natif Android Capacitor 8
 │   ├── app/
-│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 28, versionName 1.6.1)
+│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 29, versionName 1.6.2)
 │   │   ├── debug.keystore                # Keystore de signature unifié (local & CI/CD)
 │   │   ├── google-services.json          # Configuration Firebase Android (qcm-pediatr, com.pediadrill.app)
 │   │   └── src/main/
@@ -372,7 +372,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ### 3.9. Système de Mises à Jour Automatiques & GitHub Releases (`src/services/updateService.js` & CI/CD)
 - **Service d'Orchestration des Mises à Jour (`UpdateService`)** :
-  - Version déclarée : `CURRENT_APP_VERSION = '1.6.1'` synchronisée avec `package.json` et `build.gradle` (`versionCode 28`).
+  - Version déclarée : `CURRENT_APP_VERSION = '1.6.2'` synchronisée avec `package.json` et `build.gradle` (`versionCode 29`).
   - Comparaison sémantique universelle (`compareVersions`) ignorant les préfixes `v`.
   - Interrogation de l'API GitHub Releases (`https://api.github.com/repos/lkmqji/qcm-p-diatrie/releases/latest`) avec cooldown de 4 heures (`pedia_last_update_check_ts`).
   - Extraction de l'asset `.apk` direct (`PediaDrill.apk`). En environnement natif Android Capacitor, l'URL est ouverte via `_system` pour lancer le gestionnaire de téléchargement Android natif.
@@ -569,34 +569,55 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ---
 
-## 5. Synchronisation Multi-Appareils, Firebase & Architecture Anti-Dépassement de Quota
+## 5. Synchronisation Multi-Appareils, Firebase & Architecture Multi-Modules Distribuée
 
 - **Fournisseur & Services Cloud** : Firebase Auth (Google Provider) & Cloud Firestore (Base de données NoSQL distribuée).
 - **Authentification Hybride (Web / Mobile)** :
   - **Sur Android (APK natif)** : Utilisation de `@capacitor-firebase/authentication` (version 8.5.2) qui déclenche la boîte de dialogue native Android Google Play Services (`FirebaseAuthentication.signInWithGoogle()`). Cela évite les ouvertures de navigateur externe et résout l'erreur `missing initial state`. Le jeton d'identité `idToken` est ensuite transmis à `signInWithCredential` du SDK Web pour maintenir la session Firestore active.
   - **Sur Web / Desktop (Vercel)** : Utilisation de `window.firebase.auth().signInWithPopup(provider)` avec fallback `signInWithRedirect`.
-- **Architecture Anti-Dépassement de Quota Firestore (Limite stricte de 1 Mo / 1 048 576 octets)** :
-  - **Problématique résolue** : Cloud Firestore rejette formellement toute écriture dépassant 1 Mo par document. Lorsque l'étudiant accumule plus de ~120 notes d'analyse d'erreur IA, le document monolithique unique `pedia/progress` dépassait 1,12 Mo.
-  - **1. Allègement sémantique des notes (`slimNote` / `hydrateNote`)** :
-    - `slimNote(note)` : Purgée de tous les champs statiques déjà présents dans `PEDIA_QUESTIONS` (`questionText`, `clinicalCase`, `options`, `officialExplanation`, `media_urls`), une note ne conserve que les données générées par la tentative de l'étudiant (`id`, `questionUid`, `userAnswer`, `userAnswerLetters`, `correctAnswer`, `score`, `isCroq`, `reasoningNote`, `modelUsed`, `timestamp`).
-    - L'empreinte passe de ~7 Ko à ~1.2 Ko (**réduction de 85% à 90%**).
-    - `hydrateNote(note, questionsList)` : Dès la lecture ou le rendu dans l'interface, chaque note est enrichie à la volée avec l'objet question complet de `allQuestions` (aucun impact visuel, intégrité totale).
-    - `sanitizeReasoningNotesStorage()` : Migration automatique en mémoire locale (`localStorage`) dès le démarrage de l'app, libérant plus de 800 Ko sur l'appareil.
-  - **2. Partitionnement par paquets de 50 notes (`Chunked Firestore Storage`)** :
-    - **Document `pedia/progress` épuré** : Stocke uniquement l'état SRS (`queue`, `cursor`, `selectedChapterIds`, `selectedChaptersUpdatedAt`, `totalMistakesCount`, `todayTracker`, `userEmail`, `notesCount`, `notesChunksCount`) et compacte `stats` (omission des QCM non touchés). Le champ `reasoningNotes` y est vidé (`[]`) pour écraser le vieux payload lourd de Firestore. Poids : **~15 à 20 Ko (50 fois sous la limite)**.
-    - **Documents de partitionnement `pedia/notes_0`, `notes_1`, `notes_2`...** : Chaque document contient 50 notes allégées maximum, pesant ~50 à 75 Ko (**15 fois sous la limite de 1 Mo**).
-    - **Écriture atomique (`db.batch()`)** : Sauvegarde conjointe du document de progression et des paquets de notes en une seule transaction réseau.
-    - **Nettoyage automatique** : Suppression automatique des anciens paquets orphelins si le nombre total de notes diminue.
-    - **Récupération parallèle (`fetchRemoteNotes`)** : Téléchargement simultané de tous les paquets via `Promise.all` avec fallback sur l'ancien format si présent.
-- **Protocole de fusion bidirectionnelle (`mergeStates`)** :
-  - Compare l'horodatage client et serveur.
-  - Fusionne les compteurs de maîtrise au maximum (`Math.max(local, remote)`).
-  - Déduplique l'ensemble des notes par identifiant unique stable sans suppression intempestive.
-  - Synchronisation des cours sélectionnés : compare `local.selectedChaptersUpdatedAt` vs `remote.selectedChaptersUpdatedAt`, la sélection la plus récente l'emporte et s'applique dynamiquement.
-- **Déclencheurs de synchronisation** :
-  - **Auto-push temporisé** (`triggerAutoPush`, délai 1 500 ms) après chaque réponse validée ou erreur enregistrée.
-  - **Pull automatique à la connexion** (`syncOnLogin`).
-  - **Écoute en temps réel** (`setupFirestoreListener`) via `onSnapshot` sur le document `progress` pour répercuter instantanément les modifications effectuées depuis un autre appareil (PC ↔ Smartphone).
+- **Architecture Distribuée : Profil Racine & Sous-Collections Modulaires (`users/{uid}/...`)** :
+  - **1. Document Profil Global (`users/{uid}/profile/state`)** :
+    - Regroupe l'intégralité des préférences globales et métadonnées transversales :
+      - `activeModuleId` & `activeModuleUpdatedAt` : module d'étude actif (ex: `pediatrie`, `psychiatrie`), synchronisé en temps réel inter-appareils.
+      - `examDates` & `examDatesUpdatedAt` : dictionnaire exhaustif des dates d'examen `{ [moduleId]: "YYYY-MM-DD" }` partagé entre tous les appareils.
+      - `settings` : mode par défaut des cas cliniques (`clinicalCaseMode`: 'sequential' | 'scroll') et clé API Google Gemini (`geminiApiKey`) chiffrée/sauvegardée.
+      - `activeLessonTimer` & `activeLessonTimerUpdatedAt` : chronomètre persistant de cours en direct (`onSnapshot`).
+      - `lessonSessions` : tableau consolidé de toutes les sessions d'étude de cours multi-modules.
+      - `globalTodayTracker` : total cumulé des QCM effectués aujourd'hui à l'échelle du compte.
+  - **2. Documents Modulaires Dédiés (`users/{uid}/modules/{moduleId}`)** :
+    - Chaque module médical (Pédiatrie, Psychiatrie, et les 44 prochains modules) dispose de son propre document isolé :
+      - État SRS complet : `stats` (compactées aux questions touchées), `queue`, `cursor`, `totalMistakesCount`, `snoozedQuestions`.
+      - Chapitres sélectionnés : `selectedChapterIds` et `selectedChaptersUpdatedAt`.
+      - Historique d'entraînement : `studyHistory` propre au module.
+      - Premier passage : `firstPassRecords` `{ [questionUid]: boolean }` synchronisé pour préserver le taux de découverte intact sur tout nouvel appareil.
+      - Compteur journalier du module : `todayTracker`.
+      - Métadonnées de chunking : `notesCount`, `notesChunksCount`.
+  - **3. Sous-Collections de Notes IA Chunkées (`users/{uid}/modules/{moduleId}/notes_chunks/chunk_{i}`)** :
+    - Découpage strict des notes de raisonnement clinique par blocs de 50 items (~60 Ko par sous-document).
+    - Garantit que chaque écriture et chaque document reste 25 fois sous le plafond légal de 1 Mo (1 048 576 octets) de Firestore.
+  - **4. Migration Automatique et Transparente (`checkAndMigrateLegacyData`)** :
+    - Lors de la première connexion avec la nouvelle architecture, détection automatique de l'ancien format `users/{uid}/pedia/progress`.
+    - Transfère automatiquement l'ensemble des données, statistiques et paquets de notes vers `profile/state` et `modules/pediatrie` sans aucune perte d'historique ni perturbation utilisateur, tout en conservant l'ancien document par précaution.
+- **Protocole de Fusion Bidirectionnelle Non Destructif (Convergence CRDT)** :
+  - `mergeStates(local, remote)` :
+    - Niveau de maîtrise : `Math.max(local.current, remote.current)`.
+    - Seuil cible et fautes : `Math.max(local.target, remote.target)` plafonné à 10.
+    - Statut maîtrisé : `local.done || remote.done`.
+    - Notes IA : union complète sans doublon par ID stable, ordonnées de la plus récente à la plus ancienne.
+    - Premier passage : fusion sécurisée `mergeFirstPassRecords(remoteRecords)` (une réussite confirmée prévaut).
+    - Cours sélectionnés : la sélection avec le timestamp `selectedChaptersUpdatedAt` le plus récent est automatiquement appliquée.
+  - `mergeSessions(remoteSessions)` :
+    - Répartition automatique de chaque session dans sa partition locale (`pedia_lesson_sessions_v1` ou `mod_psychiatrie_lesson_sessions`) via `identifySessionModule()`.
+- **Double Écouteur Temps Réel & Protection Anti-Boucle Infinie** :
+  - `setupProfileListener()` : écouteur `onSnapshot` sur le profil racine répercutant instantanément les changements de dates d'examen, de clé Gemini et de chronomètre live.
+  - `setupModuleListener(moduleId)` : écouteur dynamique sur la progression du module actif.
+  - **Garde-fou `isApplyingRemoteSnapshot = true`** : neutralise tout re-push automatique lors de la réception d'une notification Firestore, éliminant tout risque de boucle infinie (ping-pong) entre appareils.
+  - **Smart Context Switch** : si un autre appareil bascule de module, l'application bascule automatiquement si l'utilisateur est sur le Dashboard/Stats, ou affiche une notification toast non disruptive s'il est en plein QCM dans l'Arène.
+- **Déclencheurs de Synchronisation** :
+  - **Auto-push temporisé** (`triggerAutoPush`, délai 1 200 ms) après chaque réponse validée ou erreur enregistrée.
+  - **Push immédiat des paramètres** (`pushProfileToFirestore`) au clic sur « Enregistrer les paramètres » dans `#modal-settings`.
+  - **Bascule de module** (`switchListeningModule`) reconnectant immédiatement le listener Firestore.
+  - **Pull complet à la connexion** (`syncOnLogin`).
   - **Boutons manuels de sauvegarde et récupération** dans la modale `#modal-sync`.
 
 ---
@@ -606,7 +627,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.6.1` (`versionCode 28`)
+- **Version native** : `versionName 1.6.2` (`versionCode 29`)
 - **Empreinte SHA-1 (Debug Keystore Gradle & GitHub Actions)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
 - **Empreinte SHA-256 (Debug Keystore Gradle & GitHub Actions)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
 - **Keystore unifié** : `android/app/debug.keystore` (Alias : `AndroidDebugKey`, mot de passe `android`, garantissant une empreinte cryptographique identique entre les compilations locales et la CI/CD GitHub Actions).

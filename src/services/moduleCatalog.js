@@ -200,6 +200,34 @@ export function setExamDate(dateStr, moduleId) {
   }
 }
 
+export function getAllExamDates() {
+  const dates = {};
+  try {
+    for (const y of MEDICAL_YEARS) {
+      for (const m of y.modules) {
+        const d = getExamDate(m.id);
+        if (d) dates[m.id] = d;
+      }
+    }
+  } catch (e) {
+    console.warn('[moduleCatalog] Erreur lecture all exam dates:', e);
+  }
+  return dates;
+}
+
+export function setAllExamDates(datesMap) {
+  if (!datesMap || typeof datesMap !== 'object') return false;
+  let changed = false;
+  for (const [modId, dateStr] of Object.entries(datesMap)) {
+    const current = getExamDate(modId);
+    if (current !== dateStr) {
+      setExamDate(dateStr, modId);
+      changed = true;
+    }
+  }
+  return changed;
+}
+
 export function getExamCountdown(moduleId) {
   const dateStr = getExamDate(moduleId);
   if (!dateStr) {
@@ -279,6 +307,8 @@ if (typeof window !== 'undefined') {
     getAllYearsWithModules,
     getExamDate,
     setExamDate,
+    getAllExamDates,
+    setAllExamDates,
     getExamCountdown
   };
 }
