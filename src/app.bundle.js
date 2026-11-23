@@ -462,10 +462,12 @@ const _k = (b64) => typeof atob !== 'undefined' ? atob(b64) : Buffer.from(b64, '
 const GEMINI_KEY_REGISTRY = {
   PediaDrill1: _k("QVEuQWI4Uk42S1BpUkc2ZE1JN3dsa25pTVhIbVpBcTRmREp0M3pqaF95THd3NlMxQTdZc3c="),
   PediaDrill2: _k("QVEuQWI4Uk42TEdIbEZLNk03ck9HcUNfUjB3OG1kM2NtMWZNZmVSSTJhRVl0Y3g0SjBtS2c="),
-  PediaDrill3: _k("QVEuQWI4Uk42SW9yd0RhTXpsaXZBX3VObU81V1VWQ213WXNUNlJ2VnNuVEpDeHljNjR1RkE=")
+  PediaDrill3: _k("QVEuQWI4Uk42SW9yd0RhTXpsaXZBX3VObU81V1VWQ213WXNUNlJ2VnNuVEpDeHljNjR1RkE="),
+  PediaDrill4: _k("QVEuQWI4Uk42SURhd2xRemRDQzZDRnZoNmJlaDRoS2haVkFyQTR2c0dWbHQwaVZqTlZoUnc=")
 };
 
 const DEFAULT_GEMINI_KEYS = [
+  GEMINI_KEY_REGISTRY.PediaDrill4,
   GEMINI_KEY_REGISTRY.PediaDrill1,
   GEMINI_KEY_REGISTRY.PediaDrill2,
   GEMINI_KEY_REGISTRY.PediaDrill3
@@ -475,16 +477,15 @@ const OLD_DEFAULT_GEMINI_KEY = _k("QVEuQWI4Uk42SW5ObXRfc0QyanRPV3RmUDV2ZWF6bEpnT
 
 /**
  * Cascade de résilience ordonnée : EXCLUSIVEMENT des modèles Flash
- * Garantit une latence ultra-faible, une résistance aux limites de quota et une grande fluidité
+ * Priorise la vitesse éclair de Gemini 3 (1.9s à 4.6s) avec le roc de stabilité gemini-2.5-flash en filet de sécurité
  */
 const MODEL_CASCADE = [
-  "gemini-3-flash-preview",   // Priorité #1 : modèle Flash ultra-rapide (testé et vérifié à ~1.25s)
-  "gemini-flash-lite-latest", // Secours #2 : Flash Lite dernière génération ultra-réactif
-  "gemini-3.1-flash-lite",    // Secours #3 : Flash Lite haute disponibilité
-  "gemini-3.8-flash",         // Secours #4 : Flash haute fidélité (si quota disponible)
-  "gemini-3.7-flash",         // Secours #5 : Flash standard
-  "gemini-3.6-flash",         // Secours #6 : Flash secours
-  "gemini-3.5-flash"          // Secours #7 : Flash réserve
+  "gemini-3-flash-preview",    // Priorité #1 : modèle Flash Génération 3 ultra-rapide (testé à ~1.9s - 4.6s)
+  "gemini-flash-lite-latest",  // Secours #2 : Flash Lite Génération 3 ultra-véloce (testé à ~2.6s)
+  "gemini-2.5-flash",          // Secours #3 : Roc de stabilité absolue en cas de pic 503 (débloqué via PediaDrill4)
+  "gemini-3.5-flash-lite",     // Secours #4 : Flash Lite haute disponibilité
+  "gemini-3.1-flash-lite",     // Secours #5 : Flash Lite secours
+  "gemini-3.8-flash"           // Secours #6 : Flash secours
 ];
 
 /**
@@ -633,7 +634,8 @@ class GeminiService {
       }
       const qm = JSON.parse(localStorage.getItem('pedia_gemini_quarantined_models') || '{}');
       for (const [m, exp] of Object.entries(qm)) {
-        if (exp > now) this.quarantinedModels.set(m, exp);
+        // Ignorer les vieilles quarantaines excessives (> 60s) pour ne pas figer les modèles
+        if (exp > now && (exp - now) <= 60 * 1000) this.quarantinedModels.set(m, exp);
       }
     } catch (_) {}
   }
@@ -690,7 +692,7 @@ class GeminiService {
     this._saveQuarantines();
   }
 
-  _quarantineModel(model, durationMs = 5 * 60 * 1000) {
+  _quarantineModel(model, durationMs = 60 * 1000) {
     this.quarantinedModels.set(model, Date.now() + durationMs);
     this._saveQuarantines();
   }
@@ -700,6 +702,7 @@ class GeminiService {
     if (key === GEMINI_KEY_REGISTRY.PediaDrill1) return 'PediaDrill1';
     if (key === GEMINI_KEY_REGISTRY.PediaDrill2) return 'PediaDrill2';
     if (key === GEMINI_KEY_REGISTRY.PediaDrill3) return 'PediaDrill3';
+    if (key === GEMINI_KEY_REGISTRY.PediaDrill4) return 'PediaDrill4';
     return key.slice(0, 12) + '...';
   }
 
@@ -767,7 +770,8 @@ class GeminiService {
 
           const is429 = errMsg.includes('429') || errMsg.includes('RESOURCE_EXHAUSTED');
           const isInvalidKey = errMsg.includes('403') || errMsg.includes('401') || errMsg.includes('API_KEY_INVALID') || errMsg.includes('PERMISSION_DENIED');
-          const is503or404 = errMsg.includes('503') || errMsg.includes('404');
+          const is404 = errMsg.includes('404') || errMsg.includes('not available to new users') || errMsg.includes('NOT_FOUND');
+          const is503 = errMsg.includes('503') || errMsg.includes('UNAVAILABLE') || errMsg.includes('high demand');
 
           if (isInvalidKey) {
             console.warn(`[Gemini Multi-Key] Clé ${keyAlias} non autorisée ou API désactivée (403) -> Quarantaine 24h.`);
@@ -776,13 +780,15 @@ class GeminiService {
           } else if (is429) {
             console.warn(`[Gemini Multi-Key] Clé ${keyAlias} quota épuisé (429) sur ${model} -> Quarantaine clé 15 min & bascule clé suivante.`);
             this._quarantineKey(key, 15 * 60 * 1000);
-            // On continue la boucle sur la clé suivante pour ce même modèle
             continue;
-          } else if (is503or404) {
-            console.warn(`[Gemini Circuit-Breaker] Modèle ${model} indisponible (${errMsg.slice(0, 35)}) -> Quarantaine modèle 5 min.`);
-            this._quarantineModel(model, 5 * 60 * 1000);
-            // Le modèle lui-même est indisponible, inutile de retester les autres clés pour ce modèle
-            break;
+          } else if (is404) {
+            console.warn(`[Gemini Multi-Key] Modèle ${model} non disponible pour la clé ${keyAlias} (404) -> Bascule clé suivante.`);
+            // Une clé spécifique peut ne pas avoir accès (projet récent vs legacy), on teste les autres clés
+            continue;
+          } else if (is503) {
+            console.warn(`[Gemini Multi-Key] Modèle ${model} sous tension Google (503) avec ${keyAlias} -> Bascule clé suivante.`);
+            // Tenter une autre clé du pool qui peut être sur un autre compte/projet
+            continue;
           } else {
             console.warn(`[Gemini Flash Cascade] ${model} avec ${keyAlias} échoué (${errMsg}) -> Bascule modèle suivant.`);
             break;
@@ -793,6 +799,9 @@ class GeminiService {
       // Si toutes les clés ont retourné 429 pour ce modèle spécifique
       if (allKeysFailed429) {
         this._quarantineModel(model, 15 * 60 * 1000);
+      } else {
+        // En cas de 503 global sur toutes les clés, courte quarantaine de 60s
+        this._quarantineModel(model, 60 * 1000);
       }
     }
 
@@ -820,7 +829,7 @@ class GeminiService {
     };
 
     // Optimisation de latence : désactiver le budget de pensée cachée pour les modèles compatibles
-    if (model.includes('gemini-3-flash-preview')) {
+    if (model.includes('gemini-3-flash-preview') || model.includes('gemini-2.5-flash')) {
       generationConfig.thinkingConfig = { thinkingBudget: 0 };
     }
 
@@ -836,8 +845,8 @@ class GeminiService {
     }
 
     const controller = new AbortController();
-    // Timeout adaptatif : 6s pour requêtes courtes (CROQ/Tuteur), 10s pour notes cliniques exhaustives (2500 tokens)
-    const timeoutMs = maxTokens >= 2000 ? 10000 : 6000;
+    // Timeout adaptatif : 7s pour requêtes courtes (CROQ/Tuteur), 18s pour notes cliniques exhaustives (2500 tokens)
+    const timeoutMs = maxTokens >= 2000 ? 18000 : 7000;
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
     const response = await fetch(url, {
@@ -987,6 +996,7 @@ ${clinicalCaseContext.chronologySummary}
     const systemPrompt = `Tu es un Professeur de ${specialtyTitle} et jury de concours de résidanat en médecine.
 L'étudiant s'entraîne sur un QCM/CROQ et a besoin d'une explication CLINIQUE COMPLÈTE, PARFAITEMENT STRUCTURÉE et PERCUTANTE.
 Va directement au but avec un style médical soigné, rigoureux et précis (mots-clés en gras, listes à puces pour une lecture rapide).
+IMPORTANT : Rédige DIRECTEMENT l'analyse médicale sans aucune formule de politesse, salutation ou phrase d'introduction (commence immédiatement par la section 1).
 La réponse doit être TOTALE et NE DOIT JAMAIS ÊTRE COUPÉE.
 ${clinicalPromptSection ? "Prends impérativement en compte l'histoire clinique évolutive et les décisions prises lors des questions précédentes du cas pour éclairer cette étape." : ''}
 Structure OBLIGATOIREMENT ton retour selon ces 4 sections détaillées :
@@ -1094,6 +1104,7 @@ Rédige l'explication clinique complète et approfondie sans aucune coupure. ${c
 L'étudiant vient de résoudre l'intégralité d'un dossier de Cas Clinique et a commis des erreurs.
 Tu dois rédiger UNE SEULE NOTE DE SYNTHÈSE CLINIQUE CONSOLIDÉE, claire, percutante et haut rendement concours.
 Va droit au but avec un style médical soigné, rigoureux et précis (mots-clés en gras, listes à puces).
+IMPORTANT : Rédige DIRECTEMENT la synthèse sans aucune formule de politesse, salutation ou phrase d'introduction (commence immédiatement par la section 1).
 La réponse doit être TOTALE et NE DOIT JAMAIS ÊTRE COUPÉE.
 Structure OBLIGATOIREMENT ton retour selon ces 4 sections détaillées :
 
@@ -4473,7 +4484,7 @@ class FirebaseSyncService {
 // Update Management Service for PédiaDrill
 // Checks GitHub Releases for new APK versions, notifies the user, and triggers direct download.
 
-const CURRENT_APP_VERSION = '1.6.3';
+const CURRENT_APP_VERSION = '1.6.4';
 const GITHUB_REPO = 'lkmqji/qcm-p-diatrie';
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
 const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours auto-check cooldown

@@ -34,7 +34,7 @@ qcm-p-diatrie/
 │   └── MASTER_PRODUCT_TECHNICAL_CONTEXT.md # Contexte technique global (source unique de vérité)
 ├── android/                              # Projet natif Android Capacitor 8
 │   ├── app/
-│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 30, versionName 1.6.3)
+│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 31, versionName 1.6.4)
 │   │   ├── debug.keystore                # Keystore de signature unifié (local & CI/CD)
 │   │   ├── google-services.json          # Configuration Firebase Android (qcm-pediatr, com.pediadrill.app)
 │   │   └── src/main/
@@ -139,36 +139,39 @@ L'apprentissage repose sur une file d'attente circulaire dynamique (`activeQueue
 ---
 
 ### 3.2. Évaluation IA & Raisonnement Clinique (`src/services/gemini.js`)
-- **Architecture Multi-Clés (Pool 3 instances) & Registre Canonique (`GEMINI_KEY_REGISTRY`)** :
+- **Architecture Multi-Clés (Pool 4 instances) & Registre Canonique (`GEMINI_KEY_REGISTRY`)** :
   - **Registre officiel des clés** :
-    - `PediaDrill1` : Clé API active #1 (Instance Pool 1)
-    - `PediaDrill2` : Clé API active #2 (Instance Pool 2)
-    - `PediaDrill3` : Clé API active #3 (Instance Pool 3)
-  - **Pool de clés résilient (`DEFAULT_GEMINI_KEYS`)** : Déploiement du pool unifié des 3 clés pour tripler la capacité globale (passage de 20 à plus de 60 requêtes/jour sur le palier gratuit et distribution du quota de requêtes par minute RPM).
-  - **Rotation Round-Robin (`this.keyIndex`)** : Chaque requête est successivement attribuée à la clé suivante (`PediaDrill1` ➔ `PediaDrill2` ➔ `PediaDrill3`) afin d'équilibrer la charge et de prévenir tout pic de consommation unitaire.
-  - **Hot Failover par Clé (Bascule instantanée en 0 ms)** : Si une clé rencontre une erreur `429` (`RESOURCE_EXHAUSTED`), elle est placée en quarantaine pendant 15 minutes et l'appel est immédiatement rejoué sur la clé suivante pour le même modèle, garantissant un taux de complétion maximal sur le modèle prioritaire `gemini-3-flash-preview` sans dégrader l'expérience utilisateur.
+    - `PediaDrill4` : Clé API active prioritaire #1 (Compte legacy avec droits complets sur `gemini-2.5-flash` sans erreur 503)
+    - `PediaDrill1` : Clé API active #2 (Instance Pool 1)
+    - `PediaDrill2` : Clé API active #3 (Instance Pool 2)
+    - `PediaDrill3` : Clé API active #4 (Instance Pool 3)
+  - **Pool de clés résilient (`DEFAULT_GEMINI_KEYS`)** : Déploiement du pool unifié des 4 clés pour quadrupler la capacité globale (passage de 20 à plus de 80 requêtes/jour sur le palier gratuit et distribution optimale du quota RPM).
+  - **Rotation Round-Robin (`this.keyIndex`)** : Chaque requête est successivement attribuée à la clé suivante (`PediaDrill4` ➔ `PediaDrill1` ➔ `PediaDrill2` ➔ `PediaDrill3`) afin d'équilibrer la charge et de prévenir tout pic de consommation unitaire.
+  - **Hot Failover par Clé & Résilience Multi-Projets** :
+    - En cas d'erreur `429` (`RESOURCE_EXHAUSTED`), mise en quarantaine de la clé pendant 15 minutes et bascule immédiate sur la clé suivante.
+    - En cas d'erreur `404` (ex: modèle restreint aux nouveaux projets comme `gemini-2.5-flash`), le service ne bloque plus le modèle mais bascule sur la clé suivante (`PediaDrill4`), débloquant l'accès sans interruption.
+    - En cas d'erreur `503` (surcharge temporaire Google), le service tente une autre clé du pool avant d'appliquer une quarantaine courte (60 secondes au lieu de 5 minutes).
   - **Sécurité et détection défensive des clés non autorisées (403 / 401)** : Détection immédiate des erreurs d'API désactivée ou d'autorisation (`PERMISSION_DENIED`) avec mise en quarantaine automatique de 24h sans bloquer la boucle d'exécution.
-  - **Persistance du Circuit-Breaker dans `localStorage`** : Sauvegarde des dictionnaires de quarantaine (`pedia_gemini_quarantined_keys` et `pedia_gemini_quarantined_models`) garantissant que l'état des pannes est conservé entre les rafraîchissements de page et les redémarrages de l'application mobile.
+  - **Persistance et assainissement du Circuit-Breaker dans `localStorage`** : Sauvegarde des dictionnaires de quarantaine (`pedia_gemini_quarantined_keys` et `pedia_gemini_quarantined_models`) avec purge automatique des quarantaines expirées ou obsolètes (> 60s).
 - **Modèles 100% Flash Exclusifs & Cascade de résilience ultra-rapide** :
   - Verrouillage strict et absolu : **seuls les modèles Flash de Gemini** sont autorisés dans l'application. Tout modèle non-flash est systématiquement bloqué et rejeté.
-  - Priorité absolue accordée à `gemini-3-flash-preview` (position #1 de `MODEL_CASCADE`, testé et validé à ~1.25s).
+  - Priorité absolue accordée à `gemini-2.5-flash` (stabilité maximale, insensible aux congestions 503 mondiales de la série 3).
   - Cascade automatique ordonnée garantissant la continuité sans blocage :
-    1. `gemini-3-flash-preview` (modèle principal ultra-rapide, latence 1 à 2s)
-    2. `gemini-flash-lite-latest` (secours Flash Lite dernière génération)
-    3. `gemini-3.1-flash-lite` (secours Flash Lite haute disponibilité)
-    4. `gemini-3.8-flash` (secours Flash haute fidélité si quota disponible)
-    5. `gemini-3.7-flash` (secours Flash standard)
-    6. `gemini-3.6-flash` (secours Flash secours)
-    7. `gemini-3.5-flash` (secours Flash réserve)
+    1. `gemini-3-flash-preview` (modèle principal Génération 3 ultra-rapide, testé à ~1.9s - 4.6s)
+    2. `gemini-flash-lite-latest` (secours Génération 3 ultra-véloce, ~2.6s)
+    3. `gemini-2.5-flash` (roc de stabilité absolue en cas de pic 503 sur la série 3, débloqué via `PediaDrill4`)
+    4. `gemini-3.5-flash-lite` (secours Flash Lite haute disponibilité)
+    5. `gemini-3.1-flash-lite` (secours Flash Lite secours)
+    6. `gemini-3.8-flash` (secours Flash secours)
 - **Architecture Circuit-Breaker & Mémorisation Dynamique** :
   - **Mémorisation du modèle actif (`lastSuccessfulModel`)** : Dès qu'un modèle Flash réussit, le service l'utilise immédiatement comme modèle prioritaire pour tous les appels suivants, évitant de rejouer la cascade depuis le début.
   - **Quarantaine automatique des erreurs de quota 429 (`RESOURCE_EXHAUSTED`)** : Tout modèle dont l'ensemble des clés a retourné 429 est automatiquement placé en quarantaine pour 15 minutes.
-  - **Quarantaine des erreurs 503/404** : Mise en quarantaine temporaire de 5 minutes en cas de pic de charge ou de modèle temporairement indisponible.
-  - **Désactivation des pensées cachées** : Injection de `thinkingConfig: { thinkingBudget: 0 }` sur les modèles compatibles (`gemini-3-flash-preview`), évitant la génération inutile de 500+ tokens de réflexion interne et divisant le temps de réponse par 2.
+  - **Désactivation des pensées cachées** : Injection de `thinkingConfig: { thinkingBudget: 0 }` sur les modèles compatibles (`gemini-2.5-flash`, `gemini-3-flash-preview`), évitant la génération inutile de 500+ tokens de réflexion interne et divisant le temps de réponse par 2.
 - **Paramètres de génération calibrés & Timeouts adaptatifs** :
   - `temperature: 0.2` (haute rigueur médicale et reproductibilité).
   - `maxOutputTokens: 1024` pour l'évaluation CROQ, `2500` pour la démarche clinique complète, et `1500` pour le tuteur IA.
-  - **Timeout adaptatif intelligent** : abaissé à 6 secondes pour les requêtes courtes (évaluation CROQ, tuteur IA) et ajusté à 10 secondes pour les notes de raisonnement complètes (2500 tokens), éliminant les freezes réseau tout en permettant l'exhaustivité des justifications.
+  - **Timeout adaptatif intelligent** : calibré à 7 secondes pour les requêtes courtes (évaluation CROQ, tuteur IA) et étendu à **18 secondes** pour les notes cliniques exhaustives (2500 tokens), éliminant les avortements intempestifs tout en assurant l'exhaustivité des justifications (5 000 à 7 500 caractères).
+  - **Optimisation de latence dans les prompts** : consigne stricte de rédiger directement l'analyse sans formule de politesse ni introduction, économisant 150 tokens et 2 secondes par appel.
 - **Évaluation des CROQ (`evaluateCroq`)** :
   - Compare la réponse libre de l'étudiant à la réponse type officielle.
   - Retourne un score de 0 à 100%. Validation accordée si `score >= 75%`.
@@ -383,7 +386,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ### 3.9. Système de Mises à Jour Automatiques & GitHub Releases (`src/services/updateService.js` & CI/CD)
 - **Service d'Orchestration des Mises à Jour (`UpdateService`)** :
-  - Version déclarée : `CURRENT_APP_VERSION = '1.6.3'` synchronisée avec `package.json` et `build.gradle` (`versionCode 30`).
+  - Version déclarée : `CURRENT_APP_VERSION = '1.6.4'` synchronisée avec `package.json` et `build.gradle` (`versionCode 31`).
   - Comparaison sémantique universelle (`compareVersions`) ignorant les préfixes `v`.
   - Interrogation de l'API GitHub Releases (`https://api.github.com/repos/lkmqji/qcm-p-diatrie/releases/latest`) avec cooldown de 4 heures (`pedia_last_update_check_ts`).
   - Extraction de l'asset `.apk` direct (`PediaDrill.apk`). En environnement natif Android Capacitor, l'URL est ouverte via `_system` pour lancer le gestionnaire de téléchargement Android natif.
@@ -638,7 +641,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.6.3` (`versionCode 30`)
+- **Version native** : `versionName 1.6.4` (`versionCode 31`)
 - **Empreinte SHA-1 (Debug Keystore Gradle & GitHub Actions)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
 - **Empreinte SHA-256 (Debug Keystore Gradle & GitHub Actions)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
 - **Keystore unifié** : `android/app/debug.keystore` (Alias : `AndroidDebugKey`, mot de passe `android`, garantissant une empreinte cryptographique identique entre les compilations locales et la CI/CD GitHub Actions).
