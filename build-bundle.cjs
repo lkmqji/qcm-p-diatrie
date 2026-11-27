@@ -83,9 +83,7 @@ const pediaQuestionsJs = readDataScript('questions.js', true);
 const psyChaptersJs = readDataScript('psy_chapters.js', false);
 const psyQuestionsJs = readDataScript('psy_questions.js', false);
 
-const devToolbarHtml = isDevMode
-  ? `\n  <!-- Agentation Visual Feedback & UI Annotation Toolbar (dev mode only) -->\n  <script src="agentation.bundle.js"></script>`
-  : '';
+const devToolbarHtml = `\n  <!-- Agentation Visual Feedback & UI Annotation Toolbar -->\n  <script src="agentation.bundle.js"></script>`;
 
 const updatedIndex = `${templateHtml.replace('</body>', '')}
   <script>

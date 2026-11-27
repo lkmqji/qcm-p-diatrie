@@ -49,18 +49,9 @@ function buildDist({ isDev = process.argv.includes('--dev') || process.env.PEDIA
     'manifest.json',
     'sw.js',
     'icon-192.svg',
-    'icon-512.svg'
+    'icon-512.svg',
+    'agentation.bundle.js'
   ];
-
-  if (isDev) {
-    filesToCopy.push('agentation.bundle.js');
-  } else {
-    const staleDevFile = path.join(distDir, 'agentation.bundle.js');
-    if (fs.existsSync(staleDevFile)) {
-      fs.unlinkSync(staleDevFile);
-      console.log('[build] Removed stale dist/agentation.bundle.js in prod mode');
-    }
-  }
 
   for (const file of filesToCopy) {
     copyFileSafe(path.join(__dirname, file), path.join(distDir, file), `dist/${file}`);

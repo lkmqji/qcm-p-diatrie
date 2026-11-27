@@ -7,7 +7,8 @@ const ASSETS_TO_CACHE = [
   './icon-192.svg',
   './icon-512.svg',
   './vendor/lucide.min.js',
-  './vendor/confetti.browser.min.js'
+  './vendor/confetti.browser.min.js',
+  './agentation.bundle.js'
 ];
 
 self.addEventListener('install', (event) => {

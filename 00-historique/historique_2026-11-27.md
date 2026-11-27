@@ -30,4 +30,20 @@
   - Bundle web de production compilé (`node build-bundle.cjs`), synchronisation Capacitor effectuée (`npx cap sync android`), APK local généré (`PediaDrill.apk` via `build-apk.bat`).
   - Push sur `main` (Vercel) et tag `v1.6.5` (GitHub Actions Release Android).
 
+## 2026-11-27 19:36 — Activation permanente d'Agentation partout (`build-bundle.cjs`, `build.cjs`, `sw.js`)
+- **Injection systématique (`build-bundle.cjs`, `build.cjs`)** :
+  - Suppression de la condition `--dev` pour l'inclusion de `agentation.bundle.js` : la balise `<script src="agentation.bundle.js"></script>` est désormais injectée dans `index.html` et `dist/index.html` pour tous les builds, et `agentation.bundle.js` est systématiquement copié dans `dist/`.
+- **Cache Offline (`sw.js`) & Tests (`tests/bundleAndViews.test.js`)** :
+  - Ajout de `./agentation.bundle.js` dans `ASSETS_TO_CACHE` de `sw.js` et mise à jour du test d'intégrité pour vérifier sa présence partout.
+
+## 2026-11-27 19:40 — Release v1.6.6 (versionCode 33)
+- **Versionning** : Incrémentation vers `v1.6.6` (`versionCode 33`) dans `package.json`, `src/services/updateService.js`, `android/app/build.gradle`, `template.html` et `00-historique/MASTER_PRODUCT_TECHNICAL_CONTEXT.md`.
+- **Contenu de la release** :
+  - Activation permanente d'Agentation (`agentation.bundle.js`) partout : injection dans `index.html` et `dist/index.html`, copie systématique dans `dist/agentation.bundle.js` et pré-cache offline dans `sw.js`.
+- **Build & Déploiement** :
+  - Bundle web assemblé (`node build-bundle.cjs`), synchronisation Capacitor (`npx cap sync android`), APK local généré (`PediaDrill.apk`).
+  - Push sur `main` (Vercel) et tag `v1.6.6` (GitHub Actions Release Android).
+
+
+
 

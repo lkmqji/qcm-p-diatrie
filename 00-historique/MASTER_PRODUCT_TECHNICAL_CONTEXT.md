@@ -34,7 +34,7 @@ qcm-p-diatrie/
 │   └── MASTER_PRODUCT_TECHNICAL_CONTEXT.md # Contexte technique global (source unique de vérité)
 ├── android/                              # Projet natif Android Capacitor 8
 │   ├── app/
-│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 32, versionName 1.6.5)
+│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 33, versionName 1.6.6)
 │   │   ├── debug.keystore                # Keystore de signature unifié (local & CI/CD)
 │   │   ├── google-services.json          # Configuration Firebase Android (qcm-pediatr, com.pediadrill.app)
 │   │   └── src/main/
@@ -100,10 +100,10 @@ qcm-p-diatrie/
 │   └── bundleAndViews.test.js            # Tests d'intégrité bundle, zéro alert/confirm, assets offline, backButton Android & pagination
 ├── vendor/                               # Miroir racine des vendors locaux pour déploiement direct Vercel
 ├── template.html                         # Structure HTML maîtresse avec CSS synchronisé et #modal-app-confirm
-├── index.html                            # Fichier racine autonome servi par Vercel (sans agentation en prod)
+├── index.html                            # Fichier racine autonome servi par Vercel (incluant agentation.bundle.js)
 ├── PediaDrill.apk                        # Exécutable natif Android produit à la racine
-├── agentation.bundle.js                  # Outil d'annotation d'interface Agentation (injecté uniquement avec `--dev`)
-├── build.cjs                             # Script de copie vers vendor/ et dist/ (exclusion dev toolbar en prod)
+├── agentation.bundle.js                  # Outil d'annotation d'interface Agentation (inclus partout)
+├── build.cjs                             # Script de copie vers vendor/ et dist/ (incluant agentation.bundle.js)
 ├── build-bundle.cjs                      # Script d'assemblage (CSS, 18 modules ES -> IIFE, datasets src/data/*.js, index.html, dist/)
 ├── server.cjs                            # Serveur HTTP statique autonome pour le développement local
 ├── lancer-app.bat                        # Script batch de compilation et lancement local en 1 clic
@@ -406,7 +406,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ### 3.9. Système de Mises à Jour Automatiques & GitHub Releases (`src/services/updateService.js` & CI/CD)
 - **Service d'Orchestration des Mises à Jour (`UpdateService`)** :
-  - Version déclarée : `CURRENT_APP_VERSION = '1.6.5'` synchronisée avec `package.json` et `build.gradle` (`versionCode 32`).
+  - Version déclarée : `CURRENT_APP_VERSION = '1.6.6'` synchronisée avec `package.json` et `build.gradle` (`versionCode 33`).
   - Comparaison sémantique universelle (`compareVersions`) ignorant les préfixes `v`.
   - Interrogation de l'API GitHub Releases (`https://api.github.com/repos/lkmqji/qcm-p-diatrie/releases/latest`) avec cooldown de 4 heures (`pedia_last_update_check_ts`).
   - Extraction de l'asset `.apk` direct (`PediaDrill.apk`). En environnement natif Android Capacitor, l'URL est ouverte via `_system` pour lancer le gestionnaire de téléchargement Android natif.
@@ -523,10 +523,9 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ---
 
-### 3.16. Barre d'Outils Visuelle & Annotations UI (Agentation — Mode Développement Uniquement)
-- **Exclusion Automatique en Production (`build-bundle.cjs` & `build.cjs`)** :
-  - L'outil `agentation.bundle.js` (605 Ko) est **exclu du build de production** (`node build-bundle.cjs` / `npm run build`) afin d'alléger `index.html` et l'APK Android final (`dist/agentation.bundle.js` est supprimé en production).
-  - Activable sur demande pour l'inspection UI locale via `node build-bundle.cjs --dev` (`npm run build:dev`).
+### 3.16. Barre d'Outils Visuelle & Annotations UI (Agentation — Actif Partout)
+- **Inclusion Permanente (`build-bundle.cjs` & `build.cjs`)** :
+  - L'outil `agentation.bundle.js` (605 Ko) est **inclus dans tous les builds** (`node build-bundle.cjs` / `npm run build`), injecté dans `index.html` et `dist/index.html`, copié dans `dist/agentation.bundle.js` et pré-caché dans `sw.js` pour fonctionner en local, sur Vercel et dans l'APK Android.
 
 ---
 
@@ -659,7 +658,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.6.5` (`versionCode 32`)
+- **Version native** : `versionName 1.6.6` (`versionCode 33`)
 - **Empreinte SHA-1 (Debug Keystore Gradle & GitHub Actions)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
 - **Empreinte SHA-256 (Debug Keystore Gradle & GitHub Actions)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
 - **Keystore unifié** : `android/app/debug.keystore` (Alias : `AndroidDebugKey`, mot de passe `android`, garantissant une empreinte cryptographique identique entre les compilations locales et la CI/CD GitHub Actions).
@@ -691,14 +690,14 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ## 7. Pipeline de Compilation, Déploiement & Intégrité
 
-- **Compilation Web PWA** : `node build-bundle.cjs` / `npm run build` (prépare `index.html`, `vendor/` et `dist/` en mode production sans `agentation.bundle.js`). Utiliser `npm run build:dev` (`node build-bundle.cjs --dev`) pour activer la barre d'annotations Agentation en local.
+- **Compilation Web PWA** : `node build-bundle.cjs` / `npm run build` (prépare `index.html`, `vendor/` et `dist/` en incluant `agentation.bundle.js` partout).
 - **Déploiement Web Cloud (Vercel & GitHub)** :
   - **Fichier servi par Vercel** : Conformément à `vercel.json` (`"rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]`), Vercel sert directement le fichier racine `index.html` et `./vendor/*`.
   - **Assemblage obligatoire** : Toute modification apportée aux sources dans `src/` doit être compilée via `node build-bundle.cjs` qui synchronise `template.html`, `src/app.bundle.js`, `index.html`, `vendor/` et `dist/`.
   - **Protocole de validation pré-déploiement** :
     1. Validation des sources & du bundle généré : `node -c src/app.js` et `node -c src/app.bundle.js`.
     2. Exécution complète des tests automatisés : `npm test` (`node --test tests/*.test.js`).
-    3. Vérification de l'assemblage production : pas de CDN bloquants ni d'outillage dev dans `dist/`.
+    3. Vérification de l'assemblage : pas de CDN bloquants et `agentation.bundle.js` présent dans `dist/` et `index.html`.
 - **Compilation Mobile Android (APK)** :
   1. `node build-bundle.cjs` : assemble le code client et synchronise le CSS dans `template.html`, `src/app.bundle.js`, `vendor/` et `dist/`.
   2. `npx cap sync android` : synchronise les assets web (`dist/`) et les plugins natifs (`@capacitor/app`, `@capacitor-firebase/authentication`) dans `android/`.

@@ -243,7 +243,7 @@ test('Production bundle & modular sources contain zero blocking dialogs, dead ca
   }
 });
 
-test('Offline vendors and production build outputs match PWA & Capacitor requirements without CDN URLs or dev toolbar', () => {
+test('Offline vendors and build outputs match PWA & Capacitor requirements with Agentation enabled everywhere', () => {
   const templateHtml = fs.readFileSync(path.join(ROOT_DIR, 'template.html'), 'utf8');
   const rootIndexHtml = fs.readFileSync(path.join(ROOT_DIR, 'index.html'), 'utf8');
   const distIndexHtml = fs.readFileSync(path.join(ROOT_DIR, 'dist', 'index.html'), 'utf8');
@@ -259,27 +259,28 @@ test('Offline vendors and production build outputs match PWA & Capacitor require
   }
   assert.deepEqual(dupIds, [], `Duplicate DOM IDs found in template.html: ${dupIds.join(', ')}`);
 
-  // Verify CDN removal and local vendors in index.html & dist/index.html
+  // Verify CDN removal, local vendors, and Agentation toolbar in index.html & dist/index.html
   for (const [label, html] of [['index.html', rootIndexHtml], ['dist/index.html', distIndexHtml]]) {
     assert.equal(html.includes('unpkg.com/lucide'), false, `${label} must not reference unpkg lucide CDN`);
     assert.equal(html.includes('canvas-confetti'), false, `${label} must not reference jsdelivr canvas-confetti CDN`);
     assert.equal(html.includes('./vendor/lucide.min.js'), true, `${label} must load local vendor/lucide.min.js`);
     assert.equal(html.includes('./vendor/confetti.browser.min.js'), true, `${label} must load local vendor/confetti.browser.min.js`);
-    assert.equal(html.includes('agentation.bundle.js'), false, `Production ${label} must not inject agentation dev bundle`);
+    assert.equal(html.includes('agentation.bundle.js'), true, `${label} must include agentation.bundle.js everywhere`);
   }
 
-  // Verify copied vendor files & absent dist/agentation.bundle.js
+  // Verify copied vendor files & dist/agentation.bundle.js
   for (const relPath of [
     'vendor/lucide.min.js',
     'vendor/confetti.browser.min.js',
     'dist/vendor/lucide.min.js',
-    'dist/vendor/confetti.browser.min.js'
+    'dist/vendor/confetti.browser.min.js',
+    'agentation.bundle.js',
+    'dist/agentation.bundle.js'
   ]) {
     const abs = path.join(ROOT_DIR, relPath);
     assert.equal(fs.existsSync(abs), true, `Missing offline asset: ${relPath}`);
     assert.ok(fs.statSync(abs).size > 1000, `Expected non-empty vendor file: ${relPath}`);
   }
-  assert.equal(fs.existsSync(path.join(ROOT_DIR, 'dist', 'agentation.bundle.js')), false, 'dist/agentation.bundle.js must be absent in prod build');
 
   // Verify Service Worker pre-caches vendor libraries
   assert.equal(swJs.includes('./vendor/lucide.min.js'), true);
