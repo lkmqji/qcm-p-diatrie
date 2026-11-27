@@ -12,8 +12,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://unpkg.com" crossorigin>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Firebase SDK (v10.8.0 compat for browser & PWA) -->
@@ -21,9 +19,9 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-  <!-- Lucide Icons & Confetti CDN -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <!-- Lucide Icons & Confetti (Bundled Locally for Offline Support) -->
+  <script src="./vendor/lucide.min.js"></script>
+  <script src="./vendor/confetti.browser.min.js"></script>
 
   <style>
 /* PédiaDrill - Modern Minimalist Medical Design System */
@@ -70,7 +68,7 @@
   
   --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.25);
   --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.45);
-  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition: all 0.14s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 /* Reset */
@@ -632,7 +630,7 @@ body {
 }
 
 .btn-primary-large:active {
-  transform: translateY(0);
+  transform: scale(0.985);
 }
 
 .btn-secondary {
@@ -656,6 +654,10 @@ body {
   background: var(--bg-card-hover);
   border-color: var(--cyan);
   color: var(--cyan);
+}
+
+.btn-secondary:active {
+  transform: scale(0.985);
 }
 
 .quick-links-row {
@@ -1533,11 +1535,15 @@ body {
   border-radius: var(--radius-md);
   padding: 14px 18px;
   cursor: pointer;
-  transition: var(--transition);
+  transition: border-color 0.14s ease, background-color 0.14s ease, transform 0.1s ease;
   display: flex;
   align-items: center;
   gap: 14px;
   user-select: none;
+}
+
+.option-item:active {
+  transform: scale(0.99);
 }
 
 .option-item:hover {
@@ -7174,6 +7180,21 @@ body {
   pointer-events: auto;
 }
 
+.pedia-toast-alert.is-success {
+  border-color: rgba(16, 185, 129, 0.65);
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);
+}
+
+.pedia-toast-alert.is-warning {
+  border-color: rgba(245, 158, 11, 0.65);
+  box-shadow: 0 10px 30px rgba(245, 158, 11, 0.2);
+}
+
+.pedia-toast-alert.is-error {
+  border-color: rgba(239, 68, 68, 0.7);
+  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.25);
+}
+
 .pedia-toast-alert .toast-content {
   display: flex;
   align-items: center;
@@ -7728,6 +7749,27 @@ body {
   transform: translateY(-1px);
 }
 
+.clinical-uncleaned-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  border-radius: 20px;
+  background: rgba(245, 158, 11, 0.14);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  color: #fcd34d;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.clinical-uncleaned-badge.is-all-cleaned {
+  background: rgba(16, 185, 129, 0.14);
+  border-color: rgba(16, 185, 129, 0.45);
+  color: #6ee7b7;
+}
+
 .clinical-run-bar {
   background: var(--bg-surface);
   border: 1px solid rgba(0, 212, 255, 0.35);
@@ -8270,6 +8312,136 @@ body {
   color: var(--text-main);
 }
 
+/* ============================================================
+   MULTI-KEY GEMINI SETTINGS, CONFIRM MODAL & PAGINATION
+   ============================================================ */
+.gemini-keys-textarea {
+  min-height: 78px;
+  resize: vertical;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.gemini-keys-textarea.is-masked {
+  -webkit-text-security: disc;
+}
+
+.gemini-key-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.gemini-key-counter-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(16, 185, 129, 0.14);
+  color: var(--emerald);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.gemini-key-counter-badge.is-empty {
+  background: rgba(245, 158, 11, 0.14);
+  color: var(--amber);
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+.gemini-key-counter-badge.is-multi {
+  background: rgba(0, 212, 255, 0.14);
+  color: var(--cyan);
+  border-color: rgba(0, 212, 255, 0.35);
+}
+
+.btn-toggle-key-mask {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-toggle-key-mask:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.notebook-pagination-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0 8px;
+}
+
+.btn-notebook-load-more {
+  background: var(--bg-card);
+  border: 1px solid rgba(0, 212, 255, 0.35);
+  color: var(--cyan);
+  border-radius: var(--radius-md);
+  padding: 12px 22px;
+  font-family: var(--font-heading);
+  font-size: 0.88rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-notebook-load-more:hover {
+  background: rgba(0, 212, 255, 0.12);
+  border-color: var(--cyan);
+}
+
+.btn-notebook-load-more:active {
+  transform: scale(0.985);
+}
+
+.confirm-modal-card {
+  max-width: 440px;
+  gap: 12px;
+  padding: 20px 22px;
+}
+
+.modal-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-title-group h3 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1.08rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.btn-icon-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  line-height: 1;
+}
+
+.btn-confirm-ok.is-danger {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #ffffff;
+  border-color: #ef4444;
+}
+
 </style>
 </head>
 <body>
@@ -8522,6 +8694,10 @@ body {
                   <i data-lucide="target" style="width:13px;height:13px;"></i>
                   <span id="btn-start-clinical-text">Résoudre le cas complet</span>
                 </button>
+                <span class="clinical-uncleaned-badge" id="clinical-uncleaned-badge" title="Questions pas encore nettoyées sur le total du cas clinique" style="display:none;">
+                  <i data-lucide="layers" style="width:12px;height:12px;"></i>
+                  <span id="clinical-uncleaned-text">0/0 à nettoyer</span>
+                </span>
                 <button type="button" class="btn-toggle-clinical-accordion" id="btn-toggle-clinical-questions" onclick="window.toggleClinicalQuestionsAccordion()" title="Afficher/masquer toutes les questions du cas clinique" style="display:none;">
                   <i data-lucide="list-ordered" style="width:13px;height:13px;"></i>
                   <span id="btn-toggle-clinical-text">Voir les questions du cas</span>
@@ -8627,7 +8803,7 @@ body {
                   <i data-lucide="rotate-cw" style="width:12px;height:12px;"></i>
                   <span>Régénérer</span>
                 </button>
-                <span class="arena-ai-badge" id="arena-ai-model-tag">Gemini 3.8 Flash</span>
+                <span class="arena-ai-badge" id="arena-ai-model-tag">Gemini Flash</span>
               </div>
             </div>
             <div class="arena-ai-explanation-body" id="arena-ai-explanation-text"></div>
@@ -9338,7 +9514,7 @@ body {
             </div>
             <!-- Quick dropdown suggestions -->
             <div class="lesson-dropdown" id="manual-lesson-dropdown" style="display:none;">
-              <div class="lesson-dropdown-header" id="lesson-dropdown-header">Chapitres du module :</div>
+              <div class="lesson-dropdown-header" id="manual-dropdown-header">Chapitres du module :</div>
               <div class="lesson-dropdown-list" id="manual-dropdown-items"></div>
             </div>
           </div>
@@ -9758,12 +9934,21 @@ body {
           </span>
         </div>
         <div style="display:flex;flex-direction:column;gap:8px;">
-          <label style="font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;">
-            Clé API Google Gemini
-          </label>
-          <input type="password" class="search-input" id="settings-gemini-key" placeholder="AQ.Ab8RN6InNmt...">
-          <div style="font-size:0.72rem;color:var(--text-dim);">
-            Votre clé est stockée uniquement en local dans votre navigateur.
+          <div class="gemini-key-toolbar">
+            <label for="settings-gemini-key" style="font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;">
+              Clés API Google Gemini (1 par ligne ou séparées par virgule)
+            </label>
+            <span class="gemini-key-counter-badge is-empty" id="settings-gemini-keys-count">0 clé configurée</span>
+          </div>
+          <textarea class="search-input gemini-keys-textarea is-masked" id="settings-gemini-key" rows="3" placeholder="AIzaSy... (une ou plusieurs clés API pour rotation automatique)" autocomplete="off" spellcheck="false"></textarea>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+            <div style="font-size:0.72rem;color:var(--text-dim);">
+              Stockées localement (et synchronisées sur votre profil Google Cloud si connecté). Rotation Round-Robin automatique en cas de quota.
+            </div>
+            <button type="button" class="btn-toggle-key-mask" id="btn-toggle-gemini-key-mask">
+              <i data-lucide="eye" style="width:13px;height:13px;"></i>
+              <span>Afficher les clés</span>
+            </button>
           </div>
         </div>
 
@@ -9772,12 +9957,11 @@ body {
             Cascade Automatique de Modèles IA
           </div>
           <ol style="font-size:0.78rem;color:var(--text-muted);line-height:1.6;padding-left:18px;">
-            <li><strong>Gemini 3.8 Flash</strong> (Prioritaire)</li>
-            <li><strong>Gemini 3.7 Flash</strong> (Secours 1)</li>
-            <li><strong>Gemini 3.6 Flash</strong> (Secours 2)</li>
-            <li><strong>Gemini 3.5 Flash Lite</strong> (Secours 3)</li>
-            <li><strong>Gemini 3.1 Flash Lite</strong> (Secours 4)</li>
-            <li><strong>Moteur Sémantique Local</strong> (Hors-ligne)</li>
+            <li><strong>Gemini 3 Flash</strong> (Prioritaire — <code>gemini-3-flash-preview</code>)</li>
+            <li><strong>Gemini Flash Lite</strong> (Secours 1 — <code>gemini-flash-lite-latest</code>)</li>
+            <li><strong>Gemini 2.5 Flash</strong> (Secours 2 — <code>gemini-2.5-flash</code>)</li>
+            <li><strong>Gemini 3.5 / 3.1 / 3.8 Flash</strong> (Secours 3–5)</li>
+            <li><strong>Moteur Sémantique Local</strong> (Hors-ligne sans clé)</li>
           </ol>
         </div>
       </div>
@@ -9811,7 +9995,7 @@ body {
             <i data-lucide="github" style="width:16px;height:16px;color:var(--cyan);"></i>
             <span style="font-size:0.78rem;font-weight:700;color:var(--text-main);text-transform:uppercase;">Mises à Jour Application</span>
           </div>
-          <span class="badge" id="settings-current-app-version" style="background:rgba(0,212,255,0.15);color:var(--cyan);font-size:0.72rem;padding:3px 8px;border-radius:10px;font-weight:700;">v1.6.4</span>
+          <span class="badge" id="settings-current-app-version" style="background:rgba(0,212,255,0.15);color:var(--cyan);font-size:0.72rem;padding:3px 8px;border-radius:10px;font-weight:700;">v1.6.5</span>
         </div>
         <div style="font-size:0.75rem;color:var(--text-muted);line-height:1.45;" id="settings-update-status">
           Vérifie automatiquement les nouvelles versions et correctifs disponibles sur GitHub Releases.
@@ -9845,9 +10029,9 @@ body {
 
       <div class="update-version-banner">
         <div class="update-version-chips">
-          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.6.4</strong></span>
+          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.6.5</strong></span>
           <i data-lucide="arrow-right" style="width:14px;height:14px;color:var(--text-dim);"></i>
-          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.6.4</strong></span>
+          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.6.5</strong></span>
         </div>
         <div class="update-release-date" id="update-modal-date">Publiée sur GitHub Releases</div>
       </div>
@@ -9886,7 +10070,7 @@ body {
       <div class="chatbox-header-info">
         <div class="chatbox-title">
           <i data-lucide="bot" style="width:16px;height:16px;color:var(--cyan);"></i>
-          <span>Tuteur IA Pédiatrie</span>
+          <span id="chatbox-tutor-title">Tuteur IA Médical</span>
           <span class="ai-model-tag" id="chatbox-model-tag">Gemini Flash</span>
         </div>
         <div class="chatbox-subtitle" id="chatbox-current-context">
@@ -9944,7 +10128,33 @@ body {
       <button class="media-lightbox-close" onclick="window.closeMediaLightbox()" title="Fermer (Échap)">
         <i data-lucide="x"></i>
       </button>
-      <img id="media-lightbox-img" src="" alt="Iconographie Pédiatrique HD">
+      <img id="media-lightbox-img" src="" alt="Iconographie médicale HD">
+    </div>
+  </div>
+
+  <!-- MODAL: CONFIRMATION NON-BLOQUANTE -->
+  <div class="modal-overlay" id="modal-app-confirm" style="display:none;z-index:10500;">
+    <div class="modal-content confirm-modal-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i data-lucide="alert-circle" class="text-amber"></i>
+          <h3 id="confirm-modal-title">Confirmation</h3>
+        </div>
+        <button type="button" class="close-btn btn-icon-close" id="btn-close-confirm-modal" aria-label="Fermer">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="modal-body" style="padding:18px 20px;">
+        <p id="confirm-modal-message" style="font-size:0.9rem;color:var(--text-muted);line-height:1.55;white-space:pre-line;"></p>
+      </div>
+      <div class="modal-footer" style="display:flex;justify-content:flex-end;gap:10px;padding:12px 20px 18px;">
+        <button type="button" class="btn-secondary" id="btn-confirm-modal-cancel" style="padding:10px 18px;font-size:0.86rem;">
+          Annuler
+        </button>
+        <button type="button" class="btn-primary-large btn-confirm-ok" id="btn-confirm-modal-ok" style="padding:10px 18px;font-size:0.88rem;">
+          Confirmer
+        </button>
+      </div>
     </div>
   </div>
 

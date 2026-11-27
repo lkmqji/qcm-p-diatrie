@@ -1,11 +1,13 @@
 // PédiaDrill Service Worker - Offline Cache & Fast Launch
-const CACHE_NAME = 'pedia-drill-v1.5.2';
+const CACHE_NAME = 'pedia-drill-v1.6.4-r2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
   './icon-192.svg',
-  './icon-512.svg'
+  './icon-512.svg',
+  './vendor/lucide.min.js',
+  './vendor/confetti.browser.min.js'
 ];
 
 self.addEventListener('install', (event) => {

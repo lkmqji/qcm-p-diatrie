@@ -1,21 +1,36 @@
-// Gemini API Service with Multi-Key Pool, Round-Robin Rotation, Resilience Cascade & Local Fallback (100% Modèles Flash)
-const _k = (b64) => typeof atob !== 'undefined' ? atob(b64) : Buffer.from(b64, 'base64').toString('utf-8');
+// Gemini API Service with User Multi-Key Pool, Round-Robin Rotation, Resilience Cascade & Local Fallback (100% Modèles Flash)
+import { getActiveModuleId, findModuleById } from './moduleCatalog.js';
 
-export const GEMINI_KEY_REGISTRY = {
-  PediaDrill1: _k("QVEuQWI4Uk42S1BpUkc2ZE1JN3dsa25pTVhIbVpBcTRmREp0M3pqaF95THd3NlMxQTdZc3c="),
-  PediaDrill2: _k("QVEuQWI4Uk42TEdIbEZLNk03ck9HcUNfUjB3OG1kM2NtMWZNZmVSSTJhRVl0Y3g0SjBtS2c="),
-  PediaDrill3: _k("QVEuQWI4Uk42SW9yd0RhTXpsaXZBX3VObU81V1VWQ213WXNUNlJ2VnNuVEpDeHljNjR1RkE="),
-  PediaDrill4: _k("QVEuQWI4Uk42SURhd2xRemRDQzZDRnZoNmJlaDRoS2haVkFyQTR2c0dWbHQwaVZqTlZoUnc=")
-};
+export function resolveAiModuleContext(question = null) {
+  const uid = question && question.uid ? String(question.uid) : '';
+  const activeModId = (typeof getActiveModuleId === 'function') ? getActiveModuleId() : 'pediatrie';
+  const modId = uid.startsWith('psy_') ? 'psychiatrie' : activeModId;
+  const modMeta = (typeof findModuleById === 'function') ? findModuleById(modId) : null;
 
-export const DEFAULT_GEMINI_KEYS = [
-  GEMINI_KEY_REGISTRY.PediaDrill4,
-  GEMINI_KEY_REGISTRY.PediaDrill1,
-  GEMINI_KEY_REGISTRY.PediaDrill2,
-  GEMINI_KEY_REGISTRY.PediaDrill3
-];
-export const DEFAULT_GEMINI_KEY = DEFAULT_GEMINI_KEYS[0];
-const OLD_DEFAULT_GEMINI_KEY = _k("QVEuQWI4Uk42SW5ObXRfc0QyanRPV3RmUDV2ZWF6bEpnTUVKODV2TmZYZjJCNlN0LV9nVnc=");
+  if (modId === 'psychiatrie') {
+    return {
+      moduleId: 'psychiatrie',
+      moduleName: 'Psychiatrie',
+      specialtyTitle: 'psychiatrie et pédopsychiatrie',
+      tutorTitle: 'Tuteur IA Psychiatrie',
+      defaultChapter: 'Psychiatrie Générale',
+      populationContext: 'le tableau clinique et les critères diagnostiques (DSM/CIM)'
+    };
+  }
+
+  const title = (modMeta && modMeta.title) ? modMeta.title : 'Pédiatrie & Chirurgie Pédiatrique';
+  const shortName = modId === 'pediatrie' ? 'Pédiatrie' : title;
+  return {
+    moduleId: modId,
+    moduleName: shortName,
+    specialtyTitle: modId === 'pediatrie' ? 'pédiatrie et chirurgie pédiatrique' : title.toLowerCase(),
+    tutorTitle: `Tuteur IA ${shortName}`,
+    defaultChapter: `${shortName} Générale`,
+    populationContext: modId === 'pediatrie'
+      ? "les données de l'âge de l'enfant"
+      : 'les éléments sémiologiques et paracliniques clés'
+  };
+}
 
 /**
  * Cascade de résilience ordonnée : EXCLUSIVEMENT des modèles Flash
@@ -137,7 +152,7 @@ export function cleanLatexMath(str) {
   return res.trim();
 }
 
-class GeminiService {
+export class GeminiService {
   constructor() {
     this._loadKeys();
     // Filtrage strict : seuls les modèles comportant 'flash' sont admis
@@ -155,13 +170,21 @@ class GeminiService {
       stored = (typeof localStorage !== 'undefined' ? localStorage.getItem('pedia_gemini_key') || '' : '').trim();
     } catch (_) {}
 
-    if (stored && stored !== OLD_DEFAULT_GEMINI_KEY) {
-      // Supporte une clé unique ou une liste séparée par virgule/retour ligne
+    if (stored) {
+      // Supporte une clé unique ou plusieurs clés séparées par virgule, point-virgule ou retour à la ligne
       const parsed = stored.split(/[\n,;]+/).map(k => k.trim()).filter(Boolean);
-      this.apiKeys = parsed.length > 0 ? parsed : [...DEFAULT_GEMINI_KEYS];
+      this.apiKeys = Array.from(new Set(parsed));
     } else {
-      this.apiKeys = [...DEFAULT_GEMINI_KEYS];
+      this.apiKeys = [];
     }
+  }
+
+  hasApiKeys() {
+    return Array.isArray(this.apiKeys) && this.apiKeys.length > 0;
+  }
+
+  getKeyCount() {
+    return Array.isArray(this.apiKeys) ? this.apiKeys.length : 0;
   }
 
   _loadQuarantines() {
@@ -204,7 +227,7 @@ class GeminiService {
   }
 
   getApiKey() {
-    return this.apiKeys.join(', ');
+    return this.apiKeys.join('\n');
   }
 
   _isModelQuarantined(model) {
@@ -241,11 +264,9 @@ class GeminiService {
 
   _getKeyAlias(key) {
     if (!key) return 'Inconnue';
-    if (key === GEMINI_KEY_REGISTRY.PediaDrill1) return 'PediaDrill1';
-    if (key === GEMINI_KEY_REGISTRY.PediaDrill2) return 'PediaDrill2';
-    if (key === GEMINI_KEY_REGISTRY.PediaDrill3) return 'PediaDrill3';
-    if (key === GEMINI_KEY_REGISTRY.PediaDrill4) return 'PediaDrill4';
-    return key.slice(0, 12) + '...';
+    const idx = this.apiKeys.indexOf(key);
+    const prefix = idx >= 0 ? `Clé #${idx + 1}` : 'Clé';
+    return `${prefix} (${key.slice(0, 8)}...)`;
   }
 
   /**
@@ -253,9 +274,13 @@ class GeminiService {
    * - Alterne équitablement les requêtes sur le pool de clés API pour ne pas saturer les RPM/RPD
    * - En cas de 429 sur une clé, bascule instantanément sur la clé suivante pour le même modèle
    * - Quarantaine intelligente mémorisée dans localStorage pour éliminer les latences réseau mortes
-   * - Timeout réduit à 6 secondes par tentative
+   * - Timeout adaptatif (7s ou 18s)
    */
   async callWithFallback(prompt, systemInstruction = '', maxTokens = 2048) {
+    if (!this.hasApiKeys()) {
+      throw new Error('NO_API_KEY_CONFIGURED: Aucune clé API Gemini configurée dans les Paramètres.');
+    }
+
     const errors = [];
 
     // Déterminer le modèle prioritaire (dernier modèle ayant réussi ou activeModel non-quarantiné)
@@ -355,7 +380,10 @@ class GeminiService {
       throw new Error(`Modèle non autorisé (${model}) : seuls les modèles Flash sont autorisés.`);
     }
 
-    const keyToUse = apiKey || this.apiKeys[this.keyIndex % (this.apiKeys.length || 1)] || DEFAULT_GEMINI_KEY;
+    const keyToUse = apiKey || (this.apiKeys.length > 0 ? this.apiKeys[this.keyIndex % this.apiKeys.length] : '');
+    if (!keyToUse) {
+      throw new Error('NO_API_KEY_CONFIGURED: Aucune clé API Gemini configurée.');
+    }
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${keyToUse}`;
     
     const contents = [
@@ -419,8 +447,9 @@ class GeminiService {
    * Evaluate CROQ free text answer against standard official answer
    * Must return score (0-100), isValid (>= 75%), explanation, modelUsed
    */
-  async evaluateCroq(questionText, clinicalCase, expectedAnswer, userAnswer) {
-    const systemPrompt = `Tu es un professeur expert en pédiatrie et jury de concours de résidanat et de 5ème année de médecine.
+  async evaluateCroq(questionText, clinicalCase, expectedAnswer, userAnswer, question = null) {
+    const ctx = resolveAiModuleContext(question);
+    const systemPrompt = `Tu es un professeur expert en ${ctx.specialtyTitle} et jury de concours de résidanat et de 5ème année de médecine.
 Ta mission est d'évaluer la réponse d'un étudiant à une question ouverte (CROQ / QROC) médicale par rapport à la réponse type attendue.
 Critères d'évaluation :
 - Sois rigoureux sur le plan sémantique et médical (synonymes médicaux, acronymes reconnus, termes équivalents doivent être acceptés).
@@ -456,7 +485,11 @@ RÉPONSE DONNÉE PAR L'ÉTUDIANT : ${userAnswer}
         modelUsed: result.modelUsed
       };
     } catch (err) {
-      console.warn("Gemini CROQ evaluation failed, fallback to local semantic evaluation:", err);
+      if (err && String(err.message || '').includes('NO_API_KEY_CONFIGURED')) {
+        console.info("CROQ evaluation using local semantic evaluator (no Gemini API key configured).");
+      } else {
+        console.warn("Gemini CROQ evaluation failed, fallback to local semantic evaluation:", err);
+      }
       return this.localEvaluateCroq(expectedAnswer, userAnswer);
     }
   }
@@ -528,12 +561,11 @@ ${clinicalCaseContext.chronologySummary}
 `;
     }
 
-    const isPsy = (question.uid && question.uid.startsWith('psy_')) ||
-                  (typeof getActiveModuleId === 'function' && getActiveModuleId() === 'psychiatrie');
-    const specialtyTitle = isPsy ? 'psychiatrie et pédopsychiatrie' : 'pédiatrie et chirurgie pédiatrique';
-    const moduleName = isPsy ? 'Psychiatrie' : 'Pédiatrie';
-    const defaultChapter = isPsy ? 'Psychiatrie Générale' : 'Pédiatrie Générale';
-    const populationContext = isPsy ? 'le tableau clinique et les critères diagnostiques (DSM/CIM)' : "les données de l'âge de l'enfant";
+    const ctx = resolveAiModuleContext(question);
+    const specialtyTitle = ctx.specialtyTitle;
+    const moduleName = ctx.moduleName;
+    const defaultChapter = ctx.defaultChapter;
+    const populationContext = ctx.populationContext;
 
     const systemPrompt = `Tu es un Professeur de ${specialtyTitle} et jury de concours de résidanat en médecine.
 L'étudiant s'entraîne sur un QCM/CROQ et a besoin d'une explication CLINIQUE COMPLÈTE, PARFAITEMENT STRUCTURÉE et PERCUTANTE.
@@ -603,14 +635,14 @@ Rédige l'explication clinique complète et approfondie sans aucune coupure. ${c
       localNote += `\n`;
 
       localNote += `### 3. 🩺 DÉMARCHE DE RAISONNEMENT & CONDUITE CLINIQUE :\n`;
-      localNote += `* **Thème clé :** *${question.chapterTitle || 'Pédiatrie Générale'}*\n`;
+      localNote += `* **Thème clé :** *${question.chapterTitle || defaultChapter}*\n`;
       if (question.clinical_case) {
         localNote += `* **Contexte clinique :** ${question.clinical_case.slice(0, 180)}...\n`;
       }
-      localNote += `* **Conduite pratique :** Toujours hiérarchiser les signes de gravité vitale (détresse respiratoire, hémodynamique, neurologique) avant tout examen invasif ou traitement d'épreuve.\n\n`;
+      localNote += `* **Conduite pratique :** Toujours hiérarchiser les signes de gravité vitale avant tout examen invasif ou traitement d'épreuve.\n\n`;
 
       localNote += `### 4. 💡 RÈGLE D'OR & MÉMO CONCOURS :\n`;
-      localNote += `> **Règle d'or :** En pédiatrie (*${question.chapterTitle || 'Pédiatrie'}*), toujours retenir la notion clé : **${corrStr}** (conforme aux recommandations HAS et consensus officiels).`;
+      localNote += `> **Règle d'or :** En ${moduleName.toLowerCase()} (*${question.chapterTitle || moduleName}*), toujours retenir la notion clé : **${corrStr}** (conforme aux recommandations et consensus officiels).`;
 
       return {
         note: cleanLatexMath(localNote),
@@ -625,7 +657,9 @@ Rédige l'explication clinique complète et approfondie sans aucune coupure. ${c
    * Explains the clinical case, highlights the traps of failed questions,
    * provides clinical reasoning and a high-yield exam memo.
    */
-  async generateClinicalCaseSynthesisNote(clinicalCaseText, subQuestions = [], results = [], chapterTitle = "Pédiatrie") {
+  async generateClinicalCaseSynthesisNote(clinicalCaseText, subQuestions = [], results = [], chapterTitle = null) {
+    const ctx = resolveAiModuleContext(subQuestions && subQuestions[0] ? subQuestions[0] : null);
+    const effectiveChapterTitle = chapterTitle || ctx.moduleName;
     let questionsBreakdown = "";
     subQuestions.forEach((sq, idx) => {
       const res = results[idx] || {};
@@ -642,7 +676,7 @@ Rédige l'explication clinique complète et approfondie sans aucune coupure. ${c
 
     const failedQuestions = results.filter(r => !r.isCorrect);
 
-    const systemPrompt = `Tu es un Professeur de médecine et membre du jury du concours de résidanat.
+    const systemPrompt = `Tu es un Professeur de ${ctx.specialtyTitle} et membre du jury du concours de résidanat.
 L'étudiant vient de résoudre l'intégralité d'un dossier de Cas Clinique et a commis des erreurs.
 Tu dois rédiger UNE SEULE NOTE DE SYNTHÈSE CLINIQUE CONSOLIDÉE, claire, percutante et haut rendement concours.
 Va droit au but avec un style médical soigné, rigoureux et précis (mots-clés en gras, listes à puces).
@@ -666,7 +700,7 @@ Formule une règle mémo percutante pour ne plus jamais se faire piéger sur ce 
 - INTERDICTION TOTALE d'utiliser la syntaxe LaTeX (\\text, \\mathbf, \\frac, \\times...).
 - Écris tout en français médical clair ("12 g/dl", "5 mg/kg", "x", "/").`;
 
-    const userPrompt = `MODULE : ${chapterTitle}
+    const userPrompt = `MODULE : ${ctx.moduleName} - ${effectiveChapterTitle}
 ÉNONCÉ DU CAS CLINIQUE :
 ${clinicalCaseText}
 
@@ -698,7 +732,7 @@ Rédige la note de synthèse clinique complète consolidée.`;
       localNote += `\n`;
 
       localNote += `### 3. 🩺 DÉMARCHE DE RAISONNEMENT GLOBALE :\n`;
-      localNote += `* **Cours associé :** *${chapterTitle}*\n`;
+      localNote += `* **Cours associé :** *${effectiveChapterTitle}*\n`;
       localNote += `* **Priorité clinique :** Dans les cas cliniques à questions liées, toujours analyser le tableau dans sa globalité sans se précipiter sur un diagnostic hâtif.\n\n`;
 
       localNote += `### 4. 💡 RÈGLE D'OR CONCOURS :\n`;
@@ -742,10 +776,11 @@ ${clinicalCaseContext.chronologySummary}
 `;
     }
 
-    const systemInstruction = `Tu es le Tuteur IA Pédiatrique de PédiaDrill, professeur universitaire et chef de clinique en pédiatrie.
+    const ctx = resolveAiModuleContext(question);
+    const systemInstruction = `Tu es le ${ctx.tutorTitle} de PédiaDrill, professeur universitaire et chef de clinique en ${ctx.specialtyTitle}.
 L'étudiant s'entraîne sur un QCM/CROQ précis et te pose une question directe pour mieux comprendre.
 Tu as le contexte médical complet sous les yeux :
-- Module : Pédiatrie (${question.chapterTitle || 'Pédiatrie Générale'})
+- Module : ${ctx.moduleName} (${question.chapterTitle || ctx.defaultChapter})
 - Énoncé de la question active : "${question.question || question.statement || ''}"
 ${clinicalSection ? clinicalSection : (question.clinical_case ? `- Cas clinique : "${question.clinical_case}"\n` : '')}
 ${allOptionsText ? `- Propositions de la question active :\n${allOptionsText}\n` : '- Type : Question ouverte (CROQ)\n'}
@@ -788,4 +823,9 @@ Consignes pédagogiques strictes :
 
 }
 export const geminiService = new GeminiService();
+
+if (typeof window !== 'undefined') {
+  window.geminiService = geminiService;
+}
+
 

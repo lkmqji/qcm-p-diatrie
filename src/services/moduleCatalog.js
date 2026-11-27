@@ -90,8 +90,8 @@ export const MEDICAL_YEARS = [
     shortTitle: "5ème Année",
     cycle: "Pathologie Médicale & Chirurgicale II",
     modulesCount: 6,
-    coursesCount: 212,
-    qcmCount: 9035,
+    coursesCount: 211,
+    qcmCount: 9537,
     modules: [
       { id: "pediatrie", title: "Pédiatrie & Chirurgie Pédiatrique", courses: 35, qcm: 1905, available: true },
       { id: "locomoteur_5", title: "Appareil Locomoteur (Ortho & Rhumato)", courses: 47, qcm: 2089, available: false },
@@ -127,6 +127,7 @@ export const MEDICAL_YEARS = [
 // Module actif courant (persistance LocalStorage)
 const ACTIVE_MODULE_STORAGE_KEY = 'pediadrill_active_module_id';
 const EXAM_DATE_STORAGE_PREFIX = 'pediadrill_exam_date_';
+const EXAM_DATES_UPDATED_AT_KEY = 'pediadrill_exam_dates_updated_at';
 
 export function getActiveModuleId() {
   try {
@@ -187,6 +188,20 @@ export function getExamDate(moduleId) {
   }
 }
 
+export function getExamDatesUpdatedAt() {
+  try {
+    return Number(localStorage.getItem(EXAM_DATES_UPDATED_AT_KEY) || 0);
+  } catch (e) {
+    return 0;
+  }
+}
+
+export function setExamDatesUpdatedAt(ts = Date.now()) {
+  try {
+    localStorage.setItem(EXAM_DATES_UPDATED_AT_KEY, String(Number(ts) || Date.now()));
+  } catch (e) {}
+}
+
 export function setExamDate(dateStr, moduleId) {
   const targetId = moduleId || getActiveModuleId();
   try {
@@ -195,6 +210,7 @@ export function setExamDate(dateStr, moduleId) {
     } else {
       localStorage.setItem(EXAM_DATE_STORAGE_PREFIX + targetId, dateStr);
     }
+    setExamDatesUpdatedAt(Date.now());
   } catch (e) {
     console.error('[moduleCatalog] Erreur sauvegarde date examen', e);
   }
@@ -215,15 +231,47 @@ export function getAllExamDates() {
   return dates;
 }
 
-export function setAllExamDates(datesMap) {
+export function setAllExamDates(datesMap, remoteUpdatedAt = null, syncDeletions = false) {
   if (!datesMap || typeof datesMap !== 'object') return false;
+  const localTs = getExamDatesUpdatedAt();
+  if (remoteUpdatedAt !== null && Number(remoteUpdatedAt) < localTs) {
+    return false;
+  }
+
   let changed = false;
-  for (const [modId, dateStr] of Object.entries(datesMap)) {
-    const current = getExamDate(modId);
-    if (current !== dateStr) {
-      setExamDate(dateStr, modId);
-      changed = true;
+  if (syncDeletions) {
+    for (const y of MEDICAL_YEARS) {
+      for (const m of y.modules) {
+        const nextVal = datesMap[m.id] || '';
+        const current = getExamDate(m.id);
+        if (current !== nextVal) {
+          if (!nextVal) {
+            localStorage.removeItem(EXAM_DATE_STORAGE_PREFIX + m.id);
+          } else {
+            localStorage.setItem(EXAM_DATE_STORAGE_PREFIX + m.id, nextVal);
+          }
+          changed = true;
+        }
+      }
     }
+  } else {
+    for (const [modId, dateStr] of Object.entries(datesMap)) {
+      const current = getExamDate(modId);
+      if (current !== dateStr) {
+        if (!dateStr) {
+          localStorage.removeItem(EXAM_DATE_STORAGE_PREFIX + modId);
+        } else {
+          localStorage.setItem(EXAM_DATE_STORAGE_PREFIX + modId, dateStr);
+        }
+        changed = true;
+      }
+    }
+  }
+
+  if (remoteUpdatedAt !== null) {
+    setExamDatesUpdatedAt(Number(remoteUpdatedAt));
+  } else if (changed) {
+    setExamDatesUpdatedAt(Date.now());
   }
   return changed;
 }
@@ -309,6 +357,8 @@ if (typeof window !== 'undefined') {
     setExamDate,
     getAllExamDates,
     setAllExamDates,
+    getExamDatesUpdatedAt,
+    setExamDatesUpdatedAt,
     getExamCountdown
   };
 }

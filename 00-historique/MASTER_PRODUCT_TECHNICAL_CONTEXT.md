@@ -1,5 +1,5 @@
 # PédiaDrill — Master Product & Technical Context
-*Dernière mise à jour : 2026-11-20 23:59:00 CET*
+*Dernière mise à jour : 2026-11-24 21:24:00 CET*
 *Source unique de vérité technique et fonctionnelle du projet PédiaDrill.*
 
 ---
@@ -34,7 +34,7 @@ qcm-p-diatrie/
 │   └── MASTER_PRODUCT_TECHNICAL_CONTEXT.md # Contexte technique global (source unique de vérité)
 ├── android/                              # Projet natif Android Capacitor 8
 │   ├── app/
-│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 31, versionName 1.6.4)
+│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 32, versionName 1.6.5)
 │   │   ├── debug.keystore                # Keystore de signature unifié (local & CI/CD)
 │   │   ├── google-services.json          # Configuration Firebase Android (qcm-pediatr, com.pediadrill.app)
 │   │   └── src/main/
@@ -45,57 +45,76 @@ qcm-p-diatrie/
 │   ├── gradle/wrapper/                   # Gradle Wrapper 9.2.0 (compatible Java 21 / 25 et AGP 8.13.0)
 │   └── settings.gradle                   # Déclaration des modules natifs Capacitor
 ├── api/                                  # Fonctions Serverless Vercel
-│   ├── ping.js                           # Endpoint de test de disponibilité réseau
-│   ├── sync.js                           # Endpoint de relais de synchronisation
-│   └── test.js                           # Endpoint de diagnostic
-├── dist/                                 # Dossier de production web & assets natifs
-│   ├── index.html                        # Application complète autonome avec datasets intégrés (4.7 Mo)
-│   ├── agentation.bundle.js              # Barre d'annotation visuelle standalone
+│   └── ping.js                           # Endpoint de test de disponibilité réseau
+├── dist/                                 # Dossier de production web & assets natifs Capacitor
+│   ├── index.html                        # Application complète autonome avec datasets intégrés
 │   ├── manifest.json                     # Manifeste PWA
-│   ├── sw.js                             # Service Worker de cache hors-ligne
+│   ├── sw.js                             # Service Worker de cache hors-ligne (`pedia-drill-v1.6.4-r2`)
+│   ├── vendor/                           # Bibliothèques tierces embarquées localement (offline-first)
+│   │   ├── lucide.min.js                 # Lucide Icons UMD local
+│   │   └── confetti.browser.min.js       # Canvas Confetti local
 │   ├── icon-192.svg                      # Icône PWA 192x192
 │   └── icon-512.svg                      # Icône PWA 512x512
 ├── public/                               # Assets statiques publics (favicons, icônes)
 ├── qcm-psy/                              # Fichiers sources JSON des 20 cours de psychiatrie (862 QCM)
 ├── src/
 │   ├── data/
-│   │   ├── chapters.js                   # Déclaration ES module des 35 chapitres de pédiatrie
+│   │   ├── chapters.js                   # Déclaration globale des 35 chapitres de pédiatrie
 │   │   ├── chapters.json                 # Format JSON des chapitres de pédiatrie
-│   │   ├── questions.js                  # Déclaration ES module de la base pédiatrie (1905 questions)
+│   │   ├── questions.js                  # Déclaration globale de la base pédiatrie (1905 questions)
 │   │   ├── questions.json                # Format JSON brut des 1905 questions de pédiatrie
-│   │   ├── psy_chapters.js               # Déclaration ES module des 20 chapitres de psychiatrie
+│   │   ├── psy_chapters.js               # Déclaration globale des 20 chapitres de psychiatrie
 │   │   ├── psy_chapters.json             # Format JSON des chapitres de psychiatrie
-│   │   ├── psy_questions.js              # Déclaration ES module des 862 questions de psychiatrie
+│   │   ├── psy_questions.js              # Déclaration globale de la base psychiatrie (862 questions)
 │   │   └── psy_questions.json            # Format JSON brut des 862 questions de psychiatrie
 │   ├── services/
-│   │   ├── moduleCatalog.js              # Référentiel du cursus (6 années, 46 modules, squelettes et dates)
+│   │   ├── moduleCatalog.js              # Référentiel du cursus (6 années, 46 modules, squelettes et dates + examDatesUpdatedAt)
 │   │   ├── storageScope.js               # Partitionnement transparent des données d'étude par module
-│   │   ├── gemini.js                     # Service IA Gemini Flash (cascade, circuit-breaker, CROQ & tuteur)
-│   │   ├── queueEngine.js                # Algorithme de répétition espacée (SRS), file active et persistance
+│   │   ├── gemini.js                     # Service IA Gemini Flash (multi-clés utilisateur, round-robin, circuit-breaker, contexte dynamique)
+│   │   ├── queueEngine.js                # Algorithme de répétition espacée (SRS), file active, heure locale et persistance
 │   │   ├── studyTracker.js               # Suivi du progrès journalier, chronométrage & sessions QCM
-│   │   ├── lessonTracker.js              # Chronomètre persistant et suivi du temps d'étude par cours
-│   │   ├── firebaseSyncService.js        # Auth Google (native/web) & synchronisation par paquets Firestore
-│   │   ├── syncService.js                # Service de synchronisation générique
+│   │   ├── lessonTracker.js              # Chronomètre persistant et suivi du temps d'étude multi-modules par cours
+│   │   ├── firebaseSyncService.js        # Auth Google (native/web) & synchronisation temps réel / chunkée Firestore (verrou de login & timestamps profil)
 │   │   └── updateService.js              # Détection des releases GitHub et déclenchement de mise à jour in-app
-│   ├── app.js                            # Contrôleur d'interface principal, gestion des vues et événements
-│   ├── app.bundle.js                     # Bundle JS client unifié (IIFE autonome sans imports ES)
-│   └── style.css                         # Feuille de styles principale (Design System sombre médical)
-├── template.html                         # Structure HTML maîtresse avec CSS synchronisé pour le bundleur
-├── index.html                            # Fichier racine autonome servi par Vercel (4.7 Mo)
-├── PediaDrill.apk                        # Exécutable natif Android produit à la racine (~7.8 Mo)
-├── agentation.bundle.js                  # Outil d'annotation d'interface Agentation
-├── build.cjs                             # Script de copie vers le dossier dist/
-├── build-bundle.cjs                      # Script d'assemblage automatique (CSS, bundle JS, index.html)
+│   ├── state/
+│   │   └── appState.js                   # État global partagé, instance queueEngine, navigation inter-vues et préférences
+│   ├── utils/
+│   │   ├── formatters.js                 # Formatage médical, nettoyage LaTeX, normalisation de dates, XSS escapeHtml & debounce
+│   │   └── uiDialogs.js                  # Notifications Toast non-bloquantes, modale de confirmation (#modal-app-confirm), confettis & refreshLucide
+│   ├── views/
+│   │   ├── dashboardView.js              # Tableau de bord, sélecteur de modules, paramètres multi-clés Gemini & statut compte Google
+│   │   ├── clinicalCaseView.js           # Résolution complète des cas cliniques (modes Séquentiel & Déroulant, bilan & synthèse IA)
+│   │   ├── arenaView.js                  # Arène QCM/CROQ, médias floutés, historique 5 QCM, snooze & Tuteur IA
+│   │   ├── notebookView.js               # Carnet de raisonnement IA avec pagination progressive (30 fiches) & sélection chapitres
+│   │   ├── statsView.js                  # Vue analytique QCM (7 KPIs, heatmap, courbe de vélocité, progression cours)
+│   │   └── lessonView.js                 # Suivi du temps par cours, chronomètre temps réel & matrice de couverture
+│   ├── app.js                            # Orchestrateur principal (742 lignes), cycle de vie, raccourcis clavier & bouton Retour Android
+│   ├── app.bundle.js                     # Bundle JS client unifié (IIFE autonome assemblée par build-bundle.cjs)
+│   └── style.css                         # Feuille de styles principale (Design System sombre médical + animations réactives)
+├── tests/                                # Suite de tests unitaires et d'intégration (`node --test`)
+│   ├── helpers/mockDom.js                # Simulation DOM/localStorage sans dépendances externes
+│   ├── formatters.test.js                # Tests échappement HTML/XSS, formatage médical, sessions, debounce
+│   ├── gemini.test.js                    # Tests sécurité (0 clé en dur), multi-clés, fail-fast, fallback CROQ, LaTeX
+│   ├── queueEngine.test.js               # Tests SRS, heure locale getTodayTracker, cas cliniques & snooze
+│   ├── syncAndCatalog.test.js            # Tests totaux Year 5, merge timestamps Firestore & LessonTracker multi-modules
+│   └── bundleAndViews.test.js            # Tests d'intégrité bundle, zéro alert/confirm, assets offline, backButton Android & pagination
+├── vendor/                               # Miroir racine des vendors locaux pour déploiement direct Vercel
+├── template.html                         # Structure HTML maîtresse avec CSS synchronisé et #modal-app-confirm
+├── index.html                            # Fichier racine autonome servi par Vercel (sans agentation en prod)
+├── PediaDrill.apk                        # Exécutable natif Android produit à la racine
+├── agentation.bundle.js                  # Outil d'annotation d'interface Agentation (injecté uniquement avec `--dev`)
+├── build.cjs                             # Script de copie vers vendor/ et dist/ (exclusion dev toolbar en prod)
+├── build-bundle.cjs                      # Script d'assemblage (CSS, 18 modules ES -> IIFE, datasets src/data/*.js, index.html, dist/)
 ├── server.cjs                            # Serveur HTTP statique autonome pour le développement local
 ├── lancer-app.bat                        # Script batch de compilation et lancement local en 1 clic
 ├── start-local.bat                       # Alias pour lancer-app.bat
 ├── build-apk.bat                         # Script d'automatisation de build natif Android (:app:assembleDebug)
-├── capacitor.config.json                 # Configuration Capacitor (appId, appName, plugins auth)
+├── capacitor.config.json                 # Configuration Capacitor (appId, appName, plugins auth & app)
 ├── google-services.json                  # Fichier Firebase Google Services racine
 ├── manifest.json                         # Configuration PWA Web App Manifest
-├── sw.js                                 # Service Worker (Cache-First / Stale-While-Revalidate)
+├── sw.js                                 # Service Worker (Cache-First / Stale-While-Revalidate + vendors locaux)
 ├── vercel.json                           # Configuration de routage SPA Vercel
-└── package.json                          # Métadonnées, dépendances et scripts du projet Node.js
+└── package.json                          # Métadonnées, dépendances (`@capacitor/app`, `lucide`, `canvas-confetti`) & scripts (`build`, `test`)
 ```
 
 ---
@@ -139,18 +158,17 @@ L'apprentissage repose sur une file d'attente circulaire dynamique (`activeQueue
 ---
 
 ### 3.2. Évaluation IA & Raisonnement Clinique (`src/services/gemini.js`)
-- **Architecture Multi-Clés (Pool 4 instances) & Registre Canonique (`GEMINI_KEY_REGISTRY`)** :
-  - **Registre officiel des clés** :
-    - `PediaDrill4` : Clé API active prioritaire #1 (Compte legacy avec droits complets sur `gemini-2.5-flash` sans erreur 503)
-    - `PediaDrill1` : Clé API active #2 (Instance Pool 1)
-    - `PediaDrill2` : Clé API active #3 (Instance Pool 2)
-    - `PediaDrill3` : Clé API active #4 (Instance Pool 3)
-  - **Pool de clés résilient (`DEFAULT_GEMINI_KEYS`)** : Déploiement du pool unifié des 4 clés pour quadrupler la capacité globale (passage de 20 à plus de 80 requêtes/jour sur le palier gratuit et distribution optimale du quota RPM).
-  - **Rotation Round-Robin (`this.keyIndex`)** : Chaque requête est successivement attribuée à la clé suivante (`PediaDrill4` ➔ `PediaDrill1` ➔ `PediaDrill2` ➔ `PediaDrill3`) afin d'équilibrer la charge et de prévenir tout pic de consommation unitaire.
-  - **Hot Failover par Clé & Résilience Multi-Projets** :
+- **Sécurité & Architecture Multi-Clés Utilisateur (BYOK, 0 clé codée en dur)** :
+  - **Aucune clé API dans le dépôt** : Suppression intégrale des anciennes clés codées en dur (`GEMINI_KEY_REGISTRY`, `DEFAULT_GEMINI_KEYS`, `DEFAULT_GEMINI_KEY`, `OLD_DEFAULT_GEMINI_KEY`) pour éliminer toute exposition de secrets dans le bundle public.
+  - **Saisie Multi-Clés Utilisateur (`#settings-gemini-key`)** : Zone de texte multi-lignes dans les Paramètres acceptant une ou plusieurs clés API Google Gemini (séparées par retours à la ligne, virgules `,` ou points-virgules `;`), masquée par défaut (`.is-masked`) avec bouton de bascule afficher/masquer et compteur en direct (`#settings-gemini-keys-count`).
+  - **Persistance locale & synchronisation Firestore** : Sauvegardée en local sous `gemini_api_key` (sérialisée sur plusieurs lignes) et synchronisée via le profil Google Firestore (`settings.geminiApiKey` + `pedia_settings_updated_at`).
+  - **Fail-fast explicite & Fallback local** : Sans clé configurée, `callWithFallback()` échoue immédiatement avec l'erreur explicite `NO_API_KEY_CONFIGURED` guidant l'utilisateur vers *Paramètres > Clés API Google Gemini*, tandis que `evaluateCroq()` et `generateReasoningNote()` basculent automatiquement sur le moteur sémantique local hors-ligne.
+  - **Contextualisation Multi-Modules Dynamique (`resolveAiModuleContext`)** : Tous les prompts système (`evaluateCroq`, `generateReasoningNote`, `generateClinicalCaseSynthesisNote`, `askAboutQuestion`) adaptent automatiquement la spécialité, le titre de tuteur et le contexte clinique au module actif ou à la question (`Pédiatrie`, `Psychiatrie`, ou tout futur module).
+  - **Rotation Round-Robin (`this.keyIndex`)** : Chaque requête est successivement attribuée à la clé suivante du pool utilisateur afin d'équilibrer la charge et de prévenir tout dépassement de quota unitaire.
+  - **Hot Failover par Clé & Résilience** :
     - En cas d'erreur `429` (`RESOURCE_EXHAUSTED`), mise en quarantaine de la clé pendant 15 minutes et bascule immédiate sur la clé suivante.
-    - En cas d'erreur `404` (ex: modèle restreint aux nouveaux projets comme `gemini-2.5-flash`), le service ne bloque plus le modèle mais bascule sur la clé suivante (`PediaDrill4`), débloquant l'accès sans interruption.
-    - En cas d'erreur `503` (surcharge temporaire Google), le service tente une autre clé du pool avant d'appliquer une quarantaine courte (60 secondes au lieu de 5 minutes).
+    - En cas d'erreur `404`, bascule sur la clé suivante ou le modèle suivant sans bloquer le pipeline.
+    - En cas d'erreur `503` (surcharge temporaire Google), tentative sur une autre clé du pool avant d'appliquer une quarantaine courte de 60 secondes.
   - **Sécurité et détection défensive des clés non autorisées (403 / 401)** : Détection immédiate des erreurs d'API désactivée ou d'autorisation (`PERMISSION_DENIED`) avec mise en quarantaine automatique de 24h sans bloquer la boucle d'exécution.
   - **Persistance et assainissement du Circuit-Breaker dans `localStorage`** : Sauvegarde des dictionnaires de quarantaine (`pedia_gemini_quarantined_keys` et `pedia_gemini_quarantined_models`) avec purge automatique des quarantaines expirées ou obsolètes (> 60s).
 - **Modèles 100% Flash Exclusifs & Cascade de résilience ultra-rapide** :
@@ -219,6 +237,7 @@ Lorsqu'une réponse est incorrecte (dans la modale d'erreur ou dans le carnet) :
   - **Rendu en lecture seule** : Chaque sous-question est présentée avec son numéro, son énoncé médical formaté (`formatMedicalContent`), ses propositions de réponse (A à E) ou sa pastille CROQ, et un badge distinctif `Question en cours` sur la question active.
 - **Moteur de Résolution Complète du Cas Clinique (`startClinicalCaseRun`, `ClinicalCaseRunController`)** :
   - **Déclenchement direct** : Bouton néon violet/cyan `#btn-start-clinical-case` (*« 🎯 Résoudre le cas complet (X Q) »*) positionné dans l'en-tête du cas à côté de l'accordéon.
+  - **Indicateur de questions à nettoyer (`#clinical-uncleaned-badge` / `updateClinicalUncleanedBadge`)** : Pastille placée directement à côté du bouton `#btn-start-clinical-case` affichant en temps réel le ratio `X/Y à nettoyer` (nombre de sous-questions pas encore maîtrisées `!st.done` sur le nombre total de questions du cas), avec passage automatique en style émeraude (`.is-all-cleaned`) à `0/Y à nettoyer`, mise à jour immédiate lorsqu'une question est éliminée en mode drill, et masquage pendant un run actif.
   - **Deux modes d'affichage complémentaires et commutables en direct** :
     1. **Mode Séquentiel (Étape par étape, 1 par 1)** :
        - Résolution question par question avec bandeau du cas fixé en haut et barre de progression animée (`#arena-clinical-progress-track`).
@@ -279,8 +298,9 @@ Lorsqu'une réponse est incorrecte (dans la modale d'erreur ou dans le carnet) :
   - **Groupes de cours pliables (`.notebook-chapter-group`)** : Clic sur l'en-tête de cours pour masquer/afficher toutes ses questions.
   - **Fiches de questions individuelles pliables (`.grouped-question-card`)** : Clic sur l'en-tête pour replier la fiche en une prévisualisation compacte (`.question-collapsed-preview`).
   - **Bouton Maître « Tout replier / Tout déplier » (`.notebook-toggle-all-btn`)** : Replie ou déplie instantanément l'intégralité des chapitres et questions.
-- **Barre de recherche & synthèse dynamique** :
-  - Recherche instantanée par mot-clé sur énoncés, propositions, explications et raisonnements IA.
+- **Barre de recherche, debounce & pagination progressive (`notebookView.js`)** :
+  - Recherche instantanée avec debounce de `200 ms` (`debounce(..., 200)`) sur énoncés, propositions, explications et raisonnements IA.
+  - Pagination progressive (`NOTEBOOK_PAGE_SIZE = 30`) affichant au maximum 30 fiches au chargement initial (modes Par cours et Liste continue) avec bouton `.btn-notebook-load-more` (*« Charger les N fiches suivantes »*) afin d'éviter la saturation DOM lorsque des centaines d'erreurs sont cumulées.
   - Synthèse `#notebook-summary-bar` reflétant le nombre de questions, d'analyses et le rappel du tri actif.
 
 ---
@@ -386,7 +406,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ### 3.9. Système de Mises à Jour Automatiques & GitHub Releases (`src/services/updateService.js` & CI/CD)
 - **Service d'Orchestration des Mises à Jour (`UpdateService`)** :
-  - Version déclarée : `CURRENT_APP_VERSION = '1.6.4'` synchronisée avec `package.json` et `build.gradle` (`versionCode 31`).
+  - Version déclarée : `CURRENT_APP_VERSION = '1.6.5'` synchronisée avec `package.json` et `build.gradle` (`versionCode 32`).
   - Comparaison sémantique universelle (`compareVersions`) ignorant les préfixes `v`.
   - Interrogation de l'API GitHub Releases (`https://api.github.com/repos/lkmqji/qcm-p-diatrie/releases/latest`) avec cooldown de 4 heures (`pedia_last_update_check_ts`).
   - Extraction de l'asset `.apk` direct (`PediaDrill.apk`). En environnement natif Android Capacitor, l'URL est ouverte via `_system` pour lancer le gestionnaire de téléchargement Android natif.
@@ -503,12 +523,10 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ---
 
-### 3.16. Barre d'Outils Visuelle & Annotations UI (Agentation)
-- **Intégration Standalone (`agentation.bundle.js`)** :
-  - Chargé via `<script src="agentation.bundle.js"></script>`, auto-montage sur `#agentation-root`.
-  - Annotation visuelle en direct avec capture automatique du sélecteur CSS, hiérarchie DOM et styles calculés.
-  - Mode Layout (`L`), pause micro-animations (`P`), export Markdown structuré (`C`) et nettoyage (`X`).
-  - Interconnexion avec le serveur MCP local `agentation-mcp` (`mcp_config.json`).
+### 3.16. Barre d'Outils Visuelle & Annotations UI (Agentation — Mode Développement Uniquement)
+- **Exclusion Automatique en Production (`build-bundle.cjs` & `build.cjs`)** :
+  - L'outil `agentation.bundle.js` (605 Ko) est **exclu du build de production** (`node build-bundle.cjs` / `npm run build`) afin d'alléger `index.html` et l'APK Android final (`dist/agentation.bundle.js` est supprimé en production).
+  - Activable sur demande pour l'inspection UI locale via `node build-bundle.cjs --dev` (`npm run build:dev`).
 
 ---
 
@@ -641,7 +659,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.6.4` (`versionCode 31`)
+- **Version native** : `versionName 1.6.5` (`versionCode 32`)
 - **Empreinte SHA-1 (Debug Keystore Gradle & GitHub Actions)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
 - **Empreinte SHA-256 (Debug Keystore Gradle & GitHub Actions)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
 - **Keystore unifié** : `android/app/debug.keystore` (Alias : `AndroidDebugKey`, mot de passe `android`, garantissant une empreinte cryptographique identique entre les compilations locales et la CI/CD GitHub Actions).
@@ -651,7 +669,10 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 - **Configuration des plugins Capacitor (`capacitor.config.json`)** :
   - `plugins.FirebaseAuthentication` : `skipNativeAuth: false`, `providers: ["google.com"]` (requis pour instancier le handler natif Android `GoogleAuthProviderHandler`).
 - **Ressources natives Android (`strings.xml`)** : `default_web_client_id` explicitement déclaré avec l'ID client Web OAuth Google (`1028938391462-hfo44kaj789r1ruovt4b4v59he6jvarq.apps.googleusercontent.com`).
-- **Dépendances natives** : `@capacitor/core` (8.5.3), `@capacitor/cli` (8.5.3), `@capacitor/android` (8.5.3), `@capacitor-firebase/authentication` (8.5.2).
+- **Dépendances natives & UI embarquées** : `@capacitor/core` (8.5.3), `@capacitor/cli` (8.5.3), `@capacitor/android` (8.5.3), `@capacitor/app` (8.1.2 — bouton Retour matériel Android), `@capacitor-firebase/authentication` (8.5.2), `lucide` (1.13.0) et `canvas-confetti` (1.9.4) copiées localement dans `vendor/` et `dist/vendor/`.
+- **Ergonomie Native & Dialogues Non-Bloquants (`uiDialogs.js`, `setupNativeCapacitorBackButton`)** :
+  - Suppression de 100% des `alert()` et `confirm()` bloquants au profit de Toasts colorés (`showAppToast`) et d'une modale asynchrone in-app `#modal-app-confirm` (`showConfirmModal`).
+  - Gestion hiérarchique du bouton Retour matériel Android (`backButton`) : fermeture prioritaire des confirmations / lightbox / chatbox Tuteur IA / modales ouvertes -> retour vers le Dashboard depuis les vues secondaires -> `exitApp()` uniquement sur le Dashboard racine.
 
 ### 6.2. Environnement Android Studio & Toolchain
 - **Emplacement Android Studio** : `C:\Program Files\Android\Android Studio` (`bin\studio64.exe`).
@@ -670,21 +691,22 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ## 7. Pipeline de Compilation, Déploiement & Intégrité
 
-- **Compilation Web PWA** : `node build.cjs` (prépare `dist/index.html` autonome avec datasets, styles et scripts).
+- **Compilation Web PWA** : `node build-bundle.cjs` / `npm run build` (prépare `index.html`, `vendor/` et `dist/` en mode production sans `agentation.bundle.js`). Utiliser `npm run build:dev` (`node build-bundle.cjs --dev`) pour activer la barre d'annotations Agentation en local.
 - **Déploiement Web Cloud (Vercel & GitHub)** :
-  - **Fichier servi par Vercel** : Conformément à `vercel.json` (`"routes": [{ "src": "/(.*)", "dest": "/index.html" }]`), Vercel sert directement le fichier racine `index.html`.
-  - **Assemblage obligatoire** : Toute modification apportée aux sources dans `src/` doit être compilée via `node build-bundle.cjs` qui synchronise à la fois `src/app.bundle.js`, `index.html` (racine pour Vercel) et `dist/index.html` (pour le build mobile et PWA).
-  - **Protocole de validation syntaxique pré-déploiement** :
-    1. Validation des sources : `node -c src/services/gemini.js`, `node -c src/services/queueEngine.js`, `node -c src/services/studyTracker.js`, `node -c src/services/lessonTracker.js`, `node -c src/services/firebaseSyncService.js`, `node -c src/services/updateService.js`, `node -c src/app.js`.
-    2. Validation du bundle généré : `node -c src/app.bundle.js`.
-    3. Validation des balises `<script>` intégrées dans `index.html` via script Node VM.
-    4. Cela garantit un chargement sans erreur (`SyntaxError`) évitant le blocage de l'initialisation du DOM et des métriques.
+  - **Fichier servi par Vercel** : Conformément à `vercel.json` (`"rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]`), Vercel sert directement le fichier racine `index.html` et `./vendor/*`.
+  - **Assemblage obligatoire** : Toute modification apportée aux sources dans `src/` doit être compilée via `node build-bundle.cjs` qui synchronise `template.html`, `src/app.bundle.js`, `index.html`, `vendor/` et `dist/`.
+  - **Protocole de validation pré-déploiement** :
+    1. Validation des sources & du bundle généré : `node -c src/app.js` et `node -c src/app.bundle.js`.
+    2. Exécution complète des tests automatisés : `npm test` (`node --test tests/*.test.js`).
+    3. Vérification de l'assemblage production : pas de CDN bloquants ni d'outillage dev dans `dist/`.
 - **Compilation Mobile Android (APK)** :
-  1. `node build-bundle.cjs` : assemble le code client et synchronise le CSS dans `template.html`, `src/app.bundle.js` et `dist/index.html`.
-  2. `npx cap sync android` : synchronise les assets web et plugins dans `android/app/src/main/assets/public/`.
+  1. `node build-bundle.cjs` : assemble le code client et synchronise le CSS dans `template.html`, `src/app.bundle.js`, `vendor/` et `dist/`.
+  2. `npx cap sync android` : synchronise les assets web (`dist/`) et les plugins natifs (`@capacitor/app`, `@capacitor-firebase/authentication`) dans `android/`.
   3. `build-apk.bat` : exécute `:app:assembleDebug` avec le JDK Android Studio et copie automatiquement l'APK généré sous `PediaDrill.apk` à la racine du projet.
 - **Scripts `package.json` disponibles** :
-  - `npm run build` : génération de `dist/`.
+  - `npm run build` : assemblage complet (`node build-bundle.cjs`) en mode production.
+  - `npm run build:dev` : assemblage incluant `agentation.bundle.js` pour inspection UI.
+  - `npm test` : suite de tests automatisés (`node --test tests/*.test.js`).
   - `npm run start` : prévisualisation locale du dossier `dist/` via `npx serve`.
   - `npm run build:apk` : build web + sync Capacitor + génération du fichier `.apk`.
   - `npm run open:android` : ouverture du projet natif dans l'interface graphique Android Studio.
@@ -720,10 +742,16 @@ Dans le respect absolu de l'intégrité de l'application (zéro modification vis
 - Application de la règle CSS universelle `touch-action: manipulation;` et `-webkit-tap-highlight-color: transparent;` sur tous les sélecteurs interactifs (`button`, `a`, `input`, `select`, `textarea`, `.option-item`, `.nav-tab-btn`, `.chapter-select-item`, `.notebook-chapter-header`, `.medical-media-inner`, `[role="button"]`).
 - Annule l'attente native de 300 ms du navigateur mobile pour détecter un éventuel double-tap pour zoomer, rendant le retour tactile instantané dès l'effleurement du doigt.
 
-### 8.7. Préconnexions Réseau Anticipées (DNS & TLS Preconnect)
-- Ajout de balises `<link rel="preconnect">` dans l'en-tête HTML pour les domaines externes essentiels (`fonts.gstatic.com`, `gstatic.com`, `unpkg.com`, `cdn.jsdelivr.net`).
-- La négociation TCP/TLS avec les CDN est initiée dès le chargement initial du HTML, réduisant la latence de téléchargement des polices et icônes lors des premières requêtes.
+### 8.7. Vendors Locaux Embarqués & Indépendance CDN (`vendor/` & `dist/vendor/`)
+- Suppression des dépendances CDN externes bloquantes (`unpkg.com/lucide`, `cdn.jsdelivr.net/npm/canvas-confetti`) dans `template.html` au profit des fichiers UMD locaux `vendor/lucide.min.js` et `vendor/confetti.browser.min.js`, copiés automatiquement depuis `node_modules/` par `build.cjs` vers `vendor/` (Vercel) et `dist/vendor/` (Capacitor APK & PWA).
 
-### 8.8. Service Worker v2 avec Stale-While-Revalidate (`sw.js`)
-- Rénovation complète du cache PWA (`pedia-drill-v2`) ciblant avec exactitude les fichiers compilés de production (`./`, `./index.html`, `./manifest.json`, icônes PWA).
-- Implémentation du pattern `Stale-While-Revalidate` : le navigateur sert immédiatement la version en cache ultra-rapide tout en effectuant en arrière-plan une mise à jour transparente dès qu'une connexion réseau est disponible.
+### 8.8. Service Worker & Pré-Cache Offline Enrichi (`sw.js`)
+- Rénovation du cache PWA (`CACHE_NAME = 'pedia-drill-v1.6.4-r2'`) ciblant avec exactitude tous les fichiers compilés de production (`./`, `./index.html`, `./manifest.json`, `./icon-192.svg`, `./icon-512.svg`, `./vendor/lucide.min.js`, `./vendor/confetti.browser.min.js`).
+- Implémentation du pattern `Stale-While-Revalidate` pour les ressources locales et `Network-First` pour le document HTML, assurant un fonctionnement 100% hors-ligne y compris pour toutes les icônes SVG et animations de célébration.
+
+### 8.9. Architecture Modulaire, Hygiène & Performance UI (Catégorie 2)
+- **Modularisation ESM (`src/utils/`, `src/state/`, `src/views/`, `src/app.js`)** : Découpage de l'ancien monolithe `app.js` (8 511 lignes) en 6 vues dédiées (`dashboardView`, `clinicalCaseView`, `arenaView`, `notebookView`, `statsView`, `lessonView`), un état partagé (`appState.js`) et des utilitaires purs (`formatters.js`, `uiDialogs.js`), assemblés en un bundle unique IIFE par `build-bundle.cjs` directement depuis `src/data/*.js`.
+- **Fluidité visuelle (`0.14s`, `behavior: 'auto'`)** : Transitions CSS raccourcies à `0.14s`, micro-échelle tactile `:active { transform: scale(0.985) }` sur boutons et cartes d'options, et remplacement des défilements `behavior: 'smooth'` lents par `behavior: 'auto'`.
+- **Sécurité XSS & Rendu Markdown dans les propositions** : Utilisation systématique de `escapeHtml()` et `parseMarkdownInline()` dans le rendu des options QCM/Arène/Historique/Cas cliniques/Modale chapitres pour afficher correctement les inégalités médicales (`<`, `>`) sans casser le DOM.
+- **Modale de Confirmation Non-Bloquante (`#modal-app-confirm`, `showConfirmModal`)** : Utilise `.modal-content.confirm-modal-card` avec `z-index: 10500` (au-dessus des éléments flottants de l'arène), en-tête `.modal-title-group` et fermeture `.close-btn.btn-icon-close`, permettant notamment de quitter proprement un cas clinique en cours via `#btn-quit-clinical-run` (`teardownClinicalRunView` réinitialisant `isClinicalRunActive`, `clinicalRunState` et `isEvaluating`).
+- **Suite de Tests Automatisés (`npm test` -> `node --test tests/*.test.js`)** : 28 tests automatisés couvrant formatage/XSS, sécurité Gemini & multi-clés, algorithme SRS & fuseau local, fusion Firestore & chronomètre multi-modules, intégrité du bundle IIFE, pagination 30 fiches du Carnet, badge des questions à nettoyer en cas clinique, sortie du cas clinique après réponse à la 1ère question et bouton Retour Android.

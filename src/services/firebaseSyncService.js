@@ -18,7 +18,12 @@ const DEFAULT_FIREBASE_CONFIG = {
 import { slimNote } from './queueEngine.js';
 import { studyTracker } from './studyTracker.js';
 import { lessonTracker } from './lessonTracker.js';
-import { getActiveModuleId, getAllExamDates, setAllExamDates } from './moduleCatalog.js';
+import {
+  getActiveModuleId,
+  getAllExamDates,
+  setAllExamDates,
+  getExamDatesUpdatedAt
+} from './moduleCatalog.js';
 
 function getLocalDateStr() {
   const now = new Date();
@@ -185,6 +190,7 @@ export class FirebaseSyncService {
     this.isPushing = false;
     this.isApplyingRemoteSnapshot = false; // Anti ping-pong loop guard
     this.lastLocalModuleSwitchTimestamp = Date.now();
+    this._syncLoginPromise = null;
 
     this.lastSyncedAt = localStorage.getItem('pedia_firebase_last_synced') || null;
     this.status = 'idle'; // 'idle' | 'syncing' | 'synced' | 'error' | 'offline'
@@ -351,6 +357,7 @@ export class FirebaseSyncService {
           this.user = nativeResult.user;
         }
 
+        await this.syncOnLogin();
         this.updateStatus('synced', `Connecté avec ${this.user.displayName || this.user.email}`);
         return { success: true, user: this.user };
       } catch (nativeErr) {
@@ -374,6 +381,7 @@ export class FirebaseSyncService {
       try {
         const result = await window.firebase.auth().signInWithPopup(provider);
         this.user = result.user;
+        await this.syncOnLogin();
         this.updateStatus('synced', `Connecté avec ${this.user.displayName || this.user.email}`);
         return { success: true, user: this.user };
       } catch (popupErr) {
@@ -638,31 +646,52 @@ export class FirebaseSyncService {
     try {
       let uiNeedsRefresh = false;
 
-      // 1. Sync Exam Dates
+      // 1. Sync Exam Dates (respecting timestamp & propagating deletions)
       if (remoteProfile.examDates && typeof remoteProfile.examDates === 'object') {
         if (typeof setAllExamDates === 'function') {
-          const changed = setAllExamDates(remoteProfile.examDates);
-          if (changed) uiNeedsRefresh = true;
+          const remoteExamTs = Number(remoteProfile.examDatesUpdatedAt || 0);
+          const localExamTs = typeof getExamDatesUpdatedAt === 'function' ? getExamDatesUpdatedAt() : 0;
+          if (remoteExamTs >= localExamTs) {
+            const changed = setAllExamDates(remoteProfile.examDates, remoteExamTs, true);
+            if (changed) uiNeedsRefresh = true;
+          }
         }
       }
 
-      // 2. Sync Settings (Clinical Mode, Gemini API Key)
+      // 2. Sync Settings (Clinical Mode, Gemini API Key) respecting settingsUpdatedAt
       if (remoteProfile.settings && typeof remoteProfile.settings === 'object') {
-        const { clinicalCaseMode, geminiApiKey } = remoteProfile.settings;
-        if (clinicalCaseMode) {
-          const localMode = localStorage.getItem('pedia_clinical_case_mode');
-          if (localMode !== clinicalCaseMode) {
-            localStorage.setItem('pedia_clinical_case_mode', clinicalCaseMode);
-            uiNeedsRefresh = true;
-          }
-        }
-        if (geminiApiKey && typeof geminiApiKey === 'string' && geminiApiKey.trim()) {
-          const localKey = (localStorage.getItem('pedia_gemini_key') || '').trim();
-          if (!localKey || localKey !== geminiApiKey.trim()) {
-            localStorage.setItem('pedia_gemini_key', geminiApiKey.trim());
-            if (typeof window !== 'undefined' && window.geminiService) {
-              window.geminiService.setApiKey(geminiApiKey.trim());
+        const remoteSettingsTs = Number(remoteProfile.settingsUpdatedAt || 0);
+        const localSettingsTs = Number(localStorage.getItem('pedia_settings_updated_at') || 0);
+        const canApplySettings = remoteSettingsTs === 0 || remoteSettingsTs >= localSettingsTs;
+
+        if (canApplySettings) {
+          const { clinicalCaseMode, geminiApiKey } = remoteProfile.settings;
+          if (clinicalCaseMode) {
+            const localMode = localStorage.getItem('pedia_clinical_case_mode');
+            if (localMode !== clinicalCaseMode) {
+              localStorage.setItem('pedia_clinical_case_mode', clinicalCaseMode);
+              uiNeedsRefresh = true;
             }
+          }
+          if (typeof geminiApiKey === 'string') {
+            const trimmedRemoteKey = geminiApiKey.trim();
+            const localKey = (localStorage.getItem('pedia_gemini_key') || '').trim();
+            if (trimmedRemoteKey && localKey !== trimmedRemoteKey) {
+              localStorage.setItem('pedia_gemini_key', trimmedRemoteKey);
+              if (typeof window !== 'undefined' && window.geminiService) {
+                window.geminiService.setApiKey(trimmedRemoteKey);
+              }
+              uiNeedsRefresh = true;
+            } else if (!trimmedRemoteKey && remoteSettingsTs > localSettingsTs && localKey) {
+              localStorage.removeItem('pedia_gemini_key');
+              if (typeof window !== 'undefined' && window.geminiService) {
+                window.geminiService.setApiKey('');
+              }
+              uiNeedsRefresh = true;
+            }
+          }
+          if (remoteSettingsTs > 0) {
+            localStorage.setItem('pedia_settings_updated_at', String(remoteSettingsTs));
           }
         }
       }
@@ -753,32 +782,39 @@ export class FirebaseSyncService {
    */
   async syncOnLogin() {
     if (!this.user || !window.firebase || !window.firebase.firestore) return;
+    if (this._syncLoginPromise) return this._syncLoginPromise;
 
-    try {
-      const db = window.firebase.firestore();
-      
-      // 1. Run transparent migration if legacy format detected
-      await this.checkAndMigrateLegacyData(db);
+    this._syncLoginPromise = (async () => {
+      try {
+        const db = window.firebase.firestore();
+        
+        // 1. Run transparent migration if legacy format detected
+        await this.checkAndMigrateLegacyData(db);
 
-      // 2. Setup listeners
-      const currentModId = getActiveModuleId();
-      this.setupProfileListener();
-      this.setupModuleListener(currentModId);
+        // 2. Setup listeners
+        const currentModId = getActiveModuleId();
+        this.setupProfileListener();
+        this.setupModuleListener(currentModId);
 
-      // 3. Pull and merge initial remote state
-      await this.pullFromFirestore();
+        // 3. Pull and merge initial remote state
+        await this.pullFromFirestore();
 
-      // 4. Push combined state back
-      await this.pushToFirestore();
+        // 4. Push combined state back
+        await this.pushToFirestore();
 
-      this.lastSyncedAt = Date.now().toString();
-      localStorage.setItem('pedia_firebase_last_synced', this.lastSyncedAt);
-      this.updateStatus('synced', `Profil & progression synchronisés avec votre compte Google !`);
-    } catch (err) {
-      console.error('Sync on login error:', err);
-      const friendly = this.getFriendlyFirestoreError(err);
-      this.updateStatus('error', friendly);
-    }
+        this.lastSyncedAt = Date.now().toString();
+        localStorage.setItem('pedia_firebase_last_synced', this.lastSyncedAt);
+        this.updateStatus('synced', `Profil & progression synchronisés avec votre compte Google !`);
+      } catch (err) {
+        console.error('Sync on login error:', err);
+        const friendly = this.getFriendlyFirestoreError(err);
+        this.updateStatus('error', friendly);
+      } finally {
+        this._syncLoginPromise = null;
+      }
+    })();
+
+    return this._syncLoginPromise;
   }
 
   /**
@@ -859,19 +895,21 @@ export class FirebaseSyncService {
       const profileDocRef = db.collection('users').doc(this.user.uid).collection('profile').doc('state');
 
       const examDates = typeof getAllExamDates === 'function' ? getAllExamDates() : {};
+      const examDatesUpdatedAt = typeof getExamDatesUpdatedAt === 'function' ? getExamDatesUpdatedAt() : 0;
       const clinicalMode = localStorage.getItem('pedia_clinical_case_mode') || 'sequential';
       const geminiKey = localStorage.getItem('pedia_gemini_key') || '';
+      const settingsUpdatedAt = Number(localStorage.getItem('pedia_settings_updated_at') || 0);
 
       const profilePayload = sanitizeForFirestore({
         activeModuleId: getActiveModuleId(),
         activeModuleUpdatedAt: this.lastLocalModuleSwitchTimestamp || Date.now(),
         examDates,
-        examDatesUpdatedAt: Date.now(),
+        examDatesUpdatedAt: examDatesUpdatedAt || Date.now(),
         settings: {
           clinicalCaseMode: clinicalMode,
           geminiApiKey: geminiKey
         },
-        settingsUpdatedAt: Date.now(),
+        settingsUpdatedAt: settingsUpdatedAt || Date.now(),
         activeLessonTimer: (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.getActiveTimer === 'function')
           ? lessonTracker.getActiveTimer()
           : null,

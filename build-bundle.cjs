@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const isDevMode = process.argv.includes('--dev') || process.env.PEDIA_DEV === '1';
+
 // 1. Synchronize template.html CSS with src/style.css
 const cssContent = fs.readFileSync(path.join(__dirname, 'src', 'style.css'), 'utf8');
 let templateHtml = fs.readFileSync(path.join(__dirname, 'template.html'), 'utf8');
@@ -20,89 +22,94 @@ function cleanModuleCode(code) {
     .replace(/export\s+const\s+/g, 'const ')
     .replace(/export\s+let\s+/g, 'let ')
     .replace(/export\s+class\s+/g, 'class ')
+    .replace(/export\s+async\s+function\s+/g, 'async function ')
     .replace(/export\s+function\s+/g, 'function ')
     .replace(/export\s*\{[^}]*\};?/g, '');
 }
 
-let moduleCatalog = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'services', 'moduleCatalog.js'), 'utf8'));
-let storageScope = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'services', 'storageScope.js'), 'utf8'));
-let gemini = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'services', 'gemini.js'), 'utf8'));
-let queue = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'services', 'queueEngine.js'), 'utf8'));
-let tracker = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'services', 'studyTracker.js'), 'utf8'));
-let lesson = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'services', 'lessonTracker.js'), 'utf8'));
-let sync = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'services', 'firebaseSyncService.js'), 'utf8'));
-let updater = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'services', 'updateService.js'), 'utf8'));
-let app = cleanModuleCode(fs.readFileSync(path.join(__dirname, 'src', 'app.js'), 'utf8'));
+const orderedSourceFiles = [
+  ['src', 'services', 'moduleCatalog.js'],
+  ['src', 'services', 'storageScope.js'],
+  ['src', 'services', 'gemini.js'],
+  ['src', 'services', 'queueEngine.js'],
+  ['src', 'services', 'studyTracker.js'],
+  ['src', 'services', 'lessonTracker.js'],
+  ['src', 'services', 'firebaseSyncService.js'],
+  ['src', 'services', 'updateService.js'],
+  ['src', 'utils', 'formatters.js'],
+  ['src', 'utils', 'uiDialogs.js'],
+  ['src', 'state', 'appState.js'],
+  ['src', 'views', 'dashboardView.js'],
+  ['src', 'views', 'clinicalCaseView.js'],
+  ['src', 'views', 'arenaView.js'],
+  ['src', 'views', 'notebookView.js'],
+  ['src', 'views', 'statsView.js'],
+  ['src', 'views', 'lessonView.js'],
+  ['src', 'app.js']
+];
+
+const cleanedParts = orderedSourceFiles.map(segments => {
+  const fullPath = path.join(__dirname, ...segments);
+  const raw = fs.readFileSync(fullPath, 'utf8');
+  return `// --- ${segments.join('/')} ---\n${cleanModuleCode(raw)}`;
+});
 
 const bundle = `// ==========================================
 // PédiaDrill Unified Client Bundle
 // ==========================================
 (function() {
-${moduleCatalog}
-
-${storageScope}
-
-${gemini}
-
-${queue}
-
-${tracker}
-
-${lesson}
-
-${sync}
-
-${updater}
-
-${app}
+${cleanedParts.join('\n\n')}
 })();
 `;
 
 fs.writeFileSync(path.join(__dirname, 'src', 'app.bundle.js'), bundle, 'utf8');
 console.log(`[bundle] src/app.bundle.js created (${bundle.length} bytes)`);
 
-// 3. Assemble index.html
-// Extract datasets from existing index.html or src/data
-let indexContent = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
-
-// Find the dataset script tags
-const chaptersMatch = indexContent.match(/<script>\s*window\.PEDIA_CHAPTERS\s*=[\s\S]*?<\/script>/);
-const questionsMatch = indexContent.match(/<script>\s*window\.PEDIA_QUESTIONS\s*=[\s\S]*?<\/script>/);
-
-if (!chaptersMatch || !questionsMatch) {
-  console.error('[bundle] Error: could not find PEDIA_CHAPTERS or PEDIA_QUESTIONS in index.html');
-  process.exit(1);
+// 3. Assemble index.html directly from src/data datasets
+function readDataScript(fileName, required = false) {
+  const fullPath = path.join(__dirname, 'src', 'data', fileName);
+  if (!fs.existsSync(fullPath)) {
+    if (required) {
+      console.error(`[bundle] Error: missing required dataset src/data/${fileName}`);
+      process.exit(1);
+    }
+    return '';
+  }
+  return fs.readFileSync(fullPath, 'utf8');
 }
 
-const psyChaptersJs = fs.existsSync(path.join(__dirname, 'src', 'data', 'psy_chapters.js'))
-  ? fs.readFileSync(path.join(__dirname, 'src', 'data', 'psy_chapters.js'), 'utf8')
-  : '';
-const psyQuestionsJs = fs.existsSync(path.join(__dirname, 'src', 'data', 'psy_questions.js'))
-  ? fs.readFileSync(path.join(__dirname, 'src', 'data', 'psy_questions.js'), 'utf8')
+const pediaChaptersJs = readDataScript('chapters.js', true);
+const pediaQuestionsJs = readDataScript('questions.js', true);
+const psyChaptersJs = readDataScript('psy_chapters.js', false);
+const psyQuestionsJs = readDataScript('psy_questions.js', false);
+
+const devToolbarHtml = isDevMode
+  ? `\n  <!-- Agentation Visual Feedback & UI Annotation Toolbar (dev mode only) -->\n  <script src="agentation.bundle.js"></script>`
   : '';
 
-// Build final standalone index.html
 const updatedIndex = `${templateHtml.replace('</body>', '')}
-  ${chaptersMatch[0]}
+  <script>
+${pediaChaptersJs}
+  </script>
 
-  ${questionsMatch[0]}
+  <script>
+${pediaQuestionsJs}
+  </script>
 
-  ${psyChaptersJs ? `<script>\n${psyChaptersJs}\n</script>` : ''}
+  ${psyChaptersJs ? `<script>\n${psyChaptersJs}\n  </script>` : ''}
 
-  ${psyQuestionsJs ? `<script>\n${psyQuestionsJs}\n</script>` : ''}
+  ${psyQuestionsJs ? `<script>\n${psyQuestionsJs}\n  </script>` : ''}
 
   <script>
 ${bundle}
-  </script>
-
-  <!-- Agentation Visual Feedback & UI Annotation Toolbar -->
-  <script src="agentation.bundle.js"></script>
+  </script>${devToolbarHtml}
 </body>
 </html>
 `;
 
 fs.writeFileSync(path.join(__dirname, 'index.html'), updatedIndex, 'utf8');
-console.log(`[bundle] index.html updated successfully (${updatedIndex.length} bytes)`);
+console.log(`[bundle] index.html updated successfully (${updatedIndex.length} bytes, mode=${isDevMode ? 'dev' : 'prod'})`);
 
-// 4. Update dist directory
-require('./build.cjs');
+// 4. Update vendor/ and dist/ directory
+const { buildDist } = require('./build.cjs');
+buildDist({ isDev: isDevMode });

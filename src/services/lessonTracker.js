@@ -1,7 +1,27 @@
 // Lesson Timer & Study Time Tracking Service for PédiaDrill
 // Tracks focused study time per lesson/chapter with persistent stopwatch, background tracking, and summary analytics.
 import { resolveStorageKey } from './storageScope.js';
-import { getActiveModuleId } from './moduleCatalog.js';
+import { getActiveModuleId, MEDICAL_YEARS, findModuleById } from './moduleCatalog.js';
+
+function getAllLessonSessionStorageKeys() {
+  const keys = new Set(['pedia_lesson_sessions_v1', 'mod_psychiatrie_lesson_sessions']);
+  if (Array.isArray(MEDICAL_YEARS)) {
+    MEDICAL_YEARS.forEach(year => {
+      (year.modules || []).forEach(mod => {
+        if (mod && mod.id && typeof resolveStorageKey === 'function') {
+          keys.add(resolveStorageKey('lesson_sessions', mod.id));
+        }
+      });
+    });
+  }
+  return Array.from(keys);
+}
+
+function inferModuleFromStorageKey(storageKey) {
+  if (!storageKey || storageKey === 'pedia_lesson_sessions_v1') return 'pediatrie';
+  const match = storageKey.match(/^mod_(.+)_lesson_sessions$/);
+  return match ? match[1] : 'pediatrie';
+}
 
 export function identifySessionModule(sess) {
   if (sess && sess.moduleId) {
@@ -322,7 +342,7 @@ export class LessonTracker {
     }
 
     if (typeof localStorage !== 'undefined') {
-      const storageKeys = ['pedia_lesson_sessions_v1', 'mod_psychiatrie_lesson_sessions'];
+      const storageKeys = getAllLessonSessionStorageKeys();
       storageKeys.forEach(k => {
         try {
           const raw = localStorage.getItem(k);
@@ -358,19 +378,19 @@ export class LessonTracker {
         }
       });
 
-      // 2. Module storage partitions in localStorage
+      // 2. Module storage partitions in localStorage (dynamic across all modules)
       if (typeof localStorage !== 'undefined') {
-        const storageKeys = ['pedia_lesson_sessions_v1', 'mod_psychiatrie_lesson_sessions'];
+        const storageKeys = getAllLessonSessionStorageKeys();
         storageKeys.forEach(k => {
           try {
             const raw = localStorage.getItem(k);
             if (raw) {
               const parsed = JSON.parse(raw);
               if (Array.isArray(parsed)) {
+                const fallbackMod = inferModuleFromStorageKey(k);
                 parsed.forEach(s => {
                   if (s && s.id && !sessionMap.has(s.id)) {
-                    const fallbackMod = k.includes('psychiatrie') ? 'psychiatrie' : 'pediatrie';
-                    const modId = identifySessionModule(s) || fallbackMod;
+                    const modId = (s.moduleId ? identifySessionModule(s) : null) || identifySessionModule(s) || fallbackMod;
                     sessionMap.set(s.id, { ...s, moduleId: modId });
                   }
                 });
@@ -390,7 +410,7 @@ export class LessonTracker {
   }
 
   /**
-   * Get recorded sessions, optionally filtered by module ('all' | 'pediatrie' | 'psychiatrie')
+   * Get recorded sessions, optionally filtered by module ('all' | moduleId)
    */
   getSessions(filterModuleId = 'all') {
     const all = this.getAllSessions();
@@ -414,11 +434,13 @@ export class LessonTracker {
 
       if (!map.has(key)) {
         const modId = sess.moduleId || identifySessionModule(sess);
+        const modMeta = typeof findModuleById === 'function' ? findModuleById(modId) : null;
+        const moduleTitle = modId === 'psychiatrie' ? 'Psychiatrie' : (modId === 'pediatrie' ? 'Pédiatrie' : (modMeta?.title || modId));
         map.set(key, {
           lessonName: sess.lessonName.trim(),
           chapterId: sess.chapterId || null,
           moduleId: modId,
-          moduleTitle: modId === 'psychiatrie' ? 'Psychiatrie' : 'Pédiatrie',
+          moduleTitle,
           totalDurationSeconds: 0,
           sessionsCount: 0,
           lastSessionTimestamp: 0,
@@ -473,23 +495,22 @@ export class LessonTracker {
 
     if (toAdd.length > 0) {
       if (typeof localStorage !== 'undefined') {
-        const pediaToAdd = toAdd.filter(s => s.moduleId === 'pediatrie');
-        const psyToAdd = toAdd.filter(s => s.moduleId === 'psychiatrie');
+        const groupedByMod = new Map();
+        toAdd.forEach(s => {
+          const modId = s.moduleId || 'pediatrie';
+          if (!groupedByMod.has(modId)) groupedByMod.set(modId, []);
+          groupedByMod.get(modId).push(s);
+        });
 
-        if (pediaToAdd.length > 0) {
+        for (const [modId, items] of groupedByMod.entries()) {
+          const storageKey = typeof resolveStorageKey === 'function'
+            ? resolveStorageKey('lesson_sessions', modId)
+            : `mod_${modId}_lesson_sessions`;
           try {
-            const raw = localStorage.getItem('pedia_lesson_sessions_v1');
+            const raw = localStorage.getItem(storageKey);
             const list = (raw && Array.isArray(JSON.parse(raw))) ? JSON.parse(raw) : [];
-            const combined = [...list, ...pediaToAdd].sort((a, b) => (b.endTime || 0) - (a.endTime || 0));
-            localStorage.setItem('pedia_lesson_sessions_v1', JSON.stringify(combined));
-          } catch (e) {}
-        }
-        if (psyToAdd.length > 0) {
-          try {
-            const raw = localStorage.getItem('mod_psychiatrie_lesson_sessions');
-            const list = (raw && Array.isArray(JSON.parse(raw))) ? JSON.parse(raw) : [];
-            const combined = [...list, ...psyToAdd].sort((a, b) => (b.endTime || 0) - (a.endTime || 0));
-            localStorage.setItem('mod_psychiatrie_lesson_sessions', JSON.stringify(combined));
+            const combined = [...list, ...items].sort((a, b) => (b.endTime || 0) - (a.endTime || 0));
+            localStorage.setItem(storageKey, JSON.stringify(combined));
           } catch (e) {}
         }
       }

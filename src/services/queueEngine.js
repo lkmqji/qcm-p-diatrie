@@ -834,10 +834,10 @@ ${expText}`;
   }
 
   /**
-   * Daily QCM counter for current day
+   * Daily QCM counter for current day (strictly aligned with local calendar date)
    */
   getTodayTracker() {
-    const todayStr = new Date().toISOString().slice(0, 10);
+    const todayStr = this.getTodayDateStr();
     try {
       const raw = localStorage.getItem(getTodayTrackerKey());
       if (raw) {

@@ -2,6 +2,7 @@
 // PédiaDrill Unified Client Bundle
 // ==========================================
 (function() {
+// --- src/services/moduleCatalog.js ---
 // ============================================================
 // Service de Catalogue des Modules et Gestion du Cursus Médical
 // Cartographie intégrale des 6 années et 46 modules (Mystidia Exams)
@@ -94,8 +95,8 @@ const MEDICAL_YEARS = [
     shortTitle: "5ème Année",
     cycle: "Pathologie Médicale & Chirurgicale II",
     modulesCount: 6,
-    coursesCount: 212,
-    qcmCount: 9035,
+    coursesCount: 211,
+    qcmCount: 9537,
     modules: [
       { id: "pediatrie", title: "Pédiatrie & Chirurgie Pédiatrique", courses: 35, qcm: 1905, available: true },
       { id: "locomoteur_5", title: "Appareil Locomoteur (Ortho & Rhumato)", courses: 47, qcm: 2089, available: false },
@@ -131,6 +132,7 @@ const MEDICAL_YEARS = [
 // Module actif courant (persistance LocalStorage)
 const ACTIVE_MODULE_STORAGE_KEY = 'pediadrill_active_module_id';
 const EXAM_DATE_STORAGE_PREFIX = 'pediadrill_exam_date_';
+const EXAM_DATES_UPDATED_AT_KEY = 'pediadrill_exam_dates_updated_at';
 
 function getActiveModuleId() {
   try {
@@ -191,6 +193,20 @@ function getExamDate(moduleId) {
   }
 }
 
+function getExamDatesUpdatedAt() {
+  try {
+    return Number(localStorage.getItem(EXAM_DATES_UPDATED_AT_KEY) || 0);
+  } catch (e) {
+    return 0;
+  }
+}
+
+function setExamDatesUpdatedAt(ts = Date.now()) {
+  try {
+    localStorage.setItem(EXAM_DATES_UPDATED_AT_KEY, String(Number(ts) || Date.now()));
+  } catch (e) {}
+}
+
 function setExamDate(dateStr, moduleId) {
   const targetId = moduleId || getActiveModuleId();
   try {
@@ -199,6 +215,7 @@ function setExamDate(dateStr, moduleId) {
     } else {
       localStorage.setItem(EXAM_DATE_STORAGE_PREFIX + targetId, dateStr);
     }
+    setExamDatesUpdatedAt(Date.now());
   } catch (e) {
     console.error('[moduleCatalog] Erreur sauvegarde date examen', e);
   }
@@ -219,15 +236,47 @@ function getAllExamDates() {
   return dates;
 }
 
-function setAllExamDates(datesMap) {
+function setAllExamDates(datesMap, remoteUpdatedAt = null, syncDeletions = false) {
   if (!datesMap || typeof datesMap !== 'object') return false;
+  const localTs = getExamDatesUpdatedAt();
+  if (remoteUpdatedAt !== null && Number(remoteUpdatedAt) < localTs) {
+    return false;
+  }
+
   let changed = false;
-  for (const [modId, dateStr] of Object.entries(datesMap)) {
-    const current = getExamDate(modId);
-    if (current !== dateStr) {
-      setExamDate(dateStr, modId);
-      changed = true;
+  if (syncDeletions) {
+    for (const y of MEDICAL_YEARS) {
+      for (const m of y.modules) {
+        const nextVal = datesMap[m.id] || '';
+        const current = getExamDate(m.id);
+        if (current !== nextVal) {
+          if (!nextVal) {
+            localStorage.removeItem(EXAM_DATE_STORAGE_PREFIX + m.id);
+          } else {
+            localStorage.setItem(EXAM_DATE_STORAGE_PREFIX + m.id, nextVal);
+          }
+          changed = true;
+        }
+      }
     }
+  } else {
+    for (const [modId, dateStr] of Object.entries(datesMap)) {
+      const current = getExamDate(modId);
+      if (current !== dateStr) {
+        if (!dateStr) {
+          localStorage.removeItem(EXAM_DATE_STORAGE_PREFIX + modId);
+        } else {
+          localStorage.setItem(EXAM_DATE_STORAGE_PREFIX + modId, dateStr);
+        }
+        changed = true;
+      }
+    }
+  }
+
+  if (remoteUpdatedAt !== null) {
+    setExamDatesUpdatedAt(Number(remoteUpdatedAt));
+  } else if (changed) {
+    setExamDatesUpdatedAt(Date.now());
   }
   return changed;
 }
@@ -313,11 +362,14 @@ if (typeof window !== 'undefined') {
     setExamDate,
     getAllExamDates,
     setAllExamDates,
+    getExamDatesUpdatedAt,
+    setExamDatesUpdatedAt,
     getExamCountdown
   };
 }
 
 
+// --- src/services/storageScope.js ---
 // ============================================================
 // Service de Partitionnement du Stockage Local (Scoped Storage)
 // Isole les données par module médical sans aucune perte de données
@@ -456,24 +508,39 @@ if (typeof window !== 'undefined') {
 }
 
 
-// Gemini API Service with Multi-Key Pool, Round-Robin Rotation, Resilience Cascade & Local Fallback (100% Modèles Flash)
-const _k = (b64) => typeof atob !== 'undefined' ? atob(b64) : Buffer.from(b64, 'base64').toString('utf-8');
+// --- src/services/gemini.js ---
+// Gemini API Service with User Multi-Key Pool, Round-Robin Rotation, Resilience Cascade & Local Fallback (100% Modèles Flash)
 
-const GEMINI_KEY_REGISTRY = {
-  PediaDrill1: _k("QVEuQWI4Uk42S1BpUkc2ZE1JN3dsa25pTVhIbVpBcTRmREp0M3pqaF95THd3NlMxQTdZc3c="),
-  PediaDrill2: _k("QVEuQWI4Uk42TEdIbEZLNk03ck9HcUNfUjB3OG1kM2NtMWZNZmVSSTJhRVl0Y3g0SjBtS2c="),
-  PediaDrill3: _k("QVEuQWI4Uk42SW9yd0RhTXpsaXZBX3VObU81V1VWQ213WXNUNlJ2VnNuVEpDeHljNjR1RkE="),
-  PediaDrill4: _k("QVEuQWI4Uk42SURhd2xRemRDQzZDRnZoNmJlaDRoS2haVkFyQTR2c0dWbHQwaVZqTlZoUnc=")
-};
+function resolveAiModuleContext(question = null) {
+  const uid = question && question.uid ? String(question.uid) : '';
+  const activeModId = (typeof getActiveModuleId === 'function') ? getActiveModuleId() : 'pediatrie';
+  const modId = uid.startsWith('psy_') ? 'psychiatrie' : activeModId;
+  const modMeta = (typeof findModuleById === 'function') ? findModuleById(modId) : null;
 
-const DEFAULT_GEMINI_KEYS = [
-  GEMINI_KEY_REGISTRY.PediaDrill4,
-  GEMINI_KEY_REGISTRY.PediaDrill1,
-  GEMINI_KEY_REGISTRY.PediaDrill2,
-  GEMINI_KEY_REGISTRY.PediaDrill3
-];
-const DEFAULT_GEMINI_KEY = DEFAULT_GEMINI_KEYS[0];
-const OLD_DEFAULT_GEMINI_KEY = _k("QVEuQWI4Uk42SW5ObXRfc0QyanRPV3RmUDV2ZWF6bEpnTUVKODV2TmZYZjJCNlN0LV9nVnc=");
+  if (modId === 'psychiatrie') {
+    return {
+      moduleId: 'psychiatrie',
+      moduleName: 'Psychiatrie',
+      specialtyTitle: 'psychiatrie et pédopsychiatrie',
+      tutorTitle: 'Tuteur IA Psychiatrie',
+      defaultChapter: 'Psychiatrie Générale',
+      populationContext: 'le tableau clinique et les critères diagnostiques (DSM/CIM)'
+    };
+  }
+
+  const title = (modMeta && modMeta.title) ? modMeta.title : 'Pédiatrie & Chirurgie Pédiatrique';
+  const shortName = modId === 'pediatrie' ? 'Pédiatrie' : title;
+  return {
+    moduleId: modId,
+    moduleName: shortName,
+    specialtyTitle: modId === 'pediatrie' ? 'pédiatrie et chirurgie pédiatrique' : title.toLowerCase(),
+    tutorTitle: `Tuteur IA ${shortName}`,
+    defaultChapter: `${shortName} Générale`,
+    populationContext: modId === 'pediatrie'
+      ? "les données de l'âge de l'enfant"
+      : 'les éléments sémiologiques et paracliniques clés'
+  };
+}
 
 /**
  * Cascade de résilience ordonnée : EXCLUSIVEMENT des modèles Flash
@@ -613,13 +680,21 @@ class GeminiService {
       stored = (typeof localStorage !== 'undefined' ? localStorage.getItem('pedia_gemini_key') || '' : '').trim();
     } catch (_) {}
 
-    if (stored && stored !== OLD_DEFAULT_GEMINI_KEY) {
-      // Supporte une clé unique ou une liste séparée par virgule/retour ligne
+    if (stored) {
+      // Supporte une clé unique ou plusieurs clés séparées par virgule, point-virgule ou retour à la ligne
       const parsed = stored.split(/[\n,;]+/).map(k => k.trim()).filter(Boolean);
-      this.apiKeys = parsed.length > 0 ? parsed : [...DEFAULT_GEMINI_KEYS];
+      this.apiKeys = Array.from(new Set(parsed));
     } else {
-      this.apiKeys = [...DEFAULT_GEMINI_KEYS];
+      this.apiKeys = [];
     }
+  }
+
+  hasApiKeys() {
+    return Array.isArray(this.apiKeys) && this.apiKeys.length > 0;
+  }
+
+  getKeyCount() {
+    return Array.isArray(this.apiKeys) ? this.apiKeys.length : 0;
   }
 
   _loadQuarantines() {
@@ -662,7 +737,7 @@ class GeminiService {
   }
 
   getApiKey() {
-    return this.apiKeys.join(', ');
+    return this.apiKeys.join('\n');
   }
 
   _isModelQuarantined(model) {
@@ -699,11 +774,9 @@ class GeminiService {
 
   _getKeyAlias(key) {
     if (!key) return 'Inconnue';
-    if (key === GEMINI_KEY_REGISTRY.PediaDrill1) return 'PediaDrill1';
-    if (key === GEMINI_KEY_REGISTRY.PediaDrill2) return 'PediaDrill2';
-    if (key === GEMINI_KEY_REGISTRY.PediaDrill3) return 'PediaDrill3';
-    if (key === GEMINI_KEY_REGISTRY.PediaDrill4) return 'PediaDrill4';
-    return key.slice(0, 12) + '...';
+    const idx = this.apiKeys.indexOf(key);
+    const prefix = idx >= 0 ? `Clé #${idx + 1}` : 'Clé';
+    return `${prefix} (${key.slice(0, 8)}...)`;
   }
 
   /**
@@ -711,9 +784,13 @@ class GeminiService {
    * - Alterne équitablement les requêtes sur le pool de clés API pour ne pas saturer les RPM/RPD
    * - En cas de 429 sur une clé, bascule instantanément sur la clé suivante pour le même modèle
    * - Quarantaine intelligente mémorisée dans localStorage pour éliminer les latences réseau mortes
-   * - Timeout réduit à 6 secondes par tentative
+   * - Timeout adaptatif (7s ou 18s)
    */
   async callWithFallback(prompt, systemInstruction = '', maxTokens = 2048) {
+    if (!this.hasApiKeys()) {
+      throw new Error('NO_API_KEY_CONFIGURED: Aucune clé API Gemini configurée dans les Paramètres.');
+    }
+
     const errors = [];
 
     // Déterminer le modèle prioritaire (dernier modèle ayant réussi ou activeModel non-quarantiné)
@@ -813,7 +890,10 @@ class GeminiService {
       throw new Error(`Modèle non autorisé (${model}) : seuls les modèles Flash sont autorisés.`);
     }
 
-    const keyToUse = apiKey || this.apiKeys[this.keyIndex % (this.apiKeys.length || 1)] || DEFAULT_GEMINI_KEY;
+    const keyToUse = apiKey || (this.apiKeys.length > 0 ? this.apiKeys[this.keyIndex % this.apiKeys.length] : '');
+    if (!keyToUse) {
+      throw new Error('NO_API_KEY_CONFIGURED: Aucune clé API Gemini configurée.');
+    }
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${keyToUse}`;
     
     const contents = [
@@ -877,8 +957,9 @@ class GeminiService {
    * Evaluate CROQ free text answer against standard official answer
    * Must return score (0-100), isValid (>= 75%), explanation, modelUsed
    */
-  async evaluateCroq(questionText, clinicalCase, expectedAnswer, userAnswer) {
-    const systemPrompt = `Tu es un professeur expert en pédiatrie et jury de concours de résidanat et de 5ème année de médecine.
+  async evaluateCroq(questionText, clinicalCase, expectedAnswer, userAnswer, question = null) {
+    const ctx = resolveAiModuleContext(question);
+    const systemPrompt = `Tu es un professeur expert en ${ctx.specialtyTitle} et jury de concours de résidanat et de 5ème année de médecine.
 Ta mission est d'évaluer la réponse d'un étudiant à une question ouverte (CROQ / QROC) médicale par rapport à la réponse type attendue.
 Critères d'évaluation :
 - Sois rigoureux sur le plan sémantique et médical (synonymes médicaux, acronymes reconnus, termes équivalents doivent être acceptés).
@@ -914,7 +995,11 @@ RÉPONSE DONNÉE PAR L'ÉTUDIANT : ${userAnswer}
         modelUsed: result.modelUsed
       };
     } catch (err) {
-      console.warn("Gemini CROQ evaluation failed, fallback to local semantic evaluation:", err);
+      if (err && String(err.message || '').includes('NO_API_KEY_CONFIGURED')) {
+        console.info("CROQ evaluation using local semantic evaluator (no Gemini API key configured).");
+      } else {
+        console.warn("Gemini CROQ evaluation failed, fallback to local semantic evaluation:", err);
+      }
       return this.localEvaluateCroq(expectedAnswer, userAnswer);
     }
   }
@@ -986,12 +1071,11 @@ ${clinicalCaseContext.chronologySummary}
 `;
     }
 
-    const isPsy = (question.uid && question.uid.startsWith('psy_')) ||
-                  (typeof getActiveModuleId === 'function' && getActiveModuleId() === 'psychiatrie');
-    const specialtyTitle = isPsy ? 'psychiatrie et pédopsychiatrie' : 'pédiatrie et chirurgie pédiatrique';
-    const moduleName = isPsy ? 'Psychiatrie' : 'Pédiatrie';
-    const defaultChapter = isPsy ? 'Psychiatrie Générale' : 'Pédiatrie Générale';
-    const populationContext = isPsy ? 'le tableau clinique et les critères diagnostiques (DSM/CIM)' : "les données de l'âge de l'enfant";
+    const ctx = resolveAiModuleContext(question);
+    const specialtyTitle = ctx.specialtyTitle;
+    const moduleName = ctx.moduleName;
+    const defaultChapter = ctx.defaultChapter;
+    const populationContext = ctx.populationContext;
 
     const systemPrompt = `Tu es un Professeur de ${specialtyTitle} et jury de concours de résidanat en médecine.
 L'étudiant s'entraîne sur un QCM/CROQ et a besoin d'une explication CLINIQUE COMPLÈTE, PARFAITEMENT STRUCTURÉE et PERCUTANTE.
@@ -1061,14 +1145,14 @@ Rédige l'explication clinique complète et approfondie sans aucune coupure. ${c
       localNote += `\n`;
 
       localNote += `### 3. 🩺 DÉMARCHE DE RAISONNEMENT & CONDUITE CLINIQUE :\n`;
-      localNote += `* **Thème clé :** *${question.chapterTitle || 'Pédiatrie Générale'}*\n`;
+      localNote += `* **Thème clé :** *${question.chapterTitle || defaultChapter}*\n`;
       if (question.clinical_case) {
         localNote += `* **Contexte clinique :** ${question.clinical_case.slice(0, 180)}...\n`;
       }
-      localNote += `* **Conduite pratique :** Toujours hiérarchiser les signes de gravité vitale (détresse respiratoire, hémodynamique, neurologique) avant tout examen invasif ou traitement d'épreuve.\n\n`;
+      localNote += `* **Conduite pratique :** Toujours hiérarchiser les signes de gravité vitale avant tout examen invasif ou traitement d'épreuve.\n\n`;
 
       localNote += `### 4. 💡 RÈGLE D'OR & MÉMO CONCOURS :\n`;
-      localNote += `> **Règle d'or :** En pédiatrie (*${question.chapterTitle || 'Pédiatrie'}*), toujours retenir la notion clé : **${corrStr}** (conforme aux recommandations HAS et consensus officiels).`;
+      localNote += `> **Règle d'or :** En ${moduleName.toLowerCase()} (*${question.chapterTitle || moduleName}*), toujours retenir la notion clé : **${corrStr}** (conforme aux recommandations et consensus officiels).`;
 
       return {
         note: cleanLatexMath(localNote),
@@ -1083,7 +1167,9 @@ Rédige l'explication clinique complète et approfondie sans aucune coupure. ${c
    * Explains the clinical case, highlights the traps of failed questions,
    * provides clinical reasoning and a high-yield exam memo.
    */
-  async generateClinicalCaseSynthesisNote(clinicalCaseText, subQuestions = [], results = [], chapterTitle = "Pédiatrie") {
+  async generateClinicalCaseSynthesisNote(clinicalCaseText, subQuestions = [], results = [], chapterTitle = null) {
+    const ctx = resolveAiModuleContext(subQuestions && subQuestions[0] ? subQuestions[0] : null);
+    const effectiveChapterTitle = chapterTitle || ctx.moduleName;
     let questionsBreakdown = "";
     subQuestions.forEach((sq, idx) => {
       const res = results[idx] || {};
@@ -1100,7 +1186,7 @@ Rédige l'explication clinique complète et approfondie sans aucune coupure. ${c
 
     const failedQuestions = results.filter(r => !r.isCorrect);
 
-    const systemPrompt = `Tu es un Professeur de médecine et membre du jury du concours de résidanat.
+    const systemPrompt = `Tu es un Professeur de ${ctx.specialtyTitle} et membre du jury du concours de résidanat.
 L'étudiant vient de résoudre l'intégralité d'un dossier de Cas Clinique et a commis des erreurs.
 Tu dois rédiger UNE SEULE NOTE DE SYNTHÈSE CLINIQUE CONSOLIDÉE, claire, percutante et haut rendement concours.
 Va droit au but avec un style médical soigné, rigoureux et précis (mots-clés en gras, listes à puces).
@@ -1124,7 +1210,7 @@ Formule une règle mémo percutante pour ne plus jamais se faire piéger sur ce 
 - INTERDICTION TOTALE d'utiliser la syntaxe LaTeX (\\text, \\mathbf, \\frac, \\times...).
 - Écris tout en français médical clair ("12 g/dl", "5 mg/kg", "x", "/").`;
 
-    const userPrompt = `MODULE : ${chapterTitle}
+    const userPrompt = `MODULE : ${ctx.moduleName} - ${effectiveChapterTitle}
 ÉNONCÉ DU CAS CLINIQUE :
 ${clinicalCaseText}
 
@@ -1156,7 +1242,7 @@ Rédige la note de synthèse clinique complète consolidée.`;
       localNote += `\n`;
 
       localNote += `### 3. 🩺 DÉMARCHE DE RAISONNEMENT GLOBALE :\n`;
-      localNote += `* **Cours associé :** *${chapterTitle}*\n`;
+      localNote += `* **Cours associé :** *${effectiveChapterTitle}*\n`;
       localNote += `* **Priorité clinique :** Dans les cas cliniques à questions liées, toujours analyser le tableau dans sa globalité sans se précipiter sur un diagnostic hâtif.\n\n`;
 
       localNote += `### 4. 💡 RÈGLE D'OR CONCOURS :\n`;
@@ -1200,10 +1286,11 @@ ${clinicalCaseContext.chronologySummary}
 `;
     }
 
-    const systemInstruction = `Tu es le Tuteur IA Pédiatrique de PédiaDrill, professeur universitaire et chef de clinique en pédiatrie.
+    const ctx = resolveAiModuleContext(question);
+    const systemInstruction = `Tu es le ${ctx.tutorTitle} de PédiaDrill, professeur universitaire et chef de clinique en ${ctx.specialtyTitle}.
 L'étudiant s'entraîne sur un QCM/CROQ précis et te pose une question directe pour mieux comprendre.
 Tu as le contexte médical complet sous les yeux :
-- Module : Pédiatrie (${question.chapterTitle || 'Pédiatrie Générale'})
+- Module : ${ctx.moduleName} (${question.chapterTitle || ctx.defaultChapter})
 - Énoncé de la question active : "${question.question || question.statement || ''}"
 ${clinicalSection ? clinicalSection : (question.clinical_case ? `- Cas clinique : "${question.clinical_case}"\n` : '')}
 ${allOptionsText ? `- Propositions de la question active :\n${allOptionsText}\n` : '- Type : Question ouverte (CROQ)\n'}
@@ -1247,8 +1334,14 @@ Consignes pédagogiques strictes :
 }
 const geminiService = new GeminiService();
 
+if (typeof window !== 'undefined') {
+  window.geminiService = geminiService;
+}
 
 
+
+
+// --- src/services/queueEngine.js ---
 // Spaced Repetition Queue Engine with Dynamic Penalty & Mastery Thresholds
 
 function getStorageKey() {
@@ -2084,10 +2177,10 @@ ${expText}`;
   }
 
   /**
-   * Daily QCM counter for current day
+   * Daily QCM counter for current day (strictly aligned with local calendar date)
    */
   getTodayTracker() {
-    const todayStr = new Date().toISOString().slice(0, 10);
+    const todayStr = this.getTodayDateStr();
     try {
       const raw = localStorage.getItem(getTodayTrackerKey());
       if (raw) {
@@ -2219,6 +2312,7 @@ ${expText}`;
 }
 
 
+// --- src/services/studyTracker.js ---
 // Study Progress & Analytics Tracking Service for PédiaDrill
 // Manages daily study history, intelligent sessions, precise question timers, streaks, first-pass discovery tracking, and analytics.
 
@@ -2863,8 +2957,29 @@ class StudyTracker {
 const studyTracker = new StudyTracker();
 
 
+// --- src/services/lessonTracker.js ---
 // Lesson Timer & Study Time Tracking Service for PédiaDrill
 // Tracks focused study time per lesson/chapter with persistent stopwatch, background tracking, and summary analytics.
+
+function getAllLessonSessionStorageKeys() {
+  const keys = new Set(['pedia_lesson_sessions_v1', 'mod_psychiatrie_lesson_sessions']);
+  if (Array.isArray(MEDICAL_YEARS)) {
+    MEDICAL_YEARS.forEach(year => {
+      (year.modules || []).forEach(mod => {
+        if (mod && mod.id && typeof resolveStorageKey === 'function') {
+          keys.add(resolveStorageKey('lesson_sessions', mod.id));
+        }
+      });
+    });
+  }
+  return Array.from(keys);
+}
+
+function inferModuleFromStorageKey(storageKey) {
+  if (!storageKey || storageKey === 'pedia_lesson_sessions_v1') return 'pediatrie';
+  const match = storageKey.match(/^mod_(.+)_lesson_sessions$/);
+  return match ? match[1] : 'pediatrie';
+}
 
 function identifySessionModule(sess) {
   if (sess && sess.moduleId) {
@@ -3185,7 +3300,7 @@ class LessonTracker {
     }
 
     if (typeof localStorage !== 'undefined') {
-      const storageKeys = ['pedia_lesson_sessions_v1', 'mod_psychiatrie_lesson_sessions'];
+      const storageKeys = getAllLessonSessionStorageKeys();
       storageKeys.forEach(k => {
         try {
           const raw = localStorage.getItem(k);
@@ -3221,19 +3336,19 @@ class LessonTracker {
         }
       });
 
-      // 2. Module storage partitions in localStorage
+      // 2. Module storage partitions in localStorage (dynamic across all modules)
       if (typeof localStorage !== 'undefined') {
-        const storageKeys = ['pedia_lesson_sessions_v1', 'mod_psychiatrie_lesson_sessions'];
+        const storageKeys = getAllLessonSessionStorageKeys();
         storageKeys.forEach(k => {
           try {
             const raw = localStorage.getItem(k);
             if (raw) {
               const parsed = JSON.parse(raw);
               if (Array.isArray(parsed)) {
+                const fallbackMod = inferModuleFromStorageKey(k);
                 parsed.forEach(s => {
                   if (s && s.id && !sessionMap.has(s.id)) {
-                    const fallbackMod = k.includes('psychiatrie') ? 'psychiatrie' : 'pediatrie';
-                    const modId = identifySessionModule(s) || fallbackMod;
+                    const modId = (s.moduleId ? identifySessionModule(s) : null) || identifySessionModule(s) || fallbackMod;
                     sessionMap.set(s.id, { ...s, moduleId: modId });
                   }
                 });
@@ -3253,7 +3368,7 @@ class LessonTracker {
   }
 
   /**
-   * Get recorded sessions, optionally filtered by module ('all' | 'pediatrie' | 'psychiatrie')
+   * Get recorded sessions, optionally filtered by module ('all' | moduleId)
    */
   getSessions(filterModuleId = 'all') {
     const all = this.getAllSessions();
@@ -3277,11 +3392,13 @@ class LessonTracker {
 
       if (!map.has(key)) {
         const modId = sess.moduleId || identifySessionModule(sess);
+        const modMeta = typeof findModuleById === 'function' ? findModuleById(modId) : null;
+        const moduleTitle = modId === 'psychiatrie' ? 'Psychiatrie' : (modId === 'pediatrie' ? 'Pédiatrie' : (modMeta?.title || modId));
         map.set(key, {
           lessonName: sess.lessonName.trim(),
           chapterId: sess.chapterId || null,
           moduleId: modId,
-          moduleTitle: modId === 'psychiatrie' ? 'Psychiatrie' : 'Pédiatrie',
+          moduleTitle,
           totalDurationSeconds: 0,
           sessionsCount: 0,
           lastSessionTimestamp: 0,
@@ -3336,23 +3453,22 @@ class LessonTracker {
 
     if (toAdd.length > 0) {
       if (typeof localStorage !== 'undefined') {
-        const pediaToAdd = toAdd.filter(s => s.moduleId === 'pediatrie');
-        const psyToAdd = toAdd.filter(s => s.moduleId === 'psychiatrie');
+        const groupedByMod = new Map();
+        toAdd.forEach(s => {
+          const modId = s.moduleId || 'pediatrie';
+          if (!groupedByMod.has(modId)) groupedByMod.set(modId, []);
+          groupedByMod.get(modId).push(s);
+        });
 
-        if (pediaToAdd.length > 0) {
+        for (const [modId, items] of groupedByMod.entries()) {
+          const storageKey = typeof resolveStorageKey === 'function'
+            ? resolveStorageKey('lesson_sessions', modId)
+            : `mod_${modId}_lesson_sessions`;
           try {
-            const raw = localStorage.getItem('pedia_lesson_sessions_v1');
+            const raw = localStorage.getItem(storageKey);
             const list = (raw && Array.isArray(JSON.parse(raw))) ? JSON.parse(raw) : [];
-            const combined = [...list, ...pediaToAdd].sort((a, b) => (b.endTime || 0) - (a.endTime || 0));
-            localStorage.setItem('pedia_lesson_sessions_v1', JSON.stringify(combined));
-          } catch (e) {}
-        }
-        if (psyToAdd.length > 0) {
-          try {
-            const raw = localStorage.getItem('mod_psychiatrie_lesson_sessions');
-            const list = (raw && Array.isArray(JSON.parse(raw))) ? JSON.parse(raw) : [];
-            const combined = [...list, ...psyToAdd].sort((a, b) => (b.endTime || 0) - (a.endTime || 0));
-            localStorage.setItem('mod_psychiatrie_lesson_sessions', JSON.stringify(combined));
+            const combined = [...list, ...items].sort((a, b) => (b.endTime || 0) - (a.endTime || 0));
+            localStorage.setItem(storageKey, JSON.stringify(combined));
           } catch (e) {}
         }
       }
@@ -3371,6 +3487,7 @@ class LessonTracker {
 const lessonTracker = new LessonTracker();
 
 
+// --- src/services/firebaseSyncService.js ---
 // Firebase Authentication (Google Sign-In) & Firestore Real-time Sync Service for PédiaDrill
 // Provides seamless multi-device progress sync across PC, Smartphone, and Tablet.
 // Supports multi-modules, global profile sync (exam dates, clinical mode, Gemini API key, timers),
@@ -3554,6 +3671,7 @@ class FirebaseSyncService {
     this.isPushing = false;
     this.isApplyingRemoteSnapshot = false; // Anti ping-pong loop guard
     this.lastLocalModuleSwitchTimestamp = Date.now();
+    this._syncLoginPromise = null;
 
     this.lastSyncedAt = localStorage.getItem('pedia_firebase_last_synced') || null;
     this.status = 'idle'; // 'idle' | 'syncing' | 'synced' | 'error' | 'offline'
@@ -3720,6 +3838,7 @@ class FirebaseSyncService {
           this.user = nativeResult.user;
         }
 
+        await this.syncOnLogin();
         this.updateStatus('synced', `Connecté avec ${this.user.displayName || this.user.email}`);
         return { success: true, user: this.user };
       } catch (nativeErr) {
@@ -3743,6 +3862,7 @@ class FirebaseSyncService {
       try {
         const result = await window.firebase.auth().signInWithPopup(provider);
         this.user = result.user;
+        await this.syncOnLogin();
         this.updateStatus('synced', `Connecté avec ${this.user.displayName || this.user.email}`);
         return { success: true, user: this.user };
       } catch (popupErr) {
@@ -4007,31 +4127,52 @@ class FirebaseSyncService {
     try {
       let uiNeedsRefresh = false;
 
-      // 1. Sync Exam Dates
+      // 1. Sync Exam Dates (respecting timestamp & propagating deletions)
       if (remoteProfile.examDates && typeof remoteProfile.examDates === 'object') {
         if (typeof setAllExamDates === 'function') {
-          const changed = setAllExamDates(remoteProfile.examDates);
-          if (changed) uiNeedsRefresh = true;
+          const remoteExamTs = Number(remoteProfile.examDatesUpdatedAt || 0);
+          const localExamTs = typeof getExamDatesUpdatedAt === 'function' ? getExamDatesUpdatedAt() : 0;
+          if (remoteExamTs >= localExamTs) {
+            const changed = setAllExamDates(remoteProfile.examDates, remoteExamTs, true);
+            if (changed) uiNeedsRefresh = true;
+          }
         }
       }
 
-      // 2. Sync Settings (Clinical Mode, Gemini API Key)
+      // 2. Sync Settings (Clinical Mode, Gemini API Key) respecting settingsUpdatedAt
       if (remoteProfile.settings && typeof remoteProfile.settings === 'object') {
-        const { clinicalCaseMode, geminiApiKey } = remoteProfile.settings;
-        if (clinicalCaseMode) {
-          const localMode = localStorage.getItem('pedia_clinical_case_mode');
-          if (localMode !== clinicalCaseMode) {
-            localStorage.setItem('pedia_clinical_case_mode', clinicalCaseMode);
-            uiNeedsRefresh = true;
-          }
-        }
-        if (geminiApiKey && typeof geminiApiKey === 'string' && geminiApiKey.trim()) {
-          const localKey = (localStorage.getItem('pedia_gemini_key') || '').trim();
-          if (!localKey || localKey !== geminiApiKey.trim()) {
-            localStorage.setItem('pedia_gemini_key', geminiApiKey.trim());
-            if (typeof window !== 'undefined' && window.geminiService) {
-              window.geminiService.setApiKey(geminiApiKey.trim());
+        const remoteSettingsTs = Number(remoteProfile.settingsUpdatedAt || 0);
+        const localSettingsTs = Number(localStorage.getItem('pedia_settings_updated_at') || 0);
+        const canApplySettings = remoteSettingsTs === 0 || remoteSettingsTs >= localSettingsTs;
+
+        if (canApplySettings) {
+          const { clinicalCaseMode, geminiApiKey } = remoteProfile.settings;
+          if (clinicalCaseMode) {
+            const localMode = localStorage.getItem('pedia_clinical_case_mode');
+            if (localMode !== clinicalCaseMode) {
+              localStorage.setItem('pedia_clinical_case_mode', clinicalCaseMode);
+              uiNeedsRefresh = true;
             }
+          }
+          if (typeof geminiApiKey === 'string') {
+            const trimmedRemoteKey = geminiApiKey.trim();
+            const localKey = (localStorage.getItem('pedia_gemini_key') || '').trim();
+            if (trimmedRemoteKey && localKey !== trimmedRemoteKey) {
+              localStorage.setItem('pedia_gemini_key', trimmedRemoteKey);
+              if (typeof window !== 'undefined' && window.geminiService) {
+                window.geminiService.setApiKey(trimmedRemoteKey);
+              }
+              uiNeedsRefresh = true;
+            } else if (!trimmedRemoteKey && remoteSettingsTs > localSettingsTs && localKey) {
+              localStorage.removeItem('pedia_gemini_key');
+              if (typeof window !== 'undefined' && window.geminiService) {
+                window.geminiService.setApiKey('');
+              }
+              uiNeedsRefresh = true;
+            }
+          }
+          if (remoteSettingsTs > 0) {
+            localStorage.setItem('pedia_settings_updated_at', String(remoteSettingsTs));
           }
         }
       }
@@ -4122,32 +4263,39 @@ class FirebaseSyncService {
    */
   async syncOnLogin() {
     if (!this.user || !window.firebase || !window.firebase.firestore) return;
+    if (this._syncLoginPromise) return this._syncLoginPromise;
 
-    try {
-      const db = window.firebase.firestore();
-      
-      // 1. Run transparent migration if legacy format detected
-      await this.checkAndMigrateLegacyData(db);
+    this._syncLoginPromise = (async () => {
+      try {
+        const db = window.firebase.firestore();
+        
+        // 1. Run transparent migration if legacy format detected
+        await this.checkAndMigrateLegacyData(db);
 
-      // 2. Setup listeners
-      const currentModId = getActiveModuleId();
-      this.setupProfileListener();
-      this.setupModuleListener(currentModId);
+        // 2. Setup listeners
+        const currentModId = getActiveModuleId();
+        this.setupProfileListener();
+        this.setupModuleListener(currentModId);
 
-      // 3. Pull and merge initial remote state
-      await this.pullFromFirestore();
+        // 3. Pull and merge initial remote state
+        await this.pullFromFirestore();
 
-      // 4. Push combined state back
-      await this.pushToFirestore();
+        // 4. Push combined state back
+        await this.pushToFirestore();
 
-      this.lastSyncedAt = Date.now().toString();
-      localStorage.setItem('pedia_firebase_last_synced', this.lastSyncedAt);
-      this.updateStatus('synced', `Profil & progression synchronisés avec votre compte Google !`);
-    } catch (err) {
-      console.error('Sync on login error:', err);
-      const friendly = this.getFriendlyFirestoreError(err);
-      this.updateStatus('error', friendly);
-    }
+        this.lastSyncedAt = Date.now().toString();
+        localStorage.setItem('pedia_firebase_last_synced', this.lastSyncedAt);
+        this.updateStatus('synced', `Profil & progression synchronisés avec votre compte Google !`);
+      } catch (err) {
+        console.error('Sync on login error:', err);
+        const friendly = this.getFriendlyFirestoreError(err);
+        this.updateStatus('error', friendly);
+      } finally {
+        this._syncLoginPromise = null;
+      }
+    })();
+
+    return this._syncLoginPromise;
   }
 
   /**
@@ -4228,19 +4376,21 @@ class FirebaseSyncService {
       const profileDocRef = db.collection('users').doc(this.user.uid).collection('profile').doc('state');
 
       const examDates = typeof getAllExamDates === 'function' ? getAllExamDates() : {};
+      const examDatesUpdatedAt = typeof getExamDatesUpdatedAt === 'function' ? getExamDatesUpdatedAt() : 0;
       const clinicalMode = localStorage.getItem('pedia_clinical_case_mode') || 'sequential';
       const geminiKey = localStorage.getItem('pedia_gemini_key') || '';
+      const settingsUpdatedAt = Number(localStorage.getItem('pedia_settings_updated_at') || 0);
 
       const profilePayload = sanitizeForFirestore({
         activeModuleId: getActiveModuleId(),
         activeModuleUpdatedAt: this.lastLocalModuleSwitchTimestamp || Date.now(),
         examDates,
-        examDatesUpdatedAt: Date.now(),
+        examDatesUpdatedAt: examDatesUpdatedAt || Date.now(),
         settings: {
           clinicalCaseMode: clinicalMode,
           geminiApiKey: geminiKey
         },
-        settingsUpdatedAt: Date.now(),
+        settingsUpdatedAt: settingsUpdatedAt || Date.now(),
         activeLessonTimer: (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.getActiveTimer === 'function')
           ? lessonTracker.getActiveTimer()
           : null,
@@ -4481,10 +4631,11 @@ class FirebaseSyncService {
 }
 
 
+// --- src/services/updateService.js ---
 // Update Management Service for PédiaDrill
 // Checks GitHub Releases for new APK versions, notifies the user, and triggers direct download.
 
-const CURRENT_APP_VERSION = '1.6.4';
+const CURRENT_APP_VERSION = '1.6.5';
 const GITHUB_REPO = 'lkmqji/qcm-p-diatrie';
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
 const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours auto-check cooldown
@@ -4723,743 +4874,28 @@ class UpdateService {
 const updateService = new UpdateService();
 
 
-// PédiaDrill - Application Controller & Orchestration
+// --- src/utils/formatters.js ---
+// ============================================================================
+// Utilitaires de Formatage Médical, Dates, Markdown & Debounce
+// ============================================================================
 
-// Global Data Access & O(1) Fast Lookup Maps
-function getDatasetForModule(moduleId) {
-  const modId = moduleId || getActiveModuleId();
-  if ((modId === 'psychiatrie' || modId === 'psychiatrie_5') && typeof window !== 'undefined' && window.PSY_QUESTIONS && window.PSY_CHAPTERS) {
-    return {
-      questions: window.PSY_QUESTIONS,
-      chapters: window.PSY_CHAPTERS
-    };
-  }
-  return {
-    questions: (typeof window !== 'undefined' && window.PEDIA_QUESTIONS) || [],
-    chapters: (typeof window !== 'undefined' && window.PEDIA_CHAPTERS) || []
+function debounce(fn, delay = 200) {
+  let timerId = null;
+  return function debounced(...args) {
+    if (timerId) clearTimeout(timerId);
+    timerId = setTimeout(() => {
+      timerId = null;
+      fn.apply(this, args);
+    }, delay);
   };
-}
-
-let activeDataset = getDatasetForModule(getActiveModuleId());
-let allQuestions = activeDataset.questions;
-let allChapters = activeDataset.chapters;
-let questionsMap = new Map(allQuestions.map(q => [q.uid, q]));
-let chaptersMap = new Map(allChapters.map(c => [c.id, c]));
-
-// Services
-const queueEngine = new QueueEngine(allQuestions, allChapters);
-const firebaseSyncService = new FirebaseSyncService(
-  queueEngine,
-  (status, detail, user, lastSyncText) => {
-    updateGoogleAccountUI(status, detail, user, lastSyncText);
-  },
-  (mergedState) => {
-    // Whenever Firestore data is received and merged
-    updateDashboardUI();
-    if (currentView === 'notebook') renderNotebookUI();
-    if (currentView === 'stats') renderStatsUI();
-    updateArenaDailyBadge();
-    updateModalLocalSummary();
-    renderLessonTrackerUI();
-    updateLessonTimerTick();
-    refreshLucide();
-  },
-  (newRemoteModuleId) => {
-    // When a remote device switched the active module in real-time
-    if (!newRemoteModuleId || newRemoteModuleId === getActiveModuleId()) return;
-    if (currentView === 'arena' && !isCurrentQuestionAnswered) {
-      showAppToast(`📡 Module ${newRemoteModuleId} activé sur un autre appareil.`);
-    } else {
-      switchActiveModule(newRemoteModuleId, true);
-    }
-  }
-);
-
-// Local State
-let currentQuestion = null;
-let selectedOptionIds = new Set();
-let isEvaluating = false;
-let currentView = 'dashboard'; // 'dashboard' | 'arena' | 'notebook'
-let answeredHistory = []; // Buffer glissant des 5 derniers QCM répondus
-let historyCursor = -1; // -1 = QCM actif, 0 = dernier répondu (QCM -1), 1 = (QCM -2), etc.
-let isCurrentQuestionAnswered = false; // true dès que l'étudiant valide ou échoue le QCM
-
-function isArenaChapterRevealed() {
-  if (historyCursor >= 0) return true; // En mode consultation d'historique, QCM déjà répondu
-  if (isCurrentQuestionAnswered) return true; // Question active déjà répondue
-  const badge = document.getElementById('arena-chapter-title');
-  if (badge && badge.classList.contains('is-revealed')) return true;
-  return false;
-}
-
-function getEffectiveArenaQuestion() {
-  if (historyCursor >= 0 && answeredHistory[historyCursor]) {
-    return answeredHistory[historyCursor].question;
-  }
-  return currentQuestion;
-}
-
-// DOM Elements
-const views = {
-  dashboard: document.getElementById('view-dashboard'),
-  arena: document.getElementById('view-arena'),
-  notebook: document.getElementById('view-notebook'),
-  stats: document.getElementById('view-stats')
-};
-
-const modals = {
-  error: document.getElementById('modal-error'),
-  chapters: document.getElementById('modal-chapters'),
-  sync: document.getElementById('modal-sync'),
-  settings: document.getElementById('modal-settings'),
-  update: document.getElementById('modal-app-update')
-};
-
-// ============================================================================
-// INITIALIZATION
-// ============================================================================
-function initApp() {
-  queueEngine.setQuestions(allQuestions, allChapters);
-  scrubCorruptedAiExplanations();
-  studyTracker.seedFirstPassFromExistingStats(queueEngine.stats, queueEngine.getRawReasoningNotes());
-  updateDashboardUI();
-  setupEventListeners();
-  setupKeyboardShortcuts();
-  setupFirebaseService();
-  initLessonTracker();
-  refreshLucide();
-
-  // Register Service Worker for offline PWA & handle automatic update reload
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').then((reg) => {
-      reg.addEventListener('updatefound', () => {
-        const installingWorker = reg.installing;
-        if (installingWorker) {
-          installingWorker.addEventListener('statechange', () => {
-            if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              console.log('[PediaDrill] Nouvelle mise à jour SW prête, rechargement...');
-              window.location.reload();
-            }
-          });
-        }
-      });
-    }).catch(err => {
-      console.warn('SW registration:', err);
-    });
-
-    let swRefreshing = false;
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (!swRefreshing) {
-        swRefreshing = true;
-        window.location.reload();
-      }
-    });
-  }
-
-  // Check for app updates via GitHub Releases in background (with 4h cooldown)
-  setTimeout(() => {
-    if (typeof updateService !== 'undefined' && updateService) {
-      updateService.checkForUpdates(false);
-    }
-  }, 3000);
-}
-
-function updateModalLocalSummary() {
-  const summaryEl = document.getElementById('sync-local-summary');
-  if (!summaryEl) return;
-  const metrics = queueEngine.getDashboardMetrics();
-  const notesCount = queueEngine.getRawReasoningNotes().length;
-  summaryEl.textContent = `${metrics.masteredCount} maîtrisées • ${notesCount} note${notesCount > 1 ? 's' : ''} IA`;
-}
-
-function updateGoogleAccountUI(status, detail, user, lastSyncText) {
-  const btnHeaderLogin = document.getElementById('btn-header-google-login');
-  const badgeUserProfile = document.getElementById('btn-open-user-profile');
-  const headerAvatar = document.getElementById('header-user-avatar');
-  const headerName = document.getElementById('header-user-name');
-
-  const cardDisconnected = document.getElementById('google-disconnected-card');
-  const cardConnected = document.getElementById('google-connected-card');
-  const modalAvatar = document.getElementById('modal-user-avatar');
-  const modalName = document.getElementById('modal-user-name');
-  const modalEmail = document.getElementById('modal-user-email');
-
-  const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'><circle cx='12' cy='8' r='4'/><path d='M20 21a8 8 0 0 0-16 0'/></svg>";
-
-  if (user) {
-    if (btnHeaderLogin) btnHeaderLogin.style.display = 'none';
-    if (badgeUserProfile) badgeUserProfile.style.display = 'inline-flex';
-
-    const avatarUrl = user.photoURL || defaultAvatar;
-    const firstName = user.displayName ? user.displayName.split(' ')[0] : (user.email ? user.email.split('@')[0] : 'Google');
-
-    if (headerAvatar) headerAvatar.src = avatarUrl;
-    if (headerName) headerName.textContent = firstName;
-
-    if (cardDisconnected) cardDisconnected.style.display = 'none';
-    if (cardConnected) cardConnected.style.display = 'flex';
-    if (modalAvatar) modalAvatar.src = avatarUrl;
-    if (modalName) modalName.textContent = user.displayName || 'Utilisateur Google';
-    if (modalEmail) modalEmail.textContent = user.email || '';
-  } else {
-    if (btnHeaderLogin) btnHeaderLogin.style.display = 'inline-flex';
-    if (badgeUserProfile) badgeUserProfile.style.display = 'none';
-
-    if (cardDisconnected) cardDisconnected.style.display = 'flex';
-    if (cardConnected) cardConnected.style.display = 'none';
-  }
-
-  const modalStatus = document.getElementById('sync-status-msg');
-  if (modalStatus) {
-    const accountTag = user ? `[${user.email || 'Google'}]` : '[Non connecté]';
-    modalStatus.textContent = detail ? `${lastSyncText} • ${accountTag} (${detail})` : `${lastSyncText} • ${accountTag}`;
-  }
-
-  updateModalLocalSummary();
-  refreshLucide();
-}
-
-function setupFirebaseService() {
-  firebaseSyncService.init();
-
-  // Populate form fields with saved config
-  const cfg = firebaseSyncService.getSavedConfig();
-  if (cfg) {
-    const keyEl = document.getElementById('fb-api-key');
-    const projEl = document.getElementById('fb-project-id');
-    const authEl = document.getElementById('fb-auth-domain');
-    const appEl = document.getElementById('fb-app-id');
-    if (keyEl && cfg.apiKey) keyEl.value = cfg.apiKey;
-    if (projEl && cfg.projectId) projEl.value = cfg.projectId;
-    if (authEl && cfg.authDomain) authEl.value = cfg.authDomain;
-    if (appEl && cfg.appId) appEl.value = cfg.appId;
-  }
-}
-
-function refreshLucide(container = null) {
-  if (window.lucide && typeof window.lucide.createIcons === 'function') {
-    if (container && (container instanceof Element || container instanceof DocumentFragment)) {
-      window.lucide.createIcons({ root: container });
-    } else {
-      window.lucide.createIcons();
-    }
-  }
-}
-
-// ============================================================================
-// VIEW NAVIGATION
-// ============================================================================
-function switchView(viewName) {
-  currentView = viewName;
-  Object.keys(views).forEach(v => {
-    if (views[v]) {
-      views[v].style.display = (v === viewName) ? 'flex' : 'none';
-    }
-  });
-
-  if (viewName === 'dashboard') {
-    updateDashboardUI();
-  } else if (viewName === 'arena') {
-    loadNextArenaQuestion();
-  } else if (viewName === 'notebook') {
-    renderNotebookUI();
-  } else if (viewName === 'stats') {
-    renderStatsUI();
-  }
-
-  // Floating AI Tutor button in Arena
-  const floatingAiBtn = document.getElementById('btn-arena-ai-chat');
-  const arenaChatbox = document.getElementById('arena-ai-chatbox');
-  if (floatingAiBtn) {
-    floatingAiBtn.style.display = (viewName === 'arena') ? 'flex' : 'none';
-  }
-  if (viewName !== 'arena' && arenaChatbox) {
-    arenaChatbox.style.display = 'none';
-    if (floatingAiBtn) floatingAiBtn.classList.remove('is-active');
-  }
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  refreshLucide();
-}
-
-// ============================================================================
-// EXAM COUNTDOWN & DAILY CADENCE CALCULATOR
-// ============================================================================
-function getExamCountdownMetrics(totalIterationsRequired) {
-  const cd = getExamCountdown();
-  let daysLeft = 28;
-  let examDateStr = 'Non définie';
-
-  if (cd.hasDate) {
-    examDateStr = cd.shortFormattedDate || (cd.dateString ? cd.dateString.split('-').reverse().slice(0, 2).join('/') : cd.formattedDate);
-    if (cd.isToday) {
-      daysLeft = 1;
-    } else if (cd.isExpired) {
-      daysLeft = 1;
-    } else {
-      daysLeft = Math.max(1, cd.daysRemaining);
-    }
-  }
-
-  const dailyIterationsRequired = Math.ceil(Math.max(0, totalIterationsRequired) / daysLeft);
-
-  return {
-    examDateStr,
-    shortFormattedDate: examDateStr,
-    fullFormattedDate: cd.formattedDate || examDateStr,
-    daysLeft: cd.hasDate ? (cd.isToday ? 0 : cd.daysRemaining) : null,
-    effectiveDaysLeft: daysLeft,
-    dailyIterationsRequired,
-    isToday: cd.isToday,
-    isExpired: cd.isExpired,
-    hasDate: cd.hasDate,
-    rawCountdown: cd
-  };
-}
-
-function updateArenaDailyBadge() {
-  const dailyBadge = document.getElementById('arena-daily-pill');
-  if (!dailyBadge) return;
-  const metrics = queueEngine.getDashboardMetrics();
-  const countdown = getExamCountdownMetrics(metrics.totalIterationsRequired);
-  const todayTracker = queueEngine.getTodayTracker();
-  const jText = countdown.hasDate ? (countdown.isToday ? 'Jour J' : `J-${countdown.daysLeft}`) : 'Obj.';
-  dailyBadge.innerHTML = `<i data-lucide="target" style="width:12px;height:12px;display:inline;"></i> <span>${todayTracker.count}/${countdown.dailyIterationsRequired} auj. (${jText})</span>`;
-  refreshLucide(dailyBadge);
-}
-
-// ============================================================================
-// MODULE SELECTOR & SKELETON TREE LOGIC
-// ============================================================================
-function updateActiveModuleBadge() {
-  const activePill = document.getElementById('settings-active-module-pill');
-  const mod = getActiveModule();
-  if (activePill && mod) {
-    activePill.textContent = `${mod.title} (${mod.yearNumber || 5}ème Année)`;
-  }
-}
-
-function updateSettingsCountdownPreview(dateStr) {
-  const previewBadge = document.getElementById('settings-countdown-preview');
-  const previewText = document.getElementById('settings-countdown-preview-text');
-  if (!previewBadge || !previewText) return;
-
-  if (!dateStr) {
-    previewBadge.className = 'exam-countdown-preview-badge';
-    previewText.textContent = 'Date non définie';
-    return;
-  }
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const parts = dateStr.split('-');
-  const exam = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
-  exam.setHours(0, 0, 0, 0);
-
-  const diffTime = exam.getTime() - today.getTime();
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-  if (diffDays === 0) {
-    previewBadge.className = 'exam-countdown-preview-badge today';
-    previewText.textContent = "Jour J ! (Aujourd'hui)";
-  } else if (diffDays < 0) {
-    previewBadge.className = 'exam-countdown-preview-badge expired';
-    previewText.textContent = `Examen passé (+${Math.abs(diffDays)} j)`;
-  } else {
-    previewBadge.className = 'exam-countdown-preview-badge';
-    previewText.textContent = `⏳ J-${diffDays} jours restants`;
-  }
-}
-
-function switchActiveModule(moduleId, fromRemote = false) {
-  const mod = setActiveModuleId(moduleId);
-  activeDataset = getDatasetForModule(mod.id);
-  allQuestions = activeDataset.questions;
-  allChapters = activeDataset.chapters;
-  questionsMap = new Map(allQuestions.map(q => [q.uid, q]));
-  chaptersMap = new Map(allChapters.map(c => [c.id, c]));
-
-  queueEngine.switchModule(allQuestions, allChapters);
-  if (studyTracker && typeof studyTracker.reloadForModule === 'function') {
-    studyTracker.reloadForModule();
-  }
-  if (lessonTracker && typeof lessonTracker.reloadForModule === 'function') {
-    lessonTracker.reloadForModule();
-  }
-
-  // Synchronise Firestore listener with new active module
-  if (typeof firebaseSyncService !== 'undefined' && firebaseSyncService) {
-    if (fromRemote) {
-      firebaseSyncService.setupModuleListener(mod.id);
-    } else {
-      firebaseSyncService.switchListeningModule(mod.id);
-    }
-  }
-
-  // Reset lesson selection on module switch
-  currentLessonSelected = { name: '', chapterId: null };
-  const searchInput = document.getElementById('lesson-search-input');
-  if (searchInput) searchInput.value = '';
-  const activeNameEl = document.getElementById('active-lesson-name');
-  if (activeNameEl) activeNameEl.textContent = 'Aucune leçon choisie';
-  const clearBtn = document.getElementById('btn-clear-lesson-input');
-  if (clearBtn) clearBtn.style.display = 'none';
-
-  // Reset Carnet de notes filter & search on module switch
-  notebookSelectedChapter = '';
-  const chapFilterSelect = document.getElementById('notebook-chapter-filter');
-  if (chapFilterSelect) chapFilterSelect.value = '';
-  const notebookSearch = document.getElementById('notebook-search-input');
-  if (notebookSearch) notebookSearch.value = '';
-
-  // Reload AI cache for new active module
-  if (typeof loadAiExplanationsCache === 'function') {
-    aiExplanationsCache = loadAiExplanationsCache();
-  }
-
-  // Synchroniser les filtres du suivi des cours sur le module sélectionné par défaut
-  lessonDistModuleFilter = mod.id;
-  lessonMatrixModuleFilter = mod.id;
-  lessonSummaryModuleFilter = mod.id;
-  lessonRecentModuleFilter = mod.id;
-
-  // Update header subtitle if element exists
-  const headerSubtitle = document.querySelector('.brand-subtitle');
-  if (headerSubtitle) {
-    headerSubtitle.textContent = `${mod.title} • Répétition Espacée & Raisonnement IA`;
-  }
-
-  updateActiveModuleBadge();
-  renderModuleSelectorUI();
-  updateDashboardUI();
-  updateArenaDailyBadge();
-
-  if (currentView === 'arena') {
-    loadNextArenaQuestion();
-  } else if (currentView === 'notebook') {
-    renderNotebookUI();
-  } else if (currentView === 'stats') {
-    renderStatsUI();
-  }
-
-  showAppToast(`✅ Module ${mod.title} activé ! (${allQuestions.length} QCM)`);
-}
-
-function renderModuleSelectorUI() {
-  const container = document.getElementById('settings-years-accordion');
-  if (!container) return;
-
-  const yearsData = getAllYearsWithModules();
-  const activeModuleId = getActiveModuleId();
-
-  let html = '';
-  yearsData.forEach(y => {
-    const hasActive = y.modules.some(m => m.id === activeModuleId);
-    const isOpen = hasActive || y.year === 5;
-
-    html += `
-      <div class="year-accordion-item ${isOpen ? 'open' : ''} ${hasActive ? 'has-active' : ''}" data-year-id="${y.id}">
-        <button type="button" class="year-accordion-trigger" data-year-toggle="${y.id}">
-          <div class="year-trigger-left">
-            <div class="year-number-badge">${y.year}</div>
-            <div>
-              <div class="year-title-text">${escapeHtml(y.title)}</div>
-              <div class="year-meta-text">${y.modules.length} modules • ${y.coursesCount} cours • ${formatNumber(y.qcmCount)} QCM</div>
-            </div>
-          </div>
-          <div class="year-trigger-right">
-            ${hasActive ? '<span class="module-card-badge available active-badge" style="font-size:0.65rem;">Actif</span>' : ''}
-            <i data-lucide="chevron-down" class="year-chevron-icon"></i>
-          </div>
-        </button>
-        
-        <div class="year-accordion-content">
-          <div class="modules-grid-container">
-    `;
-
-    y.modules.forEach(m => {
-      const isAvailable = m.available;
-      const isActive = m.id === activeModuleId;
-
-      if (isAvailable) {
-        html += `
-          <div class="module-card available ${isActive ? 'active' : ''}" data-module-select="${m.id}" title="Module actif et disponible">
-            <div class="module-card-header">
-              <span class="module-card-badge available ${isActive ? 'active-badge' : ''}">
-                ${isActive ? '✓ Actif' : 'Disponible'}
-              </span>
-              <i data-lucide="${isActive ? 'check-circle' : 'book-open'}" style="width:14px;height:14px;color:${isActive ? 'var(--emerald)' : 'var(--cyan)'};"></i>
-            </div>
-            <div class="module-card-title">${escapeHtml(m.title)}</div>
-            <div class="module-card-stats">
-              <span><i data-lucide="file-text" style="width:11px;height:11px;"></i> ${m.courses} cours</span>
-              <span>•</span>
-              <span><i data-lucide="help-circle" style="width:11px;height:11px;"></i> ${formatNumber(m.qcm)} QCM</span>
-            </div>
-          </div>
-        `;
-      } else {
-        html += `
-          <div class="module-card skeleton-disabled" data-module-locked="${m.id}" data-module-title="${escapeHtml(m.title)}" title="Module en cours de numérisation (QCM à venir)">
-            <div class="module-card-header">
-              <span class="module-card-badge soon">Bientôt</span>
-              <i data-lucide="lock" style="width:12px;height:12px;color:var(--text-dim);"></i>
-            </div>
-            <div class="module-card-title">${escapeHtml(m.title)}</div>
-            <div class="module-card-stats">
-              <span><i data-lucide="file-text" style="width:11px;height:11px;"></i> ${m.courses} cours</span>
-              <span>•</span>
-              <span><i data-lucide="help-circle" style="width:11px;height:11px;"></i> ${formatNumber(m.qcm)} QCM</span>
-            </div>
-          </div>
-        `;
-      }
-    });
-
-    html += `
-          </div>
-        </div>
-      </div>
-    `;
-  });
-
-  container.innerHTML = html;
-
-  // Accordeon click handlers
-  container.querySelectorAll('[data-year-toggle]').forEach(trigger => {
-    trigger.onclick = (e) => {
-      e.preventDefault();
-      const item = trigger.closest('.year-accordion-item');
-      if (item) item.classList.toggle('open');
-      refreshLucide(item);
-    };
-  });
-
-  // Selectable module click
-  container.querySelectorAll('[data-module-select]').forEach(card => {
-    card.onclick = (e) => {
-      e.preventDefault();
-      const modId = card.getAttribute('data-module-select');
-      try {
-        switchActiveModule(modId);
-      } catch (err) {
-        showAppToast(err.message);
-      }
-    };
-  });
-
-  // Skeleton locked module click -> shake animation + informative toast
-  container.querySelectorAll('[data-module-locked]').forEach(card => {
-    card.onclick = (e) => {
-      e.preventDefault();
-      const modTitle = card.getAttribute('data-module-title') || 'Ce module';
-      card.classList.remove('module-shake');
-      void card.offsetWidth;
-      card.classList.add('module-shake');
-      showAppToast(`🔒 ${modTitle} : questions en cours de numérisation. Seule la Pédiatrie est active pour l'instant.`);
-    };
-  });
-
-  refreshLucide(container);
-}
-
-function renderDashboardExamBanner(countdown, metrics) {
-  const container = document.getElementById('dashboard-exam-banner-container');
-  if (!container) return;
-
-  const activeMod = getActiveModule();
-  const modTitle = activeMod ? activeMod.title : 'Pédiatrie';
-  const yearTitle = activeMod ? `${activeMod.yearNumber || 5}ème Année` : '5ème Année';
-
-  let dateText = '';
-  if (countdown.hasDate) {
-    const daysInfo = countdown.isToday ? '• Jour J !' : (countdown.isExpired ? '• Passé' : `• J-${countdown.daysLeft}`);
-    dateText = `Date d'examen : <strong>${escapeHtml(countdown.fullFormattedDate)}</strong> <span class="header-date-badge">${daysInfo}</span>`;
-  } else {
-    dateText = `Aucune date d'examen définie • <em>Cliquer pour fixer la date</em>`;
-  }
-
-  container.innerHTML = `
-    <div class="dashboard-module-header" id="btn-banner-open-settings" role="button" tabindex="0" title="Cliquer pour changer de module ou modifier la date d'examen">
-      <div class="module-header-left">
-        <div class="module-header-title-row">
-          <i data-lucide="book-open" class="module-header-icon"></i>
-          <h2 class="module-header-name">${escapeHtml(modTitle)}</h2>
-          <span class="module-header-year-pill">${escapeHtml(yearTitle)}</span>
-        </div>
-        <div class="module-header-date-sub">
-          <i data-lucide="calendar" style="width:13px;height:13px;color:var(--text-dim);flex-shrink:0;"></i>
-          <span class="module-header-date-text">${dateText}</span>
-        </div>
-      </div>
-      <div class="module-header-right">
-        <button type="button" class="btn-change-module-pill">
-          <i data-lucide="sliders-horizontal" style="width:13px;height:13px;"></i>
-          <span>Changer</span>
-        </button>
-      </div>
-    </div>
-  `;
-
-  const headerBtn = document.getElementById('btn-banner-open-settings');
-  if (headerBtn) {
-    headerBtn.onclick = () => {
-      openSettingsModal();
-    };
-    headerBtn.onkeydown = (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        openSettingsModal();
-      }
-    };
-  }
-
-  refreshLucide(container);
-}
-
-function openSettingsModal() {
-  document.getElementById('settings-gemini-key').value = geminiService.getApiKey();
-  
-  const examDateInput = document.getElementById('settings-exam-date');
-  const savedDate = getExamDate();
-  if (examDateInput) {
-    examDateInput.value = savedDate;
-    updateSettingsCountdownPreview(savedDate);
-  }
-
-  const clinicalModeSelect = document.getElementById('settings-clinical-mode-select');
-  if (clinicalModeSelect) {
-    const curMode = getClinicalModePreference();
-    clinicalModeSelect.value = curMode;
-    const badgeEl = document.getElementById('settings-clinical-mode-badge');
-    if (badgeEl) badgeEl.textContent = curMode === 'scroll' ? 'Déroulant' : 'Séquentiel';
-  }
-
-  updateActiveModuleBadge();
-  renderModuleSelectorUI();
-  modals.settings.style.display = 'flex';
-  refreshLucide(modals.settings);
-}
-
-// ============================================================================
-// DASHBOARD RENDERING
-// ============================================================================
-function updateDashboardUI() {
-  const metrics = queueEngine.getDashboardMetrics();
-  const countdown = getExamCountdownMetrics(metrics.totalIterationsRequired);
-
-  document.getElementById('stat-remaining-questions').textContent = formatNumber(metrics.remainingDistinctQuestions);
-  document.getElementById('stat-required-iterations').textContent = formatNumber(metrics.totalIterationsRequired);
-  document.getElementById('stat-mastered-count').textContent = formatNumber(metrics.masteredCount);
-  document.getElementById('stat-mistakes-count').textContent = formatNumber(metrics.totalMistakes);
-  document.getElementById('stat-progress-pct').textContent = `${metrics.progressPct}%`;
-  
-  // Daily Target & Exam Countdown Badge
-  const badgeCountdown = document.getElementById('badge-exam-countdown');
-  if (badgeCountdown) {
-    if (countdown.hasDate) {
-      if (countdown.isToday) {
-        badgeCountdown.textContent = '⏳ Jour J • Examen aujourd\'hui';
-      } else if (countdown.isExpired) {
-        badgeCountdown.textContent = `⏳ Examen passé (+${Math.abs(countdown.daysLeft)} j)`;
-      } else {
-        badgeCountdown.textContent = `⏳ J-${countdown.daysLeft} • Examen ${countdown.examDateStr}`;
-      }
-    } else {
-      badgeCountdown.textContent = '⏳ Date examen à fixer';
-    }
-  }
-
-  // Render dynamic top countdown banner
-  renderDashboardExamBanner(countdown, metrics);
-
-  const dailyTargetEl = document.getElementById('stat-daily-target');
-  if (dailyTargetEl) {
-    dailyTargetEl.textContent = formatNumber(countdown.dailyIterationsRequired);
-  }
-
-  const todayTracker = queueEngine.getTodayTracker();
-  const todayDoneEl = document.getElementById('stat-today-done');
-  if (todayDoneEl) {
-    todayDoneEl.textContent = formatNumber(todayTracker.count);
-  }
-
-  const todayGoalEl = document.getElementById('stat-today-goal');
-  if (todayGoalEl) {
-    todayGoalEl.textContent = `${formatNumber(countdown.dailyIterationsRequired)} requises`;
-  }
-
-  const todayPctEl = document.getElementById('stat-today-pct');
-  const todayFillEl = document.getElementById('daily-progress-fill');
-  const pct = countdown.dailyIterationsRequired > 0 
-    ? Math.min(100, Math.round((todayTracker.count / countdown.dailyIterationsRequired) * 100))
-    : 100;
-
-  if (todayPctEl) todayPctEl.textContent = `${pct}%`;
-  if (todayFillEl) todayFillEl.style.width = `${pct}%`;
-
-  const poolInfoEl = document.getElementById('badge-pool-info');
-  if (poolInfoEl) poolInfoEl.textContent = `Sur ${formatNumber(metrics.totalPoolCount)}`;
-
-  // Metric descriptions synchronized with active module and exam date
-  const remainingDescEl = document.getElementById('stat-remaining-desc');
-  if (remainingDescEl) {
-    remainingDescEl.textContent = `Questions distinctes à éliminer sur l'ensemble des ${allChapters.length} cours`;
-  }
-
-  const iterationsDescEl = document.getElementById('stat-iterations-desc');
-  if (iterationsDescEl) {
-    if (countdown.hasDate) {
-      iterationsDescEl.textContent = `Réponses justes cumulées pour tout nettoyer (programme complet) avant le ${countdown.examDateStr}.`;
-    } else {
-      iterationsDescEl.textContent = `Réponses justes cumulées pour tout nettoyer (programme complet).`;
-    }
-  }
-
-  const cadenceWrapEl = document.getElementById('metric-sub-target-cadence');
-  if (cadenceWrapEl) {
-    cadenceWrapEl.title = countdown.hasDate 
-      ? `Cadence calculée automatiquement pour éliminer tous les QCM avant le ${countdown.examDateStr}`
-      : `Cadence calculée automatiquement pour éliminer tous les QCM avant l'échéance`;
-  }
-
-  // Chapters label
-  const chaptersBtnLabel = document.getElementById('btn-chapters-label');
-  if (metrics.selectedChaptersCount === 0 || metrics.selectedChaptersCount === allChapters.length) {
-    chaptersBtnLabel.textContent = `Tous les cours (${allChapters.length})`;
-  } else {
-    chaptersBtnLabel.textContent = `${metrics.selectedChaptersCount} cours sélectionnés (${metrics.queueLength} QCM en file)`;
-  }
-
-  // Snoozed questions alert on dashboard
-  const snoozedCount = queueEngine.getSnoozedCountToday();
-  const snoozedAlert = document.getElementById('dashboard-snoozed-alert');
-  const snoozedText = document.getElementById('dashboard-snoozed-text');
-  if (snoozedAlert) {
-    if (snoozedCount > 0) {
-      snoozedAlert.style.display = 'flex';
-      if (snoozedText) {
-        snoozedText.textContent = `${snoozedCount} question${snoozedCount > 1 ? 's' : ''} reportée${snoozedCount > 1 ? 's' : ''} à demain`;
-      }
-    } else {
-      snoozedAlert.style.display = 'none';
-    }
-  }
-
-  // Notebook badge
-  const notesCount = queueEngine.getRawReasoningNotes().length;
-  document.getElementById('notebook-count-badge').textContent = notesCount;
 }
 
 function formatNumber(num) {
   return new Intl.NumberFormat('fr-FR').format(num || 0);
 }
 
-// ============================================================================
-// FORMATTING HELPERS (CROQ, QCM & CLINICAL AI REASONING)
-// ============================================================================
 function escapeHtml(str) {
-  if (!str) return '';
+  if (str === null || str === undefined) return '';
   return String(str)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -5470,7 +4906,7 @@ function escapeHtml(str) {
 
 function parseMarkdownInline(text) {
   if (!text) return '';
-  let clean = (typeof cleanLatexMath === 'function' ? cleanLatexMath(String(text)) : String(text))
+  const clean = (typeof cleanLatexMath === 'function' ? cleanLatexMath(String(text)) : String(text))
     .replace(/\$SpO_2\$/gi, 'SpO₂')
     .replace(/\$SpO2\$/gi, 'SpO₂')
     .replace(/SpO_2/gi, 'SpO₂')
@@ -5479,52 +4915,26 @@ function parseMarkdownInline(text) {
     .replace(/\$([^\$]+)\$/g, '$1');
 
   let res = escapeHtml(clean);
-  // Code block inline `...`
   res = res.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
-  // Bold + Italic ***...***
   res = res.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
-  // Bold **...**
   res = res.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-  // Italic *...*
   res = res.replace(/(^|[^*])\*(?!\*)(.*?)(?<!\*)\*([^*]|$)/g, '$1<em>$2</em>$3');
   return res;
 }
 
-/**
- * Advanced Medical Rich Text Formatter
- * Un-glues squished questions, clinical cases, and explanations,
- * turning them into readable, structured paragraphs, medical section headers,
- * and styled bullet/numbered lists with proper vertical spacing and breathing room.
- */
 function formatMedicalContent(raw) {
   if (!raw || typeof raw !== 'string') return '';
 
   let text = typeof cleanLatexMath === 'function' ? cleanLatexMath(raw) : raw.trim();
-
-  // 1. Remove zero-width characters and normalize BOM
   text = text.replace(/[\u200B-\u200D\uFEFF]/g, '');
-
-  // 2. Un-glue bullets (➢, ⁃, •, ►, ▶, ✔, ✓)
   text = text.replace(/([^\n\r])\s*([➢⁃•►▶✔✓])\s*/g, '$1\n$2 ');
-
-  // 3. Un-glue multi-space or NBSP columns (slide tables e.g. "Streptocoque B    E. Coli    Listeria")
   text = text.replace(/[\u00a0\s]{3,}([A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ0-9<])/g, '\n- $1');
-
-  // 4. Un-glue squished words where lowercase is immediately followed by real French uppercase
-  // e.g. "vaccinéContamination", "pneumonieLes", "marastiqueMaladie", "hyperpigmentationBiologie"
   text = text.replace(/([a-zàâäéèêëîïôöùûüç]{3,})([A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ][a-zàâäéèêëîïôöùûüç]{2,})/g, '$1.\n\n$2');
-
-  // 5. Un-glue sentence boundaries missing spaces after periods or closing parens
-  // e.g. "(TCA).Amyotrophie", "interstitiel.B/ Vrai", "peau5- Vrai", "oncotique.D/ Faux"
   text = text.replace(/([a-z0-9\)])\s*\.\s*([A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ])/g, '$1. $2');
   text = text.replace(/([a-z0-9\)])\s*\.\s*(Amyotrophie|H[ée]patom[ée]galie|Distension|L[ée]sions|Biologie|An[ée]mie|Troubles?|Signes?|Phase|Aspect|Examens?|Culture|Ponction|Traitement|Diagnostic|Pronostic|Surveillance|Lutte|Am[ée]lioration|Inconv[ée]nient|Lorsque|Elle|Il|Les|La|Le|Des|En|Pour|Dans)\b/g, '$1.\n\n$2');
-
-  // 6. Un-glue Proposition justifications: "A-Vrai", "A/ Vrai", "A : Faux", "1- Vrai", "1-Perplexe"
-  // e.g. "A-Vrai :", "assurésB-Vrai:", "oncotique.D/ Faux.", "peau5- Vrai,", "l'œdème.B : Vrai,"
   text = text.replace(/(^|[^\n\r])\s*([a-eA-E])\s*[-–/:]\s*(?:-?\s*)?(Vrai|Faux|VRAI|FAUX|Fausse|Juste|Perplexe)\b/gi, '$1\n- **$2) $3** : ');
   text = text.replace(/(^|[^\n\r])\s*(\d+)\s*[-–/:]\s*(?:-?\s*)?(Vrai|Faux|VRAI|FAUX|Fausse|Juste|Perplexe)\b/gi, '$1\n- **Item $2 ($3)** : ');
 
-  // 7. Un-glue comprehensive medical section headings
   const headings = [
     'Rappel\\s*:',
     'Rappel\\s+sur[^:]+:',
@@ -5568,22 +4978,13 @@ function formatMedicalContent(raw) {
     text = text.replace(re, '$1\n\n$2');
   });
 
-  // 8. Un-glue 'Source' at end of sentence
   text = text.replace(/([^\n\r])\s*(Source\s+diapositive|Source\s*[:;])/gi, '$1\n\n$2');
-
-  // 9. Normalize combined bullet-number items: "- 1. ..." -> "1. ..."
   text = text.replace(/^[-•*➢⁃►▶✔✓]\s*(\d+[\.\)-]\s+)/gm, '$1');
-
-  // 10. Un-glue QCM sub-items: "1- ...", "2- ...", "1. ...", "1) ..."
   text = text.replace(/([^\n\r\-•*➢⁃►▶✔✓])\s+(\d+[\.\)-]\s+[A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ])/g, '$1\n$2');
   text = text.replace(/([^\n\r\-•*➢⁃►▶✔✓])\s+([a-eA-E][\.\)]\s+[A-ZÀÂÄÉÈÊËÎÏÔÖÙÛÜÇ])/g, '$1\n$2');
-
-  // 11. Clean up multiple empty lines
   text = text.replace(/\n{3,}/g, '\n\n');
 
-  // 11. Split into lines
   const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-
   let html = '<div class="medical-formatted-content">';
   let inBulletList = false;
   let inNumList = false;
@@ -5594,7 +4995,6 @@ function formatMedicalContent(raw) {
   };
 
   lines.forEach(line => {
-    // Check if line is a Section Title (or starts with a section title)
     const headerMatch = line.match(/^((?:Rappel|D[ée]finition|DEFINITION|Remarque|Source|NB|Attention|Conduite|CAT|Traitement|Diagnostic|Crit[èe]res|Signes|Tableau|Examens|Physiopathologie|Biologie|Causes|Etiologies|[ÉEe]tiologies|Troubles|L[ée]sions|Phase|Aspect|Classifications?|Chez|2\s+ans|Le\s+kwashiorkor|Le\s+marasme|La\s+m[ée]ningite|Question\s*\d+|Q\d+)[^:]*[:;])\s*(.*)$/i);
 
     if (headerMatch) {
@@ -5628,7 +5028,6 @@ function formatMedicalContent(raw) {
       return;
     }
 
-    // Bullet items
     const bulletMatch = line.match(/^([➢⁃•►▶✔✓\*\-]\s*)(.*)$/);
     if (bulletMatch) {
       if (inNumList) { html += '</ul>'; inNumList = false; }
@@ -5639,7 +5038,6 @@ function formatMedicalContent(raw) {
       return;
     }
 
-    // Numbered items
     const numMatch = line.match(/^(\d+)(?:[-–\.]|\))\s+(.*)$/);
     if (numMatch) {
       if (inBulletList) { html += '</ul>'; inBulletList = false; }
@@ -5650,7 +5048,6 @@ function formatMedicalContent(raw) {
       return;
     }
 
-    // Regular paragraph
     closeLists();
     html += `<p class="medical-paragraph">${parseMarkdownInline(line)}</p>`;
   });
@@ -5659,8 +5056,11 @@ function formatMedicalContent(raw) {
   html += '</div>';
   return html;
 }
-window.cleanLatexMath = cleanLatexMath;
-window.formatMedicalContent = formatMedicalContent;
+
+if (typeof window !== 'undefined') {
+  window.cleanLatexMath = cleanLatexMath;
+  window.formatMedicalContent = formatMedicalContent;
+}
 
 function formatReasoningNote(noteText) {
   if (!noteText || typeof noteText !== 'string' || !noteText.trim()) {
@@ -5669,7 +5069,6 @@ function formatReasoningNote(noteText) {
 
   const raw = typeof cleanLatexMath === 'function' ? cleanLatexMath(noteText) : noteText.trim();
 
-  // Regex patterns to capture the 4 structured sections from Gemini 3.8 Flash
   const sec1Regex = /(?:###\s*|\*\*|#\s*)?(?:1[\.\)]\s*)?🎯\s*PI[ÈÉEeèéê]GE[^\n:]*[:\n]([\s\S]*?)(?=(?:###\s*|\*\*|#\s*)?(?:2[\.\)]\s*)?📋\s*JUSTIFICATION|(?:###\s*|\*\*|#\s*)?(?:3[\.\)]\s*)?🩺\s*D[ÉEèéê]MARCHE|(?:###\s*|\*\*|#\s*)?(?:2[\.\)]\s*)?🩺\s*M[ÉEèéê]THODE|$)/i;
   const sec2Regex = /(?:###\s*|\*\*|#\s*)?(?:2[\.\)]\s*)?📋\s*JUSTIFICATION[^\n:]*[:\n]([\s\S]*?)(?=(?:###\s*|\*\*|#\s*)?(?:3[\.\)]\s*)?🩺\s*D[ÉEèéê]MARCHE|(?:###\s*|\*\*|#\s*)?(?:4[\.\)]\s*)?💡\s*R[ÈÉEeèéê]GLE|$)/i;
   const sec3Regex = /(?:###\s*|\*\*|#\s*)?(?:[23][\.\)]\s*)?🩺\s*(?:D[ÉEèéê]MARCHE|M[ÉEèéê]THODE)[^\n:]*[:\n]([\s\S]*?)(?=(?:###\s*|\*\*|#\s*)?(?:[34][\.\)]\s*)?💡\s*R[ÈÉEeèéê]GLE|$)/i;
@@ -5682,8 +5081,8 @@ function formatReasoningNote(noteText) {
 
   const renderSectionContent = (contentRaw) => {
     if (!contentRaw) return '';
-    let clean = contentRaw.trim()
-      .replace(/^[\s\-–—*]{3,}\s*$/gm, '') // Strip horizontal rule lines
+    const clean = contentRaw.trim()
+      .replace(/^[\s\-–—*]{3,}\s*$/gm, '')
       .trim();
 
     const lines = clean.split('\n').map(l => l.trim()).filter(Boolean);
@@ -5692,10 +5091,8 @@ function formatReasoningNote(noteText) {
     let inQuote = false;
 
     lines.forEach(line => {
-      // Skip divider lines
       if (/^[\-–—*]{3,}$/.test(line)) return;
 
-      // Blockquotes (> ...) for golden memos and rules
       const quoteMatch = line.match(/^>\s*(.*)$/);
       if (quoteMatch) {
         if (inList) { out += '</ul>'; inList = false; }
@@ -5707,7 +5104,6 @@ function formatReasoningNote(noteText) {
         inQuote = false;
       }
 
-      // Bullet items (-, •, *)
       if (/^[-•*]\s+/.test(line)) {
         if (!inList) {
           out += '<ul class="reasoning-list">';
@@ -5788,7 +5184,6 @@ function formatReasoningNote(noteText) {
     return html;
   }
 
-  // Fallback for unstructured notes: render clean paragraphs & lists
   return `<div class="reasoning-cards-container"><div class="reasoning-card card-method"><div class="reasoning-card-body">${renderSectionContent(raw)}</div></div></div>`;
 }
 
@@ -5798,8 +5193,6 @@ function formatCroqAnswer(answerText) {
   }
 
   const trimmed = answerText.trim();
-
-  // Pattern detection: dashed items (e.g. "Intro : - Item 1 - Item 2") or numbered items
   const hasDashes = /(?:^|\s|\.)-\s*[A-ZÀ-ÖØ-öø-ÿ0-9]/.test(trimmed) || trimmed.startsWith('-');
   const hasNumberedPoints = /(?:^|\n|\s)\d+[\.\)]\s+/.test(trimmed);
 
@@ -5848,6 +5241,2646 @@ function formatCroqAnswer(answerText) {
   }
 
   return `<div class="croq-simple-answer">${parseMarkdownInline(trimmed)}</div>`;
+}
+
+function extractQuestionDateOrSession(q) {
+  if (!q) return '';
+  let rawDate = '';
+
+  if (q.session && typeof q.session === 'string' && q.session.trim()) rawDate = q.session.trim();
+  else if (q.session_type && (q.year || q.annee)) rawDate = String(q.session_type).trim() + ' ' + String(q.year || q.annee).trim();
+  else if (q.date && typeof q.date === 'string' && q.date.trim()) rawDate = q.date.trim();
+  else if (q.source_date && typeof q.source_date === 'string') rawDate = q.source_date.trim();
+  else if (q.year && (typeof q.year === 'string' || typeof q.year === 'number')) rawDate = String(q.year).trim();
+
+  if (!rawDate) {
+    const texts = [q.explanation || '', q.clinical_case || '', q.question || ''];
+    const full = texts.join(' \n ');
+
+    const resMatch = full.match(/\b(R[ée]sidanat(?:\s+[A-Za-z]+)?\s*[-_:/]?\s*(?:20\d\d|19\d\d|\b[0-2]\d\b))\b/i);
+    if (resMatch) {
+      rawDate = resMatch[1].trim();
+    } else {
+      const ratMatch = full.match(/\b(Rat(?:t)?rapage\s*[-_:/]?\s*(?:20\d\d|19\d\d|\b[0-2]\d\b)|\bR\s*[-_:/]?\s*(?:20\d\d))\b/i);
+      if (ratMatch) {
+        rawDate = ratMatch[1].trim();
+      } else {
+        const pMatch = full.match(/\b(Principale\s*[-_:/]?\s*(?:20\d\d|19\d\d|\b[0-2]\d\b)|\bP\s*[12]?\s*[-_:/]?\s*(?:20\d\d))\b/i);
+        if (pMatch) {
+          rawDate = pMatch[1].trim();
+        } else {
+          const emdMatch = full.match(/\b(EMD\s*[123]?\s*[-_:/]?\s*(?:20\d\d|19\d\d|\b[0-2]\d\b)|Session\s*[-_:/]?\s*(?:20\d\d|19\d\d))\b/i);
+          if (emdMatch) {
+            rawDate = emdMatch[1].trim();
+          } else {
+            const sourceMatch = full.match(/\b(Diapo(?:sitive)?|iKb|Guide|Cours|Uptodate|R[ée]f[ée]rentiel|Recommandation|HAS)\b\s*[^.,;\n]*20\d\d(?:\/20\d\d)?/i);
+            if (sourceMatch) {
+              const cleaned = sourceMatch[0].replace(/^(?:Source\s*[:;]?\s*)/i, '').trim();
+              if (cleaned.length <= 35) rawDate = cleaned;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  if (!rawDate) return '';
+
+  let m = rawDate.match(/r[ée]sidanat(?:\s+([a-z]+))?\s*[-_/:]?\s*('?(?:20\d\d|19\d\d|[0-2]\d))\b/i);
+  if (m) {
+    let year = m[2].replace("'", '');
+    if (year.length === 2) year = (parseInt(year, 10) > 50 ? '19' : '20') + year;
+    const city = m[1] ? (' ' + m[1].charAt(0).toUpperCase() + m[1].slice(1).toLowerCase()) : '';
+    return 'Résidanat' + city + ' ' + year;
+  }
+
+  m = rawDate.match(/(?:rat(?:t)?rapage|(?:\bR))\s*([12])?\s*[-_/:]?\s*('?(?:20\d\d|19\d\d|[0-2]\d))\b/i);
+  if (m) {
+    let year = m[2].replace("'", '');
+    if (year.length === 2) year = (parseInt(year, 10) > 50 ? '19' : '20') + year;
+    return 'Rattrapage ' + year;
+  }
+
+  m = rawDate.match(/(?:principale|(?:\bP))\s*([12])?\s*[-_/:]?\s*('?(?:20\d\d|19\d\d|[0-2]\d))\b/i);
+  if (m) {
+    const pNum = m[1] ? m[1] : '';
+    let year = m[2].replace("'", '');
+    if (year.length === 2) year = (parseInt(year, 10) > 50 ? '19' : '20') + year;
+    return 'P' + (pNum ? pNum + ' ' : ' ') + year;
+  }
+
+  m = rawDate.match(/emd\s*([123])?\s*[-_/:]?\s*('?(?:20\d\d|19\d\d|[0-2]\d))\b/i);
+  if (m) {
+    const emdNum = m[1] ? m[1] : '';
+    let year = m[2].replace("'", '');
+    if (year.length === 2) year = (parseInt(year, 10) > 50 ? '19' : '20') + year;
+    return 'EMD' + (emdNum ? emdNum + ' ' : ' ') + year;
+  }
+
+  return rawDate.charAt(0).toUpperCase() + rawDate.slice(1);
+}
+
+function getDateStrWithOffset(offsetDays = 0) {
+  const d = new Date();
+  d.setDate(d.getDate() + offsetDays);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function getDayLabelForOffset(offsetDays = 0) {
+  if (offsetDays === 0) return "Aujourd'hui";
+  if (offsetDays === -1) return "Hier";
+  if (offsetDays === -2) return "Avant-hier";
+  const dateStr = getDateStrWithOffset(offsetDays);
+  return formatDateFr(dateStr);
+}
+
+function formatDuration(totalSeconds) {
+  if (!totalSeconds || totalSeconds <= 0) return '0m';
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  if (hours > 0) {
+    return `${hours}h ${minutes > 0 ? minutes + 'm' : ''}`;
+  }
+  if (minutes > 0) {
+    return `${minutes}m ${seconds > 0 ? seconds + 's' : ''}`;
+  }
+  return `${seconds}s`;
+}
+
+function formatDateFr(dateStr) {
+  if (!dateStr) return '';
+  const parts = dateStr.split('-');
+  if (parts.length !== 3) return dateStr;
+  const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+  const options = { weekday: 'short', day: 'numeric', month: 'short' };
+  return d.toLocaleDateString('fr-FR', options);
+}
+
+function formatDigitalClockTime(totalSeconds) {
+  const sec = Math.max(0, Math.floor(totalSeconds));
+  const hrs = Math.floor(sec / 3600);
+  const mins = Math.floor((sec % 3600) / 60);
+  const s = sec % 60;
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${pad(hrs)}:${pad(mins)}:${pad(s)}`;
+}
+
+
+// --- src/utils/uiDialogs.js ---
+// ============================================================================
+// Utilitaires UI Non-Bloquants (Toasts, Modales de Confirmation, Icônes, Confetti)
+// ============================================================================
+
+function refreshLucide(container = null) {
+  if (typeof window !== 'undefined' && window.lucide && typeof window.lucide.createIcons === 'function') {
+    if (container && (container instanceof Element || container instanceof DocumentFragment)) {
+      window.lucide.createIcons({ root: container });
+    } else {
+      window.lucide.createIcons();
+    }
+  }
+}
+
+function triggerMasteryConfetti() {
+  if (typeof window !== 'undefined' && typeof window.confetti === 'function') {
+    window.confetti({
+      particleCount: 80,
+      spread: 70,
+      origin: { y: 0.6 }
+    });
+  }
+}
+
+function showAppToast(message, optionsOrUndo = null, undoLabel = 'Annuler', durationMs = 4500) {
+  if (typeof document === 'undefined' || !document.body) return;
+
+  const existing = document.getElementById('pedia-toast-alert');
+  if (existing) existing.remove();
+
+  let onUndo = null;
+  let effectiveUndoLabel = undoLabel;
+  let effectiveDuration = durationMs;
+  let toastType = 'info';
+
+  if (typeof optionsOrUndo === 'function') {
+    onUndo = optionsOrUndo;
+  } else if (optionsOrUndo && typeof optionsOrUndo === 'object') {
+    toastType = optionsOrUndo.type || 'info';
+    if (typeof optionsOrUndo.onUndo === 'function') onUndo = optionsOrUndo.onUndo;
+    if (optionsOrUndo.undoLabel) effectiveUndoLabel = optionsOrUndo.undoLabel;
+    if (typeof optionsOrUndo.durationMs === 'number') effectiveDuration = optionsOrUndo.durationMs;
+  }
+
+  const toast = document.createElement('div');
+  toast.id = 'pedia-toast-alert';
+  toast.className = 'pedia-toast-alert';
+  if (toastType && toastType !== 'info') {
+    toast.classList.add(`is-${toastType}`);
+  }
+
+  let dismissTimer = null;
+
+  if (onUndo) {
+    const wrap = document.createElement('div');
+    wrap.className = 'toast-content';
+
+    const textSpan = document.createElement('span');
+    textSpan.textContent = message;
+    wrap.appendChild(textSpan);
+
+    const undoBtn = document.createElement('button');
+    undoBtn.type = 'button';
+    undoBtn.className = 'toast-undo-btn';
+    undoBtn.textContent = effectiveUndoLabel;
+    undoBtn.onclick = () => {
+      if (dismissTimer) clearTimeout(dismissTimer);
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 250);
+      onUndo();
+    };
+    wrap.appendChild(undoBtn);
+    toast.appendChild(wrap);
+  } else {
+    toast.textContent = message;
+  }
+
+  document.body.appendChild(toast);
+
+  const scheduleFrame = typeof requestAnimationFrame === 'function'
+    ? requestAnimationFrame
+    : (cb) => setTimeout(cb, 16);
+
+  scheduleFrame(() => {
+    toast.classList.add('show');
+  });
+
+  dismissTimer = setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, effectiveDuration);
+}
+
+let activeConfirmResolver = null;
+
+function resolvePendingConfirmModal(accepted = false) {
+  const modal = typeof document !== 'undefined' ? document.getElementById('modal-app-confirm') : null;
+  if (modal) modal.style.display = 'none';
+  if (typeof activeConfirmResolver === 'function') {
+    const resolve = activeConfirmResolver;
+    activeConfirmResolver = null;
+    resolve(!!accepted);
+  }
+}
+
+function showConfirmModal({
+  title = 'Confirmation',
+  message = '',
+  confirmLabel = 'Confirmer',
+  cancelLabel = 'Annuler',
+  isDanger = false
+} = {}) {
+  if (typeof document === 'undefined') return Promise.resolve(false);
+
+  const modal = document.getElementById('modal-app-confirm');
+  const titleEl = document.getElementById('confirm-modal-title');
+  const msgEl = document.getElementById('confirm-modal-message');
+  const okBtn = document.getElementById('btn-confirm-modal-ok');
+  const cancelBtn = document.getElementById('btn-confirm-modal-cancel');
+  const closeBtn = document.getElementById('btn-close-confirm-modal');
+
+  if (!modal || !okBtn || !cancelBtn) {
+    return Promise.resolve(false);
+  }
+
+  // Cancel any prior pending confirmation cleanly
+  if (activeConfirmResolver) {
+    resolvePendingConfirmModal(false);
+  }
+
+  if (titleEl) titleEl.textContent = title;
+  if (msgEl) msgEl.textContent = message;
+  okBtn.textContent = confirmLabel;
+  cancelBtn.textContent = cancelLabel;
+  okBtn.classList.toggle('is-danger', !!isDanger);
+
+  modal.style.display = 'flex';
+  refreshLucide(modal);
+
+  return new Promise((resolve) => {
+    activeConfirmResolver = resolve;
+
+    okBtn.onclick = () => resolvePendingConfirmModal(true);
+    cancelBtn.onclick = () => resolvePendingConfirmModal(false);
+    if (closeBtn) closeBtn.onclick = () => resolvePendingConfirmModal(false);
+    modal.onclick = (e) => {
+      if (e.target === modal) resolvePendingConfirmModal(false);
+    };
+  });
+}
+
+
+// --- src/state/appState.js ---
+// ============================================================================
+// État Global Partagé & Accès aux Jeux de Données
+// ============================================================================
+
+function getDatasetForModule(moduleId) {
+  const modId = moduleId || getActiveModuleId();
+  if ((modId === 'psychiatrie' || modId === 'psychiatrie_5') && typeof window !== 'undefined' && window.PSY_QUESTIONS && window.PSY_CHAPTERS) {
+    return {
+      questions: window.PSY_QUESTIONS,
+      chapters: window.PSY_CHAPTERS
+    };
+  }
+  return {
+    questions: (typeof window !== 'undefined' && window.PEDIA_QUESTIONS) || [],
+    chapters: (typeof window !== 'undefined' && window.PEDIA_CHAPTERS) || []
+  };
+}
+
+const initialDataset = getDatasetForModule(getActiveModuleId());
+
+const appState = {
+  activeDataset: initialDataset,
+  allQuestions: initialDataset.questions,
+  allChapters: initialDataset.chapters,
+  questionsMap: new Map(initialDataset.questions.map(q => [q.uid, q])),
+  chaptersMap: new Map(initialDataset.chapters.map(c => [c.id, c])),
+  currentQuestion: null,
+  selectedOptionIds: new Set(),
+  isEvaluating: false,
+  currentView: 'dashboard',
+  answeredHistory: [],
+  historyCursor: -1,
+  isCurrentQuestionAnswered: false,
+  isClinicalAccordionOpen: false,
+  isClinicalRunActive: false,
+  clinicalRunState: null,
+  aiExplanationsCache: {},
+  arenaChatHistory: [],
+  questionChatHistories: {},
+  firebaseSyncService: null,
+  switchViewHandler: null
+};
+
+const queueEngine = new QueueEngine(appState.allQuestions, appState.allChapters);
+
+function registerViewNavigator(fn) {
+  appState.switchViewHandler = typeof fn === 'function' ? fn : null;
+}
+
+function navigateToView(viewName) {
+  if (typeof appState.switchViewHandler === 'function') {
+    appState.switchViewHandler(viewName);
+  }
+}
+
+function getClinicalModePreference() {
+  try {
+    return localStorage.getItem('pedia_clinical_case_mode') || 'sequential';
+  } catch {
+    return 'sequential';
+  }
+}
+
+function setClinicalModePreference(mode) {
+  const cleanMode = mode === 'scroll' ? 'scroll' : 'sequential';
+  try {
+    localStorage.setItem('pedia_clinical_case_mode', cleanMode);
+  } catch {}
+  if (typeof document !== 'undefined') {
+    const selectEl = document.getElementById('settings-clinical-mode-select');
+    if (selectEl) selectEl.value = cleanMode;
+    const badgeEl = document.getElementById('settings-clinical-mode-badge');
+    if (badgeEl) badgeEl.textContent = cleanMode === 'scroll' ? 'Déroulant' : 'Séquentiel';
+  }
+}
+
+function isArenaChapterRevealed() {
+  if (appState.historyCursor >= 0) return true;
+  if (appState.isCurrentQuestionAnswered) return true;
+  if (typeof document !== 'undefined') {
+    const badge = document.getElementById('arena-chapter-title');
+    if (badge && badge.classList.contains('is-revealed')) return true;
+  }
+  return false;
+}
+
+function getEffectiveArenaQuestion() {
+  if (appState.historyCursor >= 0 && appState.answeredHistory[appState.historyCursor]) {
+    return appState.answeredHistory[appState.historyCursor].question;
+  }
+  return appState.currentQuestion;
+}
+
+function getDomViews() {
+  if (typeof document === 'undefined') return {};
+  return {
+    dashboard: document.getElementById('view-dashboard'),
+    arena: document.getElementById('view-arena'),
+    notebook: document.getElementById('view-notebook'),
+    stats: document.getElementById('view-stats')
+  };
+}
+
+function getDomModals() {
+  if (typeof document === 'undefined') return {};
+  return {
+    error: document.getElementById('modal-error'),
+    chapters: document.getElementById('modal-chapters'),
+    sync: document.getElementById('modal-sync'),
+    settings: document.getElementById('modal-settings'),
+    update: document.getElementById('modal-app-update'),
+    clinicalSummary: document.getElementById('modal-clinical-case-summary'),
+    manualLesson: document.getElementById('modal-manual-lesson-session'),
+    confirm: document.getElementById('modal-app-confirm')
+  };
+}
+
+
+// --- src/views/dashboardView.js ---
+// ============================================================================
+// Dashboard, Sélecteur de Modules, Paramètres & Synchronisation Google UI
+// ============================================================================
+
+function updateModalLocalSummary() {
+  const summaryEl = document.getElementById('sync-local-summary');
+  if (!summaryEl) return;
+  const metrics = queueEngine.getDashboardMetrics();
+  const notesCount = queueEngine.getRawReasoningNotes().length;
+  summaryEl.textContent = `${metrics.masteredCount} maîtrisées • ${notesCount} note${notesCount > 1 ? 's' : ''} IA`;
+}
+
+function updateGoogleAccountUI(status, detail, user, lastSyncText) {
+  const btnHeaderLogin = document.getElementById('btn-header-google-login');
+  const badgeUserProfile = document.getElementById('btn-open-user-profile');
+  const headerAvatar = document.getElementById('header-user-avatar');
+  const headerName = document.getElementById('header-user-name');
+
+  const cardDisconnected = document.getElementById('google-disconnected-card');
+  const cardConnected = document.getElementById('google-connected-card');
+  const modalAvatar = document.getElementById('modal-user-avatar');
+  const modalName = document.getElementById('modal-user-name');
+  const modalEmail = document.getElementById('modal-user-email');
+
+  const defaultAvatar = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'><circle cx='12' cy='8' r='4'/><path d='M20 21a8 8 0 0 0-16 0'/></svg>";
+
+  if (user) {
+    if (btnHeaderLogin) btnHeaderLogin.style.display = 'none';
+    if (badgeUserProfile) badgeUserProfile.style.display = 'inline-flex';
+
+    const avatarUrl = user.photoURL || defaultAvatar;
+    const firstName = user.displayName ? user.displayName.split(' ')[0] : (user.email ? user.email.split('@')[0] : 'Google');
+
+    if (headerAvatar) headerAvatar.src = avatarUrl;
+    if (headerName) headerName.textContent = firstName;
+
+    if (cardDisconnected) cardDisconnected.style.display = 'none';
+    if (cardConnected) cardConnected.style.display = 'flex';
+    if (modalAvatar) modalAvatar.src = avatarUrl;
+    if (modalName) modalName.textContent = user.displayName || 'Utilisateur Google';
+    if (modalEmail) modalEmail.textContent = user.email || '';
+  } else {
+    if (btnHeaderLogin) btnHeaderLogin.style.display = 'inline-flex';
+    if (badgeUserProfile) badgeUserProfile.style.display = 'none';
+
+    if (cardDisconnected) cardDisconnected.style.display = 'flex';
+    if (cardConnected) cardConnected.style.display = 'none';
+  }
+
+  const modalStatus = document.getElementById('sync-status-msg');
+  if (modalStatus) {
+    const accountTag = user ? `[${user.email || 'Google'}]` : '[Non connecté]';
+    modalStatus.textContent = detail ? `${lastSyncText} • ${accountTag} (${detail})` : `${lastSyncText} • ${accountTag}`;
+  }
+
+  updateModalLocalSummary();
+  refreshLucide();
+}
+
+function setupFirebaseService() {
+  const fbService = appState.firebaseSyncService;
+  if (!fbService) return;
+  fbService.init();
+
+  const cfg = fbService.getSavedConfig();
+  if (cfg) {
+    const keyEl = document.getElementById('fb-api-key');
+    const projEl = document.getElementById('fb-project-id');
+    const authEl = document.getElementById('fb-auth-domain');
+    const appEl = document.getElementById('fb-app-id');
+    if (keyEl && cfg.apiKey) keyEl.value = cfg.apiKey;
+    if (projEl && cfg.projectId) projEl.value = cfg.projectId;
+    if (authEl && cfg.authDomain) authEl.value = cfg.authDomain;
+    if (appEl && cfg.appId) appEl.value = cfg.appId;
+  }
+}
+
+function getExamCountdownMetrics(totalIterationsRequired) {
+  const cd = getExamCountdown();
+  let daysLeft = 28;
+  let examDateStr = 'Non définie';
+
+  if (cd.hasDate) {
+    examDateStr = cd.shortFormattedDate || (cd.dateString ? cd.dateString.split('-').reverse().slice(0, 2).join('/') : cd.formattedDate);
+    if (cd.isToday || cd.isExpired) {
+      daysLeft = 1;
+    } else {
+      daysLeft = Math.max(1, cd.daysRemaining);
+    }
+  }
+
+  const dailyIterationsRequired = Math.ceil(Math.max(0, totalIterationsRequired) / daysLeft);
+
+  return {
+    examDateStr,
+    shortFormattedDate: examDateStr,
+    fullFormattedDate: cd.formattedDate || examDateStr,
+    daysLeft: cd.hasDate ? (cd.isToday ? 0 : cd.daysRemaining) : null,
+    effectiveDaysLeft: daysLeft,
+    dailyIterationsRequired,
+    isToday: cd.isToday,
+    isExpired: cd.isExpired,
+    hasDate: cd.hasDate,
+    rawCountdown: cd
+  };
+}
+
+function updateArenaDailyBadge() {
+  const dailyBadge = document.getElementById('arena-daily-pill');
+  if (!dailyBadge) return;
+  const metrics = queueEngine.getDashboardMetrics();
+  const countdown = getExamCountdownMetrics(metrics.totalIterationsRequired);
+  const todayTracker = queueEngine.getTodayTracker();
+  const jText = countdown.hasDate ? (countdown.isToday ? 'Jour J' : `J-${countdown.daysLeft}`) : 'Obj.';
+  dailyBadge.innerHTML = `<i data-lucide="target" style="width:12px;height:12px;display:inline;"></i> <span>${todayTracker.count}/${countdown.dailyIterationsRequired} auj. (${jText})</span>`;
+  refreshLucide(dailyBadge);
+}
+
+function updateActiveModuleBadge() {
+  const activePill = document.getElementById('settings-active-module-pill');
+  const mod = getActiveModule();
+  if (activePill && mod) {
+    activePill.textContent = `${mod.title} (${mod.yearNumber || 5}ème Année)`;
+  }
+}
+
+function updateSettingsCountdownPreview(dateStr) {
+  const previewBadge = document.getElementById('settings-countdown-preview');
+  const previewText = document.getElementById('settings-countdown-preview-text');
+  if (!previewBadge || !previewText) return;
+
+  if (!dateStr) {
+    previewBadge.className = 'exam-countdown-preview-badge';
+    previewText.textContent = 'Date non définie';
+    return;
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const parts = dateStr.split('-');
+  const exam = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+  exam.setHours(0, 0, 0, 0);
+
+  const diffTime = exam.getTime() - today.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) {
+    previewBadge.className = 'exam-countdown-preview-badge today';
+    previewText.textContent = "Jour J ! (Aujourd'hui)";
+  } else if (diffDays < 0) {
+    previewBadge.className = 'exam-countdown-preview-badge expired';
+    previewText.textContent = `Examen passé (+${Math.abs(diffDays)} j)`;
+  } else {
+    previewBadge.className = 'exam-countdown-preview-badge';
+    previewText.textContent = `⏳ J-${diffDays} jours restants`;
+  }
+}
+
+function updateGeminiKeyCounterBadge(rawText = null) {
+  const countBadge = document.getElementById('settings-gemini-keys-count');
+  if (!countBadge) return;
+  const source = rawText !== null
+    ? String(rawText)
+    : (document.getElementById('settings-gemini-key')?.value || geminiService.getApiKey() || '');
+  const keys = Array.from(new Set(
+    source.split(/[\n,;]+/).map(k => k.trim()).filter(k => k.length > 0)
+  ));
+  const count = keys.length;
+  countBadge.textContent = `${count} clé${count > 1 ? 's' : ''} configurée${count > 1 ? 's' : ''}`;
+  countBadge.classList.toggle('is-empty', count === 0);
+  countBadge.classList.toggle('is-multi', count > 1);
+}
+
+function switchActiveModule(moduleId, fromRemote = false) {
+  const mod = setActiveModuleId(moduleId);
+  const nextDataset = getDatasetForModule(mod.id);
+  appState.activeDataset = nextDataset;
+  appState.allQuestions = nextDataset.questions;
+  appState.allChapters = nextDataset.chapters;
+  appState.questionsMap = new Map(appState.allQuestions.map(q => [q.uid, q]));
+  appState.chaptersMap = new Map(appState.allChapters.map(c => [c.id, c]));
+
+  queueEngine.switchModule(appState.allQuestions, appState.allChapters);
+  if (studyTracker && typeof studyTracker.reloadForModule === 'function') {
+    studyTracker.reloadForModule();
+  }
+  if (lessonTracker && typeof lessonTracker.reloadForModule === 'function') {
+    lessonTracker.reloadForModule();
+  }
+
+  const fbService = appState.firebaseSyncService;
+  if (fbService) {
+    if (fromRemote) {
+      fbService.setupModuleListener(mod.id);
+    } else {
+      fbService.switchListeningModule(mod.id);
+    }
+  }
+
+  resetLessonViewFilters(mod.id);
+  resetNotebookViewFilters();
+
+  if (typeof loadAiExplanationsCache === 'function') {
+    appState.aiExplanationsCache = loadAiExplanationsCache();
+  }
+
+  const headerSubtitle = document.querySelector('.brand-subtitle');
+  if (headerSubtitle) {
+    headerSubtitle.textContent = `${mod.title} • Répétition Espacée & Raisonnement IA`;
+  }
+
+  const chatTutorTitle = document.getElementById('chatbox-tutor-title');
+  if (chatTutorTitle) {
+    chatTutorTitle.textContent = `Tuteur IA ${mod.title}`;
+  }
+
+  const lightboxImg = document.getElementById('media-lightbox-img');
+  if (lightboxImg) {
+    lightboxImg.alt = `Iconographie ${mod.title} HD`;
+  }
+
+  updateActiveModuleBadge();
+  renderModuleSelectorUI();
+  updateDashboardUI();
+  updateArenaDailyBadge();
+
+  if (appState.currentView === 'arena') {
+    loadNextArenaQuestion();
+  } else if (appState.currentView === 'notebook') {
+    renderNotebookUI();
+  } else if (appState.currentView === 'stats') {
+    renderStatsUI();
+  }
+
+  showAppToast(`✅ Module ${mod.title} activé ! (${appState.allQuestions.length} QCM)`, { type: 'success' });
+}
+
+function renderModuleSelectorUI() {
+  const container = document.getElementById('settings-years-accordion');
+  if (!container) return;
+
+  const yearsData = getAllYearsWithModules();
+  const activeModuleId = getActiveModuleId();
+  const availableModuleNames = yearsData
+    .flatMap(y => y.modules)
+    .filter(m => m.available)
+    .map(m => m.title);
+
+  let html = '';
+  yearsData.forEach(y => {
+    const hasActive = y.modules.some(m => m.id === activeModuleId);
+    const isOpen = hasActive || y.year === 5;
+
+    html += `
+      <div class="year-accordion-item ${isOpen ? 'open' : ''} ${hasActive ? 'has-active' : ''}" data-year-id="${y.id}">
+        <button type="button" class="year-accordion-trigger" data-year-toggle="${y.id}">
+          <div class="year-trigger-left">
+            <div class="year-number-badge">${y.year}</div>
+            <div>
+              <div class="year-title-text">${escapeHtml(y.title)}</div>
+              <div class="year-meta-text">${y.modules.length} modules • ${y.coursesCount} cours • ${formatNumber(y.qcmCount)} QCM</div>
+            </div>
+          </div>
+          <div class="year-trigger-right">
+            ${hasActive ? '<span class="module-card-badge available active-badge" style="font-size:0.65rem;">Actif</span>' : ''}
+            <i data-lucide="chevron-down" class="year-chevron-icon"></i>
+          </div>
+        </button>
+
+        <div class="year-accordion-content">
+          <div class="modules-grid-container">
+    `;
+
+    y.modules.forEach(m => {
+      const isAvailable = m.available;
+      const isActive = m.id === activeModuleId;
+
+      if (isAvailable) {
+        html += `
+          <div class="module-card available ${isActive ? 'active' : ''}" data-module-select="${m.id}" title="Module actif et disponible">
+            <div class="module-card-header">
+              <span class="module-card-badge available ${isActive ? 'active-badge' : ''}">
+                ${isActive ? '✓ Actif' : 'Disponible'}
+              </span>
+              <i data-lucide="${isActive ? 'check-circle' : 'book-open'}" style="width:14px;height:14px;color:${isActive ? 'var(--emerald)' : 'var(--cyan)'};"></i>
+            </div>
+            <div class="module-card-title">${escapeHtml(m.title)}</div>
+            <div class="module-card-stats">
+              <span><i data-lucide="file-text" style="width:11px;height:11px;"></i> ${m.courses} cours</span>
+              <span>•</span>
+              <span><i data-lucide="help-circle" style="width:11px;height:11px;"></i> ${formatNumber(m.qcm)} QCM</span>
+            </div>
+          </div>
+        `;
+      } else {
+        html += `
+          <div class="module-card skeleton-disabled" data-module-locked="${m.id}" data-module-title="${escapeHtml(m.title)}" title="Module en cours de numérisation (QCM à venir)">
+            <div class="module-card-header">
+              <span class="module-card-badge soon">Bientôt</span>
+              <i data-lucide="lock" style="width:12px;height:12px;color:var(--text-dim);"></i>
+            </div>
+            <div class="module-card-title">${escapeHtml(m.title)}</div>
+            <div class="module-card-stats">
+              <span><i data-lucide="file-text" style="width:11px;height:11px;"></i> ${m.courses} cours</span>
+              <span>•</span>
+              <span><i data-lucide="help-circle" style="width:11px;height:11px;"></i> ${formatNumber(m.qcm)} QCM</span>
+            </div>
+          </div>
+        `;
+      }
+    });
+
+    html += `
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+
+  container.querySelectorAll('[data-year-toggle]').forEach(trigger => {
+    trigger.onclick = (e) => {
+      e.preventDefault();
+      const item = trigger.closest('.year-accordion-item');
+      if (item) item.classList.toggle('open');
+      refreshLucide(item);
+    };
+  });
+
+  container.querySelectorAll('[data-module-select]').forEach(card => {
+    card.onclick = (e) => {
+      e.preventDefault();
+      const modId = card.getAttribute('data-module-select');
+      try {
+        switchActiveModule(modId);
+      } catch (err) {
+        showAppToast(err.message, { type: 'error' });
+      }
+    };
+  });
+
+  container.querySelectorAll('[data-module-locked]').forEach(card => {
+    card.onclick = (e) => {
+      e.preventDefault();
+      const modTitle = card.getAttribute('data-module-title') || 'Ce module';
+      card.classList.remove('module-shake');
+      void card.offsetWidth;
+      card.classList.add('module-shake');
+      const availText = availableModuleNames.length > 0 ? availableModuleNames.join(', ') : 'Pédiatrie';
+      showAppToast(`🔒 ${modTitle} : questions en cours de numérisation. Disponibles : ${availText}.`);
+    };
+  });
+
+  refreshLucide(container);
+}
+
+function renderDashboardExamBanner(countdown, _metrics) {
+  const container = document.getElementById('dashboard-exam-banner-container');
+  if (!container) return;
+
+  const activeMod = getActiveModule();
+  const modTitle = activeMod ? activeMod.title : 'Pédiatrie';
+  const yearTitle = activeMod ? `${activeMod.yearNumber || 5}ème Année` : '5ème Année';
+
+  let dateText = '';
+  if (countdown.hasDate) {
+    const daysInfo = countdown.isToday ? '• Jour J !' : (countdown.isExpired ? '• Passé' : `• J-${countdown.daysLeft}`);
+    dateText = `Date d'examen : <strong>${escapeHtml(countdown.fullFormattedDate)}</strong> <span class="header-date-badge">${daysInfo}</span>`;
+  } else {
+    dateText = `Aucune date d'examen définie • <em>Cliquer pour fixer la date</em>`;
+  }
+
+  container.innerHTML = `
+    <div class="dashboard-module-header" id="btn-banner-open-settings" role="button" tabindex="0" title="Cliquer pour changer de module ou modifier la date d'examen">
+      <div class="module-header-left">
+        <div class="module-header-title-row">
+          <i data-lucide="book-open" class="module-header-icon"></i>
+          <h2 class="module-header-name">${escapeHtml(modTitle)}</h2>
+          <span class="module-header-year-pill">${escapeHtml(yearTitle)}</span>
+        </div>
+        <div class="module-header-date-sub">
+          <i data-lucide="calendar" style="width:13px;height:13px;color:var(--text-dim);flex-shrink:0;"></i>
+          <span class="module-header-date-text">${dateText}</span>
+        </div>
+      </div>
+      <div class="module-header-right">
+        <button type="button" class="btn-change-module-pill">
+          <i data-lucide="sliders-horizontal" style="width:13px;height:13px;"></i>
+          <span>Changer</span>
+        </button>
+      </div>
+    </div>
+  `;
+
+  const headerBtn = document.getElementById('btn-banner-open-settings');
+  if (headerBtn) {
+    headerBtn.onclick = () => {
+      openSettingsModal();
+    };
+    headerBtn.onkeydown = (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openSettingsModal();
+      }
+    };
+  }
+
+  refreshLucide(container);
+}
+
+function openSettingsModal() {
+  const keyField = document.getElementById('settings-gemini-key');
+  if (keyField) {
+    const savedKeys = geminiService.getApiKey();
+    keyField.value = savedKeys;
+    keyField.classList.add('is-masked');
+    updateGeminiKeyCounterBadge(savedKeys);
+  }
+
+  const toggleMaskBtn = document.getElementById('btn-toggle-gemini-key-mask');
+  if (toggleMaskBtn) {
+    toggleMaskBtn.innerHTML = '<i data-lucide="eye" style="width:13px;height:13px;"></i> <span>Afficher les clés</span>';
+  }
+
+  const examDateInput = document.getElementById('settings-exam-date');
+  const savedDate = getExamDate();
+  if (examDateInput) {
+    examDateInput.value = savedDate;
+    updateSettingsCountdownPreview(savedDate);
+  }
+
+  const clinicalModeSelect = document.getElementById('settings-clinical-mode-select');
+  if (clinicalModeSelect) {
+    const curMode = getClinicalModePreference();
+    clinicalModeSelect.value = curMode;
+    const badgeEl = document.getElementById('settings-clinical-mode-badge');
+    if (badgeEl) badgeEl.textContent = curMode === 'scroll' ? 'Déroulant' : 'Séquentiel';
+  }
+
+  updateActiveModuleBadge();
+  renderModuleSelectorUI();
+  const modals = getDomModals();
+  if (modals.settings) {
+    modals.settings.style.display = 'flex';
+    refreshLucide(modals.settings);
+  }
+}
+
+function updateDashboardUI() {
+  const metrics = queueEngine.getDashboardMetrics();
+  const countdown = getExamCountdownMetrics(metrics.totalIterationsRequired);
+
+  const elRem = document.getElementById('stat-remaining-questions');
+  const elIter = document.getElementById('stat-required-iterations');
+  const elMast = document.getElementById('stat-mastered-count');
+  const elMist = document.getElementById('stat-mistakes-count');
+  const elPct = document.getElementById('stat-progress-pct');
+
+  if (elRem) elRem.textContent = formatNumber(metrics.remainingDistinctQuestions);
+  if (elIter) elIter.textContent = formatNumber(metrics.totalIterationsRequired);
+  if (elMast) elMast.textContent = formatNumber(metrics.masteredCount);
+  if (elMist) elMist.textContent = formatNumber(metrics.totalMistakes);
+  if (elPct) elPct.textContent = `${metrics.progressPct}%`;
+
+  const badgeCountdown = document.getElementById('badge-exam-countdown');
+  if (badgeCountdown) {
+    if (countdown.hasDate) {
+      if (countdown.isToday) {
+        badgeCountdown.textContent = "⏳ Jour J • Examen aujourd'hui";
+      } else if (countdown.isExpired) {
+        badgeCountdown.textContent = `⏳ Examen passé (+${Math.abs(countdown.daysLeft)} j)`;
+      } else {
+        badgeCountdown.textContent = `⏳ J-${countdown.daysLeft} • Examen ${countdown.examDateStr}`;
+      }
+    } else {
+      badgeCountdown.textContent = '⏳ Date examen à fixer';
+    }
+  }
+
+  renderDashboardExamBanner(countdown, metrics);
+
+  const dailyTargetEl = document.getElementById('stat-daily-target');
+  if (dailyTargetEl) {
+    dailyTargetEl.textContent = formatNumber(countdown.dailyIterationsRequired);
+  }
+
+  const todayTracker = queueEngine.getTodayTracker();
+  const todayDoneEl = document.getElementById('stat-today-done');
+  if (todayDoneEl) {
+    todayDoneEl.textContent = formatNumber(todayTracker.count);
+  }
+
+  const todayGoalEl = document.getElementById('stat-today-goal');
+  if (todayGoalEl) {
+    todayGoalEl.textContent = `${formatNumber(countdown.dailyIterationsRequired)} requises`;
+  }
+
+  const todayPctEl = document.getElementById('stat-today-pct');
+  const todayFillEl = document.getElementById('daily-progress-fill');
+  const pct = countdown.dailyIterationsRequired > 0
+    ? Math.min(100, Math.round((todayTracker.count / countdown.dailyIterationsRequired) * 100))
+    : 100;
+
+  if (todayPctEl) todayPctEl.textContent = `${pct}%`;
+  if (todayFillEl) todayFillEl.style.width = `${pct}%`;
+
+  const poolInfoEl = document.getElementById('badge-pool-info');
+  if (poolInfoEl) poolInfoEl.textContent = `Sur ${formatNumber(metrics.totalPoolCount)}`;
+
+  const remainingDescEl = document.getElementById('stat-remaining-desc');
+  if (remainingDescEl) {
+    remainingDescEl.textContent = `Questions distinctes à éliminer sur l'ensemble des ${appState.allChapters.length} cours`;
+  }
+
+  const iterationsDescEl = document.getElementById('stat-iterations-desc');
+  if (iterationsDescEl) {
+    if (countdown.hasDate) {
+      iterationsDescEl.textContent = `Réponses justes cumulées pour tout nettoyer (programme complet) avant le ${countdown.examDateStr}.`;
+    } else {
+      iterationsDescEl.textContent = `Réponses justes cumulées pour tout nettoyer (programme complet).`;
+    }
+  }
+
+  const cadenceWrapEl = document.getElementById('metric-sub-target-cadence');
+  if (cadenceWrapEl) {
+    cadenceWrapEl.title = countdown.hasDate
+      ? `Cadence calculée automatiquement pour éliminer tous les QCM avant le ${countdown.examDateStr}`
+      : `Cadence calculée automatiquement pour éliminer tous les QCM avant l'échéance`;
+  }
+
+  const chaptersBtnLabel = document.getElementById('btn-chapters-label');
+  if (chaptersBtnLabel) {
+    if (metrics.selectedChaptersCount === 0 || metrics.selectedChaptersCount === appState.allChapters.length) {
+      chaptersBtnLabel.textContent = `Tous les cours (${appState.allChapters.length})`;
+    } else {
+      chaptersBtnLabel.textContent = `${metrics.selectedChaptersCount} cours sélectionnés (${metrics.queueLength} QCM en file)`;
+    }
+  }
+
+  const snoozedCount = queueEngine.getSnoozedCountToday();
+  const snoozedAlert = document.getElementById('dashboard-snoozed-alert');
+  const snoozedText = document.getElementById('dashboard-snoozed-text');
+  if (snoozedAlert) {
+    if (snoozedCount > 0) {
+      snoozedAlert.style.display = 'flex';
+      if (snoozedText) {
+        snoozedText.textContent = `${snoozedCount} question${snoozedCount > 1 ? 's' : ''} reportée${snoozedCount > 1 ? 's' : ''} à demain`;
+      }
+    } else {
+      snoozedAlert.style.display = 'none';
+    }
+  }
+
+  const notesCount = queueEngine.getRawReasoningNotes().length;
+  const badgeEl = document.getElementById('notebook-count-badge');
+  if (badgeEl) badgeEl.textContent = notesCount;
+}
+
+
+// --- src/views/clinicalCaseView.js ---
+// ============================================================================
+// Cas Cliniques & Moteur de Résolution Complète (Séquentiel & Déroulant)
+// ============================================================================
+
+function getClinicalCaseSubQuestions(question) {
+  if (!question || !question.clinical_case || !question.clinical_case.trim()) {
+    return [];
+  }
+  const idStr = String(question.id || '');
+  const idParts = idStr.split('.');
+  const casePrefix = idParts.length > 1 ? idParts[0] : null;
+
+  return appState.allQuestions.filter(item => {
+    if (!item.clinical_case || !item.clinical_case.trim()) return false;
+    if (question.chapterId && item.chapterId !== question.chapterId) return false;
+    if (casePrefix) {
+      const parts = String(item.id || '').split('.');
+      if (parts[0] === casePrefix) return true;
+    }
+    return item.clinical_case.trim() === question.clinical_case.trim();
+  }).sort((a, b) => {
+    const aParts = String(a.id || '').split('.');
+    const bParts = String(b.id || '').split('.');
+    const aIdx = parseInt(aParts[1] || a.id, 10) || 0;
+    const bIdx = parseInt(bParts[1] || b.id, 10) || 0;
+    return aIdx - bIdx;
+  });
+}
+
+function buildClinicalCaseContext(question) {
+  if (!question) return null;
+
+  const isCase = (appState.isClinicalRunActive && appState.clinicalRunState) || (question.clinical_case && question.clinical_case.trim().length > 0);
+  if (!isCase) return null;
+
+  const caseStatement = (appState.clinicalRunState ? appState.clinicalRunState.caseStatement : question.clinical_case) || '';
+  const subQuestions = (appState.clinicalRunState ? appState.clinicalRunState.subQuestions : getClinicalCaseSubQuestions(question)) || [];
+
+  if (subQuestions.length === 0) {
+    return {
+      isClinicalCase: true,
+      casePrefix: String(question.id || '').split('.')[0] || '',
+      caseStatement,
+      currentNum: 1,
+      totalCount: 1,
+      chronologySummary: `Énoncé du cas clinique :\n"${caseStatement}"`
+    };
+  }
+
+  let curIdx = 0;
+  if (appState.isClinicalRunActive && appState.clinicalRunState) {
+    curIdx = appState.clinicalRunState.currentIndex;
+  } else {
+    const found = subQuestions.findIndex(sq => sq.uid === question.uid || sq.id === question.id);
+    curIdx = found !== -1 ? found : 0;
+  }
+
+  const curNum = curIdx + 1;
+  const totalCount = subQuestions.length;
+  const casePrefix = appState.clinicalRunState ? appState.clinicalRunState.casePrefix : (String(question.id || '').split('.')[0] || '');
+
+  const questionsUpToCurrent = subQuestions.slice(0, curIdx + 1);
+
+  const lines = [];
+  questionsUpToCurrent.forEach((sq, idx) => {
+    const qNum = idx + 1;
+    const isCurrent = idx === curIdx;
+    const tag = isCurrent ? "➡️ [QUESTION ACTUELLE OÙ SE TROUVE L'ÉTUDIANT]" : `[Question ${qNum}/${totalCount}]`;
+    const qStatement = sq.question || sq.statement || '';
+
+    let userAnsText = 'Non renseignée';
+    if (appState.clinicalRunState && appState.clinicalRunState.userAnswers && appState.clinicalRunState.userAnswers[sq.uid]) {
+      const uAns = appState.clinicalRunState.userAnswers[sq.uid];
+      userAnsText = uAns.isCroq ? (uAns.croqText || 'Vide') : (uAns.selectedLetters?.join(', ') || 'Vide');
+    }
+
+    const evalData = (appState.clinicalRunState && appState.clinicalRunState.cardEvaluations) ? appState.clinicalRunState.cardEvaluations[sq.uid] : null;
+
+    let correctText = '';
+    if (sq.is_croq) {
+      correctText = sq.croq_answer || 'Réponse attendue';
+    } else {
+      const corOpts = (sq.options || []).filter(o => o.is_correct);
+      correctText = corOpts.map(o => `${o.letter}) ${o.text}`).join(' ; ') || corOpts.map(o => o.letter).join(', ');
+    }
+
+    let optsText = '';
+    if (!sq.is_croq && sq.options && sq.options.length > 0) {
+      optsText = sq.options.map(o => `   ${o.letter}) ${o.text}`).join('\n');
+    }
+
+    const savedAi = getSavedAiExplanation(sq.uid, sq);
+    let expText = 'Non fournie dans la base';
+    if (sq.explanation && sq.explanation.trim()) {
+      expText = sq.explanation.trim();
+    } else if (savedAi && savedAi.note) {
+      expText = `[Explication IA Flash générée] : ${savedAi.note.slice(0, 250)}...`;
+    }
+
+    lines.push(`
+--- ${tag} : Question ${qNum} sur ${totalCount} ---
+Énoncé : ${qStatement}
+${optsText ? `Propositions :\n${optsText}` : 'Type : Question ouverte (CROQ)'}
+${userAnsText !== 'Non renseignée' ? `Réponse fournie par l'étudiant : ${userAnsText} ${evalData ? (evalData.isCorrect ? '(Validée ✅)' : '(Inexacte ❌)') : ''}` : ''}
+Bonne(s) réponse(s) officielle(s) : ${correctText}
+Explication : ${expText}
+`);
+  });
+
+  if (curIdx + 1 < totalCount) {
+    lines.push(`\n[Note pédagogique : Le cas comporte ${totalCount} questions au total. L'étudiant est actuellement à l'étape ${curNum}/${totalCount}. Ne spoile pas les questions suivantes ${curNum + 1} à ${totalCount} sauf si l'étudiant pose une question directe sur la stratégie thérapeutique globale.]`);
+  }
+
+  return {
+    isClinicalCase: true,
+    casePrefix,
+    caseStatement,
+    currentNum: curNum,
+    totalCount,
+    chronologySummary: lines.join('\n')
+  };
+}
+
+function updateClinicalUncleanedBadge(qOrSubQuestions) {
+  const badge = document.getElementById('clinical-uncleaned-badge');
+  const badgeText = document.getElementById('clinical-uncleaned-text');
+  if (!badge || !badgeText) return;
+
+  const subQuestions = Array.isArray(qOrSubQuestions)
+    ? qOrSubQuestions
+    : getClinicalCaseSubQuestions(qOrSubQuestions);
+  const totalCount = subQuestions.length;
+
+  if (totalCount > 1 && !appState.isClinicalRunActive) {
+    const uncleanedCount = subQuestions.filter(sq => !(queueEngine?.stats?.[sq.uid]?.done)).length;
+    badgeText.textContent = `${uncleanedCount}/${totalCount} à nettoyer`;
+    badge.classList.toggle('is-all-cleaned', uncleanedCount === 0);
+    badge.title = uncleanedCount === 0
+      ? `Toutes les questions de ce cas clinique sont nettoyées (0/${totalCount} restante)`
+      : `${uncleanedCount} question(s) pas encore nettoyée(s) sur ${totalCount} au total dans ce cas clinique`;
+    badge.style.display = 'inline-flex';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+function updateClinicalCaseUI(q) {
+  const clinicalBox = document.getElementById('arena-clinical-case');
+  const clinicalText = document.getElementById('arena-clinical-case-text');
+  const subBadge = document.getElementById('arena-subquestion-badge');
+  const subBadgeText = document.getElementById('arena-subquestion-badge-text');
+  const btnAccordion = document.getElementById('btn-toggle-clinical-questions');
+  const btnAccordionText = document.getElementById('btn-toggle-clinical-text');
+  const accordionContainer = document.getElementById('arena-clinical-questions-accordion');
+
+  appState.isClinicalAccordionOpen = false;
+  if (btnAccordion) btnAccordion.classList.remove('is-open');
+  if (accordionContainer) {
+    accordionContainer.style.display = 'none';
+    accordionContainer.innerHTML = '';
+  }
+
+  if (q && q.clinical_case && q.clinical_case.trim()) {
+    if (clinicalText) clinicalText.innerHTML = formatMedicalContent(q.clinical_case.trim());
+    if (clinicalBox) clinicalBox.style.display = 'block';
+
+    const subQuestions = getClinicalCaseSubQuestions(q);
+    const totalCount = subQuestions.length;
+
+    const idParts = String(q.id || '').split('.');
+    const caseNum = idParts.length > 1 ? idParts[0] : null;
+    let subIdx = idParts.length > 1 ? parseInt(idParts[1], 10) : null;
+
+    if ((subIdx === null || isNaN(subIdx)) && totalCount > 0) {
+      const foundIdx = subQuestions.findIndex(sq => sq.uid === q.uid || sq.id === q.id);
+      if (foundIdx !== -1) subIdx = foundIdx + 1;
+    }
+
+    if (subBadge && subBadgeText) {
+      if (subIdx !== null && totalCount > 0) {
+        const caseLabel = caseNum ? `Cas Clinique ${caseNum}` : 'Cas Clinique';
+        subBadgeText.textContent = `${caseLabel} • Question ${subIdx}/${totalCount}`;
+        subBadge.style.display = 'inline-flex';
+      } else if (caseNum) {
+        subBadgeText.textContent = `Cas Clinique ${caseNum}`;
+        subBadge.style.display = 'inline-flex';
+      } else {
+        subBadge.style.display = 'none';
+      }
+    }
+
+    if (btnAccordion && btnAccordionText) {
+      if (totalCount > 1) {
+        btnAccordion.style.display = 'inline-flex';
+        btnAccordionText.textContent = `Voir les ${totalCount} questions du cas`;
+      } else {
+        btnAccordion.style.display = 'none';
+      }
+    }
+
+    const btnStartCase = document.getElementById('btn-start-clinical-case');
+    const btnStartCaseText = document.getElementById('btn-start-clinical-text');
+    if (btnStartCase && btnStartCaseText) {
+      if (totalCount > 1 && !appState.isClinicalRunActive) {
+        btnStartCase.style.display = 'inline-flex';
+        btnStartCaseText.textContent = `Résoudre le cas complet (${totalCount} Q)`;
+      } else {
+        btnStartCase.style.display = 'none';
+      }
+    }
+    updateClinicalUncleanedBadge(subQuestions);
+  } else {
+    if (clinicalBox) clinicalBox.style.display = 'none';
+    if (subBadge) subBadge.style.display = 'none';
+    if (btnAccordion) btnAccordion.style.display = 'none';
+    const btnStartCase = document.getElementById('btn-start-clinical-case');
+    if (btnStartCase) btnStartCase.style.display = 'none';
+    const uncleanedBadge = document.getElementById('clinical-uncleaned-badge');
+    if (uncleanedBadge) uncleanedBadge.style.display = 'none';
+  }
+}
+
+window.toggleClinicalQuestionsAccordion = function() {
+  const currentQ = getEffectiveArenaQuestion();
+  if (!currentQ || !currentQ.clinical_case) return;
+
+  const accordionContainer = document.getElementById('arena-clinical-questions-accordion');
+  const btnAccordion = document.getElementById('btn-toggle-clinical-questions');
+  const btnAccordionText = document.getElementById('btn-toggle-clinical-text');
+  if (!accordionContainer) return;
+
+  appState.isClinicalAccordionOpen = !appState.isClinicalAccordionOpen;
+
+  if (appState.isClinicalAccordionOpen) {
+    const subQuestions = getClinicalCaseSubQuestions(currentQ);
+    const totalCount = subQuestions.length;
+
+    if (btnAccordion) btnAccordion.classList.add('is-open');
+    if (btnAccordionText) btnAccordionText.textContent = `Masquer les questions (${totalCount})`;
+
+    let html = '';
+    subQuestions.forEach((sq, idx) => {
+      const isCurrent = (sq.uid === currentQ.uid || sq.id === currentQ.id);
+      const qNum = idx + 1;
+      const opts = sq.options || [];
+
+      let optionsHtml = '';
+      if (sq.is_croq) {
+        optionsHtml = `
+          <div class="clinical-accordion-opt">
+            <span class="clinical-accordion-opt-letter">📝</span>
+            <span style="font-style:italic;color:var(--cyan);">Question à Réponse Ouverte et Courte (CROQ)</span>
+          </div>
+        `;
+      } else if (opts.length > 0) {
+        optionsHtml = `
+          <div class="clinical-accordion-options">
+            ${opts.map((opt, oIdx) => {
+              const letter = opt.letter || String.fromCharCode(65 + oIdx);
+              return `
+                <div class="clinical-accordion-opt">
+                  <span class="clinical-accordion-opt-letter">${escapeHtml(letter)}.</span>
+                  <span class="clinical-accordion-opt-text">${parseMarkdownInline(opt.text || '')}</span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+      }
+
+      html += `
+        <div class="clinical-accordion-item ${isCurrent ? 'is-current' : ''}">
+          <div class="clinical-accordion-header">
+            <span class="clinical-accordion-qnum">
+              <i data-lucide="help-circle" style="width:13px;height:13px;"></i>
+              Question ${qNum} / ${totalCount}
+            </span>
+            ${isCurrent ? '<span class="clinical-accordion-tag-current">Question en cours</span>' : ''}
+          </div>
+          <div class="clinical-accordion-text">
+            ${formatMedicalContent(sq.question || sq.statement)}
+          </div>
+          ${optionsHtml}
+        </div>
+      `;
+    });
+
+    accordionContainer.innerHTML = html;
+    accordionContainer.style.display = 'flex';
+    refreshLucide(accordionContainer);
+  } else {
+    const subQuestions = getClinicalCaseSubQuestions(currentQ);
+    if (btnAccordion) btnAccordion.classList.remove('is-open');
+    if (btnAccordionText) btnAccordionText.textContent = `Voir les ${subQuestions.length} questions du cas`;
+    accordionContainer.style.display = 'none';
+    accordionContainer.innerHTML = '';
+  }
+};
+
+function updateClinicalRunBarUI() {
+  const bar = document.getElementById('arena-clinical-run-bar');
+  const track = document.getElementById('arena-clinical-progress-track');
+  const fill = document.getElementById('arena-clinical-progress-fill');
+  const titleText = document.getElementById('clinical-run-title-text');
+  const counterText = document.getElementById('clinical-run-step-counter');
+  const btnSeq = document.getElementById('btn-mode-sequential');
+  const btnScroll = document.getElementById('btn-mode-scroll');
+  const btnStartCase = document.getElementById('btn-start-clinical-case');
+  const btnSnooze = document.getElementById('btn-snooze-question');
+
+  if (!appState.isClinicalRunActive || !appState.clinicalRunState) {
+    if (bar) bar.style.display = 'none';
+    if (track) track.style.display = 'none';
+    if (btnSnooze) btnSnooze.style.display = 'inline-flex';
+    return;
+  }
+
+  if (bar) bar.style.display = 'flex';
+  if (track) track.style.display = 'block';
+  if (btnStartCase) btnStartCase.style.display = 'none';
+  const uncleanedBadge = document.getElementById('clinical-uncleaned-badge');
+  if (uncleanedBadge) uncleanedBadge.style.display = 'none';
+  if (btnSnooze) btnSnooze.style.display = 'none';
+
+  const runState = appState.clinicalRunState;
+  const total = runState.subQuestions.length;
+  if (titleText) {
+    titleText.textContent = `Cas Clinique ${runState.casePrefix} (${total} Q)`;
+  }
+
+  if (btnSeq && btnScroll) {
+    btnSeq.classList.toggle('active', runState.mode === 'sequential');
+    btnScroll.classList.toggle('active', runState.mode === 'scroll');
+  }
+
+  if (runState.mode === 'sequential') {
+    const cur = runState.currentIndex + 1;
+    if (counterText) counterText.textContent = `Question ${cur} / ${total}`;
+    const pct = Math.round((cur / total) * 100);
+    if (fill) fill.style.width = `${pct}%`;
+  } else {
+    const answeredCount = Object.keys(runState.userAnswers).length;
+    if (counterText) counterText.textContent = `${answeredCount} / ${total} répondue(s)`;
+    const pct = Math.round((answeredCount / total) * 100);
+    if (fill) fill.style.width = `${pct}%`;
+  }
+
+  refreshLucide(bar);
+}
+
+window.startClinicalCaseRun = function() {
+  const currentQ = getEffectiveArenaQuestion();
+  if (!currentQ || !currentQ.clinical_case) return;
+
+  const subQuestions = getClinicalCaseSubQuestions(currentQ);
+  if (!subQuestions || subQuestions.length === 0) return;
+
+  const idParts = String(currentQ.id || '').split('.');
+  const casePrefix = idParts.length > 1 ? idParts[0] : (currentQ.id || '1');
+
+  appState.isClinicalAccordionOpen = false;
+  const accordionContainer = document.getElementById('arena-clinical-questions-accordion');
+  const btnAccordion = document.getElementById('btn-toggle-clinical-questions');
+  if (btnAccordion) btnAccordion.classList.remove('is-open');
+  if (accordionContainer) accordionContainer.style.display = 'none';
+
+  const preferredMode = getClinicalModePreference();
+  const modCtx = resolveAiModuleContext(currentQ);
+  appState.isClinicalRunActive = true;
+  appState.clinicalRunState = {
+    casePrefix,
+    caseStatement: currentQ.clinical_case.trim(),
+    chapterId: currentQ.chapterId || null,
+    chapterTitle: currentQ.chapterTitle || modCtx.defaultChapter,
+    subQuestions,
+    currentIndex: 0,
+    mode: preferredMode,
+    userAnswers: {},
+    cardEvaluations: {},
+    startTime: Date.now()
+  };
+
+  if (appState.selectedOptionIds.size > 0 && appState.currentQuestion) {
+    const letters = [];
+    document.querySelectorAll('.option-item.selected').forEach(el => {
+      letters.push(el.dataset.letter);
+    });
+    if (letters.length > 0) {
+      appState.clinicalRunState.userAnswers[appState.currentQuestion.uid] = {
+        selectedLetters: letters.sort(),
+        isCroq: false,
+        croqText: ''
+      };
+    }
+  }
+
+  updateClinicalRunBarUI();
+
+  if (appState.clinicalRunState.mode === 'scroll') {
+    renderClinicalScrollView();
+  } else {
+    renderClinicalSequentialView();
+  }
+
+  const arenaEl = document.getElementById('view-arena');
+  if (arenaEl) arenaEl.scrollIntoView({ behavior: 'auto', block: 'start' });
+};
+
+window.switchClinicalRunMode = function(newMode) {
+  if (!appState.isClinicalRunActive || !appState.clinicalRunState) return;
+  if (appState.clinicalRunState.mode === newMode) return;
+
+  if (appState.clinicalRunState.mode === 'sequential') {
+    saveSequentialCurrentQuestionState();
+  }
+
+  appState.clinicalRunState.mode = newMode;
+  setClinicalModePreference(newMode);
+  updateClinicalRunBarUI();
+
+  if (newMode === 'scroll') {
+    renderClinicalScrollView();
+  } else {
+    renderClinicalSequentialView();
+  }
+};
+
+function saveSequentialCurrentQuestionState() {
+  const runState = appState.clinicalRunState;
+  if (!runState) return;
+  const subQ = runState.subQuestions[runState.currentIndex];
+  if (!subQ) return;
+
+  if (subQ.is_croq) {
+    const val = document.getElementById('arena-croq-input')?.value?.trim() || '';
+    if (val) {
+      runState.userAnswers[subQ.uid] = {
+        selectedLetters: [],
+        isCroq: true,
+        croqText: val
+      };
+    }
+  } else {
+    const letters = [];
+    document.querySelectorAll('.option-item.selected').forEach(el => {
+      letters.push(el.dataset.letter);
+    });
+    if (letters.length > 0) {
+      runState.userAnswers[subQ.uid] = {
+        selectedLetters: letters.sort(),
+        isCroq: false,
+        croqText: ''
+      };
+    }
+  }
+}
+
+function updateSequentialActionButtons(curNum, total) {
+  const defaultActions = document.getElementById('arena-default-actions');
+  const runState = appState.clinicalRunState;
+  if (!defaultActions || !runState) return;
+
+  let stepperBar = document.getElementById('arena-clinical-sequential-stepper');
+  if (!stepperBar) {
+    stepperBar = document.createElement('div');
+    stepperBar.id = 'arena-clinical-sequential-stepper';
+    stepperBar.className = 'clinical-sequential-stepper-wrap';
+    stepperBar.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;width:100%;';
+    defaultActions.parentNode.insertBefore(stepperBar, defaultActions);
+  }
+  stepperBar.style.display = 'flex';
+
+  const isFirst = curNum === 1;
+  const isLast = curNum === total;
+
+  stepperBar.innerHTML = `
+    <button type="button" class="btn-secondary" id="btn-clinical-prev-q" style="padding:8px 16px;font-size:0.78rem;gap:6px;" ${isFirst ? 'disabled' : ''} onclick="window.navClinicalSequentialStep(-1)">
+      <i data-lucide="chevron-left" style="width:14px;height:14px;"></i>
+      <span>Précédente</span>
+    </button>
+    <div style="font-size:0.8rem;font-weight:700;color:var(--text-muted);font-family:var(--font-heading);">
+      ${curNum} / ${total}
+    </div>
+    <button type="button" class="btn-secondary" id="btn-clinical-next-q" style="padding:8px 16px;font-size:0.78rem;gap:6px;" ${isLast ? 'disabled' : ''} onclick="window.navClinicalSequentialStep(1)">
+      <span>Suivante</span>
+      <i data-lucide="chevron-right" style="width:14px;height:14px;"></i>
+    </button>
+  `;
+
+  const subQ = runState.subQuestions[runState.currentIndex];
+  const evalData = runState.cardEvaluations ? runState.cardEvaluations[subQ?.uid] : null;
+  const isAlreadyEvaluated = !!evalData;
+
+  const btnSubmitAnswer = document.getElementById('btn-submit-answer');
+  const btnSubmitCroq = document.getElementById('btn-submit-croq');
+  const btnClinicalSave = document.getElementById('btn-clinical-save-next');
+  const btnClinicalSaveText = document.getElementById('btn-clinical-save-text');
+
+  if (btnClinicalSave) {
+    if (isAlreadyEvaluated) {
+      btnClinicalSave.style.display = 'none';
+    } else {
+      btnClinicalSave.style.display = 'inline-flex';
+      const saveText = isLast ? 'Enregistrer & Bilan' : 'Enregistrer & Suivant';
+      if (btnClinicalSaveText) btnClinicalSaveText.textContent = saveText;
+      btnClinicalSave.title = isLast ? 'Enregistrer sans corriger et voir le bilan' : 'Enregistrer sans corriger et passer à la suivante';
+
+      if (subQ?.is_croq) {
+        const croqVal = document.getElementById('arena-croq-input')?.value?.trim() || '';
+        btnClinicalSave.disabled = !croqVal;
+      } else {
+        btnClinicalSave.disabled = appState.selectedOptionIds.size === 0;
+      }
+    }
+  }
+
+  if (isAlreadyEvaluated) {
+    const nextBtnText = isLast ? '🏁 Voir le Bilan Final' : 'Question suivante ➔';
+    if (btnSubmitAnswer) {
+      const span = btnSubmitAnswer.querySelector('span');
+      if (span) span.textContent = nextBtnText;
+      btnSubmitAnswer.disabled = false;
+    }
+    if (btnSubmitCroq) {
+      const span = btnSubmitCroq.querySelector('span');
+      if (span) span.textContent = nextBtnText;
+      btnSubmitCroq.disabled = false;
+    }
+  } else {
+    if (btnSubmitAnswer) {
+      const span = btnSubmitAnswer.querySelector('span');
+      if (span) span.textContent = 'Vérifier la réponse';
+      btnSubmitAnswer.disabled = appState.selectedOptionIds.size === 0;
+    }
+    if (btnSubmitCroq) {
+      const span = btnSubmitCroq.querySelector('span');
+      if (span) span.textContent = 'Évaluer par IA (Gemini)';
+      const croqVal = document.getElementById('arena-croq-input')?.value?.trim() || '';
+      btnSubmitCroq.disabled = !croqVal;
+    }
+  }
+
+  refreshLucide(stepperBar);
+  if (btnClinicalSave) refreshLucide(btnClinicalSave);
+}
+
+window.navClinicalSequentialStep = function(delta) {
+  if (!appState.isClinicalRunActive || !appState.clinicalRunState) return;
+  saveSequentialCurrentQuestionState();
+  const nextIdx = appState.clinicalRunState.currentIndex + delta;
+  if (nextIdx >= 0 && nextIdx < appState.clinicalRunState.subQuestions.length) {
+    appState.clinicalRunState.currentIndex = nextIdx;
+    renderClinicalSequentialView();
+  }
+};
+
+window.saveAndAdvanceSequentialClinicalQuestion = function() {
+  if (!appState.isClinicalRunActive || !appState.clinicalRunState || appState.clinicalRunState.mode !== 'sequential') return;
+  saveSequentialCurrentQuestionState();
+
+  const isLast = appState.clinicalRunState.currentIndex === appState.clinicalRunState.subQuestions.length - 1;
+  if (isLast) {
+    window.validateAllClinicalSubQuestions();
+  } else {
+    appState.clinicalRunState.currentIndex++;
+    renderClinicalSequentialView();
+  }
+};
+
+function renderClinicalExplanationArea(subQ, isCorrect, correctLettersStr = '') {
+  const expBox = document.getElementById('arena-explanation-box');
+  const expText = document.getElementById('arena-explanation-text');
+  if (!expBox || !expText) return;
+
+  const correctStr = correctLettersStr || (subQ.is_croq ? subQ.croq_answer : (subQ.options || []).filter(o => o.is_correct).map(o => o.letter).join(', '));
+  const statusHeader = isCorrect
+    ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#22c55e;font-weight:800;font-family:var(--font-heading);font-size:0.95rem;">
+         <i data-lucide="check-circle" style="width:18px;height:18px;"></i>
+         <span>Bonne réponse !</span>
+       </div>`
+    : `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#ef4444;font-weight:800;font-family:var(--font-heading);font-size:0.95rem;">
+         <i data-lucide="x-circle" style="width:18px;height:18px;"></i>
+         <span>Réponse incorrecte (Bonne(s) réponse(s) : <strong>${escapeHtml(correctStr)}</strong>)</span>
+       </div>`;
+
+  const hasOfficial = subQ.explanation && subQ.explanation.trim().length > 0;
+  let expContent = '';
+  if (hasOfficial) {
+    expContent = `<div style="margin-bottom:10px;">${formatMedicalContent(subQ.explanation.trim())}</div>`;
+  } else {
+    expContent = `
+      <div style="margin-bottom:10px;padding:10px 12px;background:rgba(255,255,255,0.03);border-radius:8px;border-left:3px solid var(--amber);">
+        <div style="font-size:0.83rem;color:var(--text-muted);display:flex;align-items:center;gap:6px;">
+          <i data-lucide="alert-circle" style="width:15px;height:15px;color:var(--amber);flex-shrink:0;"></i>
+          <span><strong>Explication officielle manquante :</strong> Aucune justification n'est fournie dans la base pour cette question.</span>
+        </div>
+      </div>
+    `;
+  }
+
+  let croqExtraHtml = '';
+  if (subQ.is_croq) {
+    const evalData = appState.clinicalRunState?.cardEvaluations ? appState.clinicalRunState.cardEvaluations[subQ.uid] : null;
+    if (evalData) {
+      if (evalData.feedback) {
+        croqExtraHtml += `<div style="margin: 8px 0; padding: 10px; background: rgba(255,255,255,0.04); border-radius: 8px; font-size: 0.88rem; border-left: 3px solid var(--purple);"><strong>Feedback IA :</strong> ${escapeHtml(evalData.feedback)}</div>`;
+      }
+      if (subQ.croq_answer) {
+        croqExtraHtml += `<div style="margin: 8px 0; font-size: 0.88rem; color: var(--text-muted);"><strong>Réponse attendue :</strong> ${escapeHtml(subQ.croq_answer)}</div>`;
+      }
+    }
+  }
+
+  const savedAi = getSavedAiExplanation(subQ.uid, subQ);
+  let aiBtnHtml = '';
+  if (!savedAi || !savedAi.note) {
+    aiBtnHtml = `
+      <div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+        <div style="font-size:0.8rem;color:var(--text-muted);display:flex;align-items:center;gap:6px;">
+          <i data-lucide="sparkles" style="width:14px;height:14px;color:var(--cyan);"></i>
+          <span>${hasOfficial ? "Besoin d'un raisonnement plus poussé ?" : 'Explication détaillée manquante :'}</span>
+        </div>
+        <button type="button" class="btn-ask-arena-ai" id="btn-gen-clinical-subq-ai" onclick="window.requestClinicalSubQuestionAiExplanation()" style="padding:8px 16px;font-size:0.82rem;gap:6px;background:linear-gradient(135deg,rgba(0,212,255,0.18),rgba(147,51,234,0.22));border:1px solid var(--cyan);border-radius:8px;color:#ffffff;cursor:pointer;display:inline-flex;align-items:center;font-weight:700;">
+          <i data-lucide="sparkles" style="width:13px;height:13px;color:var(--cyan);"></i>
+          <span>${hasOfficial ? "Approfondir avec l'explication IA (Gemini Flash)" : "Générer l'explication IA (Gemini Flash)"}</span>
+        </button>
+      </div>
+    `;
+  } else {
+    aiBtnHtml = `
+      <div style="margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;font-size:0.8rem;color:var(--cyan);">
+        <span style="display:flex;align-items:center;gap:6px;">
+          <i data-lucide="check-check" style="width:14px;height:14px;"></i> Explication IA complète disponible ci-dessous
+        </span>
+        <button type="button" onclick="window.requestClinicalSubQuestionAiExplanation(true)" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:0.75rem;display:flex;align-items:center;gap:4px;">
+          <i data-lucide="rotate-cw" style="width:12px;height:12px;"></i> Régénérer
+        </button>
+      </div>
+    `;
+  }
+
+  expText.innerHTML = statusHeader + expContent + croqExtraHtml + aiBtnHtml;
+  expBox.style.display = 'flex';
+
+  renderArenaAiExplanation(subQ);
+  refreshLucide(expBox);
+}
+
+window.requestClinicalSubQuestionAiExplanation = async function(forceRegen = false) {
+  const runState = appState.clinicalRunState;
+  if (!runState) return;
+  const subQ = runState.subQuestions[runState.currentIndex];
+  if (!subQ) return;
+  const targetUid = subQ.uid;
+
+  if (forceRegen) {
+    delete appState.aiExplanationsCache[targetUid];
+    try {
+      localStorage.setItem(getAiCacheKey(), JSON.stringify(appState.aiExplanationsCache));
+    } catch {}
+    queueEngine.deleteReasoningNotesByQuestionUid(targetUid);
+  }
+
+  const aiBox = document.getElementById('arena-ai-explanation-box');
+  const aiTextEl = document.getElementById('arena-ai-explanation-text');
+  const modelTag = document.getElementById('arena-ai-model-tag');
+  const regenBtn = document.getElementById('btn-arena-ai-regenerate');
+
+  if (aiBox && aiTextEl) {
+    aiBox.style.display = 'flex';
+    if (regenBtn) regenBtn.style.display = 'none';
+    aiTextEl.innerHTML = `
+      <div class="reasoning-loader-wrap" style="padding:16px;text-align:center;">
+        <i data-lucide="sparkles" class="spin" style="width:20px;height:20px;color:var(--cyan);margin-bottom:8px;"></i>
+        <div style="font-size:0.88rem;color:var(--cyan);font-weight:600;">Génération de l'explication clinique IA complète (Gemini Flash)...</div>
+        <div style="font-size:0.75rem;color:var(--text-dim);margin-top:4px;">Analyse du cas clinique complet, justification proposition par proposition et mémo concours.</div>
+      </div>
+    `;
+    refreshLucide(aiBox);
+    aiBox.scrollIntoView({ behavior: 'auto', block: 'nearest' });
+  }
+
+  const btnGen = document.getElementById('btn-gen-clinical-subq-ai');
+  if (btnGen) {
+    btnGen.disabled = true;
+    btnGen.innerHTML = `<i data-lucide="loader" class="spin" style="width:14px;height:14px;"></i> <span>Génération IA en cours...</span>`;
+    refreshLucide(btnGen);
+  }
+
+  try {
+    const clinicalContext = buildClinicalCaseContext(subQ);
+    const ans = runState.userAnswers[subQ.uid];
+    const isCroq = !!subQ.is_croq;
+    const selectedLetters = isCroq ? [] : (ans?.selectedLetters || []);
+    const studentCroq = isCroq ? (ans?.croqText || '') : '';
+
+    const reasoningObj = await geminiService.generateReasoningNote(
+      subQ,
+      selectedLetters,
+      isCroq,
+      studentCroq,
+      clinicalContext
+    );
+
+    saveAiExplanationForQuestion(targetUid, reasoningObj.note, reasoningObj.modelUsed, subQ);
+    if (runState.cardEvaluations && runState.cardEvaluations[targetUid]) {
+      runState.cardEvaluations[targetUid].aiReasoning = reasoningObj.note;
+    }
+
+    const currentSubQ = runState.subQuestions[runState.currentIndex];
+    if (currentSubQ && currentSubQ.uid === targetUid) {
+      if (aiTextEl) aiTextEl.innerHTML = formatReasoningNote(reasoningObj.note);
+      if (modelTag) modelTag.textContent = reasoningObj.modelUsed;
+      if (regenBtn) {
+        regenBtn.style.display = 'inline-flex';
+        regenBtn.onclick = () => window.requestClinicalSubQuestionAiExplanation(true);
+      }
+      refreshLucide(aiBox);
+
+      const evalData = runState.cardEvaluations[targetUid];
+      renderClinicalExplanationArea(subQ, evalData ? evalData.isCorrect : true);
+    }
+  } catch (err) {
+    console.error('Error generating clinical sub-question AI explanation:', err);
+    if (aiTextEl) {
+      aiTextEl.innerHTML = `
+        <div style="color:var(--rose);padding:12px;font-size:0.85rem;">
+          ⚠️ Erreur de génération : ${escapeHtml(err.message || 'Problème de connexion')}
+          <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;">
+            <button type="button" class="btn-ask-arena-ai" onclick="window.requestClinicalSubQuestionAiExplanation(true)">Réessayer</button>
+          </div>
+        </div>
+      `;
+      refreshLucide(aiBox);
+    }
+    if (btnGen) {
+      btnGen.disabled = false;
+      btnGen.innerHTML = `<i data-lucide="sparkles" style="width:13px;height:13px;"></i> <span>Réessayer la génération IA</span>`;
+      refreshLucide(btnGen);
+    }
+  }
+};
+
+window.requestClinicalCardAiExplanation = async function(idx, forceRegen = false) {
+  if (!appState.isClinicalRunActive || !appState.clinicalRunState) return;
+  const runState = appState.clinicalRunState;
+  const subQ = runState.subQuestions[idx];
+  if (!subQ) return;
+  const targetUid = subQ.uid;
+
+  if (forceRegen) {
+    delete appState.aiExplanationsCache[targetUid];
+    try {
+      localStorage.setItem(getAiCacheKey(), JSON.stringify(appState.aiExplanationsCache));
+    } catch {}
+    queueEngine.deleteReasoningNotesByQuestionUid(targetUid);
+  }
+
+  const btn = document.getElementById(`btn-card-ai-exp-${idx}`);
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `<i data-lucide="loader" class="spin" style="width:12px;height:12px;"></i> <span>Génération IA en cours...</span>`;
+    refreshLucide(btn);
+  }
+
+  try {
+    const clinicalContext = buildClinicalCaseContext(subQ);
+    const ans = runState.userAnswers[subQ.uid];
+    const isCroq = !!subQ.is_croq;
+    const selectedLetters = isCroq ? [] : (ans?.selectedLetters || []);
+    const studentCroq = isCroq ? (ans?.croqText || '') : '';
+
+    const reasoningObj = await geminiService.generateReasoningNote(
+      subQ,
+      selectedLetters,
+      isCroq,
+      studentCroq,
+      clinicalContext
+    );
+
+    saveAiExplanationForQuestion(targetUid, reasoningObj.note, reasoningObj.modelUsed, subQ);
+    if (runState.cardEvaluations && runState.cardEvaluations[targetUid]) {
+      runState.cardEvaluations[targetUid].aiReasoning = reasoningObj.note;
+    }
+
+    renderClinicalScrollView();
+  } catch (err) {
+    console.error('Error generating card AI explanation:', err);
+    showAppToast(`⚠️ Erreur lors de la génération de l'explication IA : ${err.message || 'Problème de connexion'}`, { type: 'error' });
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<i data-lucide="sparkles" style="width:12px;height:12px;"></i> <span>Réessayer la génération IA</span>`;
+      refreshLucide(btn);
+    }
+  }
+};
+
+function verifySequentialSubQuestion(subQ) {
+  const runState = appState.clinicalRunState;
+  if (!subQ || !runState) return;
+  saveSequentialCurrentQuestionState();
+
+  const ans = runState.userAnswers[subQ.uid] || { selectedLetters: [], isCroq: false, croqText: '' };
+  const userLetters = (ans.selectedLetters || []).slice().sort();
+
+  const correctOptions = (subQ.options || []).filter(o => o.is_correct);
+  const correctLetters = correctOptions.map(o => o.letter).sort();
+
+  const isCorrect = userLetters.length > 0 &&
+    correctLetters.length === userLetters.length &&
+    correctLetters.every((l, idx) => l === userLetters[idx]);
+
+  runState.cardEvaluations[subQ.uid] = {
+    isEvaluated: true,
+    isCorrect,
+    score: isCorrect ? 100 : 0,
+    feedback: isCorrect ? 'Excellente réponse !' : 'Réponse inexacte.',
+    userText: userLetters.join(', ') || 'Aucune',
+    correctText: correctLetters.join(', ')
+  };
+
+  document.querySelectorAll('.option-item').forEach(el => {
+    const letter = el.dataset.letter;
+    const isSelected = userLetters.includes(letter);
+    const isCor = correctLetters.includes(letter);
+
+    el.classList.remove('selected');
+    if (isSelected && !isCor) {
+      el.classList.add('wrong-highlight');
+    } else if (isCor) {
+      el.classList.add('correct-highlight');
+    }
+  });
+
+  const optionsContainer = document.getElementById('arena-options-container');
+  if (optionsContainer) optionsContainer.style.pointerEvents = 'none';
+
+  renderClinicalExplanationArea(subQ, isCorrect, correctLetters.join(', '));
+
+  const total = runState.subQuestions.length;
+  const curNum = runState.currentIndex + 1;
+  updateSequentialActionButtons(curNum, total);
+  refreshLucide();
+}
+
+async function verifySequentialCroqSubQuestion(subQ) {
+  const runState = appState.clinicalRunState;
+  if (!subQ || !runState) return;
+  saveSequentialCurrentQuestionState();
+
+  const ans = runState.userAnswers[subQ.uid];
+  const userInput = ans ? ans.croqText : '';
+  if (!userInput) {
+    showAppToast('Veuillez saisir votre réponse avant de vérifier.', { type: 'warning' });
+    return;
+  }
+
+  const btnSubmitCroq = document.getElementById('btn-submit-croq');
+  if (btnSubmitCroq) {
+    btnSubmitCroq.disabled = true;
+    btnSubmitCroq.innerHTML = `<i data-lucide="loader" class="spin"></i> <span>Évaluation IA en cours...</span>`;
+    refreshLucide(btnSubmitCroq);
+  }
+
+  let isCorrect = false;
+  let score = null;
+  let feedback = '';
+
+  try {
+    const evalResult = await geminiService.evaluateCroq(
+      subQ.question || subQ.statement,
+      runState.caseStatement,
+      subQ.croq_answer,
+      userInput,
+      subQ
+    );
+    score = evalResult.score;
+    feedback = evalResult.feedback;
+    isCorrect = evalResult.isValid && score >= 75;
+  } catch (err) {
+    console.error('Error evaluating sequential CROQ:', err);
+    isCorrect = false;
+    feedback = err.message && err.message.includes('API Gemini')
+      ? err.message
+      : 'Évaluation hors-ligne : réponse enregistrée.';
+  }
+
+  runState.cardEvaluations[subQ.uid] = {
+    isEvaluated: true,
+    isCorrect,
+    score,
+    feedback,
+    userText: userInput,
+    correctText: subQ.croq_answer
+  };
+
+  const croqInput = document.getElementById('arena-croq-input');
+  if (croqInput) croqInput.disabled = true;
+
+  renderClinicalExplanationArea(subQ, isCorrect);
+
+  const total = runState.subQuestions.length;
+  const curNum = runState.currentIndex + 1;
+  updateSequentialActionButtons(curNum, total);
+  refreshLucide();
+}
+
+function renderClinicalSequentialView() {
+  const runState = appState.clinicalRunState;
+  if (!appState.isClinicalRunActive || !runState) return;
+
+  const scrollContainer = document.getElementById('arena-clinical-scroll-container');
+  if (scrollContainer) scrollContainer.style.display = 'none';
+
+  const optionsContainer = document.getElementById('arena-options-container');
+  const croqContainer = document.getElementById('arena-croq-container');
+  const defaultActions = document.getElementById('arena-default-actions');
+  const successBanner = document.getElementById('arena-success-banner');
+  const expBox = document.getElementById('arena-explanation-box');
+  const aiBox = document.getElementById('arena-ai-explanation-box');
+  const questionText = document.getElementById('arena-question-text');
+  const mediaWrap = document.getElementById('arena-media-wrap');
+  const subBadge = document.getElementById('arena-subquestion-badge');
+  const subBadgeText = document.getElementById('arena-subquestion-badge-text');
+
+  if (questionText) questionText.style.display = 'block';
+  if (successBanner) successBanner.style.display = 'none';
+  if (expBox) expBox.style.display = 'none';
+  if (aiBox) aiBox.style.display = 'none';
+  if (defaultActions) defaultActions.style.display = 'flex';
+
+  const subQ = runState.subQuestions[runState.currentIndex];
+  if (!subQ) return;
+
+  appState.currentQuestion = subQ;
+
+  const total = runState.subQuestions.length;
+  const curNum = runState.currentIndex + 1;
+  if (subBadge && subBadgeText) {
+    subBadgeText.textContent = `Cas Clinique ${runState.casePrefix} • Question ${curNum}/${total}`;
+    subBadge.style.display = 'inline-flex';
+  }
+
+  if (questionText) questionText.innerHTML = formatMedicalContent(subQ.question || subQ.statement);
+
+  if (mediaWrap) {
+    if (subQ.media_urls && subQ.media_urls.length > 0) {
+      mediaWrap.innerHTML = renderQuestionMedia(subQ.media_urls);
+      mediaWrap.style.display = 'block';
+    } else {
+      mediaWrap.innerHTML = '';
+      mediaWrap.style.display = 'none';
+    }
+  }
+
+  const savedAns = runState.userAnswers[subQ.uid];
+  const evalData = runState.cardEvaluations ? runState.cardEvaluations[subQ.uid] : null;
+  const isAlreadyEvaluated = !!evalData;
+
+  appState.selectedOptionIds.clear();
+
+  const btnSubmitAnswer = document.getElementById('btn-submit-answer');
+  const btnSubmitCroq = document.getElementById('btn-submit-croq');
+  const shortcutHint = document.getElementById('keyboard-shortcuts-hint');
+
+  if (subQ.is_croq) {
+    if (optionsContainer) optionsContainer.style.display = 'none';
+    if (croqContainer) croqContainer.style.display = 'flex';
+    const croqInput = document.getElementById('arena-croq-input');
+    if (croqInput) {
+      croqInput.value = isAlreadyEvaluated ? (evalData.userText || '') : (savedAns ? savedAns.croqText : '');
+      croqInput.disabled = isAlreadyEvaluated;
+      croqInput.oninput = () => {
+        const hasText = croqInput.value.trim().length > 0;
+        const btnSave = document.getElementById('btn-clinical-save-next');
+        if (btnSave && !isAlreadyEvaluated) btnSave.disabled = !hasText;
+        if (btnSubmitCroq && !isAlreadyEvaluated) btnSubmitCroq.disabled = !hasText;
+      };
+    }
+    if (btnSubmitAnswer) btnSubmitAnswer.style.display = 'none';
+    if (btnSubmitCroq) btnSubmitCroq.style.display = 'flex';
+    if (shortcutHint) shortcutHint.textContent = `Mode Cas Clinique Séquentiel • CROQ (${curNum}/${total})`;
+
+    if (isAlreadyEvaluated) {
+      renderClinicalExplanationArea(subQ, evalData.isCorrect);
+    }
+  } else {
+    if (croqContainer) croqContainer.style.display = 'none';
+    if (optionsContainer) {
+      optionsContainer.style.display = 'flex';
+      optionsContainer.style.pointerEvents = isAlreadyEvaluated ? 'none' : 'auto';
+    }
+    if (btnSubmitAnswer) btnSubmitAnswer.style.display = 'flex';
+    if (btnSubmitCroq) btnSubmitCroq.style.display = 'none';
+    if (shortcutHint) shortcutHint.textContent = `Mode Cas Clinique Séquentiel • Question ${curNum}/${total}`;
+
+    renderOptionsList(subQ.options || []);
+
+    if (isAlreadyEvaluated) {
+      const correctOptions = (subQ.options || []).filter(o => o.is_correct);
+      const correctLetters = correctOptions.map(o => o.letter).sort();
+      const userLetters = (savedAns?.selectedLetters || []).slice();
+
+      document.querySelectorAll('.option-item').forEach(el => {
+        const letter = el.dataset.letter;
+        const isSelected = userLetters.includes(letter);
+        const isCor = correctLetters.includes(letter);
+        el.classList.remove('selected');
+        if (isSelected && !isCor) {
+          el.classList.add('wrong-highlight');
+        } else if (isCor) {
+          el.classList.add('correct-highlight');
+        }
+      });
+
+      renderClinicalExplanationArea(subQ, evalData.isCorrect, correctLetters.join(', '));
+    } else if (savedAns && savedAns.selectedLetters && savedAns.selectedLetters.length > 0) {
+      document.querySelectorAll('.option-item').forEach(el => {
+        if (savedAns.selectedLetters.includes(el.dataset.letter)) {
+          appState.selectedOptionIds.add(el.dataset.optId);
+          el.classList.add('selected');
+        }
+      });
+    }
+  }
+
+  updateSequentialActionButtons(curNum, total);
+  updateClinicalRunBarUI();
+  refreshLucide();
+}
+
+function renderClinicalScrollView() {
+  const runState = appState.clinicalRunState;
+  if (!appState.isClinicalRunActive || !runState) return;
+
+  const hideIds = [
+    'arena-question-text',
+    'arena-media-wrap',
+    'arena-options-container',
+    'arena-croq-container',
+    'arena-default-actions',
+    'arena-success-banner',
+    'arena-explanation-box',
+    'arena-ai-explanation-box',
+    'arena-subquestion-badge',
+    'arena-clinical-sequential-stepper'
+  ];
+  hideIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+
+  const scrollContainer = document.getElementById('arena-clinical-scroll-container');
+  if (!scrollContainer) return;
+  scrollContainer.style.display = 'flex';
+
+  const total = runState.subQuestions.length;
+  let cardsHtml = '';
+
+  runState.subQuestions.forEach((sq, idx) => {
+    const qNum = idx + 1;
+    const savedAns = runState.userAnswers[sq.uid] || { selectedLetters: [], isCroq: !!sq.is_croq, croqText: '' };
+    const evalData = runState.cardEvaluations[sq.uid] || null;
+
+    let statusBadgeClass = 'unanswered';
+    let statusBadgeText = 'Non répondue';
+
+    if (evalData) {
+      if (evalData.isCorrect) {
+        statusBadgeClass = 'correct';
+        statusBadgeText = '✅ Validée Juste';
+      } else {
+        statusBadgeClass = 'wrong';
+        statusBadgeText = '❌ Validée Fausse';
+      }
+    } else if (savedAns && ((savedAns.selectedLetters && savedAns.selectedLetters.length > 0) || savedAns.croqText)) {
+      statusBadgeClass = 'answered';
+      statusBadgeText = '✏️ Répondue';
+    }
+
+    let cardExtraClass = '';
+    if (evalData) {
+      cardExtraClass = evalData.isCorrect ? 'is-validated-correct' : 'is-validated-wrong';
+    }
+
+    let mediaHtml = '';
+    if (sq.media_urls && sq.media_urls.length > 0) {
+      mediaHtml = `<div style="margin-bottom:12px;">${renderQuestionMedia(sq.media_urls)}</div>`;
+    }
+
+    let bodyHtml = '';
+    if (sq.is_croq) {
+      bodyHtml = `
+        <div class="croq-container" style="display:flex;">
+          <textarea class="croq-textarea" id="clinical-scroll-croq-${idx}" placeholder="Saisissez votre réponse pour cette question..." oninput="window.onClinicalScrollCroqInput(${idx}, this.value)">${escapeHtml(savedAns.croqText || '')}</textarea>
+        </div>
+      `;
+    } else {
+      const opts = sq.options || [];
+      bodyHtml = `
+        <div class="clinical-card-options">
+          ${opts.map((opt, oIdx) => {
+            const letter = opt.letter || String.fromCharCode(65 + oIdx);
+            const isSelected = savedAns.selectedLetters && savedAns.selectedLetters.includes(letter);
+            let optClass = 'clinical-card-opt-item';
+            if (isSelected) optClass += ' selected';
+            if (evalData) {
+              if (opt.is_correct) optClass += ' correct-revealed';
+              else if (isSelected && !opt.is_correct) optClass += ' wrong-revealed';
+            }
+
+            return `
+              <div class="${optClass}" onclick="window.toggleClinicalScrollOption(${idx}, '${escapeHtml(letter)}')">
+                <span class="clinical-card-opt-letter">${escapeHtml(letter)}</span>
+                <span class="clinical-card-opt-text">${parseMarkdownInline(opt.text || '')}</span>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    let feedbackHtml = '';
+    if (evalData) {
+      const fbClass = evalData.isCorrect ? 'correct' : 'wrong';
+      const fbIcon = evalData.isCorrect ? 'check-circle' : 'alert-circle';
+      const hasOfficial = sq.explanation && sq.explanation.trim().length > 0;
+      let expText = hasOfficial ? formatMedicalContent(sq.explanation.trim()) : '';
+
+      let croqDetailsHtml = '';
+      if (sq.is_croq) {
+        if (evalData.feedback) {
+          croqDetailsHtml += `<div style="margin: 6px 0; padding: 8px 10px; background: rgba(255,255,255,0.04); border-radius: 6px; font-size: 0.84rem; border-left: 3px solid var(--purple);"><strong>Feedback IA :</strong> ${escapeHtml(evalData.feedback)}</div>`;
+        }
+        if (sq.croq_answer) {
+          croqDetailsHtml += `<div style="margin: 6px 0; font-size: 0.84rem; color: var(--text-muted);"><strong>Réponse attendue :</strong> ${escapeHtml(sq.croq_answer)}</div>`;
+        }
+      } else if (!hasOfficial) {
+        expText = `<span style="color:var(--amber);">⚠️ <em>Explication officielle non disponible dans la base.</em></span>`;
+      }
+
+      const savedAi = getSavedAiExplanation(sq.uid, sq);
+      let aiNoteHtml = '';
+      if (savedAi && savedAi.note) {
+        aiNoteHtml = `
+          <div class="clinical-card-ai-note">
+            <div class="clinical-card-ai-header">
+              <span class="clinical-card-ai-title">
+                <i data-lucide="sparkles" style="width:13px;height:13px;color:var(--cyan);"></i> Explication IA complète (${escapeHtml(savedAi.modelUsed || 'Gemini Flash')})
+              </span>
+              <button type="button" class="btn-card-regen-ai" onclick="window.requestClinicalCardAiExplanation(${idx}, true)" title="Régénérer l'explication IA">
+                <i data-lucide="rotate-cw" style="width:12px;height:12px;"></i>
+              </button>
+            </div>
+            <div class="clinical-card-ai-body">
+              ${formatReasoningNote(savedAi.note)}
+            </div>
+          </div>
+        `;
+      } else {
+        aiNoteHtml = `
+          <div style="margin-top:8px;padding-top:8px;border-top:1px dashed rgba(255,255,255,0.1);display:flex;justify-content:flex-end;">
+            <button type="button" class="btn-card-gen-ai-exp" id="btn-card-ai-exp-${idx}" onclick="window.requestClinicalCardAiExplanation(${idx})">
+              <i data-lucide="sparkles" style="width:12px;height:12px;"></i>
+              <span>${hasOfficial ? "Approfondir avec l'explication IA (Flash)" : "Générer l'explication IA (Flash)"}</span>
+            </button>
+          </div>
+        `;
+      }
+
+      feedbackHtml = `
+        <div class="clinical-card-feedback ${fbClass}">
+          <div style="display:flex;align-items:center;gap:6px;font-weight:700;margin-bottom:4px;">
+            <i data-lucide="${fbIcon}" style="width:14px;height:14px;"></i>
+            <span>${evalData.isCorrect ? 'Bonne réponse !' : 'Réponse incorrecte !'}</span>
+          </div>
+          ${expText ? `<div style="font-size:0.88rem;line-height:1.45;margin-bottom:4px;">${expText}</div>` : ''}
+          ${croqDetailsHtml}
+          ${aiNoteHtml}
+        </div>
+      `;
+    }
+
+    cardsHtml += `
+      <div class="clinical-card ${cardExtraClass}" id="clinical-card-${idx}">
+        <div class="clinical-card-header">
+          <div class="clinical-card-qnum">
+            <i data-lucide="help-circle" style="width:14px;height:14px;"></i>
+            <span>Question ${qNum} / ${total}</span>
+          </div>
+          <span class="clinical-card-status-badge ${statusBadgeClass}" id="clinical-card-badge-${idx}">
+            ${statusBadgeText}
+          </span>
+        </div>
+        <div class="clinical-card-statement">
+          ${formatMedicalContent(sq.question || sq.statement)}
+        </div>
+        ${mediaHtml}
+        ${bodyHtml}
+        <div class="clinical-card-actions">
+          <button type="button" class="btn-clinical-card-validate" onclick="window.validateClinicalCardSubQuestion(${idx})">
+            <i data-lucide="check" style="width:13px;height:13px;"></i>
+            <span>Vérifier cette question</span>
+          </button>
+        </div>
+        ${feedbackHtml}
+      </div>
+    `;
+  });
+
+  const answeredCount = Object.keys(runState.userAnswers).length;
+  cardsHtml += `
+    <div class="clinical-scroll-master-actions">
+      <div class="clinical-scroll-master-info">
+        <i data-lucide="target" style="width:16px;height:16px;color:var(--cyan);"></i>
+        <span><strong>${answeredCount}/${total}</strong> question(s) renseignée(s)</span>
+      </div>
+      <button type="button" class="btn-master-validate-case" id="btn-master-validate-case" onclick="window.validateAllClinicalSubQuestions()">
+        <i data-lucide="check-check" style="width:18px;height:18px;"></i>
+        <span>Valider tout le cas clinique & Voir le Bilan</span>
+      </button>
+    </div>
+  `;
+
+  scrollContainer.innerHTML = cardsHtml;
+  updateClinicalRunBarUI();
+  refreshLucide(scrollContainer);
+}
+
+window.toggleClinicalScrollOption = function(qIdx, letter) {
+  const runState = appState.clinicalRunState;
+  if (!appState.isClinicalRunActive || !runState) return;
+  const subQ = runState.subQuestions[qIdx];
+  if (!subQ) return;
+
+  if (!runState.userAnswers[subQ.uid]) {
+    runState.userAnswers[subQ.uid] = { selectedLetters: [], isCroq: false, croqText: '' };
+  }
+
+  const ans = runState.userAnswers[subQ.uid];
+  const lIdx = ans.selectedLetters.indexOf(letter);
+  if (lIdx === -1) {
+    ans.selectedLetters.push(letter);
+  } else {
+    ans.selectedLetters.splice(lIdx, 1);
+  }
+  ans.selectedLetters.sort();
+
+  delete runState.cardEvaluations[subQ.uid];
+  renderClinicalScrollView();
+};
+
+window.onClinicalScrollCroqInput = function(qIdx, text) {
+  const runState = appState.clinicalRunState;
+  if (!appState.isClinicalRunActive || !runState) return;
+  const subQ = runState.subQuestions[qIdx];
+  if (!subQ) return;
+
+  if (!runState.userAnswers[subQ.uid]) {
+    runState.userAnswers[subQ.uid] = { selectedLetters: [], isCroq: true, croqText: '' };
+  }
+  runState.userAnswers[subQ.uid].croqText = text.trim();
+  delete runState.cardEvaluations[subQ.uid];
+  updateClinicalRunBarUI();
+};
+
+window.validateClinicalCardSubQuestion = async function(qIdx) {
+  const runState = appState.clinicalRunState;
+  if (!appState.isClinicalRunActive || !runState) return;
+  const subQ = runState.subQuestions[qIdx];
+  if (!subQ) return;
+
+  const ans = runState.userAnswers[subQ.uid];
+  if (!ans || (!ans.isCroq && ans.selectedLetters.length === 0) || (ans.isCroq && !ans.croqText)) {
+    showAppToast('Veuillez sélectionner au moins une proposition ou rédiger votre réponse avant de vérifier cette question.', { type: 'warning' });
+    return;
+  }
+
+  let isCorrect = false;
+  let score = null;
+  let feedback = '';
+
+  if (subQ.is_croq) {
+    try {
+      const evalResult = await geminiService.evaluateCroq(
+        subQ.question || subQ.statement,
+        runState.caseStatement,
+        subQ.croq_answer,
+        ans.croqText,
+        subQ
+      );
+      score = evalResult.score;
+      feedback = evalResult.feedback;
+      isCorrect = evalResult.isValid && score >= 75;
+    } catch (err) {
+      isCorrect = false;
+      feedback = err.message && err.message.includes('API Gemini') ? err.message : '';
+    }
+  } else {
+    const correctOptions = (subQ.options || []).filter(o => o.is_correct);
+    const correctLetters = correctOptions.map(o => o.letter).sort();
+    const userLetters = (ans.selectedLetters || []).slice().sort();
+
+    isCorrect = (correctLetters.length === userLetters.length) &&
+      correctLetters.every((l, i) => l === userLetters[i]);
+  }
+
+  runState.cardEvaluations[subQ.uid] = {
+    isEvaluated: true,
+    isCorrect,
+    score,
+    feedback,
+    userText: ans.isCroq ? ans.croqText : ans.selectedLetters.join(', '),
+    correctText: subQ.is_croq ? subQ.croq_answer : (subQ.options || []).filter(o => o.is_correct).map(o => o.letter).join(', ')
+  };
+
+  renderClinicalScrollView();
+};
+
+window.validateAllClinicalSubQuestions = async function() {
+  const runState = appState.clinicalRunState;
+  if (!appState.isClinicalRunActive || !runState) return;
+
+  if (runState.mode === 'sequential') {
+    saveSequentialCurrentQuestionState();
+  }
+
+  const subQuestions = runState.subQuestions;
+  const total = subQuestions.length;
+
+  const unansweredCount = subQuestions.filter(sq => {
+    const ans = runState.userAnswers[sq.uid];
+    if (!ans) return true;
+    if (sq.is_croq) return !ans.croqText;
+    return !ans.selectedLetters || ans.selectedLetters.length === 0;
+  }).length;
+
+  if (unansweredCount > 0) {
+    const proceed = await showConfirmModal({
+      title: 'Valider le cas clinique ?',
+      message: `Il reste ${unansweredCount} question(s) sans réponse dans ce cas clinique. Les questions non répondues seront considérées comme fausses.\n\nSouhaitez-vous valider le cas maintenant ?`,
+      confirmLabel: 'Valider le cas',
+      isDanger: true
+    });
+    if (!proceed) return;
+  }
+
+  const masterBtn = document.getElementById('btn-master-validate-case');
+  if (masterBtn) {
+    masterBtn.disabled = true;
+    masterBtn.innerHTML = `<i data-lucide="loader" class="spin"></i> <span>Évaluation du cas clinique en cours...</span>`;
+    refreshLucide(masterBtn);
+  }
+
+  const results = [];
+  const failedUids = [];
+  const allCaseUids = subQuestions.map(sq => sq.uid);
+
+  for (let i = 0; i < total; i++) {
+    const sq = subQuestions[i];
+    const ans = runState.userAnswers[sq.uid] || { selectedLetters: [], isCroq: !!sq.is_croq, croqText: '' };
+    let evalData = runState.cardEvaluations[sq.uid];
+
+    if (!evalData) {
+      let isCorrect = false;
+      let score = null;
+      let feedback = '';
+
+      if (sq.is_croq) {
+        if (ans.croqText) {
+          try {
+            const evalResult = await geminiService.evaluateCroq(
+              sq.question || sq.statement,
+              runState.caseStatement,
+              sq.croq_answer,
+              ans.croqText,
+              sq
+            );
+            score = evalResult.score;
+            feedback = evalResult.feedback;
+            isCorrect = evalResult.isValid && score >= 75;
+          } catch {
+            isCorrect = false;
+          }
+        } else {
+          isCorrect = false;
+        }
+      } else {
+        const correctOptions = (sq.options || []).filter(o => o.is_correct);
+        const correctLetters = correctOptions.map(o => o.letter).sort();
+        const userLetters = (ans.selectedLetters || []).slice().sort();
+
+        isCorrect = userLetters.length > 0 &&
+          correctLetters.length === userLetters.length &&
+          correctLetters.every((l, idx) => l === userLetters[idx]);
+      }
+
+      evalData = {
+        isEvaluated: true,
+        isCorrect,
+        score,
+        feedback,
+        userText: sq.is_croq ? (ans.croqText || 'Aucune réponse') : (ans.selectedLetters.join(', ') || 'Aucune'),
+        correctText: sq.is_croq ? sq.croq_answer : (sq.options || []).filter(o => o.is_correct).map(o => o.letter).join(', ')
+      };
+      runState.cardEvaluations[sq.uid] = evalData;
+    }
+
+    results.push({
+      question: sq,
+      isCorrect: evalData.isCorrect,
+      score: evalData.score,
+      userAnswer: evalData.userText,
+      correctAnswer: evalData.correctText
+    });
+
+    if (!evalData.isCorrect) {
+      failedUids.push(sq.uid);
+    }
+  }
+
+  const isAllCorrect = failedUids.length === 0;
+  const correctCount = results.filter(r => r.isCorrect).length;
+
+  let activeCreditedCount = 0;
+  let alreadyMasteredCount = 0;
+  const alreadyCleanedUids = [];
+
+  allCaseUids.forEach(uid => {
+    const st = queueEngine.getQuestionStats(uid);
+    if (st && st.done) {
+      alreadyCleanedUids.push(uid);
+    }
+  });
+
+  if (isAllCorrect) {
+    const successResult = queueEngine.handleClinicalCaseSuccess(allCaseUids);
+    activeCreditedCount = successResult.activeCreditedCount || 0;
+    alreadyMasteredCount = successResult.alreadyMasteredCount || 0;
+
+    if (activeCreditedCount > 0) {
+      queueEngine.incrementTodayCount(activeCreditedCount);
+    }
+
+    allCaseUids.forEach(uid => {
+      studyTracker.recordAnswer(true, runState.chapterId, uid);
+    });
+
+    triggerMasteryConfetti();
+  } else {
+    queueEngine.handleClinicalCaseFailure(allCaseUids, failedUids);
+
+    failedUids.forEach(uid => {
+      studyTracker.recordAnswer(false, runState.chapterId, uid);
+    });
+  }
+
+  updateArenaDailyBadge();
+  if (appState.currentView === 'stats') renderStatsUI();
+  appState.firebaseSyncService?.triggerAutoPush();
+
+  showClinicalCaseSummaryModal({
+    isAllCorrect,
+    totalCount: total,
+    correctCount,
+    failedUids,
+    subQuestions,
+    results,
+    casePrefix: runState.casePrefix,
+    caseStatement: runState.caseStatement,
+    chapterTitle: runState.chapterTitle,
+    activeCreditedCount,
+    alreadyMasteredCount,
+    alreadyCleanedUids
+  });
+};
+
+async function showClinicalCaseSummaryModal(summaryData) {
+  const modal = document.getElementById('modal-clinical-case-summary');
+  if (!modal) return;
+
+  const verdictBanner = document.getElementById('clinical-verdict-banner');
+  const verdictIcon = document.getElementById('clinical-verdict-icon');
+  const verdictTitle = document.getElementById('clinical-verdict-title');
+  const verdictDesc = document.getElementById('clinical-verdict-desc');
+  const srsTitle = document.getElementById('clinical-summary-srs-title');
+  const srsDesc = document.getElementById('clinical-summary-srs-desc');
+  const scoreBadge = document.getElementById('clinical-summary-score-badge');
+  const itemsList = document.getElementById('clinical-summary-items-list');
+  const aiBox = document.getElementById('clinical-summary-ai-box');
+  const aiNote = document.getElementById('clinical-summary-ai-note');
+  const aiModelTag = document.getElementById('clinical-summary-model-tag');
+
+  const {
+    isAllCorrect,
+    totalCount,
+    correctCount,
+    results,
+    casePrefix,
+    caseStatement,
+    chapterTitle,
+    subQuestions,
+    activeCreditedCount = 0,
+    alreadyMasteredCount = 0,
+    alreadyCleanedUids = []
+  } = summaryData;
+
+  if (isAllCorrect) {
+    if (verdictBanner) verdictBanner.className = 'clinical-verdict-banner is-success';
+    if (verdictIcon) verdictIcon.textContent = '🎉';
+    if (verdictTitle) verdictTitle.textContent = `Cas Clinique 100% Validé ! (${totalCount}/${totalCount})`;
+    if (verdictDesc) verdictDesc.textContent = `Félicitations ! Toutes les ${totalCount} sous-questions ont été répondues sans aucune faute.`;
+
+    if (alreadyMasteredCount > 0) {
+      if (srsTitle) srsTitle.textContent = `Progression : +${activeCreditedCount} question(s) ajoutée(s) au compteur du jour !`;
+      if (srsDesc) srsDesc.textContent = `${activeCreditedCount} question(s) active(s) ont avancé dans leur répétition espacée (${alreadyMasteredCount} sous-question(s) étaient déjà définitivement nettoyées et ne sont pas recomptées).`;
+    } else {
+      if (srsTitle) srsTitle.textContent = `Progression Complète : +${totalCount} succès enregistrés !`;
+      if (srsDesc) srsDesc.textContent = `Toutes les questions du cas ont avancé (+1 palier de répétition espacée) et ont été ajoutées à votre quota journalier.`;
+    }
+
+    if (scoreBadge) {
+      scoreBadge.textContent = `${totalCount}/${totalCount} (100%)`;
+      scoreBadge.style.background = 'rgba(16,185,129,0.2)';
+      scoreBadge.style.color = 'var(--emerald)';
+    }
+
+    if (aiBox) aiBox.style.display = 'none';
+  } else {
+    if (verdictBanner) verdictBanner.className = 'clinical-verdict-banner is-failure';
+    if (verdictIcon) verdictIcon.textContent = '⚠️';
+    if (verdictTitle) verdictTitle.textContent = `Cas Clinique Échoué (${correctCount}/${totalCount} justes — 0 créditée)`;
+    if (verdictDesc) verdictDesc.textContent = "Règle stricte du Cas Clinique : une seule erreur invalide l'ensemble du cas. Aucune question n'est créditée.";
+
+    if (srsTitle) srsTitle.textContent = 'Pénalité SRS : Réapparition groupée dans 5 à 7 cartes';
+    if (srsDesc) srsDesc.textContent = "Les questions ratées ont été pénalisées. L'intégralité du cas clinique réapparaîtra groupée pour ancrer le raisonnement.";
+
+    if (scoreBadge) {
+      scoreBadge.textContent = `${correctCount}/${totalCount} (${totalCount - correctCount} faute(s))`;
+      scoreBadge.style.background = 'rgba(239,68,68,0.2)';
+      scoreBadge.style.color = 'var(--rose)';
+    }
+
+    if (aiBox && aiNote) {
+      aiBox.style.display = 'block';
+      aiNote.innerHTML = `
+        <div class="reasoning-loader-wrap">
+          <i data-lucide="sparkles" class="spin"></i>
+          <span>Génération de la note de synthèse clinique consolidée par l'IA Flash...</span>
+        </div>
+      `;
+      refreshLucide(aiBox);
+
+      geminiService.generateClinicalCaseSynthesisNote(
+        caseStatement,
+        subQuestions,
+        results,
+        chapterTitle
+      ).then(synthesisObj => {
+        aiNote.innerHTML = formatReasoningNote(synthesisObj.note);
+        if (aiModelTag) aiModelTag.textContent = synthesisObj.modelUsed;
+
+        const targetQ = subQuestions[0] || {};
+        saveAiExplanationForQuestion(
+          targetQ.uid || `case_${casePrefix}`,
+          synthesisObj.note,
+          synthesisObj.modelUsed,
+          targetQ
+        );
+        refreshLucide(aiBox);
+      }).catch(err => {
+        console.warn('AI synthesis failed:', err);
+        aiNote.innerHTML = `<div style="color:var(--rose);font-size:0.84rem;">⚠️ ${escapeHtml(err.message || 'Synthèse IA indisponible')}</div>`;
+      });
+    }
+  }
+
+  let itemsHtml = '';
+  results.forEach((r, idx) => {
+    const isCor = r.isCorrect;
+    const statusIcon = isCor ? 'check-circle' : 'x-circle';
+    const statusColor = isCor ? 'var(--emerald)' : 'var(--rose)';
+    const itemClass = isCor ? 'clinical-summary-item is-correct' : 'clinical-summary-item is-wrong';
+    const wasAlreadyCleaned = isAllCorrect && alreadyCleanedUids.includes(r.question.uid);
+
+    let tagHtml = '';
+    if (isCor) {
+      if (wasAlreadyCleaned) {
+        tagHtml = `<span style="font-size:0.7rem;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,0.08);color:var(--text-muted);margin-right:6px;">Déjà nettoyée</span>`;
+      } else {
+        tagHtml = `<span style="font-size:0.7rem;padding:2px 6px;border-radius:4px;background:rgba(16,185,129,0.18);color:var(--emerald);margin-right:6px;">+1 au jour</span>`;
+      }
+    }
+
+    itemsHtml += `
+      <div class="${itemClass}">
+        <div class="clinical-summary-item-left">
+          <i data-lucide="${statusIcon}" style="width:16px;height:16px;color:${statusColor};flex-shrink:0;"></i>
+          <span class="clinical-summary-item-title">
+            <strong>Q${idx + 1} :</strong> ${escapeHtml(r.question.question || r.question.statement || '')}
+          </span>
+        </div>
+        <div style="font-size:0.75rem;font-weight:700;color:${statusColor};white-space:nowrap;display:flex;align-items:center;">
+          ${tagHtml}
+          <span>${isCor ? 'Juste' : 'Faux'}</span>
+        </div>
+      </div>
+    `;
+  });
+
+  if (itemsList) itemsList.innerHTML = itemsHtml;
+  modal.style.display = 'flex';
+  refreshLucide(modal);
+}
+
+function teardownClinicalRunView() {
+  appState.isClinicalRunActive = false;
+  appState.clinicalRunState = null;
+  appState.isEvaluating = false;
+  updateClinicalRunBarUI();
+
+  const stepperBar = document.getElementById('arena-clinical-sequential-stepper');
+  if (stepperBar) stepperBar.style.display = 'none';
+
+  const btnClinicalSaveNext = document.getElementById('btn-clinical-save-next');
+  if (btnClinicalSaveNext) btnClinicalSaveNext.style.display = 'none';
+
+  const optionsContainer = document.getElementById('arena-options-container');
+  if (optionsContainer) optionsContainer.style.pointerEvents = 'auto';
+
+  const scrollContainer = document.getElementById('arena-clinical-scroll-container');
+  if (scrollContainer) {
+    scrollContainer.style.display = 'none';
+    scrollContainer.innerHTML = '';
+  }
+
+  const questionText = document.getElementById('arena-question-text');
+  if (questionText) questionText.style.display = 'block';
+
+  loadNextArenaQuestion();
+}
+
+window.closeClinicalCaseSummaryModal = function() {
+  const modal = document.getElementById('modal-clinical-case-summary');
+  if (modal) modal.style.display = 'none';
+  teardownClinicalRunView();
+};
+
+window.quitClinicalCaseRun = async function() {
+  if (!appState.isClinicalRunActive) return;
+  const ok = await showConfirmModal({
+    title: 'Quitter le cas clinique ?',
+    message: 'Voulez-vous quitter la résolution du cas complet ? Vos réponses pour ce cas ne seront pas enregistrées.',
+    confirmLabel: 'Quitter le cas',
+    isDanger: true
+  });
+  if (!ok) return;
+  teardownClinicalRunView();
+};
+
+
+// --- src/views/arenaView.js ---
+// ============================================================================
+// Quiz Arena : Affichage QCM/CROQ, Médias, Historique, Snooze & Tuteur IA
+// ============================================================================
+
+function findQuestionAcrossDatasets(uid) {
+  if (!uid) return null;
+  let q = appState.questionsMap.get(uid) || null;
+  if (!q && typeof window !== 'undefined') {
+    if (uid.startsWith('psy_') && Array.isArray(window.PSY_QUESTIONS)) {
+      q = window.PSY_QUESTIONS.find(x => x.uid === uid) || null;
+    } else if (Array.isArray(window.PEDIA_QUESTIONS)) {
+      q = window.PEDIA_QUESTIONS.find(x => x.uid === uid) || null;
+    }
+  }
+  return q;
 }
 
 // ============================================================================
@@ -5927,7 +7960,7 @@ window.toggleMedicalMedia = function(cardEl, event) {
     cardEl.classList.remove('is-expanded');
     cardEl.classList.add('is-collapsed');
   }
-  refreshLucide();
+  refreshLucide(cardEl);
 };
 
 window.toggleAllMedicalMedia = function(forceExpand = null, event = null) {
@@ -5937,25 +7970,16 @@ window.toggleAllMedicalMedia = function(forceExpand = null, event = null) {
   const cards = wrap.querySelectorAll('.medical-media-card');
   if (!cards || cards.length === 0) return;
 
-  let expand;
-  if (typeof forceExpand === 'boolean') {
-    expand = forceExpand;
-  } else {
-    const hasCollapsed = Array.from(cards).some(c => c.classList.contains('is-collapsed'));
-    expand = hasCollapsed;
-  }
+  const expand = typeof forceExpand === 'boolean'
+    ? forceExpand
+    : Array.from(cards).some(c => c.classList.contains('is-collapsed'));
 
   cards.forEach(card => {
-    if (expand) {
-      card.classList.remove('is-collapsed');
-      card.classList.add('is-expanded');
-    } else {
-      card.classList.remove('is-expanded');
-      card.classList.add('is-collapsed');
-    }
+    card.classList.toggle('is-expanded', expand);
+    card.classList.toggle('is-collapsed', !expand);
   });
 
-  refreshLucide();
+  refreshLucide(wrap);
 };
 
 window.toggleArenaChapterTitle = function(forceRevealed = null) {
@@ -6000,7 +8024,7 @@ window.toggleArenaChapterTitle = function(forceRevealed = null) {
     } else {
       el.classList.add('is-blurred');
       el.classList.remove('is-revealed');
-      el.title = 'Cours masqué jusqu\'à ce que vous répondiez (Cliquer pour afficher)';
+      el.title = "Cours masqué jusqu'à ce que vous répondiez (Cliquer pour afficher)";
     }
   });
 
@@ -6011,6 +8035,7 @@ window.openMediaLightbox = function(url, event) {
   if (event) event.stopPropagation();
   let modal = document.getElementById('media-lightbox-modal');
   let img = document.getElementById('media-lightbox-img');
+  const modCtx = resolveAiModuleContext(getEffectiveArenaQuestion());
 
   if (!modal) {
     modal = document.createElement('div');
@@ -6023,16 +8048,19 @@ window.openMediaLightbox = function(url, event) {
         <button class="media-lightbox-close" onclick="window.closeMediaLightbox()" title="Fermer (Échap)">
           <i data-lucide="x"></i>
         </button>
-        <img id="media-lightbox-img" src="" alt="Iconographie Pédiatrique HD">
+        <img id="media-lightbox-img" src="" alt="Iconographie ${escapeHtml(modCtx.moduleName)} HD">
       </div>
     `;
     document.body.appendChild(modal);
     img = document.getElementById('media-lightbox-img');
   }
 
-  if (img) img.src = url;
+  if (img) {
+    img.src = url;
+    img.alt = `Iconographie ${modCtx.moduleName} HD`;
+  }
   modal.style.display = 'flex';
-  refreshLucide();
+  refreshLucide(modal);
 };
 
 window.closeMediaLightbox = function() {
@@ -6042,14 +8070,11 @@ window.closeMediaLightbox = function() {
   }
 };
 
-/**
- * Format complete structured recap: Full Question Statement, All Options (A-E),
- * Student's Choice, Correct Choice and Official Database Explanation
- */
 function formatQuestionMistakeRecap(question, userSelectedLetters, isCroq = false, userCroqText = '', score = null) {
   if (!question) return '';
 
   const effectiveIsCroq = isCroq || (question && question.type === 'CROQ');
+  const modCtx = resolveAiModuleContext(question);
 
   const lettersArr = Array.isArray(userSelectedLetters)
     ? userSelectedLetters
@@ -6101,13 +8126,11 @@ function formatQuestionMistakeRecap(question, userSelectedLetters, isCroq = fals
       </div>
     `;
   } else {
-    // QCM / QCU - Afficher uniquement la liste exhaustive des propositions (A à E) avec coloration et statut
     const options = question.options || [];
     const correctOptions = options.filter(o => o.is_correct);
     const correctLetters = correctOptions.map(o => o.letter).sort();
 
     optionsOrCroqHtml = `
-      <!-- Examen Exhaustif de Toutes les Propositions (A à E) avec Coloration & Statut -->
       <div class="mistake-options-container">
         <div class="mistake-options-header">
           <div style="display:flex;align-items:center;gap:6px;">
@@ -6115,7 +8138,7 @@ function formatQuestionMistakeRecap(question, userSelectedLetters, isCroq = fals
             <span style="font-weight:700;font-size:0.88rem;color:var(--text-main);">Toutes les propositions (A à E) &amp; Statut détaillé :</span>
           </div>
           <div style="font-size:0.75rem;color:var(--text-muted);">
-            Bonne(s) réponse(s) : <strong class="text-emerald">${correctLetters.join(', ')}</strong>
+            Bonne(s) réponse(s) : <strong class="text-emerald">${escapeHtml(correctLetters.join(', '))}</strong>
           </div>
         </div>
         <div class="mistake-options-list">
@@ -6127,13 +8150,13 @@ function formatQuestionMistakeRecap(question, userSelectedLetters, isCroq = fals
             let badgeHtml = '';
 
             if (isUserSelected && !isCorrect) {
-              rowClass = 'opt-row-wrong'; // RED
+              rowClass = 'opt-row-wrong';
               badgeHtml = `<span class="opt-status-badge badge-wrong"><i data-lucide="x"></i> Mon choix (Faux)</span>`;
             } else if (isUserSelected && isCorrect) {
-              rowClass = 'opt-row-correct-chosen'; // GREEN
+              rowClass = 'opt-row-correct-chosen';
               badgeHtml = `<span class="opt-status-badge badge-correct"><i data-lucide="check"></i> Mon choix (Juste)</span>`;
             } else if (!isUserSelected && isCorrect) {
-              rowClass = 'opt-row-correct-missed'; // GREEN border / subtle green
+              rowClass = 'opt-row-correct-missed';
               badgeHtml = `<span class="opt-status-badge badge-correct"><i data-lucide="check"></i> Réponse juste attendue</span>`;
             } else {
               badgeHtml = `<span class="opt-status-badge badge-neutral">Distracteur faux</span>`;
@@ -6171,8 +8194,8 @@ function formatQuestionMistakeRecap(question, userSelectedLetters, isCroq = fals
     <div class="mistake-recap-wrapper">
       <div class="mistake-question-card">
         <div class="mistake-question-header">
-          <span class="tag-pill tag-qcu" style="font-size:0.7rem;padding:2px 8px;">${escapeHtml(question.chapterTitle || 'Pédiatrie')}</span>
-          <span class="tag-pill ${isCroq ? 'tag-croq' : 'tag-qcu'}" style="font-size:0.7rem;padding:2px 8px;">${isCroq ? 'CROQ' : 'QCM'}</span>
+          <span class="tag-pill tag-qcu" style="font-size:0.7rem;padding:2px 8px;">${escapeHtml(question.chapterTitle || modCtx.defaultChapter)}</span>
+          <span class="tag-pill ${effectiveIsCroq ? 'tag-croq' : 'tag-qcu'}" style="font-size:0.7rem;padding:2px 8px;">${effectiveIsCroq ? 'CROQ' : 'QCM'}</span>
         </div>
         ${clinicalHtml}
         <div class="mistake-question-statement">
@@ -6186,127 +8209,11 @@ function formatQuestionMistakeRecap(question, userSelectedLetters, isCroq = fals
   `;
 }
 
-// Backward-compatible fallback helper
-function formatAnswerComparison(userAnswer, correctAnswer, isCroq = false, score = null) {
-  if (currentQuestion) {
-    const letters = userAnswer ? userAnswer.split(',').map(s => s.trim().toUpperCase()) : [];
-    return formatQuestionMistakeRecap(currentQuestion, letters, isCroq, userAnswer, score);
-  }
-  return `
-    <div class="answer-comparison-grid">
-      <div class="answer-box box-user">
-        <div class="answer-box-header">
-          <span class="answer-box-title text-rose"><span class="box-icon">✕</span> Votre choix :</span>
-        </div>
-        <div class="answer-box-content"><strong>${escapeHtml(userAnswer || 'Aucun')}</strong></div>
-      </div>
-      <div class="answer-box box-correct">
-        <div class="answer-box-header">
-          <span class="answer-box-title text-emerald"><span class="box-icon">✓</span> Bonne réponse :</span>
-        </div>
-        <div class="answer-box-content"><strong>${escapeHtml(correctAnswer || '')}</strong></div>
-      </div>
-    </div>
-  `;
-}
-
-// ============================================================================
-// QUESTION DATE & SESSION EXTRACTION
-// ============================================================================
-function extractQuestionDateOrSession(q) {
-  if (!q) return '';
-  let rawDate = '';
-  
-  // 1. Direct metadata properties on the question object
-  if (q.session && typeof q.session === 'string' && q.session.trim()) rawDate = q.session.trim();
-  else if (q.session_type && (q.year || q.annee)) rawDate = String(q.session_type).trim() + ' ' + String(q.year || q.annee).trim();
-  else if (q.date && typeof q.date === 'string' && q.date.trim()) rawDate = q.date.trim();
-  else if (q.source_date && typeof q.source_date === 'string') rawDate = q.source_date.trim();
-  else if (q.year && (typeof q.year === 'string' || typeof q.year === 'number')) rawDate = String(q.year).trim();
-
-  // 2. Sift text fields if not directly specified in object properties
-  if (!rawDate) {
-    const texts = [q.explanation || '', q.clinical_case || '', q.question || ''];
-    const full = texts.join(' \n ');
-
-    // Match Résidanat (e.g. Résidanat 2021, Residanat 19, Résidanat Alger 2020)
-    const resMatch = full.match(/\b(R[ée]sidanat(?:\s+[A-Za-z]+)?\s*[-_:/]?\s*(?:20\d\d|19\d\d|\b[0-2]\d\b))\b/i);
-    if (resMatch) {
-      rawDate = resMatch[1].trim();
-    } else {
-      // Match Rattrapage (e.g. Rattrapage 2021, Ratrapage 19, R 2020)
-      const ratMatch = full.match(/\b(Rat(?:t)?rapage\s*[-_:/]?\s*(?:20\d\d|19\d\d|\b[0-2]\d\b)|\bR\s*[-_:/]?\s*(?:20\d\d))\b/i);
-      if (ratMatch) {
-        rawDate = ratMatch[1].trim();
-      } else {
-        // Match Principale / P (e.g. Principale 2020, P 2021, P1 2019, P2 2020, P 19)
-        const pMatch = full.match(/\b(Principale\s*[-_:/]?\s*(?:20\d\d|19\d\d|\b[0-2]\d\b)|\bP\s*[12]?\s*[-_:/]?\s*(?:20\d\d))\b/i);
-        if (pMatch) {
-          rawDate = pMatch[1].trim();
-        } else {
-          // Match EMD or Session
-          const emdMatch = full.match(/\b(EMD\s*[123]?\s*[-_:/]?\s*(?:20\d\d|19\d\d|\b[0-2]\d\b)|Session\s*[-_:/]?\s*(?:20\d\d|19\d\d))\b/i);
-          if (emdMatch) {
-            rawDate = emdMatch[1].trim();
-          } else {
-            // Match official medical source mentions with year (Diapositive 2024, iKb, Guide)
-            const sourceMatch = full.match(/\b(Diapo(?:sitive)?|iKb|Guide|Cours|Uptodate|R[ée]f[ée]rentiel|Recommandation|HAS)\b\s*[^.,;\n]*20\d\d(?:\/20\d\d)?/i);
-            if (sourceMatch) {
-              const cleaned = sourceMatch[0].replace(/^(?:Source\s*[:;]?\s*)/i, '').trim();
-              if (cleaned.length <= 35) rawDate = cleaned;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  if (!rawDate) return '';
-
-  // Canonical session & date normalization
-  // 1. Résidanat (e.g. "Résidanat 2022", "residanat alger 18", "Résidanat 19")
-  let m = rawDate.match(/r[ée]sidanat(?:\s+([a-z]+))?\s*[-_/:]?\s*('?(?:20\d\d|19\d\d|[0-2]\d))\b/i);
-  if (m) {
-    let year = m[2].replace("'", '');
-    if (year.length === 2) year = (parseInt(year, 10) > 50 ? '19' : '20') + year;
-    const city = m[1] ? (' ' + m[1].charAt(0).toUpperCase() + m[1].slice(1).toLowerCase()) : '';
-    return 'Résidanat' + city + ' ' + year;
-  }
-
-  // 2. Rattrapage / R (e.g. "Rattrapage 2020", "ratrapage 19", "R 2022")
-  m = rawDate.match(/(?:rat(?:t)?rapage|(?:\bR))\s*([12])?\s*[-_/:]?\s*('?(?:20\d\d|19\d\d|[0-2]\d))\b/i);
-  if (m) {
-    let year = m[2].replace("'", '');
-    if (year.length === 2) year = (parseInt(year, 10) > 50 ? '19' : '20') + year;
-    return 'Rattrapage ' + year;
-  }
-
-  // 3. Principale / P (e.g. "Principale 2020", "P 2021", "P1 2021", "p 19")
-  m = rawDate.match(/(?:principale|(?:\bP))\s*([12])?\s*[-_/:]?\s*('?(?:20\d\d|19\d\d|[0-2]\d))\b/i);
-  if (m) {
-    const pNum = m[1] ? m[1] : '';
-    let year = m[2].replace("'", '');
-    if (year.length === 2) year = (parseInt(year, 10) > 50 ? '19' : '20') + year;
-    return 'P' + (pNum ? pNum + ' ' : ' ') + year;
-  }
-
-  // 4. EMD (e.g. "EMD 2020", "EMD1 2021")
-  m = rawDate.match(/emd\s*([123])?\s*[-_/:]?\s*('?(?:20\d\d|19\d\d|[0-2]\d))\b/i);
-  if (m) {
-    const emdNum = m[1] ? m[1] : '';
-    let year = m[2].replace("'", '');
-    if (year.length === 2) year = (parseInt(year, 10) > 50 ? '19' : '20') + year;
-    return 'EMD' + (emdNum ? emdNum + ' ' : ' ') + year;
-  }
-
-  return rawDate.charAt(0).toUpperCase() + rawDate.slice(1);
-}
-
 // ============================================================================
 // PERSISTENT AI EXPLANATIONS FOR ARENA QUESTIONS
 // ============================================================================
 function getAiCacheKey() {
-  return typeof resolveStorageKey === 'function' ? resolveStorageKey('ai_cache') : 'pedia_ai_explanations_cache';
+  return resolveStorageKey('ai_cache');
 }
 
 function loadAiExplanationsCache() {
@@ -6322,19 +8229,11 @@ function loadAiExplanationsCache() {
   return {};
 }
 
-let aiExplanationsCache = loadAiExplanationsCache();
-
-/**
- * Validates that an AI reasoning note semantically matches the target question.
- * Protects against race condition corruption where a note from Question A is saved to Question B.
- */
 function isExplanationMatchingQuestion(noteText, question) {
   if (!noteText || typeof noteText !== 'string' || !question) return false;
 
   const noteLower = noteText.toLowerCase();
 
-  // 1. Explicit theme mismatch check:
-  // If the note has "Thème clé : *XYZ*" and XYZ has zero word overlap with question.chapterTitle, it's a mismatch
   const themeMatch = noteText.match(/Thème clé\s*:\s*\*?([^\n\*\r\<\>]+)\*?/i);
   if (themeMatch && question.chapterTitle) {
     const noteTheme = themeMatch[1].trim().toLowerCase();
@@ -6344,11 +8243,10 @@ function isExplanationMatchingQuestion(noteText, question) {
     const chapterWords = cleanWords(qChapter);
     const hasCommonWord = themeWords.some(tw => chapterWords.some(cw => tw.includes(cw) || cw.includes(tw)));
     if (!hasCommonWord && themeWords.length > 0 && chapterWords.length > 0) {
-      return false; // Clear chapter mismatch!
+      return false;
     }
   }
 
-  // 2. Options keyword overlap check for QCMs and CROQs
   const stopWords = new Set(['dans', 'pour', 'avec', 'sans', 'chez', 'cette', 'sont', 'peut', 'tous', 'tout', 'faire', 'plus', 'leur', 'leurs', 'etre', 'avoir', 'donnez', 'quel', 'quelle', 'quelles', 'quels']);
   const getWords = (str) => (str || '').toLowerCase().replace(/[^a-z0-9à-öø-ÿ]/gi, ' ').split(/\s+/).filter(w => w.length >= 4 && !stopWords.has(w));
 
@@ -6360,7 +8258,6 @@ function isExplanationMatchingQuestion(noteText, question) {
       return false;
     }
   } else {
-    // For CROQ questions
     const qKeywords = getWords(question.question || question.statement);
     const ansKeywords = getWords(question.croq_answer || '');
     const combined = Array.from(new Set([...qKeywords, ...ansKeywords]));
@@ -6373,48 +8270,29 @@ function isExplanationMatchingQuestion(noteText, question) {
   return true;
 }
 
-/**
- * Automatically purges any previously corrupted or mismatched AI explanations
- * stored in localStorage or the Spaced Repetition Notebook.
- */
 function scrubCorruptedAiExplanations() {
   try {
     let purgedCacheCount = 0;
-    for (const [uid, item] of Object.entries(aiExplanationsCache)) {
+    for (const [uid, item] of Object.entries(appState.aiExplanationsCache)) {
       if (!item || !item.note) continue;
-      let q = questionsMap.get(uid);
-      if (!q && typeof window !== 'undefined') {
-        if (uid.startsWith('psy_') && window.PSY_QUESTIONS) {
-          q = window.PSY_QUESTIONS.find(x => x.uid === uid);
-        } else if (window.PEDIA_QUESTIONS) {
-          q = window.PEDIA_QUESTIONS.find(x => x.uid === uid);
-        }
-      }
-      if (!q) continue; // Don't purge other module notes when not in active questionsMap
+      const q = findQuestionAcrossDatasets(uid);
+      if (!q) continue;
       if (!isExplanationMatchingQuestion(item.note, q)) {
-        delete aiExplanationsCache[uid];
+        delete appState.aiExplanationsCache[uid];
         purgedCacheCount++;
       }
     }
     if (purgedCacheCount > 0) {
-      localStorage.setItem(getAiCacheKey(), JSON.stringify(aiExplanationsCache));
+      localStorage.setItem(getAiCacheKey(), JSON.stringify(appState.aiExplanationsCache));
       console.log(`[Diagnostic IA] Purged ${purgedCacheCount} mismatched AI explanation(s) from local cache.`);
     }
 
-    // Scrub notebook notes in QueueEngine for the active module
     const rawNotes = queueEngine.getRawReasoningNotes();
     let purgedNotesCount = 0;
     const cleanedNotes = rawNotes.filter(n => {
       if (!n || !n.questionUid || !n.reasoningNote) return true;
-      let q = questionsMap.get(n.questionUid);
-      if (!q && typeof window !== 'undefined') {
-        if (n.questionUid.startsWith('psy_') && window.PSY_QUESTIONS) {
-          q = window.PSY_QUESTIONS.find(x => x.uid === n.questionUid);
-        } else if (window.PEDIA_QUESTIONS) {
-          q = window.PEDIA_QUESTIONS.find(x => x.uid === n.questionUid);
-        }
-      }
-      if (!q) return true; // Keep note safely if question is not in current dataset
+      const q = findQuestionAcrossDatasets(n.questionUid);
+      if (!q) return true;
       if (!isExplanationMatchingQuestion(n.reasoningNote, q)) {
         purgedNotesCount++;
         return false;
@@ -6423,10 +8301,10 @@ function scrubCorruptedAiExplanations() {
     });
 
     if (purgedNotesCount > 0) {
-      const reasoningKey = typeof resolveStorageKey === 'function' ? resolveStorageKey('reasoning_notes') : 'pedia_drill_reasoning_notes_v1';
+      const reasoningKey = resolveStorageKey('reasoning_notes');
       localStorage.setItem(reasoningKey, JSON.stringify(cleanedNotes));
       console.log(`[Diagnostic IA] Purged ${purgedNotesCount} mismatched AI reasoning note(s) from Notebook.`);
-      firebaseSyncService.triggerAutoPush();
+      appState.firebaseSyncService?.triggerAutoPush();
     }
   } catch (err) {
     console.warn('[Diagnostic IA] Error while scrubbing explanations:', err);
@@ -6436,23 +8314,16 @@ function scrubCorruptedAiExplanations() {
 function getSavedAiExplanation(questionUid, question = null) {
   if (!questionUid) return null;
 
-  let targetQ = question || (questionsMap.get(questionUid) || null);
-  if (!targetQ && typeof window !== 'undefined') {
-    if (questionUid.startsWith('psy_') && window.PSY_QUESTIONS) {
-      targetQ = window.PSY_QUESTIONS.find(x => x.uid === questionUid) || null;
-    } else if (window.PEDIA_QUESTIONS) {
-      targetQ = window.PEDIA_QUESTIONS.find(x => x.uid === questionUid) || null;
-    }
-  }
+  const targetQ = question || findQuestionAcrossDatasets(questionUid);
 
   const checkAndClean = (entry, source) => {
     if (!entry || !entry.note) return null;
     if (targetQ && !isExplanationMatchingQuestion(entry.note, targetQ)) {
       console.warn(`[AI Explanation] Mismatched note detected from ${source} for ${questionUid}. Purging corrupted entry.`);
       if (source === 'cache') {
-        delete aiExplanationsCache[questionUid];
+        delete appState.aiExplanationsCache[questionUid];
         try {
-          localStorage.setItem(getAiCacheKey(), JSON.stringify(aiExplanationsCache));
+          localStorage.setItem(getAiCacheKey(), JSON.stringify(appState.aiExplanationsCache));
         } catch {}
       }
       return null;
@@ -6460,27 +8331,25 @@ function getSavedAiExplanation(questionUid, question = null) {
     return entry;
   };
 
-  // 1. In-memory cache
-  if (aiExplanationsCache[questionUid]) {
-    const valid = checkAndClean(aiExplanationsCache[questionUid], 'cache');
+  if (appState.aiExplanationsCache[questionUid]) {
+    const valid = checkAndClean(appState.aiExplanationsCache[questionUid], 'cache');
     if (valid) return valid;
   }
-  // 2. Answered history buffer
-  const histItem = answeredHistory.find(h => h.question && h.question.uid === questionUid && h.aiReasoning);
+
+  const histItem = appState.answeredHistory.find(h => h.question && h.question.uid === questionUid && h.aiReasoning);
   if (histItem) {
-    const entry = { note: histItem.aiReasoning, modelUsed: histItem.modelUsed || 'Gemini 3.8 Flash' };
+    const entry = { note: histItem.aiReasoning, modelUsed: histItem.modelUsed || 'Gemini Flash' };
     const valid = checkAndClean(entry, 'history');
     if (valid) return valid;
     histItem.aiReasoning = null;
     histItem.modelUsed = null;
   }
-  // 3. QueueEngine reasoning notes (from notebook or synced from Firestore)
-  // Optimize: query raw notes first to avoid hydrating hundreds of notes
+
   const rawNotes = queueEngine.getRawReasoningNotes();
   const rawNote = rawNotes.find(n => n.questionUid === questionUid && n.reasoningNote);
   if (rawNote) {
-    const note = hydrateNote(rawNote, questionsMap);
-    const entry = { note: note.reasoningNote, modelUsed: note.modelUsed || 'Gemini 3.8 Flash' };
+    const note = hydrateNote(rawNote, appState.questionsMap);
+    const entry = { note: note.reasoningNote, modelUsed: note.modelUsed || 'Gemini Flash' };
     const valid = checkAndClean(entry, 'notebook');
     if (valid) return valid;
     if (note.id) {
@@ -6490,45 +8359,36 @@ function getSavedAiExplanation(questionUid, question = null) {
   return null;
 }
 
-function saveAiExplanationForQuestion(questionUid, noteText, modelUsed = 'Gemini 3.8 Flash', question = null) {
+function saveAiExplanationForQuestion(questionUid, noteText, modelUsed = 'Gemini Flash', question = null) {
   if (!questionUid || !noteText) return;
 
-  let targetQ = question || (questionsMap.get(questionUid) || null);
-  if (!targetQ && typeof window !== 'undefined') {
-    if (questionUid.startsWith('psy_') && window.PSY_QUESTIONS) {
-      targetQ = window.PSY_QUESTIONS.find(x => x.uid === questionUid) || null;
-    } else if (window.PEDIA_QUESTIONS) {
-      targetQ = window.PEDIA_QUESTIONS.find(x => x.uid === questionUid) || null;
-    }
-  }
+  const targetQ = question || findQuestionAcrossDatasets(questionUid);
   if (targetQ && !isExplanationMatchingQuestion(noteText, targetQ)) {
     console.warn(`[AI Explanation] Refusing to save mismatched note for ${questionUid}`);
     return;
   }
 
-  aiExplanationsCache[questionUid] = {
+  appState.aiExplanationsCache[questionUid] = {
     note: noteText,
-    modelUsed: modelUsed || 'Gemini 3.8 Flash',
+    modelUsed: modelUsed || 'Gemini Flash',
     questionText: targetQ ? (targetQ.question || targetQ.statement) : '',
     chapterTitle: targetQ ? targetQ.chapterTitle : '',
     timestamp: Date.now()
   };
   try {
-    localStorage.setItem(getAiCacheKey(), JSON.stringify(aiExplanationsCache));
+    localStorage.setItem(getAiCacheKey(), JSON.stringify(appState.aiExplanationsCache));
   } catch (e) {
     console.warn('Failed to persist AI explanations cache:', e);
   }
 
-  // Update in answeredHistory if present
-  answeredHistory.forEach(item => {
+  appState.answeredHistory.forEach(item => {
     if (item.question && item.question.uid === questionUid) {
       item.aiReasoning = noteText;
       item.modelUsed = modelUsed;
     }
   });
 
-  // Ensure it is saved in queueEngine Notebook
-  const existingNotes = queueEngine.getReasoningNotes();
+  const existingNotes = queueEngine.getRawReasoningNotes();
   const alreadySaved = existingNotes.some(n => n.questionUid === questionUid);
   if (!alreadySaved && targetQ) {
     const isCroq = !!targetQ.is_croq;
@@ -6546,15 +8406,15 @@ function saveAiExplanationForQuestion(questionUid, noteText, modelUsed = 'Gemini
       userAnswerLetters: correctLetters,
       correctAnswer: correctText,
       officialExplanation: targetQ.explanation || '',
-      isCroq: isCroq,
+      isCroq,
       score: null,
       reasoningNote: noteText,
-      modelUsed: modelUsed,
+      modelUsed,
       timestamp: Date.now()
     };
     queueEngine.saveReasoningNote(noteRecord);
-    firebaseSyncService.triggerAutoPush();
-    const notesCount = queueEngine.getReasoningNotes().length;
+    appState.firebaseSyncService?.triggerAutoPush();
+    const notesCount = queueEngine.getRawReasoningNotes().length;
     const badgeEl = document.getElementById('notebook-count-badge');
     if (badgeEl) badgeEl.textContent = notesCount;
   }
@@ -6571,7 +8431,7 @@ function renderArenaAiExplanation(question) {
   box.style.display = 'flex';
 
   if (saved && saved.note) {
-    if (modelTag) modelTag.textContent = saved.modelUsed || 'Gemini 3.8 Flash';
+    if (modelTag) modelTag.textContent = saved.modelUsed || 'Gemini Flash';
     if (regenBtn) regenBtn.style.display = 'inline-flex';
     textEl.innerHTML = formatReasoningNote(saved.note);
   } else {
@@ -6598,12 +8458,12 @@ window.regenerateArenaAiExplanation = async function() {
   if (!effQ) return;
   const targetUid = effQ.uid;
 
-  delete aiExplanationsCache[targetUid];
+  delete appState.aiExplanationsCache[targetUid];
   try {
-    localStorage.setItem(getAiCacheKey(), JSON.stringify(aiExplanationsCache));
+    localStorage.setItem(getAiCacheKey(), JSON.stringify(appState.aiExplanationsCache));
   } catch {}
 
-  answeredHistory.forEach(item => {
+  appState.answeredHistory.forEach(item => {
     if (item.question && item.question.uid === targetUid) {
       item.aiReasoning = null;
       item.modelUsed = null;
@@ -6614,7 +8474,7 @@ window.regenerateArenaAiExplanation = async function() {
   await window.requestArenaAiExplanation(true);
 };
 
-window.requestArenaAiExplanation = async function(forceRegen = false) {
+window.requestArenaAiExplanation = async function(_forceRegen = false) {
   const effQ = getEffectiveArenaQuestion();
   if (!effQ) return;
   const targetUid = effQ.uid;
@@ -6623,6 +8483,10 @@ window.requestArenaAiExplanation = async function(forceRegen = false) {
   const modelTag = document.getElementById('arena-ai-model-tag');
   const regenBtn = document.getElementById('btn-arena-ai-regenerate');
   if (!box || !textEl) return;
+
+  if (!geminiService.hasApiKeys()) {
+    showAppToast('💡 Mode hors-ligne : ajoutez une clé API Google Gemini dans Paramètres pour générer via IA.', { type: 'warning' });
+  }
 
   if (regenBtn) regenBtn.style.display = 'none';
   box.style.display = 'flex';
@@ -6671,7 +8535,7 @@ window.requestArenaAiExplanation = async function(forceRegen = false) {
 };
 
 // ============================================================================
-// ARENA HISTORY NAVIGATION (RETROUVER LES 5 DERNIERS QCM RÉPONDUS)
+// ARENA HISTORY NAVIGATION
 // ============================================================================
 function pushToAnsweredHistory(question, userAnswerLetters, isCorrect, score = null) {
   if (!question) return;
@@ -6680,20 +8544,19 @@ function pushToAnsweredHistory(question, userAnswerLetters, isCorrect, score = n
     question: { ...question },
     userAnswerLetters: Array.isArray(userAnswerLetters) ? [...userAnswerLetters] : (userAnswerLetters ? [userAnswerLetters] : []),
     isCorrect: !!isCorrect,
-    score: score,
+    score,
     explanation: question.explanation || '',
     aiReasoning: savedAi ? savedAi.note : null,
     modelUsed: savedAi ? savedAi.modelUsed : null,
     timestamp: Date.now()
   };
 
-  // Éviter les doublons consécutifs sur la même question
-  if (answeredHistory.length > 0 && answeredHistory[0].question.uid === question.uid) {
-    answeredHistory[0] = snapshot;
+  if (appState.answeredHistory.length > 0 && appState.answeredHistory[0].question.uid === question.uid) {
+    appState.answeredHistory[0] = snapshot;
   } else {
-    answeredHistory.unshift(snapshot);
-    if (answeredHistory.length > 5) {
-      answeredHistory = answeredHistory.slice(0, 5);
+    appState.answeredHistory.unshift(snapshot);
+    if (appState.answeredHistory.length > 5) {
+      appState.answeredHistory = appState.answeredHistory.slice(0, 5);
     }
   }
   updateHistoryNavUI();
@@ -6713,27 +8576,25 @@ function updateHistoryNavUI() {
 
   if (!prevBtn || !nextBtn || !labelEl) return;
 
-  if (historyCursor === -1) {
-    // Mode Actuel (Drill en cours)
-    prevBtn.disabled = (answeredHistory.length === 0);
+  if (appState.historyCursor === -1) {
+    prevBtn.disabled = (appState.answeredHistory.length === 0);
     nextBtn.disabled = true;
-    labelEl.textContent = answeredHistory.length > 0 ? `Actuel (${answeredHistory.length})` : 'Actuel';
+    labelEl.textContent = appState.answeredHistory.length > 0 ? `Actuel (${appState.answeredHistory.length})` : 'Actuel';
     if (badgeEl) badgeEl.classList.remove('is-past');
     if (navBox) navBox.classList.remove('is-browsing');
     if (bannerEl) bannerEl.style.display = 'none';
     if (resumeActionBtn) resumeActionBtn.style.display = 'none';
-    if (currentQuestion) {
-      if (currentQuestion.is_croq) {
+    if (appState.currentQuestion) {
+      if (appState.currentQuestion.is_croq) {
         if (btnSubmitCroq) btnSubmitCroq.style.display = 'flex';
       } else {
         if (btnSubmitAnswer) btnSubmitAnswer.style.display = 'flex';
       }
     }
   } else {
-    // Mode Consultation Historique (Lecture seule + Tuteur IA)
-    prevBtn.disabled = (historyCursor >= answeredHistory.length - 1);
+    prevBtn.disabled = (appState.historyCursor >= appState.answeredHistory.length - 1);
     nextBtn.disabled = false;
-    labelEl.textContent = `Précédent ${historyCursor + 1}/${answeredHistory.length}`;
+    labelEl.textContent = `Précédent ${appState.historyCursor + 1}/${appState.answeredHistory.length}`;
     if (badgeEl) badgeEl.classList.add('is-past');
     if (navBox) navBox.classList.add('is-browsing');
     if (bannerEl) bannerEl.style.display = 'flex';
@@ -6745,1690 +8606,27 @@ function updateHistoryNavUI() {
 
   const btnSnooze = document.getElementById('btn-snooze-question');
   if (btnSnooze) {
-    btnSnooze.style.display = (historyCursor === -1 && !isCurrentQuestionAnswered) ? 'inline-flex' : 'none';
+    btnSnooze.style.display = (appState.historyCursor === -1 && !appState.isCurrentQuestionAnswered) ? 'inline-flex' : 'none';
   }
 }
-
-// ============================================================================
-// GESTION DES CAS CLINIQUES & SOUS-QUESTIONS
-// ============================================================================
-function getClinicalCaseSubQuestions(question) {
-  if (!question || !question.clinical_case || !question.clinical_case.trim()) {
-    return [];
-  }
-  const idStr = String(question.id || '');
-  const idParts = idStr.split('.');
-  const casePrefix = idParts.length > 1 ? idParts[0] : null;
-
-  return allQuestions.filter(item => {
-    if (!item.clinical_case || !item.clinical_case.trim()) return false;
-    if (question.chapterId && item.chapterId !== question.chapterId) return false;
-    if (casePrefix) {
-      const parts = String(item.id || '').split('.');
-      if (parts[0] === casePrefix) return true;
-    }
-    return item.clinical_case.trim() === question.clinical_case.trim();
-  }).sort((a, b) => {
-    const aParts = String(a.id || '').split('.');
-    const bParts = String(b.id || '').split('.');
-    const aIdx = parseInt(aParts[1] || a.id, 10) || 0;
-    const bIdx = parseInt(bParts[1] || b.id, 10) || 0;
-    return aIdx - bIdx;
-  });
-}
-
-function buildClinicalCaseContext(question) {
-  if (!question) return null;
-
-  const isCase = (isClinicalRunActive && clinicalRunState) || (question.clinical_case && question.clinical_case.trim().length > 0);
-  if (!isCase) return null;
-
-  const caseStatement = (clinicalRunState ? clinicalRunState.caseStatement : question.clinical_case) || '';
-  const subQuestions = (clinicalRunState ? clinicalRunState.subQuestions : getClinicalCaseSubQuestions(question)) || [];
-
-  if (subQuestions.length === 0) {
-    return {
-      isClinicalCase: true,
-      casePrefix: String(question.id || '').split('.')[0] || '',
-      caseStatement: caseStatement,
-      currentNum: 1,
-      totalCount: 1,
-      chronologySummary: `Énoncé du cas clinique :\n"${caseStatement}"`
-    };
-  }
-
-  let curIdx = 0;
-  if (isClinicalRunActive && clinicalRunState) {
-    curIdx = clinicalRunState.currentIndex;
-  } else {
-    const found = subQuestions.findIndex(sq => sq.uid === question.uid || sq.id === question.id);
-    curIdx = found !== -1 ? found : 0;
-  }
-
-  const curNum = curIdx + 1;
-  const totalCount = subQuestions.length;
-  const casePrefix = clinicalRunState ? clinicalRunState.casePrefix : (String(question.id || '').split('.')[0] || '');
-
-  // Questions du cas depuis la première jusqu'à la question actuelle
-  const questionsUpToCurrent = subQuestions.slice(0, curIdx + 1);
-
-  const lines = [];
-  questionsUpToCurrent.forEach((sq, idx) => {
-    const qNum = idx + 1;
-    const isCurrent = idx === curIdx;
-    const tag = isCurrent ? '➡️ [QUESTION ACTUELLE OÙ SE TROUVE L\'ÉTUDIANT]' : `[Question ${qNum}/${totalCount}]`;
-    const qStatement = sq.question || sq.statement || '';
-
-    // Réponse de l'étudiant si disponible
-    let userAnsText = 'Non renseignée';
-    if (clinicalRunState && clinicalRunState.userAnswers && clinicalRunState.userAnswers[sq.uid]) {
-      const uAns = clinicalRunState.userAnswers[sq.uid];
-      userAnsText = uAns.isCroq ? (uAns.croqText || 'Vide') : (uAns.selectedLetters?.join(', ') || 'Vide');
-    }
-
-    // Données d'évaluation
-    const evalData = (clinicalRunState && clinicalRunState.cardEvaluations) ? clinicalRunState.cardEvaluations[sq.uid] : null;
-
-    // Bonne réponse officielle
-    let correctText = '';
-    if (sq.is_croq) {
-      correctText = sq.croq_answer || 'Réponse attendue';
-    } else {
-      const corOpts = (sq.options || []).filter(o => o.is_correct);
-      correctText = corOpts.map(o => `${o.letter}) ${o.text}`).join(' ; ') || corOpts.map(o => o.letter).join(', ');
-    }
-
-    // Liste des propositions
-    let optsText = '';
-    if (!sq.is_croq && sq.options && sq.options.length > 0) {
-      optsText = sq.options.map(o => `   ${o.letter}) ${o.text}`).join('\n');
-    }
-
-    // Explication officielle ou note IA
-    const savedAi = getSavedAiExplanation(sq.uid, sq);
-    let expText = 'Non fournie dans la base';
-    if (sq.explanation && sq.explanation.trim()) {
-      expText = sq.explanation.trim();
-    } else if (savedAi && savedAi.note) {
-      expText = `[Explication IA Flash générée] : ${savedAi.note.slice(0, 250)}...`;
-    }
-
-    lines.push(`
---- ${tag} : Question ${qNum} sur ${totalCount} ---
-Énoncé : ${qStatement}
-${optsText ? `Propositions :\n${optsText}` : 'Type : Question ouverte (CROQ)'}
-${userAnsText !== 'Non renseignée' ? `Réponse fournie par l'étudiant : ${userAnsText} ${evalData ? (evalData.isCorrect ? '(Validée ✅)' : '(Inexacte ❌)') : ''}` : ''}
-Bonne(s) réponse(s) officielle(s) : ${correctText}
-Explication : ${expText}
-`);
-  });
-
-  if (curIdx + 1 < totalCount) {
-    lines.push(`\n[Note pédagogique : Le cas comporte ${totalCount} questions au total. L'étudiant est actuellement à l'étape ${curNum}/${totalCount}. Ne spoile pas les questions suivantes ${curNum + 1} à ${totalCount} sauf si l'étudiant pose une question directe sur la stratégie thérapeutique globale.]`);
-  }
-
-  return {
-    isClinicalCase: true,
-    casePrefix: casePrefix,
-    caseStatement: caseStatement,
-    currentNum: curNum,
-    totalCount: totalCount,
-    chronologySummary: lines.join('\n')
-  };
-}
-
-let isClinicalAccordionOpen = false;
-
-function updateClinicalCaseUI(q) {
-  const clinicalBox = document.getElementById('arena-clinical-case');
-  const clinicalText = document.getElementById('arena-clinical-case-text');
-  const subBadge = document.getElementById('arena-subquestion-badge');
-  const subBadgeText = document.getElementById('arena-subquestion-badge-text');
-  const btnAccordion = document.getElementById('btn-toggle-clinical-questions');
-  const btnAccordionText = document.getElementById('btn-toggle-clinical-text');
-  const accordionContainer = document.getElementById('arena-clinical-questions-accordion');
-
-  // Toujours fermer l'accordéon par défaut lors de l'arrivée sur une question
-  isClinicalAccordionOpen = false;
-  if (btnAccordion) btnAccordion.classList.remove('is-open');
-  if (accordionContainer) {
-    accordionContainer.style.display = 'none';
-    accordionContainer.innerHTML = '';
-  }
-
-  if (q && q.clinical_case && q.clinical_case.trim()) {
-    if (clinicalText) clinicalText.innerHTML = formatMedicalContent(q.clinical_case.trim());
-    if (clinicalBox) clinicalBox.style.display = 'block';
-
-    const subQuestions = getClinicalCaseSubQuestions(q);
-    const totalCount = subQuestions.length;
-
-    // Calcul de la numérotation (ex: Cas Clinique 2 • Question 4/5)
-    const idParts = String(q.id || '').split('.');
-    let caseNum = idParts.length > 1 ? idParts[0] : null;
-    let subIdx = idParts.length > 1 ? parseInt(idParts[1], 10) : null;
-
-    if ((subIdx === null || isNaN(subIdx)) && totalCount > 0) {
-      const foundIdx = subQuestions.findIndex(sq => sq.uid === q.uid || sq.id === q.id);
-      if (foundIdx !== -1) subIdx = foundIdx + 1;
-    }
-
-    if (subBadge && subBadgeText) {
-      if (subIdx !== null && totalCount > 0) {
-        const caseLabel = caseNum ? `Cas Clinique ${caseNum}` : 'Cas Clinique';
-        subBadgeText.textContent = `${caseLabel} • Question ${subIdx}/${totalCount}`;
-        subBadge.style.display = 'inline-flex';
-      } else if (caseNum) {
-        subBadgeText.textContent = `Cas Clinique ${caseNum}`;
-        subBadge.style.display = 'inline-flex';
-      } else {
-        subBadge.style.display = 'none';
-      }
-    }
-
-    // Bouton de consultation de toutes les questions du cas
-    if (btnAccordion && btnAccordionText) {
-      if (totalCount > 1) {
-        btnAccordion.style.display = 'inline-flex';
-        btnAccordionText.textContent = `Voir les ${totalCount} questions du cas`;
-      } else {
-        btnAccordion.style.display = 'none';
-      }
-    }
-
-    // Bouton de résolution complète du cas
-    const btnStartCase = document.getElementById('btn-start-clinical-case');
-    const btnStartCaseText = document.getElementById('btn-start-clinical-text');
-    if (btnStartCase && btnStartCaseText) {
-      if (totalCount > 1 && !isClinicalRunActive) {
-        btnStartCase.style.display = 'inline-flex';
-        btnStartCaseText.textContent = `Résoudre le cas complet (${totalCount} Q)`;
-      } else {
-        btnStartCase.style.display = 'none';
-      }
-    }
-  } else {
-    if (clinicalBox) clinicalBox.style.display = 'none';
-    if (subBadge) subBadge.style.display = 'none';
-    if (btnAccordion) btnAccordion.style.display = 'none';
-    const btnStartCase = document.getElementById('btn-start-clinical-case');
-    if (btnStartCase) btnStartCase.style.display = 'none';
-  }
-}
-
-window.toggleClinicalQuestionsAccordion = function() {
-  const currentQ = getEffectiveArenaQuestion();
-  if (!currentQ || !currentQ.clinical_case) return;
-
-  const accordionContainer = document.getElementById('arena-clinical-questions-accordion');
-  const btnAccordion = document.getElementById('btn-toggle-clinical-questions');
-  const btnAccordionText = document.getElementById('btn-toggle-clinical-text');
-  if (!accordionContainer) return;
-
-  isClinicalAccordionOpen = !isClinicalAccordionOpen;
-
-  if (isClinicalAccordionOpen) {
-    const subQuestions = getClinicalCaseSubQuestions(currentQ);
-    const totalCount = subQuestions.length;
-
-    if (btnAccordion) btnAccordion.classList.add('is-open');
-    if (btnAccordionText) btnAccordionText.textContent = `Masquer les questions (${totalCount})`;
-
-    let html = '';
-    subQuestions.forEach((sq, idx) => {
-      const isCurrent = (sq.uid === currentQ.uid || sq.id === currentQ.id);
-      const qNum = idx + 1;
-      const opts = sq.options || [];
-
-      let optionsHtml = '';
-      if (sq.is_croq) {
-        optionsHtml = `
-          <div class="clinical-accordion-opt">
-            <span class="clinical-accordion-opt-letter">📝</span>
-            <span style="font-style:italic;color:var(--cyan);">Question à Réponse Ouverte et Courte (CROQ)</span>
-          </div>
-        `;
-      } else if (opts.length > 0) {
-        optionsHtml = `
-          <div class="clinical-accordion-options">
-            ${opts.map((opt, oIdx) => {
-              const letter = opt.letter || String.fromCharCode(65 + oIdx);
-              return `
-                <div class="clinical-accordion-opt">
-                  <span class="clinical-accordion-opt-letter">${escapeHtml(letter)}.</span>
-                  <span class="clinical-accordion-opt-text">${escapeHtml(opt.text || '')}</span>
-                </div>
-              `;
-            }).join('')}
-          </div>
-        `;
-      }
-
-      html += `
-        <div class="clinical-accordion-item ${isCurrent ? 'is-current' : ''}">
-          <div class="clinical-accordion-header">
-            <span class="clinical-accordion-qnum">
-              <i data-lucide="help-circle" style="width:13px;height:13px;"></i>
-              Question ${qNum} / ${totalCount}
-            </span>
-            ${isCurrent ? '<span class="clinical-accordion-tag-current">Question en cours</span>' : ''}
-          </div>
-          <div class="clinical-accordion-text">
-            ${formatMedicalContent(sq.question || sq.statement)}
-          </div>
-          ${optionsHtml}
-        </div>
-      `;
-    });
-
-    accordionContainer.innerHTML = html;
-    accordionContainer.style.display = 'flex';
-    refreshLucide();
-  } else {
-    const subQuestions = getClinicalCaseSubQuestions(currentQ);
-    if (btnAccordion) btnAccordion.classList.remove('is-open');
-    if (btnAccordionText) btnAccordionText.textContent = `Voir les ${subQuestions.length} questions du cas`;
-    accordionContainer.style.display = 'none';
-    accordionContainer.innerHTML = '';
-  }
-};
-
-// ============================================================================
-// CLINICAL CASE FULL RESOLUTION ENGINE (SEQUENTIAL & SCROLL MODES)
-// ============================================================================
-
-let isClinicalRunActive = false;
-let clinicalRunState = null;
-
-function getClinicalModePreference() {
-  try {
-    return localStorage.getItem('pedia_clinical_case_mode') || 'sequential';
-  } catch {
-    return 'sequential';
-  }
-}
-
-function setClinicalModePreference(mode) {
-  const cleanMode = mode === 'scroll' ? 'scroll' : 'sequential';
-  try {
-    localStorage.setItem('pedia_clinical_case_mode', cleanMode);
-  } catch {}
-  const selectEl = document.getElementById('settings-clinical-mode-select');
-  if (selectEl) selectEl.value = cleanMode;
-  const badgeEl = document.getElementById('settings-clinical-mode-badge');
-  if (badgeEl) badgeEl.textContent = cleanMode === 'scroll' ? 'Déroulant' : 'Séquentiel';
-}
-
-function updateClinicalRunBarUI() {
-  const bar = document.getElementById('arena-clinical-run-bar');
-  const track = document.getElementById('arena-clinical-progress-track');
-  const fill = document.getElementById('arena-clinical-progress-fill');
-  const titleText = document.getElementById('clinical-run-title-text');
-  const counterText = document.getElementById('clinical-run-step-counter');
-  const btnSeq = document.getElementById('btn-mode-sequential');
-  const btnScroll = document.getElementById('btn-mode-scroll');
-  const btnStartCase = document.getElementById('btn-start-clinical-case');
-  const btnSnooze = document.getElementById('btn-snooze-question');
-
-  if (!isClinicalRunActive || !clinicalRunState) {
-    if (bar) bar.style.display = 'none';
-    if (track) track.style.display = 'none';
-    if (btnSnooze) btnSnooze.style.display = 'inline-flex';
-    return;
-  }
-
-  if (bar) bar.style.display = 'flex';
-  if (track) track.style.display = 'block';
-  if (btnStartCase) btnStartCase.style.display = 'none';
-  if (btnSnooze) btnSnooze.style.display = 'none';
-
-  const total = clinicalRunState.subQuestions.length;
-  if (titleText) {
-    titleText.textContent = `Cas Clinique ${clinicalRunState.casePrefix} (${total} Q)`;
-  }
-
-  if (btnSeq && btnScroll) {
-    btnSeq.classList.toggle('active', clinicalRunState.mode === 'sequential');
-    btnScroll.classList.toggle('active', clinicalRunState.mode === 'scroll');
-  }
-
-  if (clinicalRunState.mode === 'sequential') {
-    const cur = clinicalRunState.currentIndex + 1;
-    if (counterText) counterText.textContent = `Question ${cur} / ${total}`;
-    const pct = Math.round((cur / total) * 100);
-    if (fill) fill.style.width = `${pct}%`;
-  } else {
-    const answeredCount = Object.keys(clinicalRunState.userAnswers).length;
-    if (counterText) counterText.textContent = `${answeredCount} / ${total} répondue(s)`;
-    const pct = Math.round((answeredCount / total) * 100);
-    if (fill) fill.style.width = `${pct}%`;
-  }
-
-  refreshLucide(bar);
-}
-
-window.startClinicalCaseRun = function() {
-  const currentQ = getEffectiveArenaQuestion();
-  if (!currentQ || !currentQ.clinical_case) return;
-
-  const subQuestions = getClinicalCaseSubQuestions(currentQ);
-  if (!subQuestions || subQuestions.length === 0) return;
-
-  const idParts = String(currentQ.id || '').split('.');
-  const casePrefix = idParts.length > 1 ? idParts[0] : (currentQ.id || '1');
-
-  // Close accordion if open
-  isClinicalAccordionOpen = false;
-  const accordionContainer = document.getElementById('arena-clinical-questions-accordion');
-  const btnAccordion = document.getElementById('btn-toggle-clinical-questions');
-  if (btnAccordion) btnAccordion.classList.remove('is-open');
-  if (accordionContainer) accordionContainer.style.display = 'none';
-
-  // Initialize clinicalRunState
-  const preferredMode = getClinicalModePreference();
-  isClinicalRunActive = true;
-  clinicalRunState = {
-    casePrefix,
-    caseStatement: currentQ.clinical_case.trim(),
-    chapterId: currentQ.chapterId || null,
-    chapterTitle: currentQ.chapterTitle || 'Pédiatrie',
-    subQuestions,
-    currentIndex: 0,
-    mode: preferredMode, // 'sequential' or 'scroll'
-    userAnswers: {}, // uid -> { selectedLetters: [], isCroq: bool, croqText: '' }
-    cardEvaluations: {}, // uid -> { isEvaluated: bool, isCorrect: bool, score: number, feedback: string, userText: string, correctText: string }
-    startTime: Date.now()
-  };
-
-  // Pre-fill user answers if the currently active question was already selected
-  if (selectedOptionIds.size > 0 && currentQuestion) {
-    const letters = [];
-    document.querySelectorAll('.option-item.selected').forEach(el => {
-      letters.push(el.dataset.letter);
-    });
-    if (letters.length > 0) {
-      clinicalRunState.userAnswers[currentQuestion.uid] = {
-        selectedLetters: letters.sort(),
-        isCroq: false,
-        croqText: ''
-      };
-    }
-  }
-
-  updateClinicalRunBarUI();
-
-  if (clinicalRunState.mode === 'scroll') {
-    renderClinicalScrollView();
-  } else {
-    renderClinicalSequentialView();
-  }
-
-  const arenaEl = document.getElementById('view-arena');
-  if (arenaEl) arenaEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-};
-
-window.switchClinicalRunMode = function(newMode) {
-  if (!isClinicalRunActive || !clinicalRunState) return;
-  if (clinicalRunState.mode === newMode) return;
-
-  if (clinicalRunState.mode === 'sequential') {
-    saveSequentialCurrentQuestionState();
-  }
-
-  clinicalRunState.mode = newMode;
-  setClinicalModePreference(newMode);
-  updateClinicalRunBarUI();
-
-  if (newMode === 'scroll') {
-    renderClinicalScrollView();
-  } else {
-    renderClinicalSequentialView();
-  }
-};
-
-function saveSequentialCurrentQuestionState() {
-  if (!clinicalRunState) return;
-  const subQ = clinicalRunState.subQuestions[clinicalRunState.currentIndex];
-  if (!subQ) return;
-
-  if (subQ.is_croq) {
-    const val = document.getElementById('arena-croq-input')?.value?.trim() || '';
-    if (val) {
-      clinicalRunState.userAnswers[subQ.uid] = {
-        selectedLetters: [],
-        isCroq: true,
-        croqText: val
-      };
-    }
-  } else {
-    const letters = [];
-    document.querySelectorAll('.option-item.selected').forEach(el => {
-      letters.push(el.dataset.letter);
-    });
-    if (letters.length > 0) {
-      clinicalRunState.userAnswers[subQ.uid] = {
-        selectedLetters: letters.sort(),
-        isCroq: false,
-        croqText: ''
-      };
-    }
-  }
-}
-
-function updateSequentialActionButtons(curNum, total) {
-  const defaultActions = document.getElementById('arena-default-actions');
-  if (!defaultActions || !clinicalRunState) return;
-
-  let stepperBar = document.getElementById('arena-clinical-sequential-stepper');
-  if (!stepperBar) {
-    stepperBar = document.createElement('div');
-    stepperBar.id = 'arena-clinical-sequential-stepper';
-    stepperBar.className = 'clinical-sequential-stepper-wrap';
-    stepperBar.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;width:100%;';
-    defaultActions.parentNode.insertBefore(stepperBar, defaultActions);
-  }
-  stepperBar.style.display = 'flex';
-
-  const isFirst = curNum === 1;
-  const isLast = curNum === total;
-
-  stepperBar.innerHTML = `
-    <button type="button" class="btn-secondary" id="btn-clinical-prev-q" style="padding:8px 16px;font-size:0.78rem;gap:6px;" ${isFirst ? 'disabled' : ''} onclick="window.navClinicalSequentialStep(-1)">
-      <i data-lucide="chevron-left" style="width:14px;height:14px;"></i>
-      <span>Précédente</span>
-    </button>
-    <div style="font-size:0.8rem;font-weight:700;color:var(--text-muted);font-family:var(--font-heading);">
-      ${curNum} / ${total}
-    </div>
-    <button type="button" class="btn-secondary" id="btn-clinical-next-q" style="padding:8px 16px;font-size:0.78rem;gap:6px;" ${isLast ? 'disabled' : ''} onclick="window.navClinicalSequentialStep(1)">
-      <span>Suivante</span>
-      <i data-lucide="chevron-right" style="width:14px;height:14px;"></i>
-    </button>
-  `;
-
-  const subQ = clinicalRunState.subQuestions[clinicalRunState.currentIndex];
-  const evalData = clinicalRunState.cardEvaluations ? clinicalRunState.cardEvaluations[subQ?.uid] : null;
-  const isAlreadyEvaluated = !!evalData;
-
-  const btnSubmitAnswer = document.getElementById('btn-submit-answer');
-  const btnSubmitCroq = document.getElementById('btn-submit-croq');
-  const btnClinicalSave = document.getElementById('btn-clinical-save-next');
-  const btnClinicalSaveText = document.getElementById('btn-clinical-save-text');
-
-  // Option secondaire (à gauche, plus petite) : "Enregistrer & Suivant" ou "Enregistrer & Bilan"
-  if (btnClinicalSave) {
-    if (isAlreadyEvaluated) {
-      btnClinicalSave.style.display = 'none';
-    } else {
-      btnClinicalSave.style.display = 'inline-flex';
-      const saveText = isLast ? 'Enregistrer & Bilan' : 'Enregistrer & Suivant';
-      if (btnClinicalSaveText) btnClinicalSaveText.textContent = saveText;
-      btnClinicalSave.title = isLast ? 'Enregistrer sans corriger et voir le bilan' : 'Enregistrer sans corriger et passer à la suivante';
-
-      if (subQ?.is_croq) {
-        const croqVal = document.getElementById('arena-croq-input')?.value?.trim() || '';
-        btnClinicalSave.disabled = !croqVal;
-      } else {
-        btnClinicalSave.disabled = selectedOptionIds.size === 0;
-      }
-    }
-  }
-
-  // Option principale par défaut : "Vérifier la réponse" (ou "Question suivante ➔" si déjà vérifiée)
-  if (isAlreadyEvaluated) {
-    const nextBtnText = isLast ? '🏁 Voir le Bilan Final' : 'Question suivante ➔';
-    if (btnSubmitAnswer) {
-      const span = btnSubmitAnswer.querySelector('span');
-      if (span) span.textContent = nextBtnText;
-      btnSubmitAnswer.disabled = false;
-    }
-    if (btnSubmitCroq) {
-      const span = btnSubmitCroq.querySelector('span');
-      if (span) span.textContent = nextBtnText;
-      btnSubmitCroq.disabled = false;
-    }
-  } else {
-    if (btnSubmitAnswer) {
-      const span = btnSubmitAnswer.querySelector('span');
-      if (span) span.textContent = 'Vérifier la réponse';
-      btnSubmitAnswer.disabled = selectedOptionIds.size === 0;
-    }
-    if (btnSubmitCroq) {
-      const span = btnSubmitCroq.querySelector('span');
-      if (span) span.textContent = 'Évaluer par IA (Gemini)';
-      const croqVal = document.getElementById('arena-croq-input')?.value?.trim() || '';
-      btnSubmitCroq.disabled = !croqVal;
-    }
-  }
-
-  refreshLucide(stepperBar);
-  if (btnClinicalSave) refreshLucide(btnClinicalSave);
-}
-
-window.navClinicalSequentialStep = function(delta) {
-  if (!isClinicalRunActive || !clinicalRunState) return;
-  saveSequentialCurrentQuestionState();
-  const nextIdx = clinicalRunState.currentIndex + delta;
-  if (nextIdx >= 0 && nextIdx < clinicalRunState.subQuestions.length) {
-    clinicalRunState.currentIndex = nextIdx;
-    renderClinicalSequentialView();
-  }
-};
-
-window.saveAndAdvanceSequentialClinicalQuestion = function() {
-  if (!isClinicalRunActive || !clinicalRunState || clinicalRunState.mode !== 'sequential') return;
-  saveSequentialCurrentQuestionState();
-
-  const isLast = clinicalRunState.currentIndex === clinicalRunState.subQuestions.length - 1;
-  if (isLast) {
-    window.validateAllClinicalSubQuestions();
-  } else {
-    clinicalRunState.currentIndex++;
-    renderClinicalSequentialView();
-  }
-};
-
-function renderClinicalExplanationArea(subQ, isCorrect, correctLettersStr = '') {
-  const expBox = document.getElementById('arena-explanation-box');
-  const expText = document.getElementById('arena-explanation-text');
-  if (!expBox || !expText) return;
-
-  const correctStr = correctLettersStr || (subQ.is_croq ? subQ.croq_answer : (subQ.options || []).filter(o => o.is_correct).map(o => o.letter).join(', '));
-  const statusHeader = isCorrect 
-    ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#22c55e;font-weight:800;font-family:var(--font-heading);font-size:0.95rem;">
-         <i data-lucide="check-circle" style="width:18px;height:18px;"></i>
-         <span>Bonne réponse !</span>
-       </div>`
-    : `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;color:#ef4444;font-weight:800;font-family:var(--font-heading);font-size:0.95rem;">
-         <i data-lucide="x-circle" style="width:18px;height:18px;"></i>
-         <span>Réponse incorrecte (Bonne(s) réponse(s) : <strong>${correctStr}</strong>)</span>
-       </div>`;
-
-  const hasOfficial = subQ.explanation && subQ.explanation.trim().length > 0;
-  let expContent = '';
-  if (hasOfficial) {
-    expContent = `<div style="margin-bottom:10px;">${formatMedicalContent(subQ.explanation.trim())}</div>`;
-  } else {
-    expContent = `
-      <div style="margin-bottom:10px;padding:10px 12px;background:rgba(255,255,255,0.03);border-radius:8px;border-left:3px solid var(--amber);">
-        <div style="font-size:0.83rem;color:var(--text-muted);display:flex;align-items:center;gap:6px;">
-          <i data-lucide="alert-circle" style="width:15px;height:15px;color:var(--amber);flex-shrink:0;"></i>
-          <span><strong>Explication officielle manquante :</strong> Aucune justification n'est fournie dans la base pour cette question.</span>
-        </div>
-      </div>
-    `;
-  }
-
-  // If CROQ, include feedback and expected answer
-  let croqExtraHtml = '';
-  if (subQ.is_croq) {
-    const evalData = clinicalRunState?.cardEvaluations ? clinicalRunState.cardEvaluations[subQ.uid] : null;
-    if (evalData) {
-      if (evalData.feedback) {
-        croqExtraHtml += `<div style="margin: 8px 0; padding: 10px; background: rgba(255,255,255,0.04); border-radius: 8px; font-size: 0.88rem; border-left: 3px solid var(--purple);"><strong>Feedback IA :</strong> ${escapeHtml(evalData.feedback)}</div>`;
-      }
-      if (subQ.croq_answer) {
-        croqExtraHtml += `<div style="margin: 8px 0; font-size: 0.88rem; color: var(--text-muted);"><strong>Réponse attendue :</strong> ${escapeHtml(subQ.croq_answer)}</div>`;
-      }
-    }
-  }
-
-  const savedAi = getSavedAiExplanation(subQ.uid, subQ);
-  let aiBtnHtml = '';
-  if (!savedAi || !savedAi.note) {
-    aiBtnHtml = `
-      <div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
-        <div style="font-size:0.8rem;color:var(--text-muted);display:flex;align-items:center;gap:6px;">
-          <i data-lucide="sparkles" style="width:14px;height:14px;color:var(--cyan);"></i>
-          <span>${hasOfficial ? 'Besoin d\'un raisonnement plus poussé ?' : 'Explication détaillée manquante :'}</span>
-        </div>
-        <button type="button" class="btn-ask-arena-ai" id="btn-gen-clinical-subq-ai" onclick="window.requestClinicalSubQuestionAiExplanation()" style="padding:8px 16px;font-size:0.82rem;gap:6px;background:linear-gradient(135deg,rgba(0,212,255,0.18),rgba(147,51,234,0.22));border:1px solid var(--cyan);border-radius:8px;color:#ffffff;cursor:pointer;display:inline-flex;align-items:center;font-weight:700;">
-          <i data-lucide="sparkles" style="width:13px;height:13px;color:var(--cyan);"></i>
-          <span>${hasOfficial ? 'Approfondir avec l\'explication IA (Gemini Flash)' : 'Générer l\'explication IA (Gemini Flash)'}</span>
-        </button>
-      </div>
-    `;
-  } else {
-    aiBtnHtml = `
-      <div style="margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;font-size:0.8rem;color:var(--cyan);">
-        <span style="display:flex;align-items:center;gap:6px;">
-          <i data-lucide="check-check" style="width:14px;height:14px;"></i> Explication IA complète disponible ci-dessous
-        </span>
-        <button type="button" onclick="window.requestClinicalSubQuestionAiExplanation(true)" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:0.75rem;display:flex;align-items:center;gap:4px;">
-          <i data-lucide="rotate-cw" style="width:12px;height:12px;"></i> Régénérer
-        </button>
-      </div>
-    `;
-  }
-
-  expText.innerHTML = statusHeader + expContent + croqExtraHtml + aiBtnHtml;
-  expBox.style.display = 'flex';
-
-  // Affichage persistant de la boîte d'explication IA si déjà générée
-  renderArenaAiExplanation(subQ);
-  refreshLucide(expBox);
-}
-
-window.requestClinicalSubQuestionAiExplanation = async function(forceRegen = false) {
-  if (!clinicalRunState) return;
-  const subQ = clinicalRunState.subQuestions[clinicalRunState.currentIndex];
-  if (!subQ) return;
-  const targetUid = subQ.uid;
-
-  if (forceRegen) {
-    delete aiExplanationsCache[targetUid];
-    try {
-      localStorage.setItem(getAiCacheKey(), JSON.stringify(aiExplanationsCache));
-    } catch {}
-    queueEngine.deleteReasoningNotesByQuestionUid(targetUid);
-  }
-
-  const aiBox = document.getElementById('arena-ai-explanation-box');
-  const aiTextEl = document.getElementById('arena-ai-explanation-text');
-  const modelTag = document.getElementById('arena-ai-model-tag');
-  const regenBtn = document.getElementById('btn-arena-ai-regenerate');
-
-  if (aiBox && aiTextEl) {
-    aiBox.style.display = 'flex';
-    if (regenBtn) regenBtn.style.display = 'none';
-    aiTextEl.innerHTML = `
-      <div class="reasoning-loader-wrap" style="padding:16px;text-align:center;">
-        <i data-lucide="sparkles" class="spin" style="width:20px;height:20px;color:var(--cyan);margin-bottom:8px;"></i>
-        <div style="font-size:0.88rem;color:var(--cyan);font-weight:600;">Génération de l'explication clinique IA complète (Gemini Flash)...</div>
-        <div style="font-size:0.75rem;color:var(--text-dim);margin-top:4px;">Analyse du cas clinique complet, justification proposition par proposition et mémo concours.</div>
-      </div>
-    `;
-    refreshLucide(aiBox);
-    aiBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
-
-  const btnGen = document.getElementById('btn-gen-clinical-subq-ai');
-  if (btnGen) {
-    btnGen.disabled = true;
-    btnGen.innerHTML = `<i data-lucide="loader" class="spin" style="width:14px;height:14px;"></i> <span>Génération IA en cours...</span>`;
-    refreshLucide(btnGen);
-  }
-
-  try {
-    const clinicalContext = buildClinicalCaseContext(subQ);
-    const ans = clinicalRunState.userAnswers[subQ.uid];
-    const isCroq = !!subQ.is_croq;
-    const selectedLetters = isCroq ? [] : (ans?.selectedLetters || []);
-    const studentCroq = isCroq ? (ans?.croqText || '') : '';
-
-    const reasoningObj = await geminiService.generateReasoningNote(
-      subQ,
-      selectedLetters,
-      isCroq,
-      studentCroq,
-      clinicalContext
-    );
-
-    saveAiExplanationForQuestion(targetUid, reasoningObj.note, reasoningObj.modelUsed, subQ);
-    if (clinicalRunState.cardEvaluations && clinicalRunState.cardEvaluations[targetUid]) {
-      clinicalRunState.cardEvaluations[targetUid].aiReasoning = reasoningObj.note;
-    }
-
-    const currentSubQ = clinicalRunState.subQuestions[clinicalRunState.currentIndex];
-    if (currentSubQ && currentSubQ.uid === targetUid) {
-      if (aiTextEl) aiTextEl.innerHTML = formatReasoningNote(reasoningObj.note);
-      if (modelTag) modelTag.textContent = reasoningObj.modelUsed;
-      if (regenBtn) {
-        regenBtn.style.display = 'inline-flex';
-        regenBtn.onclick = () => window.requestClinicalSubQuestionAiExplanation(true);
-      }
-      refreshLucide(aiBox);
-
-      const evalData = clinicalRunState.cardEvaluations[targetUid];
-      renderClinicalExplanationArea(subQ, evalData ? evalData.isCorrect : true);
-    }
-  } catch (err) {
-    console.error('Error generating clinical sub-question AI explanation:', err);
-    if (aiTextEl) {
-      aiTextEl.innerHTML = `
-        <div style="color:var(--rose);padding:12px;font-size:0.85rem;">
-          ⚠️ Erreur de génération : ${escapeHtml(err.message || 'Problème de connexion')}
-          <div style="margin-top:8px;">
-            <button type="button" class="btn-ask-arena-ai" onclick="window.requestClinicalSubQuestionAiExplanation(true)">Réessayer</button>
-          </div>
-        </div>
-      `;
-      refreshLucide(aiBox);
-    }
-    if (btnGen) {
-      btnGen.disabled = false;
-      btnGen.innerHTML = `<i data-lucide="sparkles" style="width:13px;height:13px;"></i> <span>Réessayer la génération IA</span>`;
-      refreshLucide(btnGen);
-    }
-  }
-};
-
-window.requestClinicalCardAiExplanation = async function(idx, forceRegen = false) {
-  if (!isClinicalRunActive || !clinicalRunState) return;
-  const subQ = clinicalRunState.subQuestions[idx];
-  if (!subQ) return;
-  const targetUid = subQ.uid;
-
-  if (forceRegen) {
-    delete aiExplanationsCache[targetUid];
-    try {
-      localStorage.setItem(getAiCacheKey(), JSON.stringify(aiExplanationsCache));
-    } catch {}
-    queueEngine.deleteReasoningNotesByQuestionUid(targetUid);
-  }
-
-  const btn = document.getElementById(`btn-card-ai-exp-${idx}`);
-  if (btn) {
-    btn.disabled = true;
-    btn.innerHTML = `<i data-lucide="loader" class="spin" style="width:12px;height:12px;"></i> <span>Génération IA en cours...</span>`;
-    refreshLucide(btn);
-  }
-
-  try {
-    const clinicalContext = buildClinicalCaseContext(subQ);
-    const ans = clinicalRunState.userAnswers[subQ.uid];
-    const isCroq = !!subQ.is_croq;
-    const selectedLetters = isCroq ? [] : (ans?.selectedLetters || []);
-    const studentCroq = isCroq ? (ans?.croqText || '') : '';
-
-    const reasoningObj = await geminiService.generateReasoningNote(
-      subQ,
-      selectedLetters,
-      isCroq,
-      studentCroq,
-      clinicalContext
-    );
-
-    saveAiExplanationForQuestion(targetUid, reasoningObj.note, reasoningObj.modelUsed, subQ);
-    if (clinicalRunState.cardEvaluations && clinicalRunState.cardEvaluations[targetUid]) {
-      clinicalRunState.cardEvaluations[targetUid].aiReasoning = reasoningObj.note;
-    }
-
-    renderClinicalScrollView();
-  } catch (err) {
-    console.error('Error generating card AI explanation:', err);
-    alert('Erreur lors de la génération de l\'explication IA : ' + (err.message || 'Problème de connexion'));
-    if (btn) {
-      btn.disabled = false;
-      btn.innerHTML = `<i data-lucide="sparkles" style="width:12px;height:12px;"></i> <span>Réessayer la génération IA</span>`;
-      refreshLucide(btn);
-    }
-  }
-};
-
-function verifySequentialSubQuestion(subQ) {
-  if (!subQ || !clinicalRunState) return;
-  saveSequentialCurrentQuestionState();
-
-  const ans = clinicalRunState.userAnswers[subQ.uid] || { selectedLetters: [], isCroq: false, croqText: '' };
-  const userLetters = (ans.selectedLetters || []).slice().sort();
-
-  const correctOptions = (subQ.options || []).filter(o => o.is_correct);
-  const correctLetters = correctOptions.map(o => o.letter).sort();
-
-  const isCorrect = userLetters.length > 0 &&
-    correctLetters.length === userLetters.length &&
-    correctLetters.every((l, idx) => l === userLetters[idx]);
-
-  clinicalRunState.cardEvaluations[subQ.uid] = {
-    isEvaluated: true,
-    isCorrect,
-    score: isCorrect ? 100 : 0,
-    feedback: isCorrect ? 'Excellente réponse !' : 'Réponse inexacte.',
-    userText: userLetters.join(', ') || 'Aucune',
-    correctText: correctLetters.join(', ')
-  };
-
-  // Visuel sur les options
-  document.querySelectorAll('.option-item').forEach(el => {
-    const letter = el.dataset.letter;
-    const isSelected = userLetters.includes(letter);
-    const isCor = correctLetters.includes(letter);
-
-    el.classList.remove('selected');
-    if (isSelected && !isCor) {
-      el.classList.add('wrong-highlight');
-    } else if (isCor) {
-      el.classList.add('correct-highlight');
-    }
-  });
-
-  const optionsContainer = document.getElementById('arena-options-container');
-  if (optionsContainer) optionsContainer.style.pointerEvents = 'none';
-
-  // Affichage de l'explication officielle et IA dans l'arène
-  renderClinicalExplanationArea(subQ, isCorrect, correctLetters.join(', '));
-
-  const total = clinicalRunState.subQuestions.length;
-  const curNum = clinicalRunState.currentIndex + 1;
-  updateSequentialActionButtons(curNum, total);
-  refreshLucide();
-}
-
-async function verifySequentialCroqSubQuestion(subQ) {
-  if (!subQ || !clinicalRunState) return;
-  saveSequentialCurrentQuestionState();
-
-  const ans = clinicalRunState.userAnswers[subQ.uid];
-  const userInput = ans ? ans.croqText : '';
-  if (!userInput) {
-    alert('Veuillez saisir votre réponse avant de vérifier.');
-    return;
-  }
-
-  const btnSubmitCroq = document.getElementById('btn-submit-croq');
-  if (btnSubmitCroq) {
-    btnSubmitCroq.disabled = true;
-    btnSubmitCroq.innerHTML = `<i data-lucide="loader" class="spin"></i> <span>Évaluation IA en cours...</span>`;
-    refreshLucide(btnSubmitCroq);
-  }
-
-  let isCorrect = false;
-  let score = null;
-  let feedback = '';
-
-  try {
-    const evalResult = await geminiService.evaluateCroq(
-      subQ.question || subQ.statement,
-      clinicalRunState.caseStatement,
-      subQ.croq_answer,
-      userInput
-    );
-    score = evalResult.score;
-    feedback = evalResult.feedback;
-    isCorrect = evalResult.isValid && score >= 75;
-  } catch (err) {
-    console.error('Error evaluating sequential CROQ:', err);
-    isCorrect = false;
-    feedback = 'Évaluation hors-ligne : réponse enregistrée.';
-  }
-
-  clinicalRunState.cardEvaluations[subQ.uid] = {
-    isEvaluated: true,
-    isCorrect,
-    score,
-    feedback,
-    userText: userInput,
-    correctText: subQ.croq_answer
-  };
-
-  const croqInput = document.getElementById('arena-croq-input');
-  if (croqInput) croqInput.disabled = true;
-
-  // Affichage de l'explication officielle et IA dans l'arène
-  renderClinicalExplanationArea(subQ, isCorrect);
-
-  const total = clinicalRunState.subQuestions.length;
-  const curNum = clinicalRunState.currentIndex + 1;
-  updateSequentialActionButtons(curNum, total);
-  refreshLucide();
-}
-
-function renderClinicalSequentialView() {
-  if (!isClinicalRunActive || !clinicalRunState) return;
-
-  const scrollContainer = document.getElementById('arena-clinical-scroll-container');
-  if (scrollContainer) scrollContainer.style.display = 'none';
-
-  const optionsContainer = document.getElementById('arena-options-container');
-  const croqContainer = document.getElementById('arena-croq-container');
-  const defaultActions = document.getElementById('arena-default-actions');
-  const successBanner = document.getElementById('arena-success-banner');
-  const expBox = document.getElementById('arena-explanation-box');
-  const expText = document.getElementById('arena-explanation-text');
-  const aiBox = document.getElementById('arena-ai-explanation-box');
-  const questionText = document.getElementById('arena-question-text');
-  const mediaWrap = document.getElementById('arena-media-wrap');
-  const subBadge = document.getElementById('arena-subquestion-badge');
-  const subBadgeText = document.getElementById('arena-subquestion-badge-text');
-
-  if (questionText) questionText.style.display = 'block';
-  if (successBanner) successBanner.style.display = 'none';
-  if (expBox) expBox.style.display = 'none';
-  if (aiBox) aiBox.style.display = 'none';
-  if (defaultActions) defaultActions.style.display = 'flex';
-
-  const subQ = clinicalRunState.subQuestions[clinicalRunState.currentIndex];
-  if (!subQ) return;
-
-  currentQuestion = subQ;
-
-  const total = clinicalRunState.subQuestions.length;
-  const curNum = clinicalRunState.currentIndex + 1;
-  if (subBadge && subBadgeText) {
-    subBadgeText.textContent = `Cas Clinique ${clinicalRunState.casePrefix} • Question ${curNum}/${total}`;
-    subBadge.style.display = 'inline-flex';
-  }
-
-  if (questionText) questionText.innerHTML = formatMedicalContent(subQ.question || subQ.statement);
-
-  if (mediaWrap) {
-    if (subQ.media_urls && subQ.media_urls.length > 0) {
-      mediaWrap.innerHTML = renderQuestionMedia(subQ.media_urls);
-      mediaWrap.style.display = 'block';
-    } else {
-      mediaWrap.innerHTML = '';
-      mediaWrap.style.display = 'none';
-    }
-  }
-
-  const savedAns = clinicalRunState.userAnswers[subQ.uid];
-  const evalData = clinicalRunState.cardEvaluations ? clinicalRunState.cardEvaluations[subQ.uid] : null;
-  const isAlreadyEvaluated = !!evalData;
-
-  selectedOptionIds.clear();
-
-  const btnSubmitAnswer = document.getElementById('btn-submit-answer');
-  const btnSubmitCroq = document.getElementById('btn-submit-croq');
-  const shortcutHint = document.getElementById('keyboard-shortcuts-hint');
-
-  if (subQ.is_croq) {
-    if (optionsContainer) optionsContainer.style.display = 'none';
-    if (croqContainer) croqContainer.style.display = 'flex';
-    const croqInput = document.getElementById('arena-croq-input');
-    if (croqInput) {
-      croqInput.value = isAlreadyEvaluated ? (evalData.userText || '') : (savedAns ? savedAns.croqText : '');
-      croqInput.disabled = isAlreadyEvaluated;
-      croqInput.oninput = () => {
-        const hasText = croqInput.value.trim().length > 0;
-        const btnSave = document.getElementById('btn-clinical-save-next');
-        if (btnSave && !isAlreadyEvaluated) btnSave.disabled = !hasText;
-        if (btnSubmitCroq && !isAlreadyEvaluated) btnSubmitCroq.disabled = !hasText;
-      };
-    }
-    if (btnSubmitAnswer) btnSubmitAnswer.style.display = 'none';
-    if (btnSubmitCroq) btnSubmitCroq.style.display = 'flex';
-    if (shortcutHint) shortcutHint.textContent = `Mode Cas Clinique Séquentiel • CROQ (${curNum}/${total})`;
-
-    if (isAlreadyEvaluated) {
-      renderClinicalExplanationArea(subQ, evalData.isCorrect);
-    }
-  } else {
-    if (croqContainer) croqContainer.style.display = 'none';
-    if (optionsContainer) {
-      optionsContainer.style.display = 'flex';
-      optionsContainer.style.pointerEvents = isAlreadyEvaluated ? 'none' : 'auto';
-    }
-    if (btnSubmitAnswer) btnSubmitAnswer.style.display = 'flex';
-    if (btnSubmitCroq) btnSubmitCroq.style.display = 'none';
-    if (shortcutHint) shortcutHint.textContent = `Mode Cas Clinique Séquentiel • Question ${curNum}/${total}`;
-
-    renderOptionsList(subQ.options || []);
-
-    if (isAlreadyEvaluated) {
-      const correctOptions = (subQ.options || []).filter(o => o.is_correct);
-      const correctLetters = correctOptions.map(o => o.letter).sort();
-      const userLetters = (savedAns?.selectedLetters || []).slice();
-
-      document.querySelectorAll('.option-item').forEach(el => {
-        const letter = el.dataset.letter;
-        const isSelected = userLetters.includes(letter);
-        const isCor = correctLetters.includes(letter);
-        el.classList.remove('selected');
-        if (isSelected && !isCor) {
-          el.classList.add('wrong-highlight');
-        } else if (isCor) {
-          el.classList.add('correct-highlight');
-        }
-      });
-
-      renderClinicalExplanationArea(subQ, evalData.isCorrect, correctLetters.join(', '));
-    } else {
-      if (savedAns && savedAns.selectedLetters && savedAns.selectedLetters.length > 0) {
-        document.querySelectorAll('.option-item').forEach(el => {
-          if (savedAns.selectedLetters.includes(el.dataset.letter)) {
-            selectedOptionIds.add(el.dataset.optId);
-            el.classList.add('selected');
-          }
-        });
-      }
-    }
-  }
-
-  updateSequentialActionButtons(curNum, total);
-  updateClinicalRunBarUI();
-  refreshLucide();
-}
-
-function renderClinicalScrollView() {
-  if (!isClinicalRunActive || !clinicalRunState) return;
-
-  const questionText = document.getElementById('arena-question-text');
-  const mediaWrap = document.getElementById('arena-media-wrap');
-  const optionsContainer = document.getElementById('arena-options-container');
-  const croqContainer = document.getElementById('arena-croq-container');
-  const defaultActions = document.getElementById('arena-default-actions');
-  const successBanner = document.getElementById('arena-success-banner');
-  const expBox = document.getElementById('arena-explanation-box');
-  const aiBox = document.getElementById('arena-ai-explanation-box');
-  const subBadge = document.getElementById('arena-subquestion-badge');
-  const stepperBar = document.getElementById('arena-clinical-sequential-stepper');
-
-  if (questionText) questionText.style.display = 'none';
-  if (mediaWrap) mediaWrap.style.display = 'none';
-  if (optionsContainer) optionsContainer.style.display = 'none';
-  if (croqContainer) croqContainer.style.display = 'none';
-  if (defaultActions) defaultActions.style.display = 'none';
-  if (successBanner) successBanner.style.display = 'none';
-  if (expBox) expBox.style.display = 'none';
-  if (aiBox) aiBox.style.display = 'none';
-  if (subBadge) subBadge.style.display = 'none';
-  if (stepperBar) stepperBar.style.display = 'none';
-
-  const scrollContainer = document.getElementById('arena-clinical-scroll-container');
-  if (!scrollContainer) return;
-  scrollContainer.style.display = 'flex';
-
-  const total = clinicalRunState.subQuestions.length;
-  let cardsHtml = '';
-
-  clinicalRunState.subQuestions.forEach((sq, idx) => {
-    const qNum = idx + 1;
-    const savedAns = clinicalRunState.userAnswers[sq.uid] || { selectedLetters: [], isCroq: !!sq.is_croq, croqText: '' };
-    const evalData = clinicalRunState.cardEvaluations[sq.uid] || null;
-
-    let statusBadgeClass = 'unanswered';
-    let statusBadgeText = 'Non répondue';
-
-    if (evalData) {
-      if (evalData.isCorrect) {
-        statusBadgeClass = 'correct';
-        statusBadgeText = '✅ Validée Juste';
-      } else {
-        statusBadgeClass = 'wrong';
-        statusBadgeText = '❌ Validée Fausse';
-      }
-    } else if (savedAns && ((savedAns.selectedLetters && savedAns.selectedLetters.length > 0) || savedAns.croqText)) {
-      statusBadgeClass = 'answered';
-      statusBadgeText = '✏️ Répondue';
-    }
-
-    let cardExtraClass = '';
-    if (evalData) {
-      cardExtraClass = evalData.isCorrect ? 'is-validated-correct' : 'is-validated-wrong';
-    }
-
-    let mediaHtml = '';
-    if (sq.media_urls && sq.media_urls.length > 0) {
-      mediaHtml = `<div style="margin-bottom:12px;">${renderQuestionMedia(sq.media_urls)}</div>`;
-    }
-
-    let bodyHtml = '';
-    if (sq.is_croq) {
-      bodyHtml = `
-        <div class="croq-container" style="display:flex;">
-          <textarea class="croq-textarea" id="clinical-scroll-croq-${idx}" placeholder="Saisissez votre réponse pour cette question..." oninput="window.onClinicalScrollCroqInput(${idx}, this.value)">${escapeHtml(savedAns.croqText || '')}</textarea>
-        </div>
-      `;
-    } else {
-      const opts = sq.options || [];
-      bodyHtml = `
-        <div class="clinical-card-options">
-          ${opts.map((opt, oIdx) => {
-            const letter = opt.letter || String.fromCharCode(65 + oIdx);
-            const isSelected = savedAns.selectedLetters && savedAns.selectedLetters.includes(letter);
-            let optClass = 'clinical-card-opt-item';
-            if (isSelected) optClass += ' selected';
-            if (evalData) {
-              if (opt.is_correct) optClass += ' correct-revealed';
-              else if (isSelected && !opt.is_correct) optClass += ' wrong-revealed';
-            }
-
-            return `
-              <div class="${optClass}" onclick="window.toggleClinicalScrollOption(${idx}, '${letter}')">
-                <span class="clinical-card-opt-letter">${escapeHtml(letter)}</span>
-                <span class="clinical-card-opt-text">${escapeHtml(opt.text || '')}</span>
-              </div>
-            `;
-          }).join('')}
-        </div>
-      `;
-    }
-
-    let feedbackHtml = '';
-    if (evalData) {
-      const fbClass = evalData.isCorrect ? 'correct' : 'wrong';
-      const fbIcon = evalData.isCorrect ? 'check-circle' : 'alert-circle';
-      const hasOfficial = sq.explanation && sq.explanation.trim().length > 0;
-      let expText = hasOfficial ? formatMedicalContent(sq.explanation.trim()) : '';
-
-      let croqDetailsHtml = '';
-      if (sq.is_croq) {
-        if (evalData.feedback) {
-          croqDetailsHtml += `<div style="margin: 6px 0; padding: 8px 10px; background: rgba(255,255,255,0.04); border-radius: 6px; font-size: 0.84rem; border-left: 3px solid var(--purple);"><strong>Feedback IA :</strong> ${escapeHtml(evalData.feedback)}</div>`;
-        }
-        if (sq.croq_answer) {
-          croqDetailsHtml += `<div style="margin: 6px 0; font-size: 0.84rem; color: var(--text-muted);"><strong>Réponse attendue :</strong> ${escapeHtml(sq.croq_answer)}</div>`;
-        }
-      } else if (!hasOfficial) {
-        expText = `<span style="color:var(--amber);">⚠️ <em>Explication officielle non disponible dans la base.</em></span>`;
-      }
-
-      const savedAi = getSavedAiExplanation(sq.uid, sq);
-      let aiNoteHtml = '';
-      if (savedAi && savedAi.note) {
-        aiNoteHtml = `
-          <div class="clinical-card-ai-note">
-            <div class="clinical-card-ai-header">
-              <span class="clinical-card-ai-title">
-                <i data-lucide="sparkles" style="width:13px;height:13px;color:var(--cyan);"></i> Explication IA complète (${escapeHtml(savedAi.model || 'Gemini Flash')})
-              </span>
-              <button type="button" class="btn-card-regen-ai" onclick="window.requestClinicalCardAiExplanation(${idx}, true)" title="Régénérer l'explication IA">
-                <i data-lucide="rotate-cw" style="width:12px;height:12px;"></i>
-              </button>
-            </div>
-            <div class="clinical-card-ai-body">
-              ${formatReasoningNote(savedAi.note)}
-            </div>
-          </div>
-        `;
-      } else {
-        aiNoteHtml = `
-          <div style="margin-top:8px;padding-top:8px;border-top:1px dashed rgba(255,255,255,0.1);display:flex;justify-content:flex-end;">
-            <button type="button" class="btn-card-gen-ai-exp" id="btn-card-ai-exp-${idx}" onclick="window.requestClinicalCardAiExplanation(${idx})">
-              <i data-lucide="sparkles" style="width:12px;height:12px;"></i>
-              <span>${hasOfficial ? 'Approfondir avec l\'explication IA (Flash)' : 'Générer l\'explication IA (Flash)'}</span>
-            </button>
-          </div>
-        `;
-      }
-
-      feedbackHtml = `
-        <div class="clinical-card-feedback ${fbClass}">
-          <div style="display:flex;align-items:center;gap:6px;font-weight:700;margin-bottom:4px;">
-            <i data-lucide="${fbIcon}" style="width:14px;height:14px;"></i>
-            <span>${evalData.isCorrect ? 'Bonne réponse !' : 'Réponse incorrecte !'}</span>
-          </div>
-          ${expText ? `<div style="font-size:0.88rem;line-height:1.45;margin-bottom:4px;">${expText}</div>` : ''}
-          ${croqDetailsHtml}
-          ${aiNoteHtml}
-        </div>
-      `;
-    }
-
-    cardsHtml += `
-      <div class="clinical-card ${cardExtraClass}" id="clinical-card-${idx}">
-        <div class="clinical-card-header">
-          <div class="clinical-card-qnum">
-            <i data-lucide="help-circle" style="width:14px;height:14px;"></i>
-            <span>Question ${qNum} / ${total}</span>
-          </div>
-          <span class="clinical-card-status-badge ${statusBadgeClass}" id="clinical-card-badge-${idx}">
-            ${statusBadgeText}
-          </span>
-        </div>
-        <div class="clinical-card-statement">
-          ${formatMedicalContent(sq.question || sq.statement)}
-        </div>
-        ${mediaHtml}
-        ${bodyHtml}
-        <div class="clinical-card-actions">
-          <button type="button" class="btn-clinical-card-validate" onclick="window.validateClinicalCardSubQuestion(${idx})">
-            <i data-lucide="check" style="width:13px;height:13px;"></i>
-            <span>Vérifier cette question</span>
-          </button>
-        </div>
-        ${feedbackHtml}
-      </div>
-    `;
-  });
-
-  const answeredCount = Object.keys(clinicalRunState.userAnswers).length;
-  cardsHtml += `
-    <div class="clinical-scroll-master-actions">
-      <div class="clinical-scroll-master-info">
-        <i data-lucide="target" style="width:16px;height:16px;color:var(--cyan);"></i>
-        <span><strong>${answeredCount}/${total}</strong> question(s) renseignée(s)</span>
-      </div>
-      <button type="button" class="btn-master-validate-case" id="btn-master-validate-case" onclick="window.validateAllClinicalSubQuestions()">
-        <i data-lucide="check-check" style="width:18px;height:18px;"></i>
-        <span>Valider tout le cas clinique & Voir le Bilan</span>
-      </button>
-    </div>
-  `;
-
-  scrollContainer.innerHTML = cardsHtml;
-  updateClinicalRunBarUI();
-  refreshLucide(scrollContainer);
-}
-
-window.toggleClinicalScrollOption = function(qIdx, letter) {
-  if (!isClinicalRunActive || !clinicalRunState) return;
-  const subQ = clinicalRunState.subQuestions[qIdx];
-  if (!subQ) return;
-
-  if (!clinicalRunState.userAnswers[subQ.uid]) {
-    clinicalRunState.userAnswers[subQ.uid] = { selectedLetters: [], isCroq: false, croqText: '' };
-  }
-
-  const ans = clinicalRunState.userAnswers[subQ.uid];
-  const lIdx = ans.selectedLetters.indexOf(letter);
-  if (lIdx === -1) {
-    ans.selectedLetters.push(letter);
-  } else {
-    ans.selectedLetters.splice(lIdx, 1);
-  }
-  ans.selectedLetters.sort();
-
-  delete clinicalRunState.cardEvaluations[subQ.uid];
-  renderClinicalScrollView();
-};
-
-window.onClinicalScrollCroqInput = function(qIdx, text) {
-  if (!isClinicalRunActive || !clinicalRunState) return;
-  const subQ = clinicalRunState.subQuestions[qIdx];
-  if (!subQ) return;
-
-  if (!clinicalRunState.userAnswers[subQ.uid]) {
-    clinicalRunState.userAnswers[subQ.uid] = { selectedLetters: [], isCroq: true, croqText: '' };
-  }
-  clinicalRunState.userAnswers[subQ.uid].croqText = text.trim();
-  delete clinicalRunState.cardEvaluations[subQ.uid];
-  updateClinicalRunBarUI();
-};
-
-window.validateClinicalCardSubQuestion = async function(qIdx) {
-  if (!isClinicalRunActive || !clinicalRunState) return;
-  const subQ = clinicalRunState.subQuestions[qIdx];
-  if (!subQ) return;
-
-  const ans = clinicalRunState.userAnswers[subQ.uid];
-  if (!ans || (!ans.isCroq && ans.selectedLetters.length === 0) || (ans.isCroq && !ans.croqText)) {
-    alert("Veuillez sélectionner au moins une proposition ou rédiger votre réponse avant de vérifier cette question.");
-    return;
-  }
-
-  let isCorrect = false;
-  let score = null;
-  let feedback = '';
-
-  if (subQ.is_croq) {
-    try {
-      const evalResult = await geminiService.evaluateCroq(
-        subQ.question || subQ.statement,
-        clinicalRunState.caseStatement,
-        subQ.croq_answer,
-        ans.croqText
-      );
-      score = evalResult.score;
-      feedback = evalResult.feedback;
-      isCorrect = evalResult.isValid && score >= 75;
-    } catch {
-      isCorrect = false;
-    }
-  } else {
-    const correctOptions = (subQ.options || []).filter(o => o.is_correct);
-    const correctLetters = correctOptions.map(o => o.letter).sort();
-    const userLetters = (ans.selectedLetters || []).slice().sort();
-
-    isCorrect = (correctLetters.length === userLetters.length) &&
-      correctLetters.every((l, i) => l === userLetters[i]);
-  }
-
-  clinicalRunState.cardEvaluations[subQ.uid] = {
-    isEvaluated: true,
-    isCorrect,
-    score,
-    feedback,
-    userText: ans.isCroq ? ans.croqText : ans.selectedLetters.join(', '),
-    correctText: subQ.is_croq ? subQ.croq_answer : (subQ.options || []).filter(o => o.is_correct).map(o => o.letter).join(', ')
-  };
-
-  renderClinicalScrollView();
-};
-
-window.validateAllClinicalSubQuestions = async function() {
-  if (!isClinicalRunActive || !clinicalRunState) return;
-
-  if (clinicalRunState.mode === 'sequential') {
-    saveSequentialCurrentQuestionState();
-  }
-
-  const subQuestions = clinicalRunState.subQuestions;
-  const total = subQuestions.length;
-
-  const unansweredCount = subQuestions.filter(sq => {
-    const ans = clinicalRunState.userAnswers[sq.uid];
-    if (!ans) return true;
-    if (sq.is_croq) return !ans.croqText;
-    return !ans.selectedLetters || ans.selectedLetters.length === 0;
-  }).length;
-
-  if (unansweredCount > 0) {
-    const proceed = confirm(`Il reste ${unansweredCount} question(s) sans réponse dans ce cas clinique. Les questions non répondues seront considérées comme fausses.\n\nSouhaitez-vous valider le cas maintenant ?`);
-    if (!proceed) return;
-  }
-
-  const masterBtn = document.getElementById('btn-master-validate-case');
-  if (masterBtn) {
-    masterBtn.disabled = true;
-    masterBtn.innerHTML = `<i data-lucide="loader" class="spin"></i> <span>Évaluation du cas clinique en cours...</span>`;
-    refreshLucide(masterBtn);
-  }
-
-  const results = [];
-  const failedUids = [];
-  const allCaseUids = subQuestions.map(sq => sq.uid);
-
-  for (let i = 0; i < total; i++) {
-    const sq = subQuestions[i];
-    const ans = clinicalRunState.userAnswers[sq.uid] || { selectedLetters: [], isCroq: !!sq.is_croq, croqText: '' };
-    let evalData = clinicalRunState.cardEvaluations[sq.uid];
-
-    if (!evalData) {
-      let isCorrect = false;
-      let score = null;
-      let feedback = '';
-
-      if (sq.is_croq) {
-        if (ans.croqText) {
-          try {
-            const evalResult = await geminiService.evaluateCroq(
-              sq.question || sq.statement,
-              clinicalRunState.caseStatement,
-              sq.croq_answer,
-              ans.croqText
-            );
-            score = evalResult.score;
-            feedback = evalResult.feedback;
-            isCorrect = evalResult.isValid && score >= 75;
-          } catch {
-            isCorrect = false;
-          }
-        } else {
-          isCorrect = false;
-        }
-      } else {
-        const correctOptions = (sq.options || []).filter(o => o.is_correct);
-        const correctLetters = correctOptions.map(o => o.letter).sort();
-        const userLetters = (ans.selectedLetters || []).slice().sort();
-
-        isCorrect = userLetters.length > 0 &&
-          correctLetters.length === userLetters.length &&
-          correctLetters.every((l, idx) => l === userLetters[idx]);
-      }
-
-      evalData = {
-        isEvaluated: true,
-        isCorrect,
-        score,
-        feedback,
-        userText: sq.is_croq ? (ans.croqText || 'Aucune réponse') : (ans.selectedLetters.join(', ') || 'Aucune'),
-        correctText: sq.is_croq ? sq.croq_answer : (sq.options || []).filter(o => o.is_correct).map(o => o.letter).join(', ')
-      };
-      clinicalRunState.cardEvaluations[sq.uid] = evalData;
-    }
-
-    results.push({
-      question: sq,
-      isCorrect: evalData.isCorrect,
-      score: evalData.score,
-      userAnswer: evalData.userText,
-      correctAnswer: evalData.correctText
-    });
-
-    if (!evalData.isCorrect) {
-      failedUids.push(sq.uid);
-    }
-  }
-
-  const isAllCorrect = failedUids.length === 0;
-  const correctCount = results.filter(r => r.isCorrect).length;
-
-  let activeCreditedCount = 0;
-  let alreadyMasteredCount = 0;
-  const alreadyCleanedUids = [];
-
-  // Identifier avant validation les questions qui étaient déjà nettoyées
-  allCaseUids.forEach(uid => {
-    const st = queueEngine.getQuestionStats(uid);
-    if (st && st.done) {
-      alreadyCleanedUids.push(uid);
-    }
-  });
-
-  if (isAllCorrect) {
-    const successResult = queueEngine.handleClinicalCaseSuccess(allCaseUids);
-    activeCreditedCount = successResult.activeCreditedCount || 0;
-    alreadyMasteredCount = successResult.alreadyMasteredCount || 0;
-
-    // Seules les questions qui n'étaient PAS encore nettoyées s'ajoutent au compteur journalier
-    if (activeCreditedCount > 0) {
-      queueEngine.incrementTodayCount(activeCreditedCount);
-    }
-
-    allCaseUids.forEach(uid => {
-      studyTracker.recordAnswer(true, clinicalRunState.chapterId, uid);
-    });
-
-    triggerMasteryConfetti();
-  } else {
-    queueEngine.handleClinicalCaseFailure(allCaseUids, failedUids);
-
-    failedUids.forEach(uid => {
-      studyTracker.recordAnswer(false, clinicalRunState.chapterId, uid);
-    });
-  }
-
-  updateArenaDailyBadge();
-  if (currentView === 'stats') renderStatsUI();
-  firebaseSyncService.triggerAutoPush();
-
-  showClinicalCaseSummaryModal({
-    isAllCorrect,
-    totalCount: total,
-    correctCount,
-    failedUids,
-    subQuestions,
-    results,
-    casePrefix: clinicalRunState.casePrefix,
-    caseStatement: clinicalRunState.caseStatement,
-    chapterTitle: clinicalRunState.chapterTitle,
-    activeCreditedCount,
-    alreadyMasteredCount,
-    alreadyCleanedUids
-  });
-};
-
-async function showClinicalCaseSummaryModal(summaryData) {
-  const modal = document.getElementById('modal-clinical-case-summary');
-  if (!modal) return;
-
-  const verdictBanner = document.getElementById('clinical-verdict-banner');
-  const verdictIcon = document.getElementById('clinical-verdict-icon');
-  const verdictTitle = document.getElementById('clinical-verdict-title');
-  const verdictDesc = document.getElementById('clinical-verdict-desc');
-  const srsTitle = document.getElementById('clinical-summary-srs-title');
-  const srsDesc = document.getElementById('clinical-summary-srs-desc');
-  const scoreBadge = document.getElementById('clinical-summary-score-badge');
-  const itemsList = document.getElementById('clinical-summary-items-list');
-  const aiBox = document.getElementById('clinical-summary-ai-box');
-  const aiNote = document.getElementById('clinical-summary-ai-note');
-  const aiModelTag = document.getElementById('clinical-summary-model-tag');
-
-  const { isAllCorrect, totalCount, correctCount, results, casePrefix, caseStatement, chapterTitle, subQuestions, activeCreditedCount = 0, alreadyMasteredCount = 0, alreadyCleanedUids = [] } = summaryData;
-
-  if (isAllCorrect) {
-    verdictBanner.className = 'clinical-verdict-banner is-success';
-    verdictIcon.textContent = '🎉';
-    verdictTitle.textContent = `Cas Clinique 100% Validé ! (${totalCount}/${totalCount})`;
-    verdictDesc.textContent = `Félicitations ! Toutes les ${totalCount} sous-questions ont été répondues sans aucune faute.`;
-
-    if (alreadyMasteredCount > 0) {
-      srsTitle.textContent = `Progression : +${activeCreditedCount} question(s) ajoutée(s) au compteur du jour !`;
-      srsDesc.textContent = `${activeCreditedCount} question(s) active(s) ont avancé dans leur répétition espacée (${alreadyMasteredCount} sous-question(s) étaient déjà définitivement nettoyées et ne sont pas recomptées).`;
-    } else {
-      srsTitle.textContent = `Progression Complète : +${totalCount} succès enregistrés !`;
-      srsDesc.textContent = `Toutes les questions du cas ont avancé (+1 palier de répétition espacée) et ont été ajoutées à votre quota journalier.`;
-    }
-
-    scoreBadge.textContent = `${totalCount}/${totalCount} (100%)`;
-    scoreBadge.style.background = 'rgba(16,185,129,0.2)';
-    scoreBadge.style.color = 'var(--emerald)';
-
-    if (aiBox) aiBox.style.display = 'none';
-  } else {
-    verdictBanner.className = 'clinical-verdict-banner is-failure';
-    verdictIcon.textContent = '⚠️';
-    verdictTitle.textContent = `Cas Clinique Échoué (${correctCount}/${totalCount} justes — 0 créditée)`;
-    verdictDesc.textContent = `Règle stricte du Cas Clinique : une seule erreur invalide l'ensemble du cas. Aucune question n'est créditée.`;
-
-    srsTitle.textContent = `Pénalité SRS : Réapparition groupée dans 5 à 7 cartes`;
-    srsDesc.textContent = `Les questions ratées ont été pénalisées. L'intégralité du cas clinique réapparaîtra groupée pour ancrer le raisonnement.`;
-
-    scoreBadge.textContent = `${correctCount}/${totalCount} (${totalCount - correctCount} faute(s))`;
-    scoreBadge.style.background = 'rgba(239,68,68,0.2)';
-    scoreBadge.style.color = 'var(--rose)';
-
-    if (aiBox && aiNote) {
-      aiBox.style.display = 'block';
-      aiNote.innerHTML = `
-        <div class="reasoning-loader-wrap">
-          <i data-lucide="sparkles" class="spin"></i>
-          <span>Génération de la note de synthèse clinique consolidée par l'IA Flash...</span>
-        </div>
-      `;
-      refreshLucide(aiBox);
-
-      geminiService.generateClinicalCaseSynthesisNote(
-        caseStatement,
-        subQuestions,
-        results,
-        chapterTitle
-      ).then(synthesisObj => {
-        aiNote.innerHTML = formatReasoningNote(synthesisObj.note);
-        if (aiModelTag) aiModelTag.textContent = synthesisObj.modelUsed;
-
-        const targetQ = subQuestions[0] || {};
-        saveAiExplanationForQuestion(
-          targetQ.uid || `case_${casePrefix}`,
-          synthesisObj.note,
-          synthesisObj.modelUsed,
-          targetQ
-        );
-        refreshLucide(aiBox);
-      }).catch(err => {
-        console.warn("AI synthesis failed:", err);
-      });
-    }
-  }
-
-  let itemsHtml = '';
-  results.forEach((r, idx) => {
-    const isCor = r.isCorrect;
-    const statusIcon = isCor ? 'check-circle' : 'x-circle';
-    const statusColor = isCor ? 'var(--emerald)' : 'var(--rose)';
-    const itemClass = isCor ? 'clinical-summary-item is-correct' : 'clinical-summary-item is-wrong';
-    const wasAlreadyCleaned = isAllCorrect && alreadyCleanedUids.includes(r.question.uid);
-
-    let tagHtml = '';
-    if (isCor) {
-      if (wasAlreadyCleaned) {
-        tagHtml = `<span style="font-size:0.7rem;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,0.08);color:var(--text-muted);margin-right:6px;">Déjà nettoyée</span>`;
-      } else {
-        tagHtml = `<span style="font-size:0.7rem;padding:2px 6px;border-radius:4px;background:rgba(16,185,129,0.18);color:var(--emerald);margin-right:6px;">+1 au jour</span>`;
-      }
-    }
-
-    itemsHtml += `
-      <div class="${itemClass}">
-        <div class="clinical-summary-item-left">
-          <i data-lucide="${statusIcon}" style="width:16px;height:16px;color:${statusColor};flex-shrink:0;"></i>
-          <span class="clinical-summary-item-title">
-            <strong>Q${idx + 1} :</strong> ${escapeHtml(r.question.question || r.question.statement || '')}
-          </span>
-        </div>
-        <div style="font-size:0.75rem;font-weight:700;color:${statusColor};white-space:nowrap;display:flex;align-items:center;">
-          ${tagHtml}
-          <span>${isCor ? 'Juste' : 'Faux'}</span>
-        </div>
-      </div>
-    `;
-  });
-
-  if (itemsList) itemsList.innerHTML = itemsHtml;
-  modal.style.display = 'flex';
-  refreshLucide(modal);
-}
-
-window.closeClinicalCaseSummaryModal = function() {
-  const modal = document.getElementById('modal-clinical-case-summary');
-  if (modal) modal.style.display = 'none';
-
-  isClinicalRunActive = false;
-  clinicalRunState = null;
-  updateClinicalRunBarUI();
-
-  const stepperBar = document.getElementById('arena-clinical-sequential-stepper');
-  if (stepperBar) stepperBar.style.display = 'none';
-
-  const btnClinicalSaveNext = document.getElementById('btn-clinical-save-next');
-  if (btnClinicalSaveNext) btnClinicalSaveNext.style.display = 'none';
-
-  const optionsContainer = document.getElementById('arena-options-container');
-  if (optionsContainer) optionsContainer.style.pointerEvents = 'auto';
-
-  const scrollContainer = document.getElementById('arena-clinical-scroll-container');
-  if (scrollContainer) {
-    scrollContainer.style.display = 'none';
-    scrollContainer.innerHTML = '';
-  }
-
-  const questionText = document.getElementById('arena-question-text');
-  if (questionText) questionText.style.display = 'block';
-
-  loadNextArenaQuestion();
-};
-
-window.quitClinicalCaseRun = function() {
-  if (!isClinicalRunActive) return;
-  const ok = confirm("Voulez-vous quitter la résolution du cas complet ? Vos réponses pour ce cas ne seront pas enregistrées.");
-  if (!ok) return;
-
-  isClinicalRunActive = false;
-  clinicalRunState = null;
-  updateClinicalRunBarUI();
-
-  const stepperBar = document.getElementById('arena-clinical-sequential-stepper');
-  if (stepperBar) stepperBar.style.display = 'none';
-
-  const btnClinicalSaveNext = document.getElementById('btn-clinical-save-next');
-  if (btnClinicalSaveNext) btnClinicalSaveNext.style.display = 'none';
-
-  const optionsContainer = document.getElementById('arena-options-container');
-  if (optionsContainer) optionsContainer.style.pointerEvents = 'auto';
-
-  const scrollContainer = document.getElementById('arena-clinical-scroll-container');
-  if (scrollContainer) {
-    scrollContainer.style.display = 'none';
-    scrollContainer.innerHTML = '';
-  }
-
-  const questionText = document.getElementById('arena-question-text');
-  if (questionText) questionText.style.display = 'block';
-
-  loadNextArenaQuestion();
-};
 
 function renderHistoryQuestion(historyEntry) {
   if (!historyEntry || !historyEntry.question) return;
   const q = historyEntry.question;
+  const modCtx = resolveAiModuleContext(q);
 
-  // Mise à jour immédiate du contexte Tuteur IA
-  arenaChatHistory = [];
+  appState.arenaChatHistory = [];
   updateArenaChatContext();
   const chatboxEl = document.getElementById('arena-ai-chatbox');
   if (chatboxEl && chatboxEl.style.display !== 'none') {
     renderChatWelcome();
   }
 
-  // Masquer la bannière de succès
-  document.getElementById('arena-success-banner').style.display = 'none';
+  const successBanner = document.getElementById('arena-success-banner');
+  if (successBanner) successBanner.style.display = 'none';
 
-  // Mise à jour visuelle des boutons et indicateurs de navigation
   updateHistoryNavUI();
 
-  // Badge du cours (affiché en clair sans floutage en mode révision)
   const chapterBadge = document.getElementById('arena-chapter-title');
   if (chapterBadge) {
     chapterBadge.classList.remove('is-blurred');
@@ -8437,12 +8635,11 @@ function renderHistoryQuestion(historyEntry) {
     const dateStr = extractQuestionDateOrSession(q);
     const dateBadgeHtml = dateStr ? `<span class="question-date-pill" title="Date ou session du QCM : ${escapeHtml(dateStr)}"><i data-lucide="calendar" style="width:11px;height:11px;"></i> ${escapeHtml(dateStr)}</span>` : '';
     chapterBadge.innerHTML = `
-      <span class="chapter-title-text">Pédiatrie — ${escapeHtml(q.chapterTitle || 'Général')}${dateBadgeHtml ? ' ' + dateBadgeHtml : ''}</span>
+      <span class="chapter-title-text">${escapeHtml(modCtx.moduleName)} — ${escapeHtml(q.chapterTitle || 'Général')}${dateBadgeHtml ? ' ' + dateBadgeHtml : ''}</span>
       <span class="chapter-title-hint" style="color:var(--amber);"><i data-lucide="history" style="width:11px;height:11px;"></i> QCM Répondu</span>
     `;
   }
 
-  // Badges Type & Progression
   const typePill = document.getElementById('arena-type-pill');
   if (typePill) {
     typePill.textContent = q.type || 'QCM';
@@ -8452,167 +8649,120 @@ function renderHistoryQuestion(historyEntry) {
   const progressPill = document.getElementById('arena-progress-pill');
   if (progressPill) {
     const stats = queueEngine.getQuestionStats(q.uid);
-    progressPill.textContent = historyEntry.isCorrect ? `✅ Répondu Juste` : `⚠️ Répondu Faux (${stats.mistakes} faute${stats.mistakes > 1 ? 's' : ''})`;
+    progressPill.textContent = historyEntry.isCorrect ? '✅ Répondu Juste' : `⚠️ Répondu Faux (${stats.mistakes} faute${stats.mistakes > 1 ? 's' : ''})`;
     progressPill.className = historyEntry.isCorrect ? 'tag-pill progress-pill' : 'tag-pill progress-penalized';
   }
 
-  // Cas Clinique & Sous-questions
   updateClinicalCaseUI(q);
 
-  // Énoncé de la question
-  document.getElementById('arena-question-text').innerHTML = formatMedicalContent(q.question || q.statement);
+  const qTextEl = document.getElementById('arena-question-text');
+  if (qTextEl) qTextEl.innerHTML = formatMedicalContent(q.question || q.statement);
 
-  // Iconographie / Médias
   const mediaWrap = document.getElementById('arena-media-wrap');
-  if (q.media_urls && q.media_urls.length > 0) {
-    mediaWrap.innerHTML = renderQuestionMedia(q.media_urls);
-    mediaWrap.style.display = 'block';
-    refreshLucide();
-  } else {
-    mediaWrap.innerHTML = '';
-    mediaWrap.style.display = 'none';
+  if (mediaWrap) {
+    if (q.media_urls && q.media_urls.length > 0) {
+      mediaWrap.innerHTML = renderQuestionMedia(q.media_urls);
+      mediaWrap.style.display = 'block';
+    } else {
+      mediaWrap.innerHTML = '';
+      mediaWrap.style.display = 'none';
+    }
   }
 
-  // Affichage en lecture seule (Options QCM vs CROQ)
   const optionsContainer = document.getElementById('arena-options-container');
   const croqContainer = document.getElementById('arena-croq-container');
   const btnSubmitAnswer = document.getElementById('btn-submit-answer');
   const btnSubmitCroq = document.getElementById('btn-submit-croq');
   const resumeBtn = document.getElementById('btn-history-resume-action');
 
-  btnSubmitAnswer.style.display = 'none';
-  btnSubmitCroq.style.display = 'none';
+  if (btnSubmitAnswer) btnSubmitAnswer.style.display = 'none';
+  if (btnSubmitCroq) btnSubmitCroq.style.display = 'none';
   if (resumeBtn) resumeBtn.style.display = 'inline-flex';
 
   if (q.is_croq) {
-    optionsContainer.style.display = 'none';
-    croqContainer.style.display = 'flex';
+    if (optionsContainer) optionsContainer.style.display = 'none';
+    if (croqContainer) croqContainer.style.display = 'flex';
     const croqInput = document.getElementById('arena-croq-input');
-    croqInput.value = historyEntry.userAnswerLetters?.[0] || '';
-    croqInput.disabled = true;
+    if (croqInput) {
+      croqInput.value = historyEntry.userAnswerLetters?.[0] || '';
+      croqInput.disabled = true;
+    }
   } else {
-    croqContainer.style.display = 'none';
-    optionsContainer.style.display = 'flex';
-    optionsContainer.innerHTML = '';
+    if (croqContainer) croqContainer.style.display = 'none';
+    if (optionsContainer) {
+      optionsContainer.style.display = 'flex';
+      optionsContainer.innerHTML = '';
 
-    (q.options || []).forEach((opt, idx) => {
-      const item = document.createElement('div');
-      item.className = 'option-item read-only';
-      item.dataset.optId = opt.id || idx;
-      const letter = opt.letter || String.fromCharCode(65 + idx);
-      item.dataset.letter = letter;
+      (q.options || []).forEach((opt, idx) => {
+        const item = document.createElement('div');
+        item.className = 'option-item read-only';
+        item.dataset.optId = opt.id || idx;
+        const letter = opt.letter || String.fromCharCode(65 + idx);
+        item.dataset.letter = letter;
 
-      const isCorrectOpt = !!opt.is_correct;
-      const userPicked = (historyEntry.userAnswerLetters || []).includes(letter);
+        const isCorrectOpt = !!opt.is_correct;
+        const userPicked = (historyEntry.userAnswerLetters || []).includes(letter);
 
-      if (isCorrectOpt) {
-        item.classList.add('correct-highlight');
-      } else if (userPicked) {
-        item.classList.add('wrong-highlight');
-      }
+        if (isCorrectOpt) {
+          item.classList.add('correct-highlight');
+        } else if (userPicked) {
+          item.classList.add('wrong-highlight');
+        }
 
-      const statusBadge = isCorrectOpt 
-        ? '<span style="color:var(--emerald);font-weight:700;font-size:0.75rem;margin-left:auto;">✓ VRAIE</span>'
-        : (userPicked ? '<span style="color:var(--rose);font-weight:700;font-size:0.75rem;margin-left:auto;">✗ Votre choix</span>' : '');
+        const statusBadge = isCorrectOpt
+          ? '<span style="color:var(--emerald);font-weight:700;font-size:0.75rem;margin-left:auto;">✓ VRAIE</span>'
+          : (userPicked ? '<span style="color:var(--rose);font-weight:700;font-size:0.75rem;margin-left:auto;">✗ Votre choix</span>' : '');
 
-      item.innerHTML = `
-        <div class="option-letter">${letter}</div>
-        <div class="option-text">${opt.text}</div>
-        ${statusBadge}
-      `;
-      optionsContainer.appendChild(item);
-    });
+        item.innerHTML = `
+          <div class="option-letter">${escapeHtml(letter)}</div>
+          <div class="option-text">${parseMarkdownInline(opt.text)}</div>
+          ${statusBadge}
+        `;
+        optionsContainer.appendChild(item);
+      });
+    }
   }
 
-  // Boîte d'explication officielle ouverte automatiquement
   const expBox = document.getElementById('arena-explanation-box');
   const expText = document.getElementById('arena-explanation-text');
   if (expBox && expText) {
     if (q.explanation && q.explanation.trim()) {
       expText.innerHTML = formatMedicalContent(q.explanation.trim());
     } else {
-      expText.innerHTML = `<em>Réponse officielle de référence pour le cours <strong>${escapeHtml(q.chapterTitle || 'Pédiatrie')}</strong>.</em>`;
+      expText.innerHTML = `<em>Réponse officielle de référence pour le cours <strong>${escapeHtml(q.chapterTitle || modCtx.defaultChapter)}</strong>.</em>`;
     }
     expBox.style.display = 'flex';
   }
 
-  // Restituer et afficher l'explication clinique IA sauvegardée
   renderArenaAiExplanation(q);
-
   refreshLucide();
 }
 
 window.navigateHistoryPrev = function() {
-  if (answeredHistory.length === 0) return;
-  if (historyCursor < answeredHistory.length - 1) {
-    historyCursor++;
-    renderHistoryQuestion(answeredHistory[historyCursor]);
+  if (appState.answeredHistory.length === 0) return;
+  if (appState.historyCursor < appState.answeredHistory.length - 1) {
+    appState.historyCursor++;
+    renderHistoryQuestion(appState.answeredHistory[appState.historyCursor]);
   }
 };
 
 window.navigateHistoryNext = function() {
-  if (historyCursor > 0) {
-    historyCursor--;
-    renderHistoryQuestion(answeredHistory[historyCursor]);
-  } else if (historyCursor === 0) {
+  if (appState.historyCursor > 0) {
+    appState.historyCursor--;
+    renderHistoryQuestion(appState.answeredHistory[appState.historyCursor]);
+  } else if (appState.historyCursor === 0) {
     window.resumeActiveDrill();
   }
 };
 
 window.resumeActiveDrill = function() {
-  historyCursor = -1;
-  loadNextArenaQuestion(true);
+  appState.historyCursor = -1;
+  loadNextArenaQuestion();
 };
 
 // ============================================================================
-// QUESTION SNOOZE ENGINE (PASSER POUR AUJOURD'HUI) & TOASTS AVEC ANNULATION
+// QUESTION SNOOZE ENGINE
 // ============================================================================
-function showAppToast(message, onUndo = null, undoLabel = 'Annuler', durationMs = 4500) {
-  const existing = document.getElementById('pedia-toast-alert');
-  if (existing) existing.remove();
-
-  const toast = document.createElement('div');
-  toast.id = 'pedia-toast-alert';
-  toast.className = 'pedia-toast-alert';
-
-  let dismissTimer;
-
-  if (onUndo && typeof onUndo === 'function') {
-    const wrap = document.createElement('div');
-    wrap.className = 'toast-content';
-
-    const textSpan = document.createElement('span');
-    textSpan.textContent = message;
-    wrap.appendChild(textSpan);
-
-    const undoBtn = document.createElement('button');
-    undoBtn.type = 'button';
-    undoBtn.className = 'toast-undo-btn';
-    undoBtn.textContent = undoLabel;
-    undoBtn.onclick = () => {
-      clearTimeout(dismissTimer);
-      toast.classList.remove('show');
-      setTimeout(() => toast.remove(), 250);
-      onUndo();
-    };
-    wrap.appendChild(undoBtn);
-    toast.appendChild(wrap);
-  } else {
-    toast.textContent = message;
-  }
-
-  document.body.appendChild(toast);
-
-  requestAnimationFrame(() => {
-    toast.classList.add('show');
-  });
-
-  dismissTimer = setTimeout(() => {
-    toast.classList.remove('show');
-    setTimeout(() => toast.remove(), 300);
-  }, durationMs);
-}
-
 function updateArenaSnoozePill() {
   const snoozePill = document.getElementById('arena-snooze-pill');
   const snoozeText = document.getElementById('arena-snooze-pill-text');
@@ -8628,16 +8778,15 @@ function updateArenaSnoozePill() {
 }
 
 window.snoozeCurrentQuestionForToday = function() {
-  if (!currentQuestion) return;
-  if (isCurrentQuestionAnswered) return;
+  if (!appState.currentQuestion || appState.isCurrentQuestionAnswered) return;
 
-  const qUid = currentQuestion.uid;
+  const qUid = appState.currentQuestion.uid;
   const res = queueEngine.snoozeQuestionForToday(qUid);
   if (!res) return;
 
-  firebaseSyncService.triggerAutoPush();
+  appState.firebaseSyncService?.triggerAutoPush();
 
-  showAppToast(`🌙 Question reportée à demain`, () => {
+  showAppToast('🌙 Question reportée à demain', () => {
     window.undoSnoozeQuestion(qUid);
   }, 'Annuler', 5000);
 
@@ -8651,9 +8800,9 @@ window.undoSnoozeQuestion = function(uid) {
   if (!uid) return;
   const restored = queueEngine.unsnoozeQuestion(uid);
   if (restored) {
-    showAppToast(`✅ Question réintégrée dans votre session !`);
-    firebaseSyncService.triggerAutoPush();
-    if (!currentQuestion || isCurrentQuestionAnswered) {
+    showAppToast('✅ Question réintégrée dans votre session !', { type: 'success' });
+    appState.firebaseSyncService?.triggerAutoPush();
+    if (!appState.currentQuestion || appState.isCurrentQuestionAnswered) {
       loadNextArenaQuestion();
     }
     updateArenaSnoozePill();
@@ -8662,13 +8811,17 @@ window.undoSnoozeQuestion = function(uid) {
   }
 };
 
-window.promptManageSnoozedQuestions = function() {
+window.promptManageSnoozedQuestions = async function() {
   const count = queueEngine.getSnoozedCountToday();
   if (count === 0) {
     showAppToast("Aucune question reportée pour aujourd'hui.");
     return;
   }
-  const confirmed = confirm(`Vous avez ${count} question(s) reportée(s) à demain.\n\nSouhaitez-vous les réintégrer dans la session immédiatement ?`);
+  const confirmed = await showConfirmModal({
+    title: 'Questions reportées',
+    message: `Vous avez ${count} question(s) reportée(s) à demain.\n\nSouhaitez-vous les réintégrer dans la session immédiatement ?`,
+    confirmLabel: 'Réintégrer'
+  });
   if (confirmed) {
     window.unsnoozeAllSnoozedQuestions();
   }
@@ -8677,11 +8830,11 @@ window.promptManageSnoozedQuestions = function() {
 window.unsnoozeAllSnoozedQuestions = function() {
   const count = queueEngine.unsnoozeAllForToday();
   if (count > 0) {
-    showAppToast(`✅ ${count} question(s) réintégrée(s) dans la session !`);
-    firebaseSyncService.triggerAutoPush();
+    showAppToast(`✅ ${count} question(s) réintégrée(s) dans la session !`, { type: 'success' });
+    appState.firebaseSyncService?.triggerAutoPush();
     updateArenaSnoozePill();
     updateDashboardUI();
-    if (!currentQuestion) {
+    if (!appState.currentQuestion) {
       loadNextArenaQuestion();
     }
     refreshLucide();
@@ -8692,15 +8845,16 @@ window.unsnoozeAllSnoozedQuestions = function() {
 // QUIZ ARENA (QUESTION DISPLAY & SUBMISSION)
 // ============================================================================
 function loadNextArenaQuestion() {
-  isCurrentQuestionAnswered = false;
-  historyCursor = -1;
+  appState.isCurrentQuestionAnswered = false;
+  appState.historyCursor = -1;
   updateHistoryNavUI();
+
   const croqInput = document.getElementById('arena-croq-input');
   if (croqInput) {
     croqInput.disabled = false;
   }
 
-  if (!isClinicalRunActive) {
+  if (!appState.isClinicalRunActive) {
     updateClinicalRunBarUI();
     const stepperBar = document.getElementById('arena-clinical-sequential-stepper');
     if (stepperBar) stepperBar.style.display = 'none';
@@ -8710,92 +8864,91 @@ function loadNextArenaQuestion() {
     if (questionText) questionText.style.display = 'block';
   }
 
-  currentQuestion = queueEngine.getCurrentQuestion();
-  selectedOptionIds.clear();
-  isEvaluating = false;
+  appState.currentQuestion = queueEngine.getCurrentQuestion();
+  appState.selectedOptionIds.clear();
+  appState.isEvaluating = false;
 
-  // Start question timer for study tracking
-  if (currentQuestion) {
+  if (appState.currentQuestion) {
     studyTracker.startQuestionTimer();
   }
 
-  // Reset & update AI chat context for the new question
-  arenaChatHistory = [];
+  appState.arenaChatHistory = [];
   updateArenaChatContext();
   const chatboxEl = document.getElementById('arena-ai-chatbox');
   if (chatboxEl && chatboxEl.style.display !== 'none') {
     renderChatWelcome();
   }
 
-  // Hide success banner & explanation boxes, remove highlights, show default actions
-  document.getElementById('arena-success-banner').style.display = 'none';
+  const successBanner = document.getElementById('arena-success-banner');
+  if (successBanner) successBanner.style.display = 'none';
   const arenaExpBox = document.getElementById('arena-explanation-box');
   if (arenaExpBox) arenaExpBox.style.display = 'none';
   const arenaAiBox = document.getElementById('arena-ai-explanation-box');
   if (arenaAiBox) arenaAiBox.style.display = 'none';
   document.querySelectorAll('.option-item').forEach(el => el.classList.remove('correct-highlight', 'wrong-highlight'));
-  document.getElementById('arena-default-actions').style.display = 'flex';
+  const defaultActions = document.getElementById('arena-default-actions');
+  if (defaultActions) defaultActions.style.display = 'flex';
   const btnSnooze = document.getElementById('btn-snooze-question');
   if (btnSnooze) btnSnooze.style.display = 'inline-flex';
   updateArenaSnoozePill();
 
-  if (!currentQuestion) {
-    // All questions cleaned!
+  if (!appState.currentQuestion) {
     showVictoryScreen();
     return;
   }
 
-  const stats = queueEngine.getQuestionStats(currentQuestion.uid);
+  const curQ = appState.currentQuestion;
+  const modCtx = resolveAiModuleContext(curQ);
+  const stats = queueEngine.getQuestionStats(curQ.uid);
 
-  // Chapter badge (blurred by default until clicked)
   const chapterBadge = document.getElementById('arena-chapter-title');
   if (chapterBadge) {
     chapterBadge.classList.add('is-blurred');
     chapterBadge.classList.remove('is-revealed');
     chapterBadge.title = 'Chapitre masqué (Cliquer pour afficher)';
-    const dateStr = extractQuestionDateOrSession(currentQuestion);
+    const dateStr = extractQuestionDateOrSession(curQ);
     const dateBadgeHtml = dateStr ? `<span class="question-date-pill" title="Date ou session du QCM : ${escapeHtml(dateStr)}"><i data-lucide="calendar" style="width:11px;height:11px;"></i> ${escapeHtml(dateStr)}</span>` : '';
     chapterBadge.innerHTML = `
-      <span class="chapter-title-text">Pédiatrie — ${escapeHtml(currentQuestion.chapterTitle || 'Général')}${dateBadgeHtml ? ' ' + dateBadgeHtml : ''}</span>
+      <span class="chapter-title-text">${escapeHtml(modCtx.moduleName)} — ${escapeHtml(curQ.chapterTitle || 'Général')}${dateBadgeHtml ? ' ' + dateBadgeHtml : ''}</span>
       <span class="chapter-title-hint"><i data-lucide="eye" style="width:11px;height:11px;"></i> Cours masqué</span>
     `;
     chapterBadge.onclick = () => window.toggleArenaChapterTitle();
   }
-  
-  const typePill = document.getElementById('arena-type-pill');
-  typePill.textContent = currentQuestion.type;
-  typePill.className = `tag-pill tag-${currentQuestion.type.toLowerCase()}`;
 
-  // Progress badge
+  const typePill = document.getElementById('arena-type-pill');
+  if (typePill) {
+    typePill.textContent = curQ.type;
+    typePill.className = `tag-pill tag-${(curQ.type || 'QCM').toLowerCase()}`;
+  }
+
   const progressPill = document.getElementById('arena-progress-pill');
-  if (stats.mistakes > 0) {
-    progressPill.textContent = `⚠️ ${stats.current}/${stats.target} (${stats.mistakes} faute${stats.mistakes > 1 ? 's' : ''})`;
-    progressPill.className = 'tag-pill progress-penalized';
-  } else {
-    progressPill.textContent = `✅ ${stats.current}/${stats.target} pour éliminer`;
-    progressPill.className = 'tag-pill progress-pill';
+  if (progressPill) {
+    if (stats.mistakes > 0) {
+      progressPill.textContent = `⚠️ ${stats.current}/${stats.target} (${stats.mistakes} faute${stats.mistakes > 1 ? 's' : ''})`;
+      progressPill.className = 'tag-pill progress-penalized';
+    } else {
+      progressPill.textContent = `✅ ${stats.current}/${stats.target} pour éliminer`;
+      progressPill.className = 'tag-pill progress-pill';
+    }
   }
 
   updateArenaDailyBadge();
+  updateClinicalCaseUI(curQ);
 
-  // Clinical Case & Sous-questions
-  updateClinicalCaseUI(currentQuestion);
+  const qTextEl = document.getElementById('arena-question-text');
+  if (qTextEl) qTextEl.innerHTML = formatMedicalContent(curQ.question || curQ.statement);
 
-  // Question Statement
-  document.getElementById('arena-question-text').innerHTML = formatMedicalContent(currentQuestion.question || currentQuestion.statement);
-
-  // Media preview (retracted & blurred by default)
   const mediaWrap = document.getElementById('arena-media-wrap');
-  if (currentQuestion.media_urls && currentQuestion.media_urls.length > 0) {
-    mediaWrap.innerHTML = renderQuestionMedia(currentQuestion.media_urls);
-    mediaWrap.style.display = 'block';
-    refreshLucide();
-  } else {
-    mediaWrap.innerHTML = '';
-    mediaWrap.style.display = 'none';
+  if (mediaWrap) {
+    if (curQ.media_urls && curQ.media_urls.length > 0) {
+      mediaWrap.innerHTML = renderQuestionMedia(curQ.media_urls);
+      mediaWrap.style.display = 'block';
+    } else {
+      mediaWrap.innerHTML = '';
+      mediaWrap.style.display = 'none';
+    }
   }
 
-  // Options vs CROQ rendering
   const optionsContainer = document.getElementById('arena-options-container');
   const croqContainer = document.getElementById('arena-croq-container');
   const btnSubmitAnswer = document.getElementById('btn-submit-answer');
@@ -8808,29 +8961,31 @@ function loadNextArenaQuestion() {
   }
   if (optionsContainer) optionsContainer.style.pointerEvents = 'auto';
 
-  if (currentQuestion.is_croq) {
-    // Mode CROQ
-    optionsContainer.style.display = 'none';
-    croqContainer.style.display = 'flex';
-    document.getElementById('arena-croq-input').value = '';
-    btnSubmitAnswer.style.display = 'none';
-    btnSubmitCroq.style.display = 'flex';
-    const croqSpan = btnSubmitCroq.querySelector('span');
-    if (croqSpan) croqSpan.textContent = 'Évaluer par IA (Gemini)';
-    btnSubmitCroq.disabled = false;
-    shortcutHint.textContent = 'Mode CROQ : Évaluation IA sémantique';
+  if (curQ.is_croq) {
+    if (optionsContainer) optionsContainer.style.display = 'none';
+    if (croqContainer) croqContainer.style.display = 'flex';
+    if (croqInput) croqInput.value = '';
+    if (btnSubmitAnswer) btnSubmitAnswer.style.display = 'none';
+    if (btnSubmitCroq) {
+      btnSubmitCroq.style.display = 'flex';
+      const croqSpan = btnSubmitCroq.querySelector('span');
+      if (croqSpan) croqSpan.textContent = 'Évaluer par IA (Gemini)';
+      btnSubmitCroq.disabled = false;
+    }
+    if (shortcutHint) shortcutHint.textContent = 'Mode CROQ : Évaluation IA sémantique';
   } else {
-    // Mode QCU / QCM
-    croqContainer.style.display = 'none';
-    optionsContainer.style.display = 'flex';
-    btnSubmitAnswer.style.display = 'flex';
-    btnSubmitCroq.style.display = 'none';
-    btnSubmitAnswer.disabled = true;
-    const ansSpan = btnSubmitAnswer.querySelector('span');
-    if (ansSpan) ansSpan.textContent = 'Valider la réponse';
-    shortcutHint.textContent = 'Raccourcis : [1-5] pour cocher, [Entrée] pour valider';
+    if (croqContainer) croqContainer.style.display = 'none';
+    if (optionsContainer) optionsContainer.style.display = 'flex';
+    if (btnSubmitAnswer) {
+      btnSubmitAnswer.style.display = 'flex';
+      btnSubmitAnswer.disabled = true;
+      const ansSpan = btnSubmitAnswer.querySelector('span');
+      if (ansSpan) ansSpan.textContent = 'Valider la réponse';
+    }
+    if (btnSubmitCroq) btnSubmitCroq.style.display = 'none';
+    if (shortcutHint) shortcutHint.textContent = 'Raccourcis : [1-5] pour cocher, [Entrée] pour valider';
 
-    renderOptionsList(currentQuestion.options || []);
+    renderOptionsList(curQ.options || []);
   }
 
   refreshLucide();
@@ -8838,17 +8993,19 @@ function loadNextArenaQuestion() {
 
 function renderOptionsList(options) {
   const container = document.getElementById('arena-options-container');
+  if (!container) return;
   container.innerHTML = '';
 
   options.forEach((opt, idx) => {
     const item = document.createElement('div');
     item.className = 'option-item';
     item.dataset.optId = opt.id || idx;
-    item.dataset.letter = opt.letter || String.fromCharCode(65 + idx);
+    const letter = opt.letter || String.fromCharCode(65 + idx);
+    item.dataset.letter = letter;
 
     item.innerHTML = `
-      <div class="option-letter">${item.dataset.letter}</div>
-      <div class="option-text">${opt.text}</div>
+      <div class="option-letter">${escapeHtml(letter)}</div>
+      <div class="option-text">${parseMarkdownInline(opt.text)}</div>
     `;
 
     item.addEventListener('click', () => {
@@ -8862,65 +9019,60 @@ function renderOptionsList(options) {
 function toggleOptionSelection(itemElement) {
   const optId = itemElement.dataset.optId;
 
-  // Multi-choice selection enabled for all questions (A, B, C...)
-  if (selectedOptionIds.has(optId)) {
-    selectedOptionIds.delete(optId);
+  if (appState.selectedOptionIds.has(optId)) {
+    appState.selectedOptionIds.delete(optId);
     itemElement.classList.remove('selected');
   } else {
-    selectedOptionIds.add(optId);
+    appState.selectedOptionIds.add(optId);
     itemElement.classList.add('selected');
   }
 
   const btnSubmit = document.getElementById('btn-submit-answer');
   if (btnSubmit) {
-    btnSubmit.disabled = selectedOptionIds.size === 0;
+    btnSubmit.disabled = appState.selectedOptionIds.size === 0;
   }
 
   const btnClinicalSave = document.getElementById('btn-clinical-save-next');
-  if (btnClinicalSave && isClinicalRunActive && clinicalRunState && clinicalRunState.mode === 'sequential') {
-    btnClinicalSave.disabled = selectedOptionIds.size === 0;
+  if (btnClinicalSave && appState.isClinicalRunActive && appState.clinicalRunState && appState.clinicalRunState.mode === 'sequential') {
+    btnClinicalSave.disabled = appState.selectedOptionIds.size === 0;
   }
 }
 
-// Keyboard quick selection
 function selectOptionByIndex(index) {
-  if (!currentQuestion || currentQuestion.is_croq) return;
+  if (!appState.currentQuestion || appState.currentQuestion.is_croq) return;
   const options = document.querySelectorAll('.option-item');
   if (options[index]) {
     toggleOptionSelection(options[index]);
   }
 }
 
-// ============================================================================
-// ANSWER SUBMISSION (QCU / QCM)
-// ============================================================================
 async function handleSubmitQcm() {
-  if (!currentQuestion || isEvaluating) return;
+  if (!appState.currentQuestion || appState.isEvaluating) return;
 
-  if (isClinicalRunActive && clinicalRunState && clinicalRunState.mode === 'sequential') {
-    const subQ = clinicalRunState.subQuestions[clinicalRunState.currentIndex];
-    const isAlreadyEvaluated = !!(clinicalRunState.cardEvaluations && clinicalRunState.cardEvaluations[subQ.uid]);
+  if (appState.isClinicalRunActive && appState.clinicalRunState && appState.clinicalRunState.mode === 'sequential') {
+    const subQ = appState.clinicalRunState.subQuestions[appState.clinicalRunState.currentIndex];
+    const isAlreadyEvaluated = !!(appState.clinicalRunState.cardEvaluations && appState.clinicalRunState.cardEvaluations[subQ.uid]);
     if (isAlreadyEvaluated) {
-      const isLast = clinicalRunState.currentIndex === clinicalRunState.subQuestions.length - 1;
+      const isLast = appState.clinicalRunState.currentIndex === appState.clinicalRunState.subQuestions.length - 1;
       if (isLast) {
         window.validateAllClinicalSubQuestions();
       } else {
-        clinicalRunState.currentIndex++;
+        appState.clinicalRunState.currentIndex++;
         renderClinicalSequentialView();
       }
       return;
     }
 
-    if (selectedOptionIds.size === 0) return;
+    if (appState.selectedOptionIds.size === 0) return;
     verifySequentialSubQuestion(subQ);
     return;
   }
 
-  if (selectedOptionIds.size === 0) return;
+  if (appState.selectedOptionIds.size === 0) return;
 
-  isEvaluating = true;
+  appState.isEvaluating = true;
 
-  const correctOptions = (currentQuestion.options || []).filter(o => o.is_correct);
+  const correctOptions = (appState.currentQuestion.options || []).filter(o => o.is_correct);
   const correctLetters = correctOptions.map(o => o.letter).sort();
 
   const selectedLetters = [];
@@ -8929,7 +9081,6 @@ async function handleSubmitQcm() {
   });
   selectedLetters.sort();
 
-  // Strict match comparison
   const isCorrect = (correctLetters.length === selectedLetters.length) &&
     correctLetters.every((letter, idx) => letter === selectedLetters[idx]);
 
@@ -8940,21 +9091,18 @@ async function handleSubmitQcm() {
   }
 }
 
-// ============================================================================
-// ANSWER SUBMISSION (CROQ via Gemini)
-// ============================================================================
 async function handleSubmitCroq() {
-  if (!currentQuestion || !currentQuestion.is_croq || isEvaluating) return;
+  if (!appState.currentQuestion || !appState.currentQuestion.is_croq || appState.isEvaluating) return;
 
-  if (isClinicalRunActive && clinicalRunState && clinicalRunState.mode === 'sequential') {
-    const subQ = clinicalRunState.subQuestions[clinicalRunState.currentIndex];
-    const isAlreadyEvaluated = !!(clinicalRunState.cardEvaluations && clinicalRunState.cardEvaluations[subQ.uid]);
+  if (appState.isClinicalRunActive && appState.clinicalRunState && appState.clinicalRunState.mode === 'sequential') {
+    const subQ = appState.clinicalRunState.subQuestions[appState.clinicalRunState.currentIndex];
+    const isAlreadyEvaluated = !!(appState.clinicalRunState.cardEvaluations && appState.clinicalRunState.cardEvaluations[subQ.uid]);
     if (isAlreadyEvaluated) {
-      const isLast = clinicalRunState.currentIndex === clinicalRunState.subQuestions.length - 1;
+      const isLast = appState.clinicalRunState.currentIndex === appState.clinicalRunState.subQuestions.length - 1;
       if (isLast) {
         window.validateAllClinicalSubQuestions();
       } else {
-        clinicalRunState.currentIndex++;
+        appState.clinicalRunState.currentIndex++;
         renderClinicalSequentialView();
       }
       return;
@@ -8964,56 +9112,66 @@ async function handleSubmitCroq() {
     return;
   }
 
-  const userInput = document.getElementById('arena-croq-input').value.trim();
+  const userInput = document.getElementById('arena-croq-input')?.value?.trim() || '';
   if (!userInput) {
-    alert('Veuillez saisir votre réponse avant de lancer l\'évaluation.');
+    showAppToast("Veuillez saisir votre réponse avant de lancer l'évaluation.", { type: 'warning' });
     return;
   }
 
-  isEvaluating = true;
+  appState.isEvaluating = true;
   const btn = document.getElementById('btn-submit-croq');
-  btn.disabled = true;
-  btn.innerHTML = `<i data-lucide="loader" class="spin"></i> <span>Évaluation par IA en cours...</span>`;
-  refreshLucide();
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = `<i data-lucide="loader" class="spin"></i> <span>Évaluation par IA en cours...</span>`;
+    refreshLucide(btn);
+  }
 
   try {
     const evalResult = await geminiService.evaluateCroq(
-      currentQuestion.question,
-      currentQuestion.clinical_case,
-      currentQuestion.croq_answer,
-      userInput
+      appState.currentQuestion.question,
+      appState.currentQuestion.clinical_case,
+      appState.currentQuestion.croq_answer,
+      userInput,
+      appState.currentQuestion
     );
 
     if (evalResult.isValid && evalResult.score >= 75) {
-      // Correct!
       handleAnswerSuccess(evalResult.score, evalResult.feedback);
     } else {
-      // Failed!
       await handleAnswerFailure(
-        [userInput], 
-        currentQuestion.croq_answer, 
-        true, 
-        evalResult.score, 
+        [userInput],
+        appState.currentQuestion.croq_answer,
+        true,
+        evalResult.score,
         evalResult.feedback
       );
     }
   } catch (err) {
     console.error('CROQ error:', err);
-    alert('Une erreur est survenue lors de l\'évaluation. Fallback activé.');
+    showAppToast(
+      err.message && err.message.includes('API Gemini')
+        ? err.message
+        : "Une erreur est survenue lors de l'évaluation IA. Fallback activé.",
+      { type: 'warning' }
+    );
   } finally {
-    btn.disabled = false;
-    btn.innerHTML = `<i data-lucide="sparkles"></i> <span>Évaluer par IA (Gemini)</span>`;
-    refreshLucide();
+    appState.isEvaluating = false;
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<i data-lucide="sparkles"></i> <span>Évaluer par IA (Gemini)</span>`;
+      refreshLucide(btn);
+    }
   }
 }
 
-// ============================================================================
-// SUCCESS HANDLER WITH LIVE EXPLANATION
-// ============================================================================
-function handleAnswerSuccess(score = null, feedback = null, customLetters = null) {
+function handleAnswerSuccess(score = null, _feedback = null, customLetters = null) {
+  const curQ = appState.currentQuestion;
+  if (!curQ) return;
+  const modCtx = resolveAiModuleContext(curQ);
+
   let letters = customLetters;
   if (!letters) {
-    if (currentQuestion && currentQuestion.is_croq) {
+    if (curQ.is_croq) {
       const croqVal = document.getElementById('arena-croq-input')?.value?.trim();
       letters = croqVal ? [croqVal] : [];
     } else {
@@ -9021,106 +9179,91 @@ function handleAnswerSuccess(score = null, feedback = null, customLetters = null
     }
   }
 
-  // Enregistrer dans l'historique de consultation (max 5)
-  pushToAnsweredHistory(currentQuestion, letters, true, score);
+  pushToAnsweredHistory(curQ, letters, true, score);
 
-  const result = queueEngine.handleSuccess(currentQuestion.uid);
+  const result = queueEngine.handleSuccess(curQ.uid);
   queueEngine.incrementTodayCount();
-  studyTracker.recordAnswer(true, currentQuestion ? currentQuestion.chapterId : null, currentQuestion ? currentQuestion.uid : null);
+  studyTracker.recordAnswer(true, curQ.chapterId || null, curQ.uid || null);
   updateArenaDailyBadge();
-  if (currentView === 'stats') renderStatsUI();
-  firebaseSyncService.triggerAutoPush();
+  if (appState.currentView === 'stats') renderStatsUI();
+  appState.firebaseSyncService?.triggerAutoPush();
 
-  // Trigger celebration confetti
   if (result.permanentlyRemoved) {
     triggerMasteryConfetti();
+    if (curQ.clinical_case && curQ.clinical_case.trim()) {
+      updateClinicalUncleanedBadge(curQ);
+    }
   }
 
-  // Update success banner
-  document.getElementById('arena-default-actions').style.display = 'none';
+  const defaultActions = document.getElementById('arena-default-actions');
+  if (defaultActions) defaultActions.style.display = 'none';
   const banner = document.getElementById('arena-success-banner');
   const bannerText = document.getElementById('arena-success-text');
 
-  if (result.permanentlyRemoved) {
-    bannerText.innerHTML = `<strong>Éliminée pour de bon ! 🎉</strong> Cette question a été validée avec succès (${result.target}/${result.target}) et n'apparaîtra plus.`;
-  } else if (result.isPenultimate) {
-    const scoreText = score ? ` (Score : ${score}%)` : '';
-    bannerText.innerHTML = `<strong>Dernier palier avant élimination ! 🎯</strong> Validée ${result.newCurrent}/${result.target} fois. Placée parmi les 50% dernières questions restantes (+${result.pushDistance} cartes).`;
-  } else {
-    const scoreText = score ? ` (Score : ${score}%)` : '';
-    bannerText.innerHTML = `<strong>Bonne réponse${scoreText} !</strong> Validée ${result.newCurrent}/${result.target} fois. Repoussée de ${result.pushDistance} cartes.`;
+  if (bannerText) {
+    if (result.permanentlyRemoved) {
+      bannerText.innerHTML = `<strong>Éliminée pour de bon ! 🎉</strong> Cette question a été validée avec succès (${result.target}/${result.target}) et n'apparaîtra plus.`;
+    } else if (result.isPenultimate) {
+      const scoreText = score ? ` (Score : ${score}%)` : '';
+      bannerText.innerHTML = `<strong>Dernier palier avant élimination ! 🎯</strong> Validée ${result.newCurrent}/${result.target} fois. Placée parmi les 50% dernières questions restantes (+${result.pushDistance} cartes).`;
+    } else {
+      const scoreText = score ? ` (Score : ${score}%)` : '';
+      bannerText.innerHTML = `<strong>Bonne réponse${scoreText} !</strong> Validée ${result.newCurrent}/${result.target} fois. Repoussée de ${result.pushDistance} cartes.`;
+    }
   }
 
-  banner.style.display = 'flex';
+  if (banner) banner.style.display = 'flex';
   const btnSnoozeSuccess = document.getElementById('btn-snooze-question');
   if (btnSnoozeSuccess) btnSnoozeSuccess.style.display = 'none';
 
-  // Highlight correct options visually in arena
-  if (currentQuestion && currentQuestion.options) {
+  if (curQ.options) {
     document.querySelectorAll('.option-item').forEach(el => {
       const letter = el.dataset.letter;
-      const isCor = (currentQuestion.options || []).some(o => o.letter === letter && o.is_correct);
+      const isCor = (curQ.options || []).some(o => o.letter === letter && o.is_correct);
       if (isCor) {
         el.classList.add('correct-highlight');
       }
     });
   }
 
-  // Live Official Explanation Box right in the Arena (displayed for both right & wrong answers)
   const expBox = document.getElementById('arena-explanation-box');
   const expText = document.getElementById('arena-explanation-text');
   if (expBox && expText) {
-    if (currentQuestion.explanation && currentQuestion.explanation.trim()) {
-      expText.innerHTML = formatMedicalContent(currentQuestion.explanation.trim());
-      expBox.style.display = 'flex';
+    if (curQ.explanation && curQ.explanation.trim()) {
+      expText.innerHTML = formatMedicalContent(curQ.explanation.trim());
     } else {
-      expText.innerHTML = `<em>Réponse officielle validée conformément aux critères du cours <strong>${escapeHtml(currentQuestion.chapterTitle || 'Pédiatrie')}</strong>.</em>`;
-      expBox.style.display = 'flex';
+      expText.innerHTML = `<em>Réponse officielle validée conformément aux critères du cours <strong>${escapeHtml(curQ.chapterTitle || modCtx.defaultChapter)}</strong>.</em>`;
     }
+    expBox.style.display = 'flex';
   }
 
-  // Live AI explanation box in Arena
-  renderArenaAiExplanation(currentQuestion);
+  renderArenaAiExplanation(curQ);
 
-  isCurrentQuestionAnswered = true;
+  appState.isCurrentQuestionAnswered = true;
   window.toggleArenaChapterTitle(true);
+  const views = getDomViews();
   refreshLucide(views.arena);
 }
 
-function triggerMasteryConfetti() {
-  if (typeof window.confetti === 'function') {
-    window.confetti({
-      particleCount: 80,
-      spread: 70,
-      origin: { y: 0.6 }
-    });
-  }
-}
-
-// ============================================================================
-// FAILURE HANDLER & ERROR MODAL WITH AI REASONING
-// ============================================================================
-async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq = false, score = 0, feedback = '') {
-  // Capture target question and UID immediately to avoid race conditions when user skips modal
-  const targetQuestion = currentQuestion;
+async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq = false, score = 0, _feedback = '') {
+  const targetQuestion = appState.currentQuestion;
   if (!targetQuestion) return;
   const targetUid = targetQuestion.uid;
+  const modals = getDomModals();
 
-  // Enregistrer dans l'historique de consultation (max 5)
   pushToAnsweredHistory(targetQuestion, userAnswerLetters, false, score);
 
   const result = queueEngine.handleFailure(targetUid);
   studyTracker.recordAnswer(false, targetQuestion.chapterId || null, targetUid);
-  // Seules les réponses justes incrémentent le compteur journalier de QCM
   updateArenaDailyBadge();
-  if (currentView === 'stats') renderStatsUI();
-  firebaseSyncService.triggerAutoPush();
-  isCurrentQuestionAnswered = true;
+  if (appState.currentView === 'stats') renderStatsUI();
+  appState.firebaseSyncService?.triggerAutoPush();
+  appState.isCurrentQuestionAnswered = true;
+
   const btnSnoozeFail = document.getElementById('btn-snooze-question');
   if (btnSnoozeFail) btnSnoozeFail.style.display = 'none';
   window.toggleArenaChapterTitle(true);
 
-  // Populate penalty header
   let penaltyTitle = '';
   let penaltyDesc = '';
 
@@ -9129,7 +9272,7 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
       penaltyTitle = `Plafond de 10 atteint : progression diminuée (${result.previousCurrent}/10 ➔ ${result.current}/10)`;
       penaltyDesc = `Cette question a été ratée (${result.mistakes} faute${result.mistakes > 1 ? 's' : ''}). Le seuil étant plafonné à 10, votre progression diminue de ${result.previousCurrent}/10 à ${result.current}/10. Elle réapparaîtra dans ${result.pushDistance} cartes.`;
     } else {
-      penaltyTitle = `Pénalité maximale : seuil plafonné à 10 réussites requises`;
+      penaltyTitle = 'Pénalité maximale : seuil plafonné à 10 réussites requises';
       penaltyDesc = `Cette question a été ratée (${result.mistakes} faute${result.mistakes > 1 ? 's' : ''}). Progression actuelle : ${result.current}/10. Elle réapparaîtra dans ${result.pushDistance} cartes pour ancrer le bon réflexe.`;
     }
   } else {
@@ -9137,12 +9280,13 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
     penaltyDesc = `Cette question a été ratée (${result.mistakes} faute${result.mistakes > 1 ? 's' : ''}). Progression actuelle : ${result.current}/${result.newTarget}. Elle réapparaîtra dans ${result.pushDistance} cartes pour ancrer le bon réflexe.`;
   }
 
-  document.getElementById('error-modal-penalty-title').textContent = penaltyTitle;
-  document.getElementById('error-modal-penalty-desc').textContent = penaltyDesc;
+  const errTitleEl = document.getElementById('error-modal-penalty-title');
+  const errDescEl = document.getElementById('error-modal-penalty-desc');
+  if (errTitleEl) errTitleEl.textContent = penaltyTitle;
+  if (errDescEl) errDescEl.textContent = penaltyDesc;
 
-  // Render structured comparison in error modal with full question statement, all choices A-E, my choice, and correct choice!
   const userText = isCroq ? (userAnswerLetters[0] || '') : (userAnswerLetters.join(', ') || 'Aucune réponse cochée');
-  const comparisonContainer = document.getElementById('error-modal-comparison-container') 
+  const comparisonContainer = document.getElementById('error-modal-comparison-container')
     || document.querySelector('.answer-recap-box');
 
   if (comparisonContainer) {
@@ -9150,8 +9294,7 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
     comparisonContainer.outerHTML = `<div id="error-modal-comparison-container">${recapHtml}</div>`;
   }
 
-  // Highlight options visually in Arena (red for wrong choices, green for correct)
-  if (targetQuestion && targetQuestion.options) {
+  if (targetQuestion.options) {
     document.querySelectorAll('.option-item').forEach(el => {
       const letter = el.dataset.letter;
       const isSelected = userAnswerLetters.includes(letter);
@@ -9165,36 +9308,45 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
     });
   }
 
-  // Show modal immediately linked to targetUid
-  modals.error.dataset.questionUid = targetUid;
-  modals.error.style.display = 'flex';
   const aiNoteContainer = document.getElementById('error-modal-ai-note');
-  aiNoteContainer.innerHTML = `
-    <div class="reasoning-loader-wrap">
-      <i data-lucide="sparkles" class="spin"></i>
-      <span>Consultation de l'IA Flash et formulation de la démarche clinique complète...</span>
-    </div>
-  `;
+  if (modals.error) {
+    modals.error.dataset.questionUid = targetUid;
+    modals.error.style.display = 'flex';
+  }
+  if (aiNoteContainer) {
+    aiNoteContainer.innerHTML = `
+      <div class="reasoning-loader-wrap">
+        <i data-lucide="sparkles" class="spin"></i>
+        <span>Consultation de l'IA Flash et formulation de la démarche clinique complète...</span>
+      </div>
+    `;
+  }
   refreshLucide(modals.error);
 
-  // Request AI reasoning note asynchronously using targetQuestion
-  const reasoningObj = await geminiService.generateReasoningNote(
-    targetQuestion,
-    userAnswerLetters,
-    isCroq,
-    userAnswerLetters[0] || ''
-  );
+  let reasoningObj;
+  try {
+    reasoningObj = await geminiService.generateReasoningNote(
+      targetQuestion,
+      userAnswerLetters,
+      isCroq,
+      userAnswerLetters[0] || ''
+    );
+  } catch (err) {
+    reasoningObj = {
+      note: targetQuestion.explanation || 'Réponse officielle enregistrée.',
+      modelUsed: 'Moteur Local (Hors-Ligne)'
+    };
+  }
 
   saveAiExplanationForQuestion(targetUid, reasoningObj.note, reasoningObj.modelUsed, targetQuestion);
 
-  // ONLY update modal if still visible AND still representing targetUid
-  if (modals.error.style.display === 'flex' && modals.error.dataset.questionUid === targetUid) {
-    aiNoteContainer.innerHTML = formatReasoningNote(reasoningObj.note);
-    document.getElementById('error-modal-model-tag').textContent = reasoningObj.modelUsed;
+  if (modals.error && modals.error.style.display === 'flex' && modals.error.dataset.questionUid === targetUid) {
+    if (aiNoteContainer) aiNoteContainer.innerHTML = formatReasoningNote(reasoningObj.note);
+    const errModelTag = document.getElementById('error-modal-model-tag');
+    if (errModelTag) errModelTag.textContent = reasoningObj.modelUsed;
     refreshLucide(modals.error);
   }
 
-  // Save to Notebook with targetQuestion metadata
   const noteRecord = {
     id: `note_${Date.now()}`,
     questionUid: targetUid,
@@ -9214,9 +9366,8 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
     timestamp: Date.now()
   };
   queueEngine.saveReasoningNote(noteRecord);
-  firebaseSyncService.triggerAutoPush();
+  appState.firebaseSyncService?.triggerAutoPush();
 
-  // Update notebook badge in dashboard
   const notesCount = queueEngine.getRawReasoningNotes().length;
   const badgeEl = document.getElementById('notebook-count-badge');
   if (badgeEl) badgeEl.textContent = notesCount;
@@ -9225,75 +9376,365 @@ async function handleAnswerFailure(userAnswerLetters, correctAnswerText, isCroq 
 }
 
 function closeErrorModalAndContinue() {
-  modals.error.style.display = 'none';
+  const modals = getDomModals();
+  if (modals.error) modals.error.style.display = 'none';
   loadNextArenaQuestion();
 }
 
-// ============================================================================
-// ALL CLEANED VICTORY SCREEN
-// ============================================================================
 function showVictoryScreen() {
   const snoozedCount = queueEngine.getSnoozedCountToday();
   const btnSnooze = document.getElementById('btn-snooze-question');
   if (btnSnooze) btnSnooze.style.display = 'none';
 
-  if (snoozedCount > 0) {
-    document.getElementById('arena-question-text').innerHTML = `
-      <div style="text-align:center;padding:30px 10px;">
-        <div style="font-size:3rem;margin-bottom:12px;">🌙</div>
-        <h2 style="font-family:var(--font-heading);font-size:1.8rem;color:#c084fc;margin-bottom:8px;">
-          File active terminée pour aujourd'hui !
-        </h2>
-        <p style="color:var(--text-muted);font-size:1rem;max-width:520px;margin:0 auto 20px;">
-          Toutes les questions actives ont été travaillées. Vous avez <strong>${snoozedCount} question${snoozedCount > 1 ? 's' : ''} reportée${snoozedCount > 1 ? 's' : ''} à demain</strong>.
-        </p>
-        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-          <button class="btn-primary-large" id="btn-victory-unsnooze" style="margin:0;">
-            <span>Réintégrer les questions reportées</span>
-          </button>
-          <button class="btn-secondary" id="btn-victory-home" style="margin:0;">
-            <span>Retour au Dashboard</span>
+  const qTextEl = document.getElementById('arena-question-text');
+  if (qTextEl) {
+    if (snoozedCount > 0) {
+      qTextEl.innerHTML = `
+        <div style="text-align:center;padding:30px 10px;">
+          <div style="font-size:3rem;margin-bottom:12px;">🌙</div>
+          <h2 style="font-family:var(--font-heading);font-size:1.8rem;color:#c084fc;margin-bottom:8px;">
+            File active terminée pour aujourd'hui !
+          </h2>
+          <p style="color:var(--text-muted);font-size:1rem;max-width:520px;margin:0 auto 20px;">
+            Toutes les questions actives ont été travaillées. Vous avez <strong>${snoozedCount} question${snoozedCount > 1 ? 's' : ''} reportée${snoozedCount > 1 ? 's' : ''} à demain</strong>.
+          </p>
+          <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+            <button class="btn-primary-large" id="btn-victory-unsnooze" style="margin:0;">
+              <span>Réintégrer les questions reportées</span>
+            </button>
+            <button class="btn-secondary" id="btn-victory-home" style="margin:0;">
+              <span>Retour au Dashboard</span>
+            </button>
+          </div>
+        </div>
+      `;
+      const btnUnsnooze = document.getElementById('btn-victory-unsnooze');
+      if (btnUnsnooze) btnUnsnooze.onclick = () => window.unsnoozeAllSnoozedQuestions();
+    } else {
+      qTextEl.innerHTML = `
+        <div style="text-align:center;padding:30px 10px;">
+          <div style="font-size:3rem;margin-bottom:12px;">🏆</div>
+          <h2 style="font-family:var(--font-heading);font-size:1.8rem;color:var(--emerald);margin-bottom:8px;">
+            Félicitations Majeur de Promo !
+          </h2>
+          <p style="color:var(--text-muted);font-size:1rem;max-width:500px;margin:0 auto 20px;">
+            Toutes les questions sélectionnées ont été nettoyées et validées jusqu'à leur seuil de maîtrise.
+          </p>
+          <button class="btn-primary-large" id="btn-victory-home" style="margin:0 auto;">
+            Retour au Dashboard
           </button>
         </div>
-      </div>
-    `;
-    const btnUnsnooze = document.getElementById('btn-victory-unsnooze');
-    if (btnUnsnooze) btnUnsnooze.onclick = () => window.unsnoozeAllSnoozedQuestions();
-  } else {
-    document.getElementById('arena-question-text').innerHTML = `
-      <div style="text-align:center;padding:30px 10px;">
-        <div style="font-size:3rem;margin-bottom:12px;">🏆</div>
-        <h2 style="font-family:var(--font-heading);font-size:1.8rem;color:var(--emerald);margin-bottom:8px;">
-          Félicitations Majeur de Promo !
-        </h2>
-        <p style="color:var(--text-muted);font-size:1rem;max-width:500px;margin:0 auto 20px;">
-          Toutes les questions sélectionnées ont été nettoyées et validées jusqu'à leur seuil de maîtrise.
-        </p>
-        <button class="btn-primary-large" id="btn-victory-home" style="margin:0 auto;">
-          Retour au Dashboard
-        </button>
-      </div>
-    `;
-    triggerMasteryConfetti();
+      `;
+      triggerMasteryConfetti();
+    }
   }
-  document.getElementById('arena-options-container').innerHTML = '';
-  document.getElementById('arena-croq-container').style.display = 'none';
-  document.getElementById('arena-default-actions').style.display = 'none';
+
+  const optionsContainer = document.getElementById('arena-options-container');
+  const croqContainer = document.getElementById('arena-croq-container');
+  const defaultActions = document.getElementById('arena-default-actions');
+  if (optionsContainer) optionsContainer.innerHTML = '';
+  if (croqContainer) croqContainer.style.display = 'none';
+  if (defaultActions) defaultActions.style.display = 'none';
 
   const btnHome = document.getElementById('btn-victory-home');
-  if (btnHome) btnHome.onclick = () => switchView('dashboard');
+  if (btnHome) btnHome.onclick = () => navigateToView('dashboard');
 }
 
 // ============================================================================
-// CARNET DE RAISONNEMENT IA (Groupé par Cours & Question Unique, Tris Multi-Critères)
+// ARENA AI TUTOR CHAT CONTROLLER
 // ============================================================================
+function renderExistingChatMessages() {
+  const listEl = document.getElementById('chatbox-messages-list');
+  if (!listEl) return;
+  listEl.innerHTML = '';
+  renderChatWelcome();
+  appState.arenaChatHistory.forEach(msg => {
+    const bubble = document.createElement('div');
+    if (msg.role === 'user') {
+      bubble.className = 'chat-bubble bubble-user';
+      bubble.textContent = msg.text;
+    } else {
+      bubble.className = 'chat-bubble bubble-ai';
+      bubble.innerHTML = formatMedicalContent(msg.text);
+    }
+    listEl.appendChild(bubble);
+  });
+  listEl.scrollTop = listEl.scrollHeight;
+  refreshLucide(listEl);
+}
+
+window.toggleArenaChat = function(forceOpen = null) {
+  const chatbox = document.getElementById('arena-ai-chatbox');
+  const btn = document.getElementById('btn-arena-ai-chat');
+  if (!chatbox) return;
+
+  const isOpen = (forceOpen !== null) ? !forceOpen : (chatbox.style.display !== 'none');
+  if (isOpen) {
+    chatbox.style.display = 'none';
+    if (btn) btn.classList.remove('is-active');
+  } else {
+    chatbox.style.display = 'flex';
+    if (btn) btn.classList.add('is-active');
+    updateArenaChatContext();
+    if (appState.arenaChatHistory.length === 0) {
+      renderChatWelcome();
+    } else {
+      renderExistingChatMessages();
+    }
+    const inputEl = document.getElementById('chatbox-text-input');
+    if (inputEl) setTimeout(() => inputEl.focus(), 150);
+  }
+  refreshLucide(chatbox);
+};
+
+window.clearArenaChat = function() {
+  const effQ = getEffectiveArenaQuestion();
+  appState.arenaChatHistory = [];
+  if (effQ && effQ.uid) {
+    delete appState.questionChatHistories[effQ.uid];
+  }
+  renderChatWelcome();
+  const inputEl = document.getElementById('chatbox-text-input');
+  if (inputEl) inputEl.value = '';
+};
+
+window.sendChatPrompt = function(promptText) {
+  if (!promptText || !promptText.trim()) return;
+  const inputEl = document.getElementById('chatbox-text-input');
+  if (inputEl) inputEl.value = promptText;
+  executeSendMessage(promptText.trim());
+};
+
+window.handleChatSubmit = function(event) {
+  if (event) event.preventDefault();
+  const inputEl = document.getElementById('chatbox-text-input');
+  if (!inputEl) return;
+  const text = inputEl.value.trim();
+  if (!text) return;
+  inputEl.value = '';
+  executeSendMessage(text);
+};
+
+function updateArenaChatContext() {
+  const qTextEl = document.getElementById('chatbox-q-statement');
+  const ctxEl = document.getElementById('chatbox-current-context');
+  const effQ = getEffectiveArenaQuestion();
+  const modCtx = resolveAiModuleContext(effQ);
+
+  const chatTutorTitle = document.getElementById('chatbox-tutor-title');
+  if (chatTutorTitle) {
+    chatTutorTitle.textContent = `Tuteur IA ${modCtx.moduleName}`;
+  }
+
+  if (effQ) {
+    appState.arenaChatHistory = appState.questionChatHistories[effQ.uid] ? [...appState.questionChatHistories[effQ.uid]] : [];
+    const chatbox = document.getElementById('arena-ai-chatbox');
+    if (chatbox && chatbox.style.display !== 'none') {
+      if (appState.arenaChatHistory.length > 0) {
+        renderExistingChatMessages();
+      } else {
+        renderChatWelcome();
+      }
+    }
+
+    const clinicalCtx = buildClinicalCaseContext(effQ);
+
+    if (qTextEl) {
+      if (clinicalCtx && clinicalCtx.isClinicalCase) {
+        const qStatement = effQ.question || effQ.statement || '';
+        qTextEl.textContent = `Cas Clinique (Q${clinicalCtx.currentNum}/${clinicalCtx.totalCount}) : ${qStatement.length > 70 ? qStatement.slice(0, 70) + '...' : qStatement}`;
+      } else {
+        const qText = effQ.question || effQ.statement || `Question ${modCtx.moduleName}`;
+        qTextEl.textContent = qText.length > 80 ? qText.slice(0, 80) + '...' : qText;
+      }
+    }
+    if (ctxEl) {
+      if (clinicalCtx && clinicalCtx.isClinicalCase) {
+        const prefixStr = clinicalCtx.casePrefix ? `Cas Clinique ${clinicalCtx.casePrefix}` : 'Cas Clinique';
+        ctxEl.innerHTML = `<span style="color:var(--cyan);font-weight:700;">${escapeHtml(prefixStr)}</span> • Question ${clinicalCtx.currentNum}/${clinicalCtx.totalCount} <span style="font-size:0.68rem;background:rgba(0,212,255,0.15);padding:1px 6px;border-radius:4px;color:var(--cyan);margin-left:4px;">Contexte Q1-${clinicalCtx.currentNum} actif</span>`;
+      } else {
+        const isHistory = appState.historyCursor >= 0;
+        const isRevealed = isArenaChapterRevealed();
+        const blurClass = isRevealed ? 'is-revealed' : 'is-blurred';
+        const blurTitle = isRevealed
+          ? 'Cours visible (Cliquer pour masquer)'
+          : "Cours masqué jusqu'à ce que vous répondiez (Cliquer pour afficher)";
+        const histSuffix = isHistory ? ` (QCM -${appState.historyCursor + 1})` : '';
+
+        ctxEl.innerHTML = `${escapeHtml(modCtx.moduleName)} — <span class="chatbox-chapter-blurred ${blurClass}" onclick="window.toggleArenaChapterTitle()" title="${blurTitle}">${escapeHtml(effQ.chapterTitle || 'Général')}</span>${histSuffix}`;
+      }
+    }
+  }
+}
+
+function renderChatWelcome() {
+  const listEl = document.getElementById('chatbox-messages-list');
+  if (!listEl) return;
+  const effQ = getEffectiveArenaQuestion();
+  const modCtx = resolveAiModuleContext(effQ);
+  const chapTitle = effQ ? (effQ.chapterTitle || modCtx.defaultChapter) : modCtx.defaultChapter;
+  const isHistory = appState.historyCursor >= 0;
+  const isRevealed = isArenaChapterRevealed();
+  const blurClass = isRevealed ? 'is-revealed' : 'is-blurred';
+  const blurTitle = isRevealed
+    ? 'Cours visible (Cliquer pour masquer)'
+    : "Cours masqué jusqu'à ce que vous répondiez (Cliquer pour afficher)";
+
+  const clinicalCtx = effQ ? buildClinicalCaseContext(effQ) : null;
+
+  if (clinicalCtx && clinicalCtx.isClinicalCase) {
+    listEl.innerHTML = `
+      <div class="chat-bubble bubble-ai">
+        <p>👋 Bonjour ! Je suis votre <strong>${escapeHtml(modCtx.tutorTitle)}</strong>.</p>
+        <p>🎯 <strong>Contexte Intégral du Cas Clinique Activé :</strong></p>
+        <p>J'ai sous les yeux l'énoncé complet du cas ainsi que l'évolution des <strong>questions 1 à ${clinicalCtx.currentNum} sur ${clinicalCtx.totalCount}</strong> avec leurs énoncés, propositions, réponses et explications.</p>
+        <p style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">
+          Posez-moi votre question sur ce dossier ou cliquez sur une suggestion rapide :
+        </p>
+      </div>
+    `;
+  } else {
+    listEl.innerHTML = `
+      <div class="chat-bubble bubble-ai">
+        <p>👋 Bonjour ! Je suis votre <strong>${escapeHtml(modCtx.tutorTitle)}</strong>.</p>
+        <p>Je connais par cœur l'énoncé, le cas clinique, les propositions et la justification officielle de ce QCM ${isHistory ? '<strong>en cours de consultation</strong>' : ''} en <strong class="chatbox-chapter-blurred ${blurClass}" onclick="window.toggleArenaChapterTitle()" title="${blurTitle}">${escapeHtml(chapTitle)}</strong>.</p>
+        <p style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">
+          Posez-moi votre question directement ou cliquez sur une suggestion rapide :
+        </p>
+      </div>
+    `;
+  }
+}
+
+async function executeSendMessage(userText) {
+  const effQ = getEffectiveArenaQuestion();
+  if (!effQ) return;
+  const targetUid = effQ.uid;
+  const listEl = document.getElementById('chatbox-messages-list');
+  if (!listEl) return;
+
+  appState.arenaChatHistory.push({ role: 'user', text: userText, timestamp: Date.now() });
+  if (targetUid) {
+    appState.questionChatHistories[targetUid] = [...appState.arenaChatHistory];
+  }
+
+  const userBubble = document.createElement('div');
+  userBubble.className = 'chat-bubble bubble-user';
+  userBubble.textContent = userText;
+  listEl.appendChild(userBubble);
+  listEl.scrollTop = listEl.scrollHeight;
+
+  const loadingBubble = document.createElement('div');
+  loadingBubble.className = 'chat-bubble bubble-ai is-loading';
+  loadingBubble.id = 'chatbox-loading-indicator';
+  loadingBubble.innerHTML = `
+    <div class="typing-indicator"><span></span><span></span><span></span></div>
+    <span>Gemini Flash analyse ce QCM...</span>
+  `;
+  listEl.appendChild(loadingBubble);
+  listEl.scrollTop = listEl.scrollHeight;
+
+  const sendBtn = document.getElementById('btn-chat-send');
+  const inputEl = document.getElementById('chatbox-text-input');
+  if (sendBtn) sendBtn.disabled = true;
+  if (inputEl) inputEl.disabled = true;
+
+  try {
+    const historyForAi = appState.arenaChatHistory.slice(0, -1);
+    const clinicalContext = buildClinicalCaseContext(effQ);
+    const response = await geminiService.askAboutQuestion(effQ, historyForAi, userText, clinicalContext);
+
+    if (targetUid) {
+      if (!appState.questionChatHistories[targetUid]) appState.questionChatHistories[targetUid] = [];
+      appState.questionChatHistories[targetUid].push({ role: 'ai', text: response.text, modelUsed: response.modelUsed, timestamp: Date.now() });
+    }
+
+    const currentEffQ = getEffectiveArenaQuestion();
+    if (currentEffQ && currentEffQ.uid === targetUid) {
+      const existingLoader = document.getElementById('chatbox-loading-indicator');
+      if (existingLoader) existingLoader.remove();
+
+      appState.arenaChatHistory = [...appState.questionChatHistories[targetUid]];
+      const aiBubble = document.createElement('div');
+      aiBubble.className = 'chat-bubble bubble-ai';
+      aiBubble.innerHTML = formatMedicalContent(response.text);
+      listEl.appendChild(aiBubble);
+
+      const modelTag = document.getElementById('chatbox-model-tag');
+      if (modelTag && response.modelUsed) {
+        modelTag.textContent = response.modelUsed;
+      }
+    }
+  } catch (err) {
+    console.error('Chat error:', err);
+    const currentEffQ = getEffectiveArenaQuestion();
+    if (currentEffQ && currentEffQ.uid === targetUid) {
+      const existingLoader = document.getElementById('chatbox-loading-indicator');
+      if (existingLoader) existingLoader.remove();
+
+      const errBubble = document.createElement('div');
+      errBubble.className = 'chat-bubble bubble-ai';
+      errBubble.innerHTML = `⚠️ ${escapeHtml(err.message || 'Erreur de réponse IA')}`;
+      listEl.appendChild(errBubble);
+    }
+  } finally {
+    if (sendBtn) sendBtn.disabled = false;
+    if (inputEl) {
+      inputEl.disabled = false;
+      inputEl.focus();
+    }
+    listEl.scrollTop = listEl.scrollHeight;
+    refreshLucide(listEl);
+  }
+}
+
+
+// --- src/views/notebookView.js ---
+// ============================================================================
+// Carnet de Raisonnement IA & Sélection des Chapitres
+// ============================================================================
+
+const NOTEBOOK_PAGE_SIZE = 30;
+
 let notebookSelectedChapter = '';
 let notebookSortBy = 'date'; // 'date' | 'mistakes' | 'chapter' | 'score'
 let notebookSortOrder = 'desc'; // 'desc' | 'asc'
 let notebookViewMode = 'chapter'; // 'chapter' | 'flat'
+let notebookVisibleLimit = NOTEBOOK_PAGE_SIZE;
+
+function resetNotebookViewFilters() {
+  notebookSelectedChapter = '';
+  notebookVisibleLimit = NOTEBOOK_PAGE_SIZE;
+  const chapFilterSelect = document.getElementById('notebook-chapter-filter');
+  if (chapFilterSelect) chapFilterSelect.value = '';
+  const notebookSearch = document.getElementById('notebook-search-input');
+  if (notebookSearch) notebookSearch.value = '';
+}
+
+function setNotebookSortBy(sortBy) {
+  notebookSortBy = sortBy || 'date';
+  notebookVisibleLimit = NOTEBOOK_PAGE_SIZE;
+}
+
+function toggleNotebookSortOrder() {
+  notebookSortOrder = (notebookSortOrder === 'desc') ? 'asc' : 'desc';
+  notebookVisibleLimit = NOTEBOOK_PAGE_SIZE;
+  updateSortOrderButtonUI();
+}
+
+function setNotebookViewMode(mode) {
+  notebookViewMode = (mode === 'flat') ? 'flat' : 'chapter';
+  notebookVisibleLimit = NOTEBOOK_PAGE_SIZE;
+}
+
+function setNotebookSelectedChapter(chapterTitle) {
+  notebookSelectedChapter = chapterTitle || '';
+  notebookVisibleLimit = NOTEBOOK_PAGE_SIZE;
+}
 
 function compareQuestions(qA, qB, sortBy, sortOrder) {
-  let valA, valB;
+  let valA;
+  let valB;
 
   if (sortBy === 'date') {
     valA = qA.latestTimestamp || 0;
@@ -9301,7 +9742,6 @@ function compareQuestions(qA, qB, sortBy, sortOrder) {
   } else if (sortBy === 'mistakes') {
     valA = qA.totalMistakes || 0;
     valB = qB.totalMistakes || 0;
-    // Tie-breaker: most recent date
     if (valA === valB) {
       valA = qA.latestTimestamp || 0;
       valB = qB.latestTimestamp || 0;
@@ -9319,9 +9759,8 @@ function compareQuestions(qA, qB, sortBy, sortOrder) {
 
   if (sortOrder === 'asc') {
     return valA > valB ? 1 : (valA < valB ? -1 : 0);
-  } else {
-    return valA < valB ? 1 : (valA > valB ? -1 : 0);
   }
+  return valA < valB ? 1 : (valA > valB ? -1 : 0);
 }
 
 function getSortSummaryLabel() {
@@ -9350,23 +9789,22 @@ function updateSortOrderButtonUI() {
     btn.title = 'Ordre actuel : Croissant (Min ➔ Max). Cliquer pour passer en Décroissant.';
     if (icon) icon.setAttribute('data-lucide', 'arrow-up-narrow-wide');
   }
-  refreshLucide();
+  refreshLucide(btn);
 }
 
 function renderQuestionCard(q, gIdx, qIdx, rankNumber = null) {
   const qDomId = `qcard_${gIdx}_${qIdx}`;
   const latestAttempt = q.attempts[0];
-  const latestDateStr = latestAttempt.timestamp 
+  const latestDateStr = latestAttempt.timestamp
     ? new Date(latestAttempt.timestamp).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
     : '';
 
-  // Attempts tab switcher (if multiple attempts on the same question)
   let switcherHtml = '';
   if (q.attempts.length > 1) {
     switcherHtml = `
       <div class="attempts-switcher-bar">
         ${q.attempts.map((att, attIdx) => {
-          const timeStr = att.timestamp 
+          const timeStr = att.timestamp
             ? new Date(att.timestamp).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
             : `Tentative ${q.attempts.length - attIdx}`;
           const scoreBadge = (att.score !== null && att.score !== undefined) ? `<span class="badge-pill-micro">${att.score}%</span>` : '';
@@ -9383,16 +9821,8 @@ function renderQuestionCard(q, gIdx, qIdx, rankNumber = null) {
     `;
   }
 
-  // Pre-rendered panels for each attempt with complete fiches
   const panelsHtml = q.attempts.map((att, attIdx) => {
-    let fullQ = questionsMap.get(att.questionUid);
-    if (!fullQ && typeof window !== 'undefined') {
-      if (att.questionUid && att.questionUid.startsWith('psy_') && window.PSY_QUESTIONS) {
-        fullQ = window.PSY_QUESTIONS.find(x => x.uid === att.questionUid);
-      } else if (window.PEDIA_QUESTIONS) {
-        fullQ = window.PEDIA_QUESTIONS.find(x => x.uid === att.questionUid);
-      }
-    }
+    let fullQ = findQuestionAcrossDatasets(att.questionUid);
     if (!fullQ) {
       fullQ = {
         uid: att.questionUid,
@@ -9404,7 +9834,9 @@ function renderQuestionCard(q, gIdx, qIdx, rankNumber = null) {
         croq_answer: att.correctAnswer || ''
       };
     }
-    if (!fullQ.media_urls && att.media_urls) { fullQ.media_urls = att.media_urls; }
+    if (!fullQ.media_urls && att.media_urls) {
+      fullQ.media_urls = att.media_urls;
+    }
     const letters = att.userAnswerLetters || (att.userAnswer ? att.userAnswer.split(',').map(s => s.trim().toUpperCase()) : []);
     const recapHtml = formatQuestionMistakeRecap(fullQ, letters, q.isCroq, att.userAnswer, att.score);
     const reasHtml = formatReasoningNote(att.reasoningNote);
@@ -9479,21 +9911,21 @@ function renderQuestionCard(q, gIdx, qIdx, rankNumber = null) {
   `;
 }
 
+function resolveDefaultChapterForModule() {
+  const ctx = resolveAiModuleContext({ chapterTitle: '' });
+  return ctx.defaultChapter || `${ctx.moduleName} Générale`;
+}
+
 function groupNotesByChapterAndQuestion(notes) {
   const chapterMap = new Map();
-  const currentModId = typeof getActiveModuleId === 'function' ? getActiveModuleId() : 'pediatrie';
-  const defaultGeneralChap = (currentModId === 'psychiatrie' || currentModId === 'psychiatrie_5') ? 'Psychiatrie Générale' : 'Pédiatrie Générale';
+  const defaultGeneralChap = resolveDefaultChapterForModule();
 
   notes.forEach(note => {
-    let fullQ = questionsMap.get(note.questionUid);
-    if (!fullQ && typeof window !== 'undefined') {
-      if (note.questionUid && note.questionUid.startsWith('psy_') && window.PSY_QUESTIONS) {
-        fullQ = window.PSY_QUESTIONS.find(x => x.uid === note.questionUid);
-      } else if (window.PEDIA_QUESTIONS) {
-        fullQ = window.PEDIA_QUESTIONS.find(x => x.uid === note.questionUid);
-      }
-    }
-    const noteChapFallback = (note.questionUid && note.questionUid.startsWith('psy_')) ? 'Psychiatrie Générale' : defaultGeneralChap;
+    const fullQ = findQuestionAcrossDatasets(note.questionUid);
+    const noteCtx = note.questionUid && note.questionUid.startsWith('psy_')
+      ? resolveAiModuleContext({ uid: note.questionUid })
+      : null;
+    const noteChapFallback = noteCtx ? noteCtx.defaultChapter : defaultGeneralChap;
     const chap = (fullQ && fullQ.chapterTitle) || (note.chapterTitle && note.chapterTitle.trim()) || noteChapFallback;
     const qKey = note.questionUid || (fullQ && fullQ.question) || note.questionText || note.id;
 
@@ -9508,14 +9940,10 @@ function groupNotesByChapterAndQuestion(notes) {
   });
 
   const result = [];
-  const chapterKeys = Array.from(chapterMap.keys());
-
-  for (const chapTitle of chapterKeys) {
-    const qMap = chapterMap.get(chapTitle);
+  for (const [chapTitle, qMap] of chapterMap.entries()) {
     const questions = [];
 
     for (const [qKey, attempts] of qMap.entries()) {
-      // Sort attempts: newest first inside the question
       attempts.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
       const primary = attempts[0];
@@ -9532,14 +9960,13 @@ function groupNotesByChapterAndQuestion(notes) {
         chapterTitle: chapTitle,
         isCroq: !!isCroq,
         attemptsCount: attempts.length,
-        totalMistakes: totalMistakes,
-        latestTimestamp: latestTimestamp,
-        latestScore: latestScore,
-        attempts: attempts
+        totalMistakes,
+        latestTimestamp,
+        latestScore,
+        attempts
       });
     }
 
-    // Sort questions within this chapter according to active criteria
     questions.sort((a, b) => compareQuestions(a, b, notebookSortBy, notebookSortOrder));
 
     const chapterLatestTimestamp = Math.max(...questions.map(q => q.latestTimestamp || 0), 0);
@@ -9549,26 +9976,28 @@ function groupNotesByChapterAndQuestion(notes) {
       chapterTitle: chapTitle,
       totalQuestions: questions.length,
       totalNotes: questions.reduce((sum, q) => sum + q.attemptsCount, 0),
-      chapterLatestTimestamp: chapterLatestTimestamp,
-      chapterTotalMistakes: chapterTotalMistakes,
-      questions: questions
+      chapterLatestTimestamp,
+      chapterTotalMistakes,
+      questions
     });
   }
 
-  // Sort chapters themselves according to the active criteria
   result.sort((cA, cB) => {
     if (notebookSortBy === 'date') {
       return notebookSortOrder === 'asc'
         ? cA.chapterLatestTimestamp - cB.chapterLatestTimestamp
         : cB.chapterLatestTimestamp - cA.chapterLatestTimestamp;
-    } else if (notebookSortBy === 'mistakes') {
+    }
+    if (notebookSortBy === 'mistakes') {
       return notebookSortOrder === 'asc'
         ? cA.chapterTotalMistakes - cB.chapterTotalMistakes
         : cB.chapterTotalMistakes - cA.chapterTotalMistakes;
-    } else if (notebookSortBy === 'chapter') {
+    }
+    if (notebookSortBy === 'chapter') {
       const cmp = cA.chapterTitle.localeCompare(cB.chapterTitle, 'fr');
       return notebookSortOrder === 'asc' ? cmp : -cmp;
-    } else if (notebookSortBy === 'score') {
+    }
+    if (notebookSortBy === 'score') {
       const avgA = cA.questions.reduce((s, q) => s + (q.latestScore ?? 50), 0) / (cA.questions.length || 1);
       const avgB = cB.questions.reduce((s, q) => s + (q.latestScore ?? 50), 0) / (cB.questions.length || 1);
       return notebookSortOrder === 'asc' ? avgA - avgB : avgB - avgA;
@@ -9618,21 +10047,8 @@ window.toggleAllChapters = function() {
   const hasExpandedCards = Array.from(allCards).some(c => !c.classList.contains('collapsed'));
   const shouldCollapse = hasExpandedGroups || (allGroups.length === 0 && hasExpandedCards);
 
-  allGroups.forEach(g => {
-    if (shouldCollapse) {
-      g.classList.add('collapsed');
-    } else {
-      g.classList.remove('collapsed');
-    }
-  });
-
-  allCards.forEach(c => {
-    if (shouldCollapse) {
-      c.classList.add('collapsed');
-    } else {
-      c.classList.remove('collapsed');
-    }
-  });
+  allGroups.forEach(g => g.classList.toggle('collapsed', shouldCollapse));
+  allCards.forEach(c => c.classList.toggle('collapsed', shouldCollapse));
 
   const btnText = document.getElementById('btn-toggle-all-chapters-text');
   if (btnText) {
@@ -9640,35 +10056,70 @@ window.toggleAllChapters = function() {
   }
 };
 
-function renderNotebookUI(filterText = '') {
+window.loadMoreNotebookNotes = function() {
+  notebookVisibleLimit += NOTEBOOK_PAGE_SIZE;
+  const searchVal = document.getElementById('notebook-search-input')?.value || '';
+  renderNotebookUI(searchVal, { preserveLimit: true });
+};
+
+function appendNotebookPaginationButton(container, renderedCount, totalQuestions) {
+  if (!container || renderedCount >= totalQuestions) return;
+  const remaining = totalQuestions - renderedCount;
+  const nextCount = Math.min(NOTEBOOK_PAGE_SIZE, remaining);
+
+  const wrap = document.createElement('div');
+  wrap.className = 'notebook-pagination-wrap';
+  wrap.innerHTML = `
+    <button type="button" class="btn-notebook-load-more" onclick="window.loadMoreNotebookNotes()">
+      <i data-lucide="chevron-down" style="width:15px;height:15px;"></i>
+      <span>Charger les ${nextCount} fiche${nextCount > 1 ? 's' : ''} suivante${nextCount > 1 ? 's' : ''} (${renderedCount}/${totalQuestions} affichées)</span>
+    </button>
+  `;
+  container.appendChild(wrap);
+}
+
+function renderNotebookUI(filterText = '', options = {}) {
+  if (!options || !options.preserveLimit) {
+    notebookVisibleLimit = NOTEBOOK_PAGE_SIZE;
+  }
+
   const container = document.getElementById('notebook-notes-list');
+  if (!container) return;
+
   const allNotes = queueEngine.getReasoningNotes();
-  const currentModId = typeof getActiveModuleId === 'function' ? getActiveModuleId() : 'pediatrie';
-  const defaultChapter = (currentModId === 'psychiatrie' || currentModId === 'psychiatrie_5') ? 'Psychiatrie Générale' : 'Pédiatrie Générale';
+  const activeModId = getActiveModuleId();
+  const defaultChapter = resolveDefaultChapterForModule();
 
-  const getNoteChap = (n) => n.chapterTitle || ((n.questionUid && n.questionUid.startsWith('psy_')) ? 'Psychiatrie Générale' : defaultChapter);
+  const getNoteChap = (n) => {
+    if (n.chapterTitle) return n.chapterTitle;
+    if (n.questionUid && n.questionUid.startsWith('psy_') && activeModId !== 'psychiatrie') {
+      return resolveAiModuleContext({ uid: n.questionUid }).defaultChapter;
+    }
+    return defaultChapter;
+  };
 
-  // Populate or update the chapter filter select if it exists
   const chapFilterSelect = document.getElementById('notebook-chapter-filter');
   if (chapFilterSelect) {
-    const existingChapters = Array.from(new Set(allNotes.map(n => getNoteChap(n)))).sort((a,b) => a.localeCompare(b, 'fr'));
+    const countsByChapter = new Map();
+    allNotes.forEach(n => {
+      const ch = getNoteChap(n);
+      countsByChapter.set(ch, (countsByChapter.get(ch) || 0) + 1);
+    });
+    const existingChapters = Array.from(countsByChapter.keys()).sort((a, b) => a.localeCompare(b, 'fr'));
     const currentVal = notebookSelectedChapter;
     let optionsHtml = `<option value="">Tous les cours (${allNotes.length} notes)</option>`;
     existingChapters.forEach(c => {
-      const count = allNotes.filter(n => getNoteChap(n) === c).length;
-      optionsHtml += `<option value="${escapeHtml(c)}" ${c === currentVal ? 'selected' : ''}>${escapeHtml(c)} (${count})</option>`;
+      optionsHtml += `<option value="${escapeHtml(c)}" ${c === currentVal ? 'selected' : ''}>${escapeHtml(c)} (${countsByChapter.get(c)})</option>`;
     });
     chapFilterSelect.innerHTML = optionsHtml;
   }
 
-  // Sync sort controls
   const sortSelect = document.getElementById('notebook-sort-by');
   if (sortSelect && sortSelect.value !== notebookSortBy) {
     sortSelect.value = notebookSortBy;
   }
   updateSortOrderButtonUI();
 
-  // Filter notes by text & chapter
   const filtered = allNotes.filter(n => {
     const noteChap = getNoteChap(n);
     if (notebookSelectedChapter && noteChap !== notebookSelectedChapter) {
@@ -9676,37 +10127,29 @@ function renderNotebookUI(filterText = '') {
     }
     if (!filterText) return true;
     const q = filterText.toLowerCase();
-    let fullQ = questionsMap.get(n.questionUid);
-    if (!fullQ && typeof window !== 'undefined') {
-      if (n.questionUid && n.questionUid.startsWith('psy_') && window.PSY_QUESTIONS) {
-        fullQ = window.PSY_QUESTIONS.find(x => x.uid === n.questionUid);
-      } else if (window.PEDIA_QUESTIONS) {
-        fullQ = window.PEDIA_QUESTIONS.find(x => x.uid === n.questionUid);
-      }
-    }
+    const fullQ = findQuestionAcrossDatasets(n.questionUid);
     const optionsText = fullQ && fullQ.options ? fullQ.options.map(o => o.text).join(' ').toLowerCase() : '';
     const explanationText = (fullQ && fullQ.explanation ? fullQ.explanation.toLowerCase() : '') || (n.officialExplanation ? n.officialExplanation.toLowerCase() : '');
-
     const qText = (fullQ && fullQ.question ? fullQ.question.toLowerCase() : '') || (n.questionText ? n.questionText.toLowerCase() : '');
     const chapText = (fullQ && fullQ.chapterTitle ? fullQ.chapterTitle.toLowerCase() : '') || (n.chapterTitle ? n.chapterTitle.toLowerCase() : '');
 
     return qText.includes(q) ||
-           chapText.includes(q) ||
-           (n.reasoningNote && n.reasoningNote.toLowerCase().includes(q)) ||
-           (n.userAnswer && n.userAnswer.toLowerCase().includes(q)) ||
-           optionsText.includes(q) ||
-           explanationText.includes(q);
+      chapText.includes(q) ||
+      (n.reasoningNote && n.reasoningNote.toLowerCase().includes(q)) ||
+      (n.userAnswer && n.userAnswer.toLowerCase().includes(q)) ||
+      optionsText.includes(q) ||
+      explanationText.includes(q);
   });
 
-  // Update summary bar
+  const views = getDomViews();
   const summaryBar = document.getElementById('notebook-summary-bar');
   if (filtered.length === 0) {
     if (summaryBar) summaryBar.style.display = 'none';
     container.innerHTML = `
       <div style="text-align:center;padding:40px;color:var(--text-dim);">
         <i data-lucide="book-marked" style="width:36px;height:36px;margin:0 auto 10px;display:block;"></i>
-        ${filterText || notebookSelectedChapter 
-          ? 'Aucune note ne correspond à vos filtres actuels.' 
+        ${filterText || notebookSelectedChapter
+          ? 'Aucune note ne correspond à vos filtres actuels.'
           : 'Aucune note de raisonnement pour le moment. Vos futures erreurs seront automatiquement analysées et regroupées ici par cours !'}
       </div>
     `;
@@ -9732,31 +10175,41 @@ function renderNotebookUI(filterText = '') {
   }
 
   container.innerHTML = '';
+  let renderedQuestionsCount = 0;
 
   if (notebookViewMode === 'flat') {
-    // FLAT LIST VIEW: All questions sorted across the whole syllabus
     const allFlatQuestions = [];
     groupedChapters.forEach(g => {
       allFlatQuestions.push(...g.questions);
     });
     allFlatQuestions.sort((a, b) => compareQuestions(a, b, notebookSortBy, notebookSortOrder));
 
-    allFlatQuestions.forEach((q, qIdx) => {
+    const visibleFlat = allFlatQuestions.slice(0, notebookVisibleLimit);
+    visibleFlat.forEach((q, qIdx) => {
       const cardHtml = renderQuestionCard(q, 'flat', qIdx, qIdx + 1);
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = cardHtml;
-      container.appendChild(tempDiv.firstElementChild);
+      if (tempDiv.firstElementChild) container.appendChild(tempDiv.firstElementChild);
     });
+    renderedQuestionsCount = visibleFlat.length;
   } else {
-    // CHAPTER ACCORDION VIEW
-    groupedChapters.forEach((g, gIdx) => {
+    let remainingBudget = notebookVisibleLimit;
+
+    for (let gIdx = 0; gIdx < groupedChapters.length; gIdx++) {
+      if (remainingBudget <= 0) break;
+
+      const g = groupedChapters[gIdx];
+      const visibleChapQuestions = g.questions.slice(0, remainingBudget);
+      remainingBudget -= visibleChapQuestions.length;
+      renderedQuestionsCount += visibleChapQuestions.length;
+
       const chapterGroupId = `chap_group_${gIdx}`;
       const chapterGroupEl = document.createElement('div');
       chapterGroupEl.className = 'notebook-chapter-group';
       chapterGroupEl.id = chapterGroupId;
 
       let questionsHtml = '';
-      g.questions.forEach((q, qIdx) => {
+      visibleChapQuestions.forEach((q, qIdx) => {
         questionsHtml += renderQuestionCard(q, gIdx, qIdx, null);
       });
 
@@ -9766,12 +10219,16 @@ function renderNotebookUI(filterText = '') {
         </span>
       ` : '';
 
+      const partialLabel = visibleChapQuestions.length < g.totalQuestions
+        ? `${visibleChapQuestions.length}/${g.totalQuestions}`
+        : `${g.totalQuestions}`;
+
       chapterGroupEl.innerHTML = `
         <div class="notebook-chapter-header" onclick="window.toggleChapterGroup('${chapterGroupId}')">
           <div class="notebook-chapter-title-wrap">
             <i data-lucide="folder-open" class="chapter-folder-icon"></i>
             <span class="notebook-chapter-title">${escapeHtml(g.chapterTitle)}</span>
-            <span class="chapter-count-badge">${g.totalQuestions} question${g.totalQuestions > 1 ? 's' : ''}</span>
+            <span class="chapter-count-badge">${partialLabel} question${g.totalQuestions > 1 ? 's' : ''}</span>
             <span class="chapter-count-badge" style="background:rgba(0, 212, 255, 0.15);color:var(--cyan);border-color:rgba(0,212,255,0.35);">
               ${g.totalNotes} analyse${g.totalNotes > 1 ? 's' : ''} IA
             </span>
@@ -9785,9 +10242,10 @@ function renderNotebookUI(filterText = '') {
       `;
 
       container.appendChild(chapterGroupEl);
-    });
+    }
   }
 
+  appendNotebookPaginationButton(container, renderedQuestionsCount, totalQuestions);
   refreshLucide(views.notebook);
 }
 
@@ -9796,11 +10254,13 @@ function renderNotebookUI(filterText = '') {
 // ============================================================================
 function openChaptersModal() {
   const container = document.getElementById('chapters-checkboxes-container');
+  const modals = getDomModals();
+  if (!container || !modals.chapters) return;
   container.innerHTML = '';
 
   const selectedSet = new Set(queueEngine.selectedChapterIds);
 
-  allChapters.forEach(chap => {
+  appState.allChapters.forEach(chap => {
     const item = document.createElement('div');
     const isChecked = selectedSet.has(chap.id);
     item.className = `chapter-select-item ${isChecked ? 'checked' : ''}`;
@@ -9809,7 +10269,7 @@ function openChaptersModal() {
     item.innerHTML = `
       <div class="chapter-checkbox-wrap">
         <input type="checkbox" ${isChecked ? 'checked' : ''} style="accent-color:var(--cyan);width:16px;height:16px;">
-        <span style="font-size:0.88rem;font-weight:600;">${chap.title}</span>
+        <span style="font-size:0.88rem;font-weight:600;">${escapeHtml(chap.title)}</span>
       </div>
       <span class="chapter-item-count">${chap.count} QCM</span>
     `;
@@ -9824,7 +10284,7 @@ function openChaptersModal() {
   });
 
   modals.chapters.style.display = 'flex';
-  refreshLucide();
+  refreshLucide(modals.chapters);
 }
 
 function applyChapterSelection() {
@@ -9838,61 +10298,152 @@ function applyChapterSelection() {
 
   queueEngine.selectedChaptersUpdatedAt = Date.now();
   queueEngine.initSession(selected);
-  modals.chapters.style.display = 'none';
+  const modals = getDomModals();
+  if (modals.chapters) modals.chapters.style.display = 'none';
   updateDashboardUI();
-  firebaseSyncService.triggerAutoPush();
+  appState.firebaseSyncService?.triggerAutoPush();
 }
 
+
+// --- src/views/statsView.js ---
 // ============================================================================
-// STUDY PROGRESS & ANALYTICS INFOGRAPHIC ENGINE
+// Statistiques & Analytique Étude QCM (KPIs, Heatmap, Vélocité, Cours)
 // ============================================================================
-let currentStatsRange = 'today'; // 'today' | '7' | '14' | '21' | '28' | '30' | 'all' | 'custom' (Aujourd'hui par défaut)
+
+let currentStatsRange = 'today'; // 'today' | '7' | '14' | '21' | '28' | '30' | 'all' | 'custom'
 let customStatsStart = '';
 let customStatsEnd = '';
-let selectedDayOffset = 0; // 0 = Aujourd'hui, -1 = Hier, -2 = Avant-hier, etc.
+let selectedDayOffset = 0;
 let courseTrackerMode = 'period'; // 'period' | 'global'
 let courseTrackerSearchQuery = '';
 let lastRenderedChapterTotals = {};
 let lastRenderedPeriodLabel = '';
 
-function getDateStrWithOffset(offsetDays = 0) {
-  const d = new Date();
-  d.setDate(d.getDate() + offsetDays);
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${y}-${m}-${day}`;
-}
+function setupStatsEventListeners() {
+  const rangeToggle = document.getElementById('stats-range-toggle');
+  const customPicker = document.getElementById('custom-range-picker');
+  const customStartInput = document.getElementById('custom-date-start');
+  const customEndInput = document.getElementById('custom-date-end');
+  const btnApplyCustom = document.getElementById('btn-apply-custom-range');
 
-function getDayLabelForOffset(offsetDays = 0) {
-  if (offsetDays === 0) return "Aujourd'hui";
-  if (offsetDays === -1) return "Hier";
-  if (offsetDays === -2) return "Avant-hier";
-  const dateStr = getDateStrWithOffset(offsetDays);
-  return formatDateFr(dateStr);
-}
-
-function formatDuration(totalSeconds) {
-  if (!totalSeconds || totalSeconds <= 0) return '0m';
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-  if (hours > 0) {
-    return `${hours}h ${minutes > 0 ? minutes + 'm' : ''}`;
+  const btnPrevDay = document.getElementById('btn-stats-prev-day');
+  if (btnPrevDay) {
+    btnPrevDay.onclick = (e) => {
+      e.stopPropagation();
+      selectedDayOffset--;
+      currentStatsRange = 'today';
+      rangeToggle?.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('btn-range-day')?.classList.add('active');
+      if (customPicker) customPicker.style.display = 'none';
+      renderStatsUI();
+      refreshLucide();
+    };
   }
-  if (minutes > 0) {
-    return `${minutes}m ${seconds > 0 ? seconds + 's' : ''}`;
-  }
-  return `${seconds}s`;
-}
 
-function formatDateFr(dateStr) {
-  if (!dateStr) return '';
-  const parts = dateStr.split('-');
-  if (parts.length !== 3) return dateStr;
-  const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-  const options = { weekday: 'short', day: 'numeric', month: 'short' };
-  return d.toLocaleDateString('fr-FR', options);
+  const btnNextDay = document.getElementById('btn-stats-next-day');
+  if (btnNextDay) {
+    btnNextDay.onclick = (e) => {
+      e.stopPropagation();
+      if (selectedDayOffset < 0) {
+        selectedDayOffset++;
+        currentStatsRange = 'today';
+        rangeToggle?.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-range-day')?.classList.add('active');
+        if (customPicker) customPicker.style.display = 'none';
+        renderStatsUI();
+        refreshLucide();
+      }
+    };
+  }
+
+  if (rangeToggle) {
+    rangeToggle.querySelectorAll('.range-btn').forEach(btn => {
+      btn.onclick = () => {
+        rangeToggle.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const r = btn.dataset.range || 'today';
+
+        if (r === 'today') {
+          if (currentStatsRange === 'today' && selectedDayOffset !== 0) {
+            selectedDayOffset = 0;
+          }
+          currentStatsRange = 'today';
+        } else {
+          selectedDayOffset = 0;
+          currentStatsRange = r;
+        }
+
+        if (r === 'custom') {
+          if (customPicker) {
+            customPicker.style.display = 'flex';
+            const today = studyTracker.getTodayDateStr();
+            if (customEndInput && !customEndInput.value) customEndInput.value = today;
+            if (customStartInput && !customStartInput.value) {
+              customStartInput.value = getDateStrWithOffset(-7);
+            }
+            customStatsStart = customStartInput?.value || today;
+            customStatsEnd = customEndInput?.value || today;
+            renderStatsUI();
+          }
+        } else {
+          if (customPicker) customPicker.style.display = 'none';
+          renderStatsUI();
+        }
+        refreshLucide();
+      };
+    });
+  }
+
+  ['box-custom-date-start', 'box-custom-date-end'].forEach(boxId => {
+    const box = document.getElementById(boxId);
+    if (box) {
+      box.addEventListener('click', (e) => {
+        const inp = box.querySelector('input[type="date"]');
+        if (inp && e.target !== inp) {
+          if (typeof inp.showPicker === 'function') {
+            try { inp.showPicker(); } catch (_) { inp.focus(); }
+          } else {
+            inp.focus();
+          }
+        }
+      });
+    }
+  });
+
+  if (btnApplyCustom) {
+    btnApplyCustom.onclick = () => {
+      customStatsStart = customStartInput?.value || '';
+      customStatsEnd = customEndInput?.value || '';
+      if (!customStatsStart || !customStatsEnd) {
+        showAppToast('Veuillez sélectionner une date de début et une date de fin.', { type: 'warning' });
+        return;
+      }
+      renderStatsUI();
+      refreshLucide();
+    };
+  }
+
+  const cmodeToggle = document.getElementById('course-tracker-mode-toggle');
+  if (cmodeToggle) {
+    cmodeToggle.querySelectorAll('.course-pill-btn').forEach(btn => {
+      btn.onclick = () => {
+        cmodeToggle.querySelectorAll('.course-pill-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        courseTrackerMode = btn.dataset.cmode || 'period';
+        renderStatsChapters(lastRenderedChapterTotals, lastRenderedPeriodLabel);
+        refreshLucide();
+      };
+    });
+  }
+
+  const courseSearchInput = document.getElementById('course-tracker-search');
+  if (courseSearchInput) {
+    courseSearchInput.oninput = (e) => {
+      courseTrackerSearchQuery = e.target.value;
+      renderStatsChapters(lastRenderedChapterTotals, lastRenderedPeriodLabel);
+      refreshLucide();
+    };
+  }
 }
 
 function renderStatsUI() {
@@ -9918,14 +10469,12 @@ function renderStatsUI() {
     rangeDays = studyTracker.getDaysByRange(currentStatsRange);
     rangeLabel = `${currentStatsRange} jours`;
   } else {
-    // Par défaut : Aujourd'hui (ou décalage sélectionné)
     const targetDateStr = getDateStrWithOffset(selectedDayOffset);
     const targetRecord = studyTracker.getOrCreateDayRecord(targetDateStr);
     rangeDays = [targetRecord];
     rangeLabel = getDayLabelForOffset(selectedDayOffset);
   }
 
-  // Update Day Stepper UI elements
   const dayTextEl = document.getElementById('range-day-text');
   if (dayTextEl) {
     dayTextEl.textContent = (currentStatsRange === 'today') ? rangeLabel : "Aujourd'hui";
@@ -9935,28 +10484,19 @@ function renderStatsUI() {
     nextDayBtn.disabled = (selectedDayOffset >= 0);
   }
 
-  // Synchroniser la classe active sur tous les boutons de période du sélecteur
   const rangeToggleEl = document.getElementById('stats-range-toggle');
   if (rangeToggleEl) {
     rangeToggleEl.querySelectorAll('.range-btn').forEach(btn => {
-      const r = btn.dataset.range;
-      if (r === currentStatsRange) {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
-      }
+      btn.classList.toggle('active', btn.dataset.range === currentStatsRange);
     });
   }
 
-  // Calculate statistics strictly for the selected period
   const periodAnalytics = (currentStatsRange === 'all')
     ? studyTracker.getGlobalAnalytics()
     : studyTracker.getAnalyticsForDays(rangeDays);
 
   const streakMetrics = studyTracker.getStreakMetrics();
 
-  // 1. Hero KPIs
-  // Card 1: Streak (Série d'étude)
   const streakDaysEl = document.getElementById('kpi-streak-days');
   const streakSubEl = document.getElementById('kpi-streak-sub');
   if (streakDaysEl) streakDaysEl.textContent = streakMetrics.currentStreak;
@@ -9972,13 +10512,12 @@ function renderStatsUI() {
     }
   }
 
-  // Card 2: Questions Faites (Période sélectionnée)
   const qLabelEl = document.getElementById('kpi-questions-label');
   const qTotalEl = document.getElementById('kpi-total-questions');
   const qSubEl = document.getElementById('kpi-questions-sub');
   if (qLabelEl) {
     if (currentStatsRange === 'today') qLabelEl.textContent = "Questions (Aujourd'hui)";
-    else if (currentStatsRange === 'all') qLabelEl.textContent = "Total Questions Faites";
+    else if (currentStatsRange === 'all') qLabelEl.textContent = 'Total Questions Faites';
     else qLabelEl.textContent = `Questions (${rangeLabel})`;
   }
   if (qTotalEl) qTotalEl.textContent = formatNumber(periodAnalytics.totalQuestions);
@@ -9992,13 +10531,12 @@ function renderStatsUI() {
     }
   }
 
-  // Card 3: Taux de Précision (Période sélectionnée)
   const accLabelEl = document.getElementById('kpi-accuracy-label');
   const accEl = document.getElementById('kpi-accuracy-pct');
   const accSubEl = document.getElementById('kpi-accuracy-sub');
   if (accLabelEl) {
     if (currentStatsRange === 'today') accLabelEl.textContent = "Précision (Aujourd'hui)";
-    else if (currentStatsRange === 'all') accLabelEl.textContent = "Précision Globale";
+    else if (currentStatsRange === 'all') accLabelEl.textContent = 'Précision Globale';
     else accLabelEl.textContent = `Précision (${rangeLabel})`;
   }
   if (accEl) {
@@ -10012,7 +10550,6 @@ function renderStatsUI() {
     }
   }
 
-  // Card 4: First Pass (Découverte) KPI Card (Période sélectionnée)
   const fpCardPct = document.getElementById('kpi-first-pass-pct');
   const fpCardSub = document.getElementById('kpi-first-pass-sub');
   const fpData = periodAnalytics.firstPass;
@@ -10032,7 +10569,6 @@ function renderStatsUI() {
     }
   }
 
-  // Card 5: Temps d'Étude (Période sélectionnée)
   const timeLabelEl = document.getElementById('kpi-time-label');
   const timeEl = document.getElementById('kpi-total-time');
   const sessSubEl = document.getElementById('kpi-sessions-sub');
@@ -10046,13 +10582,12 @@ function renderStatsUI() {
     sessSubEl.textContent = `${periodAnalytics.totalSessions} session${periodAnalytics.totalSessions > 1 ? 's' : ''} active${periodAnalytics.totalSessions > 1 ? 's' : ''}`;
   }
 
-  // Card 6: Vitesse Moyenne (Période sélectionnée)
   const speedLabelEl = document.getElementById('kpi-speed-label');
   const speedEl = document.getElementById('kpi-avg-speed');
   const speedSubEl = document.getElementById('kpi-speed-sub');
   if (speedLabelEl) {
     if (currentStatsRange === 'today') speedLabelEl.textContent = "Vitesse (Aujourd'hui)";
-    else if (currentStatsRange === 'all') speedLabelEl.textContent = "Vitesse Moyenne Globale";
+    else if (currentStatsRange === 'all') speedLabelEl.textContent = 'Vitesse Moyenne Globale';
     else speedLabelEl.textContent = `Vitesse Moyenne (${rangeLabel})`;
   }
   if (speedEl) {
@@ -10066,13 +10601,10 @@ function renderStatsUI() {
       const wTime = periodAnalytics.avgTimeWrong > 0 ? `${periodAnalytics.avgTimeWrong}s` : '--s';
       speedSubEl.textContent = `Justes : ${cTime} • Fautes : ${wTime}`;
     } else {
-      speedSubEl.textContent = `Justes : --s • Fautes : --s`;
+      speedSubEl.textContent = 'Justes : --s • Fautes : --s';
     }
   }
 
-  // Card 7: Temps Nécessaire pour Terminer
-  // - Mode "Aujourd'hui" : Vitesse × Questions restantes aujourd'hui (s'actualise après chaque réponse)
-  // - Autres modes (7j, 30j, Tout, Personnalisé) : Affiche le temps par jour et le temps total nécessaire
   const finishLabelEl = document.getElementById('kpi-finish-label');
   const finishValEl = document.getElementById('kpi-finish-value');
   const finishSubEl = document.getElementById('kpi-finish-sub');
@@ -10083,15 +10615,12 @@ function renderStatsUI() {
     const countdown = getExamCountdownMetrics(totalIterationsRemaining);
     const todayTrackerObj = queueEngine.getTodayTracker();
 
-    // Déterminer la vitesse de réponse de référence (en secondes/QCM)
     const globalAnalytics = studyTracker.getGlobalAnalytics();
-    let speedSec = 0;
+    let speedSec = 45;
     if (periodAnalytics.totalQuestions > 0 && periodAnalytics.avgTimePerQuestion > 0) {
       speedSec = periodAnalytics.avgTimePerQuestion;
     } else if (globalAnalytics.totalQuestions > 0 && globalAnalytics.avgTimePerQuestion > 0) {
       speedSec = globalAnalytics.avgTimePerQuestion;
-    } else {
-      speedSec = 45; // Cadence par défaut si aucun QCM n'a encore été chronométré
     }
     speedSec = Math.round(speedSec * 10) / 10;
 
@@ -10100,7 +10629,7 @@ function renderStatsUI() {
         const remainingToday = Math.max(0, countdown.dailyIterationsRequired - todayTrackerObj.count);
         const totalSecNeededToday = Math.round(remainingToday * speedSec);
 
-        if (finishLabelEl) finishLabelEl.textContent = "Temps pour Finir (Auj.)";
+        if (finishLabelEl) finishLabelEl.textContent = 'Temps pour Finir (Auj.)';
 
         if (remainingToday === 0) {
           finishValEl.innerHTML = `<span style="color:var(--emerald);font-weight:700;">0 min</span> <small style="font-size:0.8rem;font-weight:600;color:var(--emerald);">✓ Terminé</small>`;
@@ -10121,7 +10650,7 @@ function renderStatsUI() {
         if (finishSubEl) {
           finishSubEl.textContent = dayQCount > 0
             ? `${dayQCount} QCM réalisés ce jour-là (${periodAnalytics.totalCorrect} justes)`
-            : "Aucun QCM enregistré ce jour-là";
+            : 'Aucun QCM enregistré ce jour-là';
         }
       }
     } else {
@@ -10133,28 +10662,26 @@ function renderStatsUI() {
 
       if (finishLabelEl) {
         finishLabelEl.textContent = (currentStatsRange === 'all')
-          ? "Temps Requis (Total & Jour)"
+          ? 'Temps Requis (Total & Jour)'
           : `Temps Requis (${rangeLabel})`;
       }
 
       if (totalIterationsRemaining === 0) {
         finishValEl.innerHTML = `<span style="color:var(--emerald);font-weight:700;">Programme Terminé ! 🎉</span>`;
         if (finishSubEl) {
-          finishSubEl.textContent = "Toutes les questions maîtrisées (100%)";
+          finishSubEl.textContent = 'Toutes les questions maîtrisées (100%)';
         }
       } else {
         finishValEl.innerHTML = `<span style="font-weight:700;">${formattedDailyTime}</span><small style="font-size:0.8rem;font-weight:600;color:var(--text-muted);">/j</small> • <span style="font-weight:700;">${formattedTotalTime}</span><small style="font-size:0.8rem;font-weight:600;color:var(--text-muted);"> total</small>`;
         if (finishSubEl) {
-          finishSubEl.textContent = `Total : ${formattedTotalTime} (${formatNumber(totalIterationsRemaining)} QCM • J-${countdown.daysLeft})`;
+          finishSubEl.textContent = `Total : ${formattedTotalTime} (${formatNumber(totalIterationsRemaining)} QCM • ${countdown.hasDate ? 'J-' + countdown.daysLeft : 'échéance libre'})`;
         }
       }
     }
   }
 
-  // 2. Heatmap
   renderStatsHeatmap(studyTracker.getRawHistory());
 
-  // Determine days for the activity chart: 7 days by default when on 'today', or the selected range otherwise
   let chartDays;
   if (currentStatsRange === 'today') {
     chartDays = [];
@@ -10175,32 +10702,19 @@ function renderStatsUI() {
     chartDays = rangeDays;
   }
 
-  // 3. Activity Chart (Stacked Bars & Velocity curve)
   renderStatsActivityChart(chartDays);
-
-  // 4. Velocity breakdown & Exam projection
   renderStatsVelocityAndProjection(periodAnalytics, rangeLabel);
 
-  // 5. Chapters breakdown
   lastRenderedChapterTotals = periodAnalytics.chapterTotals || {};
   lastRenderedPeriodLabel = rangeLabel;
   renderStatsChapters(lastRenderedChapterTotals, lastRenderedPeriodLabel);
 
-  // 6. Daily Timeline
   renderStatsTimeline(rangeDays);
-
-  // 7. Lesson Stopwatch & Study Time per Lesson
   renderLessonTrackerUI();
-
-  // Ensure active subpage visibility
-  switchStatsSubpage(currentStatsSubpage, false);
-
+  switchStatsSubpage(getCurrentStatsSubpage(), false);
   refreshLucide();
 }
 
-/**
- * Renders GitHub-style activity contribution heatmap for last 60 days
- */
 function renderStatsHeatmap(history) {
   const container = document.getElementById('stats-heatmap-container');
   if (!container) return;
@@ -10215,17 +10729,11 @@ function renderStatsHeatmap(history) {
   const width = leftMargin + (9 * (cellWidth + gap)) + 10;
   const height = topMargin + (7 * (cellHeight + gap)) + 6;
 
-  // Strict Calendar Week Alignment:
-  // Day of week: 0 = Mon, 1 = Tue, 2 = Wed, 3 = Thu, 4 = Fri, 5 = Sat, 6 = Sun
   const todayDayOfWeek = (now.getDay() + 6) % 7;
-
-  // The grid spans 9 full columns (weeks 0 to 8), with column 8 ending at today (row = todayDayOfWeek)
-  // The start date is strictly the Monday of 8 weeks ago:
   const startMonday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - (8 * 7 + todayDayOfWeek));
 
   let svgContent = `<svg class="heatmap-svg" viewBox="0 0 ${width} ${height}" style="max-width:100%;height:auto;">`;
 
-  // Day of week labels on left strictly aligned with row indices: 0 = Lun, 2 = Mer, 4 = Ven, 6 = Dim
   const dayNames = ['Lun', '', 'Mer', '', 'Ven', '', 'Dim'];
   dayNames.forEach((name, idx) => {
     if (name) {
@@ -10236,7 +10744,6 @@ function renderStatsHeatmap(history) {
 
   const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
 
-  // Cells strictly grouped by columns (weeks 0 to 8) and rows (days of week Mon=0 to Sun=6)
   for (let col = 0; col < 9; col++) {
     for (let row = 0; row < 7; row++) {
       const cellDate = new Date(startMonday.getFullYear(), startMonday.getMonth(), startMonday.getDate() + (col * 7 + row));
@@ -10245,7 +10752,6 @@ function renderStatsHeatmap(history) {
       const x = leftMargin + col * (cellWidth + gap);
       const y = topMargin + row * (cellHeight + gap);
 
-      // If future day in current week, do not draw active cell
       if (cellMidnight > todayMidnight) {
         continue;
       }
@@ -10286,9 +10792,6 @@ function renderStatsHeatmap(history) {
   container.innerHTML = svgContent;
 }
 
-/**
- * Renders combined SVG activity chart (Stacked bars for Justes vs Fautes + Polyline for velocity)
- */
 function renderStatsActivityChart(rangeDays) {
   const container = document.getElementById('stats-activity-chart');
   if (!container) return;
@@ -10298,7 +10801,7 @@ function renderStatsActivityChart(rangeDays) {
   if (chartTitleEl) {
     if (currentStatsRange === 'today') {
       chartTitleEl.textContent = (selectedDayOffset === 0)
-        ? "Activité des 7 derniers jours (Volume, Justes vs Fautes & Vélocité)"
+        ? 'Activité des 7 derniers jours (Volume, Justes vs Fautes & Vélocité)'
         : `Activité sur 7 jours jusqu'à ${getDayLabelForOffset(selectedDayOffset)} (Volume, Justes vs Fautes & Vélocité)`;
     } else if (currentStatsRange === 'custom') {
       const firstStr = rangeDays[0]?.dateStr ? formatDateFr(rangeDays[0].dateStr) : '';
@@ -10314,7 +10817,7 @@ function renderStatsActivityChart(rangeDays) {
   }
 
   if (rangeDays.length === 0) {
-    container.innerHTML = '<div class="stats-empty-state"><p>Aucune donnée d\'entraînement sur cette période.</p></div>';
+    container.innerHTML = `<div class="stats-empty-state"><p>Aucune donnée d'entraînement sur cette période.</p></div>`;
     return;
   }
 
@@ -10333,7 +10836,6 @@ function renderStatsActivityChart(rangeDays) {
 
   let svg = `<svg class="chart-svg" viewBox="0 0 ${svgWidth} ${svgHeight}" preserveAspectRatio="none">`;
 
-  // Background Grid Lines (Horizontal)
   const gridSteps = 4;
   for (let s = 0; s <= gridSteps; s++) {
     const yVal = padTop + (plotH / gridSteps) * s;
@@ -10341,9 +10843,7 @@ function renderStatsActivityChart(rangeDays) {
     const velValue = Math.round(maxVel - (maxVel / gridSteps) * s);
 
     svg += `<line x1="${padLeft}" y1="${yVal}" x2="${svgWidth - padRight}" y2="${yVal}" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3" />`;
-    // Left axis label (volume)
     svg += `<text x="${padLeft - 8}" y="${yVal + 4}" fill="#64748b" font-size="9" text-anchor="end" font-family="var(--font-body)">${qValue}</text>`;
-    // Right axis label (velocity in seconds)
     if (s < gridSteps) {
       svg += `<text x="${svgWidth - padRight + 8}" y="${yVal + 4}" fill="#f59e0b" font-size="9" text-anchor="start" font-family="var(--font-body)">${velValue}s</text>`;
     }
@@ -10354,7 +10854,6 @@ function renderStatsActivityChart(rangeDays) {
   const barWidth = Math.max(6, Math.min(36, colWidth * 0.65));
   const velocityPoints = [];
 
-  // Draw Bars
   rangeDays.forEach((d, i) => {
     const xCenter = padLeft + (i + 0.5) * colWidth;
     const xBar = xCenter - barWidth / 2;
@@ -10364,7 +10863,6 @@ function renderStatsActivityChart(rangeDays) {
     const wr = d.wrongAnswers || 0;
     const speed = d.avgTimePerQuestion || 0;
 
-    const hTotal = (total / maxQ) * plotH;
     const hCor = (cor / maxQ) * plotH;
     const hWr = (wr / maxQ) * plotH;
 
@@ -10373,11 +10871,9 @@ function renderStatsActivityChart(rangeDays) {
 
     const tooltip = `${formatDateFr(d.dateStr)} : ${total} QCM (${cor} justes, ${wr} fautes) • Vitesse : ${speed || '--'}s/QCM`;
 
-    // Subtle vertical column guide track for clear visibility of all columns
     svg += `<rect class="chart-col-bg" x="${xBar - 2}" y="${padTop}" width="${barWidth + 4}" height="${plotH}" rx="4" fill="rgba(255,255,255,0.02)" />`;
 
     if (total > 0) {
-      // Correct bar (bottom emerald)
       if (cor > 0) {
         svg += `
           <rect class="chart-bar-rect" x="${xBar}" y="${yCor}" width="${barWidth}" height="${Math.max(2, hCor)}" rx="2" fill="var(--emerald)">
@@ -10385,7 +10881,6 @@ function renderStatsActivityChart(rangeDays) {
           </rect>
         `;
       }
-      // Wrong bar (top rose)
       if (wr > 0) {
         svg += `
           <rect class="chart-bar-rect" x="${xBar}" y="${yWr}" width="${barWidth}" height="${Math.max(2, hWr)}" rx="2" fill="var(--rose)">
@@ -10393,7 +10888,6 @@ function renderStatsActivityChart(rangeDays) {
           </rect>
         `;
       }
-      // Volume number label above bar when space permits
       if (barWidth >= 16 || N <= 10) {
         const yTopBar = (cor > 0 && wr > 0) ? yWr : (cor > 0 ? yCor : yWr);
         svg += `
@@ -10401,7 +10895,6 @@ function renderStatsActivityChart(rangeDays) {
         `;
       }
     } else {
-      // Empty day visible baseline slot pill with border and indicator
       svg += `
         <rect class="chart-bar-rect" x="${xBar}" y="${padTop + plotH - 5}" width="${barWidth}" height="5" rx="2.5" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.18)" stroke-width="1">
           <title>${escapeHtml(formatDateFr(d.dateStr))} : Aucun entraînement (0 QCM)</title>
@@ -10412,13 +10905,11 @@ function renderStatsActivityChart(rangeDays) {
       }
     }
 
-    // Velocity point calculation
     if (speed > 0) {
       const yVel = padTop + plotH - (speed / maxVel) * plotH;
       velocityPoints.push({ x: xCenter, y: yVel, speed, dateStr: d.dateStr });
     }
 
-    // X-axis date labels (show filtered according to range size)
     const shouldShowLabel = (N <= 10) || (N <= 31 && i % 3 === 0) || (i === N - 1);
     if (shouldShowLabel) {
       let labelText = '';
@@ -10450,7 +10941,6 @@ function renderStatsActivityChart(rangeDays) {
     }
   });
 
-  // Draw Velocity curve (amber polyline)
   if (velocityPoints.length > 1) {
     const pointsStr = velocityPoints.map(p => `${p.x},${p.y}`).join(' ');
     svg += `<polyline points="${pointsStr}" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />`;
@@ -10474,9 +10964,6 @@ function renderStatsActivityChart(rangeDays) {
   container.innerHTML = svg;
 }
 
-/**
- * Renders velocity metrics and adaptive countdown projection to November 10 exam
- */
 function renderStatsVelocityAndProjection(analytics, periodLabel = '') {
   const velCorEl = document.getElementById('stat-vel-correct');
   const velWrEl = document.getElementById('stat-vel-wrong');
@@ -10527,23 +11014,20 @@ function renderStatsVelocityAndProjection(analytics, periodLabel = '') {
       projTextEl.innerHTML = `<strong>⚠️ Recommandation Concours :</strong> Au rythme (${cadenceNote}) de ${effectiveCadence} QCM/j, il faudrait ${daysNeeded} jours pour tout nettoyer. Pour franchir la ligne d'arrivée ${targetDeadlineText}, maintenez la cadence cible de <strong>${countdown.dailyIterationsRequired} QCM/jour</strong>.`;
     }
   } else {
-    const targetExamLabel = countdown.hasDate ? `vers l'examen du ${countdown.fullFormattedDate}` : "vers votre examen";
+    const targetExamLabel = countdown.hasDate ? `vers l'examen du ${countdown.fullFormattedDate}` : 'vers votre examen';
     projTextEl.innerHTML = `<em>Répondez à vos premiers QCM pour activer la projection personnalisée ${targetExamLabel}. Cadence cible recommandée : <strong>${countdown.dailyIterationsRequired} QCM/jour</strong>.</em>`;
   }
 }
 
-/**
- * Renders course questions tracker (both period activity and global progress across all 35 courses)
- */
 function renderStatsChapters(chapterTotals = {}, periodLabel = '') {
   const container = document.getElementById('stats-chapters-breakdown');
   const badgeEl = document.getElementById('course-tracker-summary-badge');
   const titleEl = document.getElementById('course-tracker-title');
   if (!container) return;
 
-  const activeMod = (typeof getActiveModule === 'function' && getActiveModule()) ? getActiveModule() : null;
+  const activeMod = getActiveModule();
   const modTitle = activeMod ? activeMod.title : 'du module';
-  const chTotalCount = (allChapters && allChapters.length > 0) ? allChapters.length : 35;
+  const chTotalCount = appState.allChapters.length;
 
   const btnCmodeGlobal = document.getElementById('btn-cmode-global');
   if (btnCmodeGlobal) {
@@ -10556,10 +11040,9 @@ function renderStatsChapters(chapterTotals = {}, periodLabel = '') {
   if (courseTrackerMode === 'global') {
     if (titleEl) titleEl.textContent = 'Suivi Global : Questions par Cours';
     let totalMasteredAll = 0;
-    let totalAttemptedAll = 0;
 
-    let list = allChapters.map(ch => {
-      const chQuestions = allQuestions.filter(q => q.chapterId === ch.id);
+    let list = appState.allChapters.map(ch => {
+      const chQuestions = appState.allQuestions.filter(q => q.chapterId === ch.id);
       const totalQ = chQuestions.length > 0 ? chQuestions.length : (ch.count || 0);
 
       let masteredCount = 0;
@@ -10576,7 +11059,6 @@ function renderStatsChapters(chapterTotals = {}, periodLabel = '') {
       });
 
       totalMasteredAll += masteredCount;
-      totalAttemptedAll += attemptedCount;
 
       const masteredPct = totalQ > 0 ? Math.round((masteredCount / totalQ) * 100) : 0;
       const attemptedPct = totalQ > 0 ? Math.round((attemptedCount / totalQ) * 100) : 0;
@@ -10599,11 +11081,10 @@ function renderStatsChapters(chapterTotals = {}, periodLabel = '') {
       list = list.filter(item => item.title.toLowerCase().includes(query));
     }
 
-    // Sort: highest mastered count or attempted count first, then name
     list.sort((a, b) => b.masteredCount - a.masteredCount || b.attemptedCount - a.attemptedCount || a.title.localeCompare(b.title));
 
     if (badgeEl) {
-      badgeEl.textContent = `${list.length}/${chTotalCount} cours • ${totalMasteredAll}/${allQuestions.length} maîtrisés`;
+      badgeEl.textContent = `${list.length}/${chTotalCount} cours • ${totalMasteredAll}/${appState.allQuestions.length} maîtrisés`;
     }
 
     if (list.length === 0) {
@@ -10646,13 +11127,12 @@ function renderStatsChapters(chapterTotals = {}, periodLabel = '') {
     });
     container.innerHTML = html;
   } else {
-    // Mode period: only courses worked on in this period
     if (titleEl) titleEl.textContent = `Suivi des Questions (${periodLabel || 'Période'})`;
     const entries = Object.entries(chapterTotals).filter(([_, st]) => (st.correct + st.wrong) > 0);
 
     let list = entries.map(([chId, st]) => {
-      const ch = chaptersMap.get(chId) || { title: chId, count: 0 };
-      const chQuestions = allQuestions.filter(q => q.chapterId === chId);
+      const ch = appState.chaptersMap.get(chId) || { title: chId, count: 0 };
+      const chQuestions = appState.allQuestions.filter(q => q.chapterId === chId);
       const totalInChapter = chQuestions.length > 0 ? chQuestions.length : (ch.count || 0);
       const totalDone = (st.correct || 0) + (st.wrong || 0);
       const pct = totalDone > 0 ? Math.round((st.correct / totalDone) * 100) : 0;
@@ -10674,7 +11154,6 @@ function renderStatsChapters(chapterTotals = {}, periodLabel = '') {
       list = list.filter(item => item.title.toLowerCase().includes(query));
     }
 
-    // Sort by total questions completed descending
     list.sort((a, b) => b.totalDone - a.totalDone || b.pct - a.pct);
 
     const totalQPeriod = list.reduce((sum, item) => sum + item.totalDone, 0);
@@ -10687,7 +11166,7 @@ function renderStatsChapters(chapterTotals = {}, periodLabel = '') {
       container.innerHTML = `
         <div class="course-empty-period-box">
           <div class="empty-period-icon"><i data-lucide="book-marked"></i></div>
-          <div class="empty-period-title">Aucun QCM répondu sur cette période (${periodLabel})</div>
+          <div class="empty-period-title">Aucun QCM répondu sur cette période (${escapeHtml(periodLabel)})</div>
           <div class="empty-period-text">Consultez la progression globale de vos ${chTotalCount} cours (${escapeHtml(modTitle)}) :</div>
           <button type="button" class="btn-switch-cmode-global" id="btn-trigger-global-mode">
             <i data-lucide="layers" style="width:14px;height:14px;"></i>
@@ -10742,9 +11221,6 @@ function renderStatsChapters(chapterTotals = {}, periodLabel = '') {
   }
 }
 
-/**
- * Renders daily detailed history cards
- */
 function renderStatsTimeline(days = []) {
   const container = document.getElementById('stats-daily-timeline');
   const countBadge = document.getElementById('stats-days-count-badge');
@@ -10806,15 +11282,65 @@ function renderStatsTimeline(days = []) {
   container.innerHTML = html;
 }
 
+
+// --- src/views/lessonView.js ---
 // ============================================================================
-// MODULE: CHRONOMÈTRE & SUIVI DU TEMPS PAR LEÇON
+// Suivi des Cours & Chronomètre d'Étude par Leçon
 // ============================================================================
+
 let currentLessonSelected = {
   name: '',
   chapterId: null
 };
 let lessonTimerInterval = null;
 let currentStatsSubpage = 'qcm'; // 'qcm' | 'lessons'
+let isLessonOutsideClickBound = false;
+
+let currentLessonStatsRange = 'today'; // 'today' | '7' | '14' | '21' | '28' | '30' | 'all' | 'custom'
+let selectedLessonDayOffset = 0;
+let customLessonStatsStart = '';
+let customLessonStatsEnd = '';
+let currentLessonOffsetSeconds = 0;
+
+let lessonDistModuleFilter = getActiveModuleId();
+let lessonMatrixModuleFilter = getActiveModuleId();
+let lessonSummaryModuleFilter = getActiveModuleId();
+let lessonRecentModuleFilter = getActiveModuleId();
+
+function getCurrentStatsSubpage() {
+  return currentStatsSubpage;
+}
+
+function resetLessonViewFilters(moduleId = null) {
+  const modId = moduleId || getActiveModuleId();
+  currentLessonSelected = { name: '', chapterId: null };
+  const searchInput = document.getElementById('lesson-search-input');
+  if (searchInput) searchInput.value = '';
+  const activeNameEl = document.getElementById('active-lesson-name');
+  if (activeNameEl) activeNameEl.textContent = 'Aucune leçon choisie';
+  const clearBtn = document.getElementById('btn-clear-lesson-input');
+  if (clearBtn) clearBtn.style.display = 'none';
+
+  lessonDistModuleFilter = modId;
+  lessonMatrixModuleFilter = modId;
+  lessonSummaryModuleFilter = modId;
+  lessonRecentModuleFilter = modId;
+}
+
+function getModuleDisplayMeta(modId) {
+  if (!modId || modId === 'all') {
+    return { title: 'Tous modules', shortTitle: 'Tous', pillClass: 'mod-pedia' };
+  }
+  const found = findModuleById(modId);
+  if (modId === 'psychiatrie' || modId === 'psychiatrie_5') {
+    return { title: found?.title || 'Psychiatrie', shortTitle: 'Psy', pillClass: 'mod-psy' };
+  }
+  if (modId === 'pediatrie') {
+    return { title: found?.title || 'Pédiatrie', shortTitle: 'Pédia', pillClass: 'mod-pedia' };
+  }
+  const title = found?.title || modId;
+  return { title, shortTitle: title.slice(0, 6), pillClass: 'mod-pedia' };
+}
 
 function switchStatsSubpage(subtab, animate = true) {
   currentStatsSubpage = subtab;
@@ -10862,31 +11388,8 @@ function switchStatsSubpage(subtab, animate = true) {
   refreshLucide();
 }
 
-function formatDigitalClockTime(totalSeconds) {
-  const sec = Math.max(0, Math.floor(totalSeconds));
-  const hrs = Math.floor(sec / 3600);
-  const mins = Math.floor((sec % 3600) / 60);
-  const s = sec % 60;
-  const pad = (n) => String(n).padStart(2, '0');
-  return `${pad(hrs)}:${pad(mins)}:${pad(s)}`;
-}
-
-let currentLessonStatsRange = 'today'; // 'today' | '7' | '14' | '21' | '28' | '30' | 'all' | 'custom'
-let selectedLessonDayOffset = 0;
-let customLessonStatsStart = '';
-let customLessonStatsEnd = '';
-let currentLessonChartRange = 'today';
-let currentLessonOffsetSeconds = 0; // offset in seconds
-
-// Module-specific filters for lesson stats panels ('all' | 'pediatrie' | 'psychiatrie')
-// Par défaut, le module actif du dashboard est sélectionné au lieu de 'all'
-let lessonDistModuleFilter = (typeof getActiveModuleId === 'function' ? getActiveModuleId() : 'pediatrie');
-let lessonMatrixModuleFilter = (typeof getActiveModuleId === 'function' ? getActiveModuleId() : 'pediatrie');
-let lessonSummaryModuleFilter = (typeof getActiveModuleId === 'function' ? getActiveModuleId() : 'pediatrie');
-let lessonRecentModuleFilter = (typeof getActiveModuleId === 'function' ? getActiveModuleId() : 'pediatrie');
-
 function getLessonFilteredSessions(range = currentLessonStatsRange, offset = selectedLessonDayOffset, customStart = customLessonStatsStart, customEnd = customLessonStatsEnd) {
-  const sessions = (typeof lessonTracker !== 'undefined' && lessonTracker) ? lessonTracker.getSessions() : [];
+  const sessions = lessonTracker ? lessonTracker.getSessions() : [];
   if (range === 'today') {
     const targetDateStr = getDateStrWithOffset(offset);
     return sessions.filter(s => s.dateStr === targetDateStr);
@@ -10906,10 +11409,40 @@ function getLessonFilteredSessions(range = currentLessonStatsRange, offset = sel
   return sessions.filter(s => s.dateStr >= cutoff && s.dateStr <= today);
 }
 
-function getLessonRangeDailyData(range = currentLessonStatsRange, offset = selectedLessonDayOffset, customStart = customLessonStatsStart, customEnd = customLessonStatsEnd) {
-  const sessions = (typeof lessonTracker !== 'undefined' && lessonTracker) ? lessonTracker.getSessions() : [];
-  const now = new Date();
+function buildDailySeriesBetween(startDateStr, endDateStr, sessions) {
+  const partsStart = startDateStr.split('-').map(Number);
+  const partsEnd = endDateStr.split('-').map(Number);
+  const dStart = new Date(partsStart[0], partsStart[1] - 1, partsStart[2]);
+  const dEnd = new Date(partsEnd[0], partsEnd[1] - 1, partsEnd[2]);
   const dailyData = [];
+
+  const cur = new Date(dStart);
+  while (cur <= dEnd) {
+    const year = cur.getFullYear();
+    const month = String(cur.getMonth() + 1).padStart(2, '0');
+    const day = String(cur.getDate()).padStart(2, '0');
+    const dateStr = `${year}-${month}-${day}`;
+
+    const daySessions = sessions.filter(s => s.dateStr === dateStr);
+    const daySeconds = daySessions.reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
+    const dayNameShort = cur.toLocaleDateString('fr-FR', { weekday: 'short' });
+    const dayNum = cur.getDate();
+
+    dailyData.push({
+      dateStr,
+      daySeconds,
+      dayLabel: `${dayNameShort} ${dayNum}`,
+      dateObj: new Date(cur),
+      sessionsCount: daySessions.length
+    });
+    cur.setDate(cur.getDate() + 1);
+  }
+  return dailyData;
+}
+
+function getLessonRangeDailyData(range = currentLessonStatsRange, offset = selectedLessonDayOffset, customStart = customLessonStatsStart, customEnd = customLessonStatsEnd) {
+  const sessions = lessonTracker ? lessonTracker.getSessions() : [];
+  const now = new Date();
 
   if (range === 'today') {
     const targetDateStr = getDateStrWithOffset(offset);
@@ -10917,114 +11450,64 @@ function getLessonRangeDailyData(range = currentLessonStatsRange, offset = selec
     const d = new Date(parts[0], parts[1] - 1, parts[2]);
     const daySessions = sessions.filter(s => s.dateStr === targetDateStr);
     const daySeconds = daySessions.reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
-    const dayLabel = getDayLabelForOffset(offset);
-    dailyData.push({
+    return [{
       dateStr: targetDateStr,
+      daySeconds,
+      dayLabel: getDayLabelForOffset(offset),
+      dateObj: d,
+      sessionsCount: daySessions.length
+    }];
+  }
+
+  if (range === 'custom') {
+    const todayStr = getDateStrWithOffset(0);
+    let start = customStart || getDateStrWithOffset(-7);
+    let end = customEnd || todayStr;
+    if (start > end) [start, end] = [end, start];
+    return buildDailySeriesBetween(start, end, sessions);
+  }
+
+  if (range === 'all') {
+    const validDates = sessions.map(s => s.dateStr).filter(Boolean).sort();
+    let start = validDates[0] || getDateStrWithOffset(-13);
+    const end = getDateStrWithOffset(0);
+    if (start > end) start = end;
+    return buildDailySeriesBetween(start, end, sessions);
+  }
+
+  const dailyData = [];
+  const numDays = parseInt(range, 10) || 7;
+  for (let i = numDays - 1; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + (offset || 0) - i);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const dateStr = `${year}-${month}-${day}`;
+
+    const daySessions = sessions.filter(s => s.dateStr === dateStr);
+    const daySeconds = daySessions.reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
+    const isToday = ((offset || 0) === 0 && i === 0);
+    const isHier = ((offset || 0) === -1 && i === 0);
+    const dayNameShort = d.toLocaleDateString('fr-FR', { weekday: 'short' });
+    const dayNum = d.getDate();
+
+    let dayLabel = `${dayNameShort} ${dayNum}`;
+    if (isToday) dayLabel = 'Auj.';
+    else if (isHier) dayLabel = 'Hier';
+
+    dailyData.push({
+      dateStr,
       daySeconds,
       dayLabel,
       dateObj: d,
       sessionsCount: daySessions.length
     });
-  } else if (range === 'custom') {
-    const todayStr = getDateStrWithOffset(0);
-    let start = customStart || getDateStrWithOffset(-7);
-    let end = customEnd || todayStr;
-    if (start > end) [start, end] = [end, start];
-
-    const partsStart = start.split('-').map(Number);
-    const partsEnd = end.split('-').map(Number);
-    const dStart = new Date(partsStart[0], partsStart[1] - 1, partsStart[2]);
-    const dEnd = new Date(partsEnd[0], partsEnd[1] - 1, partsEnd[2]);
-
-    const cur = new Date(dStart);
-    while (cur <= dEnd) {
-      const year = cur.getFullYear();
-      const month = String(cur.getMonth() + 1).padStart(2, '0');
-      const day = String(cur.getDate()).padStart(2, '0');
-      const dateStr = `${year}-${month}-${day}`;
-
-      const daySessions = sessions.filter(s => s.dateStr === dateStr);
-      const daySeconds = daySessions.reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
-      const dayNameShort = cur.toLocaleDateString('fr-FR', { weekday: 'short' });
-      const dayNum = cur.getDate();
-
-      dailyData.push({
-        dateStr,
-        daySeconds,
-        dayLabel: `${dayNameShort} ${dayNum}`,
-        dateObj: new Date(cur),
-        sessionsCount: daySessions.length
-      });
-      cur.setDate(cur.getDate() + 1);
-    }
-  } else if (range === 'all') {
-    const validDates = sessions.map(s => s.dateStr).filter(Boolean).sort();
-    let start = validDates[0] || getDateStrWithOffset(-13);
-    let end = getDateStrWithOffset(0);
-    if (start > end) start = end;
-
-    const partsStart = start.split('-').map(Number);
-    const partsEnd = end.split('-').map(Number);
-    const dStart = new Date(partsStart[0], partsStart[1] - 1, partsStart[2]);
-    const dEnd = new Date(partsEnd[0], partsEnd[1] - 1, partsEnd[2]);
-
-    const cur = new Date(dStart);
-    while (cur <= dEnd) {
-      const year = cur.getFullYear();
-      const month = String(cur.getMonth() + 1).padStart(2, '0');
-      const day = String(cur.getDate()).padStart(2, '0');
-      const dateStr = `${year}-${month}-${day}`;
-
-      const daySessions = sessions.filter(s => s.dateStr === dateStr);
-      const daySeconds = daySessions.reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
-      const dayNameShort = cur.toLocaleDateString('fr-FR', { weekday: 'short' });
-      const dayNum = cur.getDate();
-
-      dailyData.push({
-        dateStr,
-        daySeconds,
-        dayLabel: `${dayNameShort} ${dayNum}`,
-        dateObj: new Date(cur),
-        sessionsCount: daySessions.length
-      });
-      cur.setDate(cur.getDate() + 1);
-    }
-  } else {
-    // 7, 14, 21, 28, 30 days
-    const numDays = parseInt(range, 10) || 7;
-    for (let i = numDays - 1; i >= 0; i--) {
-      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + (offset || 0) - i);
-      const year = d.getFullYear();
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      const dateStr = `${year}-${month}-${day}`;
-
-      const daySessions = sessions.filter(s => s.dateStr === dateStr);
-      const daySeconds = daySessions.reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
-      const isToday = ((offset || 0) === 0 && i === 0);
-      const isHier = ((offset || 0) === -1 && i === 0);
-      const dayNameShort = d.toLocaleDateString('fr-FR', { weekday: 'short' });
-      const dayNum = d.getDate();
-
-      let dayLabel = `${dayNameShort} ${dayNum}`;
-      if (isToday) dayLabel = 'Auj.';
-      else if (isHier) dayLabel = 'Hier';
-
-      dailyData.push({
-        dateStr,
-        daySeconds,
-        dayLabel,
-        dateObj: d,
-        sessionsCount: daySessions.length
-      });
-    }
   }
-
   return dailyData;
 }
 
 function updateLessonTimerTick() {
-  const active = (typeof lessonTracker !== 'undefined' && lessonTracker) ? lessonTracker.activeTimer : null;
+  const active = lessonTracker ? lessonTracker.activeTimer : null;
   const headerBadge = document.getElementById('active-lesson-header-badge');
   const headerName = document.getElementById('header-lesson-name');
   const headerTime = document.getElementById('header-lesson-time');
@@ -11037,24 +11520,19 @@ function updateLessonTimerTick() {
     const elapsedSec = lessonTracker.getElapsedTimeSeconds();
     const formatted = formatDigitalClockTime(elapsedSec);
 
-    // Update floating header badge
     if (headerBadge) {
       headerBadge.style.display = 'inline-flex';
       if (headerName) headerName.textContent = active.lessonName;
       if (headerTime) headerTime.textContent = formatted;
     }
 
-    // Update subnav timer pill
     const subnavTimerPill = document.getElementById('subnav-active-lesson-time');
     if (subnavTimerPill) {
       subnavTimerPill.style.display = 'inline-block';
       subnavTimerPill.textContent = formatted;
     }
 
-    // Update stats view digital clock
-    if (digitalClock) {
-      digitalClock.textContent = formatted;
-    }
+    if (digitalClock) digitalClock.textContent = formatted;
     if (clockDot) {
       clockDot.className = active.isPaused ? 'clock-status-dot status-paused' : 'clock-status-dot status-running';
     }
@@ -11062,22 +11540,16 @@ function updateLessonTimerTick() {
       statusText.textContent = active.isPaused ? 'En pause' : 'Chronomètre en cours...';
     }
   } else {
-    // No active timer running
-    if (headerBadge) {
-      headerBadge.style.display = 'none';
-    }
+    if (headerBadge) headerBadge.style.display = 'none';
     const subnavTimerPill = document.getElementById('subnav-active-lesson-time');
-    if (subnavTimerPill) {
-      subnavTimerPill.style.display = 'none';
-    }
+    if (subnavTimerPill) subnavTimerPill.style.display = 'none';
+
     if (digitalClock) {
       digitalClock.textContent = currentLessonOffsetSeconds > 0
         ? formatDigitalClockTime(currentLessonOffsetSeconds)
         : '00:00:00';
     }
-    if (clockDot) {
-      clockDot.className = 'clock-status-dot status-idle';
-    }
+    if (clockDot) clockDot.className = 'clock-status-dot status-idle';
     if (statusText) {
       statusText.textContent = currentLessonOffsetSeconds > 0
         ? `Prêt (Départ : ${formatDigitalClockTime(currentLessonOffsetSeconds)})`
@@ -11086,18 +11558,13 @@ function updateLessonTimerTick() {
   }
 }
 
-/**
- * Renders lesson analytics: 4 KPI Cards, Daily SVG Bar Chart, Top 10 Distribution, and 35 Chapters Matrix
- */
 function renderLessonAnalytics(rangeStr = currentLessonStatsRange) {
   currentLessonStatsRange = rangeStr;
-  currentLessonChartRange = rangeStr;
-  const sessions = (typeof lessonTracker !== 'undefined' && lessonTracker) ? lessonTracker.getSessions() : [];
+  const sessions = lessonTracker ? lessonTracker.getSessions() : [];
   const periodSessions = getLessonFilteredSessions(currentLessonStatsRange, selectedLessonDayOffset, customLessonStatsStart, customLessonStatsEnd);
   const dailyData = getLessonRangeDailyData(currentLessonStatsRange, selectedLessonDayOffset, customLessonStatsStart, customLessonStatsEnd);
-  const summaries = (typeof lessonTracker !== 'undefined' && lessonTracker) ? lessonTracker.getLessonSummaries() : [];
+  const summaries = lessonTracker ? lessonTracker.getLessonSummaries() : [];
 
-  // Determine chart data: 7 days by default when on 'today', or the selected range otherwise
   let chartDailyData;
   let chartRangeToRender;
   if (currentLessonStatsRange === 'today') {
@@ -11108,7 +11575,6 @@ function renderLessonAnalytics(rangeStr = currentLessonStatsRange) {
     chartDailyData = dailyData;
   }
 
-  // Period label & Badge in Panel Header
   const chartTitleEl = document.getElementById('lesson-daily-chart-title');
   const periodBadgeEl = document.getElementById('lesson-chart-period-badge');
 
@@ -11120,7 +11586,7 @@ function renderLessonAnalytics(rangeStr = currentLessonStatsRange) {
     periodTitleText = (selectedLessonDayOffset === 0)
       ? "Historique Quotidien d'Étude des Cours (7 derniers jours)"
       : `Historique Quotidien d'Étude des Cours (7 jours jusqu'à ${label})`;
-    periodBadgeText = "7 jours";
+    periodBadgeText = '7 jours';
   } else if (currentLessonStatsRange === 'custom') {
     const sStr = customLessonStatsStart ? formatDateFr(customLessonStatsStart) : '';
     const eStr = customLessonStatsEnd ? formatDateFr(customLessonStatsEnd) : '';
@@ -11137,7 +11603,6 @@ function renderLessonAnalytics(rangeStr = currentLessonStatsRange) {
   if (chartTitleEl) chartTitleEl.textContent = periodTitleText;
   if (periodBadgeEl) periodBadgeEl.textContent = periodBadgeText;
 
-  // 1. KPI Cards
   const kpiTotalTime = document.getElementById('kpi-lesson-total-time');
   const kpiTotalSub = document.getElementById('kpi-lesson-total-sub');
   const kpiTodayTime = document.getElementById('kpi-lesson-today-time');
@@ -11165,14 +11630,12 @@ function renderLessonAnalytics(rangeStr = currentLessonStatsRange) {
     }
   }
 
-  // Today & 7 days
   const todayDateStr = lessonTracker.getTodayDateStr();
   const todaySeconds = sessions
     .filter(s => s.dateStr === todayDateStr)
     .reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
 
-  const nowMs = Date.now();
-  const sevenDaysAgoMs = nowMs - (7 * 86400000);
+  const sevenDaysAgoMs = Date.now() - (7 * 86400000);
   const sevenDaysSeconds = sessions
     .filter(s => (s.endTime || 0) >= sevenDaysAgoMs)
     .reduce((acc, s) => acc + (s.durationSeconds || 0), 0);
@@ -11188,7 +11651,6 @@ function renderLessonAnalytics(rangeStr = currentLessonStatsRange) {
     kpi7dSub.textContent = `7 derniers jours : ${s7Hrs}h ${String(s7Mins).padStart(2, '0')}`;
   }
 
-  // Average per session (period)
   if (kpiAvgTime) {
     if (periodSessions.length === 0) {
       kpiAvgTime.textContent = '--';
@@ -11203,8 +11665,9 @@ function renderLessonAnalytics(rangeStr = currentLessonStatsRange) {
     kpiAvgSub.textContent = periodSessions.length > 0 ? `${periodSessions.length} session${periodSessions.length > 1 ? 's' : ''} analysée${periodSessions.length > 1 ? 's' : ''}` : 'Focus régulier';
   }
 
-  // Coverage of chapters (synchronized with active module)
-  const allChs = (allChapters && allChapters.length > 0) ? allChapters : (window.PEDIA_CHAPTERS || []);
+  const allChs = (appState.allChapters && appState.allChapters.length > 0)
+    ? appState.allChapters
+    : ((typeof window !== 'undefined' && window.PEDIA_CHAPTERS) || []);
   const studiedChCount = allChs.filter(ch => {
     return summaries.some(s => (s.chapterId && s.chapterId === ch.id) || (s.lessonName && s.lessonName.trim().toLowerCase() === ch.title.trim().toLowerCase()));
   }).length;
@@ -11217,23 +11680,17 @@ function renderLessonAnalytics(rangeStr = currentLessonStatsRange) {
     kpiCoverageSub.textContent = `${coveragePct}% des cours travaillés`;
   }
 
-  // Update Matrix Header Title
   const matrixTitleEl = document.getElementById('lesson-matrix-title');
   if (matrixTitleEl) {
     matrixTitleEl.textContent = `Couverture du Programme (${allChs.length} Chapitres)`;
   }
 
-  // 2. Daily SVG Bar Chart
   renderLessonDailyChart(chartRangeToRender, chartDailyData);
-
-  // 3. Lesson Distribution (Top 10)
   renderLessonDistribution(lessonDistModuleFilter);
-
-  // 4. Chapters Matrix
   renderLessonChaptersMatrix(lessonMatrixModuleFilter);
 }
 
-function renderLessonDailyChart(rangeStr, dailyData) {
+function renderLessonDailyChart(_rangeStr, dailyData) {
   const container = document.getElementById('lesson-daily-chart-container');
   if (!container) return;
 
@@ -11243,7 +11700,7 @@ function renderLessonDailyChart(rangeStr, dailyData) {
   }
 
   const daysCount = dailyData.length;
-  const maxSeconds = Math.max(...dailyData.map(d => d.daySeconds || 0), 3600); // at least 1h scale
+  const maxSeconds = Math.max(...dailyData.map(d => d.daySeconds || 0), 3600);
   const svgWidth = 800;
   const svgHeight = 220;
   const padLeft = 45;
@@ -11257,7 +11714,6 @@ function renderLessonDailyChart(rangeStr, dailyData) {
 
   let svgHtml = `<svg class="activity-chart-svg" viewBox="0 0 ${svgWidth} ${svgHeight}" style="max-width:100%;height:auto;display:block;">`;
 
-  // Grid lines
   const gridSteps = [0, maxHrs / 2, maxHrs];
   gridSteps.forEach(hVal => {
     const yRatio = maxHrs > 0 ? (hVal / maxHrs) : 0;
@@ -11271,7 +11727,6 @@ function renderLessonDailyChart(rangeStr, dailyData) {
   const totalPeriodSeconds = dailyData.reduce((acc, d) => acc + (d.daySeconds || 0), 0);
 
   if (daysCount === 1) {
-    // Single Day Display (Today / Hier stepper)
     const item = dailyData[0];
     const barWidth = 64;
     const xCenter = padLeft + (chartW / 2);
@@ -11299,20 +11754,13 @@ function renderLessonDailyChart(rangeStr, dailyData) {
       const hrs = Math.floor(item.daySeconds / 3600);
       const mins = Math.floor((item.daySeconds % 3600) / 60);
       const label = hrs > 0 ? `${hrs}h ${String(mins).padStart(2, '0')}` : `${mins} min`;
-      svgHtml += `
-        <text x="${xCenter}" y="${y - 8}" fill="#00d4ff" font-size="12" font-weight="700" text-anchor="middle" font-family="'Outfit', sans-serif">${label}</text>
-      `;
+      svgHtml += `<text x="${xCenter}" y="${y - 8}" fill="#00d4ff" font-size="12" font-weight="700" text-anchor="middle" font-family="'Outfit', sans-serif">${label}</text>`;
     } else {
-      svgHtml += `
-        <text x="${xCenter}" y="${padTop + chartH / 2}" fill="#64748b" font-size="12" text-anchor="middle" font-family="var(--font-body)">Aucune session enregistrée ce jour-là</text>
-      `;
+      svgHtml += `<text x="${xCenter}" y="${padTop + chartH / 2}" fill="#64748b" font-size="12" text-anchor="middle" font-family="var(--font-body)">Aucune session enregistrée ce jour-là</text>`;
     }
 
-    svgHtml += `
-      <text x="${xCenter}" y="${padTop + chartH + 20}" fill="#94a3b8" font-size="12" font-weight="600" text-anchor="middle" font-family="var(--font-body)">${escapeHtml(item.dayLabel)} (${formatDateFr(item.dateStr)})</text>
-    `;
+    svgHtml += `<text x="${xCenter}" y="${padTop + chartH + 20}" fill="#94a3b8" font-size="12" font-weight="600" text-anchor="middle" font-family="var(--font-body)">${escapeHtml(item.dayLabel)} (${formatDateFr(item.dateStr)})</text>`;
   } else {
-    // Multi-day display (7, 14, 21, 28, 30, all, custom)
     const colStep = chartW / daysCount;
     const barWidth = Math.min(36, Math.max(6, Math.floor(colStep * 0.65)));
 
@@ -11328,7 +11776,6 @@ function renderLessonDailyChart(rangeStr, dailyData) {
         ? `${dateLabel} : ${formattedTime} d'étude (${item.sessionsCount || 0} session${(item.sessionsCount || 0) > 1 ? 's' : ''})`
         : `${dateLabel} : Aucun temps de cours enregistré`;
 
-      // Subtle vertical column guide track for clear visibility of all columns
       svgHtml += `<rect class="chart-col-bg" x="${x - 2}" y="${padTop}" width="${barWidth + 4}" height="${chartH}" rx="4" fill="rgba(255,255,255,0.02)" />`;
 
       if (item.daySeconds > 0) {
@@ -11339,17 +11786,13 @@ function renderLessonDailyChart(rangeStr, dailyData) {
           </rect>
         `;
 
-        // Duration label above bar if duration > 0 and enough space
         if (barWidth >= 16 || daysCount <= 14) {
           const hrs = Math.floor(item.daySeconds / 3600);
           const mins = Math.floor((item.daySeconds % 3600) / 60);
           const label = hrs > 0 ? `${hrs}h${mins > 0 ? mins : ''}` : `${mins}m`;
-          svgHtml += `
-            <text x="${xCenter}" y="${y - 6}" fill="#00d4ff" font-size="${barWidth < 20 ? 9 : 10}" font-weight="700" text-anchor="middle" font-family="'Outfit', sans-serif">${label}</text>
-          `;
+          svgHtml += `<text x="${xCenter}" y="${y - 6}" fill="#00d4ff" font-size="${barWidth < 20 ? 9 : 10}" font-weight="700" text-anchor="middle" font-family="'Outfit', sans-serif">${label}</text>`;
         }
       } else {
-        // Visible empty slot baseline pill with border
         svgHtml += `
           <rect class="lesson-bar-rect" x="${x}" y="${padTop + chartH - 5}" width="${barWidth}" height="5" rx="2.5"
                 fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.18)" stroke-width="1">
@@ -11361,26 +11804,20 @@ function renderLessonDailyChart(rangeStr, dailyData) {
         }
       }
 
-      // X Axis label with smart spacing
       const shouldShowLabel = (daysCount <= 10) || (daysCount <= 21 && idx % 2 === 0) || (daysCount <= 35 && idx % 3 === 0) || (daysCount > 35 && idx % 5 === 0) || (idx === daysCount - 1);
       if (shouldShowLabel) {
         const isCurrentDay = (item.dayLabel === 'Auj.' || (selectedLessonDayOffset === 0 && idx === daysCount - 1));
         const labelColor = isCurrentDay ? '#00d4ff' : '#94a3b8';
         const labelWeight = isCurrentDay ? '700' : '500';
-        svgHtml += `
-          <text x="${xCenter}" y="${padTop + chartH + 18}" fill="${labelColor}" font-size="${daysCount > 25 ? 9 : 11}" font-weight="${labelWeight}" text-anchor="middle" font-family="var(--font-body)">${item.dayLabel}</text>
-        `;
+        svgHtml += `<text x="${xCenter}" y="${padTop + chartH + 18}" fill="${labelColor}" font-size="${daysCount > 25 ? 9 : 11}" font-weight="${labelWeight}" text-anchor="middle" font-family="var(--font-body)">${escapeHtml(item.dayLabel)}</text>`;
       }
     });
 
     if (totalPeriodSeconds === 0) {
-      svgHtml += `
-        <text x="${padLeft + chartW / 2}" y="${padTop + chartH / 2}" fill="#64748b" font-size="12" text-anchor="middle" font-family="var(--font-body)">Aucune session de cours chronométrée sur cette période</text>
-      `;
+      svgHtml += `<text x="${padLeft + chartW / 2}" y="${padTop + chartH / 2}" fill="#64748b" font-size="12" text-anchor="middle" font-family="var(--font-body)">Aucune session de cours chronométrée sur cette période</text>`;
     }
   }
 
-  // Gradient Definition
   svgHtml += `
     <defs>
       <linearGradient id="lessonBarGrad" x1="0" y1="0" x2="0" y2="1">
@@ -11388,9 +11825,7 @@ function renderLessonDailyChart(rangeStr, dailyData) {
         <stop offset="100%" stop-color="#059669" />
       </linearGradient>
     </defs>
-  `;
-
-  svgHtml += '</svg>';
+  </svg>`;
   container.innerHTML = svgHtml;
 }
 
@@ -11398,16 +11833,14 @@ function renderLessonDistribution(filterMod = lessonDistModuleFilter) {
   const container = document.getElementById('lesson-distribution-container');
   if (!container) return;
 
-  const summaries = (typeof lessonTracker !== 'undefined' && lessonTracker)
-    ? lessonTracker.getLessonSummaries(filterMod)
-    : [];
-
+  const summaries = lessonTracker ? lessonTracker.getLessonSummaries(filterMod) : [];
   const top10 = summaries.slice(0, 10);
+
   if (top10.length === 0) {
-    const modLabel = filterMod === 'pediatrie' ? ' en Pédiatrie' : (filterMod === 'psychiatrie' ? ' en Psychiatrie' : '');
+    const modLabel = filterMod === 'all' ? '' : ` en ${getModuleDisplayMeta(filterMod).title}`;
     container.innerHTML = `
       <div style="text-align:center;padding:24px 16px;color:var(--text-dim);font-size:0.85rem;">
-        Aucune donnée de cours enregistrée${modLabel} pour le moment.
+        Aucune donnée de cours enregistrée${escapeHtml(modLabel)} pour le moment.
       </div>
     `;
     return;
@@ -11418,8 +11851,9 @@ function renderLessonDistribution(filterMod = lessonDistModuleFilter) {
 
   top10.forEach(s => {
     const pct = Math.round((s.totalDurationSeconds / maxSec) * 100);
+    const modMeta = getModuleDisplayMeta(s.moduleId);
     const modTag = (filterMod === 'all')
-      ? `<span class="session-module-pill ${s.moduleId === 'psychiatrie' ? 'mod-psy' : 'mod-pedia'}" style="margin-left:6px;font-size:0.62rem;padding:1px 5px;">${s.moduleId === 'psychiatrie' ? 'Psy' : 'Pédia'}</span>`
+      ? `<span class="session-module-pill ${modMeta.pillClass}" style="margin-left:6px;font-size:0.62rem;padding:1px 5px;">${escapeHtml(modMeta.shortTitle)}</span>`
       : '';
 
     html += `
@@ -11447,7 +11881,7 @@ function renderLessonChaptersMatrix(filterMod = lessonMatrixModuleFilter) {
   const titleEl = document.getElementById('lesson-matrix-title');
   if (!container) return;
 
-  const pediaChs = ((typeof window !== 'undefined' && window.PEDIA_CHAPTERS) || allChapters || []).map(c => ({ ...c, moduleId: 'pediatrie', moduleTitle: 'Pédiatrie' }));
+  const pediaChs = ((typeof window !== 'undefined' && window.PEDIA_CHAPTERS) || appState.allChapters || []).map(c => ({ ...c, moduleId: 'pediatrie', moduleTitle: 'Pédiatrie' }));
   const psyChs = ((typeof window !== 'undefined' && window.PSY_CHAPTERS) || []).map(c => ({ ...c, moduleId: 'psychiatrie', moduleTitle: 'Psychiatrie' }));
 
   let displayChapters = [];
@@ -11457,6 +11891,10 @@ function renderLessonChaptersMatrix(filterMod = lessonMatrixModuleFilter) {
   } else if (filterMod === 'psychiatrie') {
     displayChapters = psyChs;
     if (titleEl) titleEl.textContent = `Couverture Psychiatrie (${psyChs.length} Chapitres)`;
+  } else if (filterMod !== 'all') {
+    const activeMod = findModuleById(filterMod);
+    displayChapters = (appState.allChapters || []).map(c => ({ ...c, moduleId: filterMod, moduleTitle: activeMod?.title || filterMod }));
+    if (titleEl) titleEl.textContent = `Couverture ${activeMod?.title || filterMod} (${displayChapters.length} Chapitres)`;
   } else {
     displayChapters = [...pediaChs, ...psyChs];
     if (titleEl) titleEl.textContent = `Couverture du Programme (${displayChapters.length} Chapitres)`;
@@ -11467,23 +11905,22 @@ function renderLessonChaptersMatrix(filterMod = lessonMatrixModuleFilter) {
     return;
   }
 
-  const summaries = (typeof lessonTracker !== 'undefined' && lessonTracker)
-    ? lessonTracker.getLessonSummaries(filterMod)
-    : [];
+  const summaries = lessonTracker ? lessonTracker.getLessonSummaries(filterMod) : [];
 
   function renderChapterBadge(ch, idx) {
     const chSum = summaries.find(s => (s.chapterId && s.chapterId === ch.id) || (s.lessonName && s.lessonName.trim().toLowerCase() === ch.title.trim().toLowerCase()));
     const durationSec = chSum ? chSum.totalDurationSeconds : 0;
 
     let levelClass = 'level-0';
-    if (durationSec >= 14400) levelClass = 'level-4'; // > 4h
-    else if (durationSec >= 7200) levelClass = 'level-3'; // 2h - 4h
-    else if (durationSec >= 3600) levelClass = 'level-2'; // 1h - 2h
-    else if (durationSec > 0) levelClass = 'level-1'; // < 1h
+    if (durationSec >= 14400) levelClass = 'level-4';
+    else if (durationSec >= 7200) levelClass = 'level-3';
+    else if (durationSec >= 3600) levelClass = 'level-2';
+    else if (durationSec > 0) levelClass = 'level-1';
 
     const durationText = durationSec > 0 ? formatDuration(durationSec) : '0 min';
+    const modMeta = getModuleDisplayMeta(ch.moduleId);
     const modTag = (filterMod === 'all')
-      ? `<span class="session-module-pill ${ch.moduleId === 'psychiatrie' ? 'mod-psy' : 'mod-pedia'}" style="font-size:0.58rem;padding:1px 4px;margin-left:auto;">${ch.moduleId === 'psychiatrie' ? 'Psy' : 'Pédia'}</span>`
+      ? `<span class="session-module-pill ${modMeta.pillClass}" style="font-size:0.58rem;padding:1px 4px;margin-left:auto;">${escapeHtml(modMeta.shortTitle)}</span>`
       : '';
 
     return `
@@ -11526,7 +11963,6 @@ function renderLessonChaptersMatrix(filterMod = lessonMatrixModuleFilter) {
 
   container.innerHTML = html;
 
-  // On clicking a chapter badge: set as selected lesson in timer!
   container.querySelectorAll('.chapter-matrix-badge').forEach(badge => {
     badge.onclick = () => {
       const chTitle = badge.dataset.chapterTitle;
@@ -11540,13 +11976,13 @@ function renderLessonChaptersMatrix(filterMod = lessonMatrixModuleFilter) {
       const activeNameEl = document.getElementById('active-lesson-name');
       if (activeNameEl) activeNameEl.textContent = chTitle;
       const timerCard = document.querySelector('.lesson-timer-card');
-      if (timerCard) timerCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (timerCard) timerCard.scrollIntoView({ behavior: 'auto', block: 'center' });
     };
   });
 }
 
 function initLessonTracker() {
-  if (typeof lessonTracker === 'undefined' || !lessonTracker) return;
+  if (!lessonTracker) return;
 
   const active = lessonTracker.activeTimer;
   if (active && active.lessonName) {
@@ -11563,7 +11999,7 @@ function initLessonTracker() {
 }
 
 function renderLessonTrackerUI() {
-  if (typeof lessonTracker === 'undefined' || !lessonTracker) return;
+  if (!lessonTracker) return;
 
   const active = lessonTracker.activeTimer;
   const btnStart = document.getElementById('btn-timer-start');
@@ -11603,10 +12039,9 @@ function renderLessonTrackerUI() {
     }
   }
 
-  // Synchroniser les libellés et dropdowns avec le module actif
-  const activeMod = (typeof getActiveModule === 'function' && getActiveModule()) ? getActiveModule() : null;
+  const activeMod = getActiveModule();
   const modTitle = activeMod ? activeMod.title : 'Pédiatrie';
-  const chCount = (allChapters && allChapters.length > 0) ? allChapters.length : 35;
+  const chCount = (appState.allChapters && appState.allChapters.length > 0) ? appState.allChapters.length : 0;
 
   const dropHeader = document.getElementById('lesson-dropdown-header');
   if (dropHeader) dropHeader.textContent = `Chapitres (${chCount}) — ${modTitle} :`;
@@ -11617,22 +12052,21 @@ function renderLessonTrackerUI() {
   const manualFieldLabel = document.getElementById('manual-lesson-field-label');
   if (manualFieldLabel) manualFieldLabel.textContent = `Cours / Leçon (${modTitle}) :`;
 
-  // 1. Summary Table per Lesson (filtered by lessonSummaryModuleFilter)
   const summaryContainer = document.getElementById('lesson-summary-table-container');
   const summaries = lessonTracker.getLessonSummaries(lessonSummaryModuleFilter);
   if (countBadge) {
-    const modSuffix = lessonSummaryModuleFilter === 'pediatrie' ? ' (Pédiatrie)' : (lessonSummaryModuleFilter === 'psychiatrie' ? ' (Psychiatrie)' : ' (Tous modules)');
-    countBadge.textContent = `${summaries.length} leçon${summaries.length > 1 ? 's' : ''} enregistrée${summaries.length > 1 ? 's' : ''}${modSuffix}`;
+    const sumMeta = getModuleDisplayMeta(lessonSummaryModuleFilter);
+    countBadge.textContent = `${summaries.length} leçon${summaries.length > 1 ? 's' : ''} enregistrée${summaries.length > 1 ? 's' : ''} (${sumMeta.title})`;
   }
 
   if (summaryContainer) {
     if (summaries.length === 0) {
-      const modMsg = lessonSummaryModuleFilter === 'pediatrie' ? ' pour le module Pédiatrie' : (lessonSummaryModuleFilter === 'psychiatrie' ? ' pour le module Psychiatrie' : '');
+      const modMsg = lessonSummaryModuleFilter === 'all' ? '' : ` pour le module ${getModuleDisplayMeta(lessonSummaryModuleFilter).title}`;
       summaryContainer.innerHTML = `
         <div class="stats-empty-state" style="padding: 24px 16px;">
           <i data-lucide="clock"></i>
           <div>
-            <div style="font-weight:700;color:#ffffff;margin-bottom:4px;">Aucune leçon chronométrée${modMsg}</div>
+            <div style="font-weight:700;color:#ffffff;margin-bottom:4px;">Aucune leçon chronométrée${escapeHtml(modMsg)}</div>
             <div style="font-size:0.8rem;color:var(--text-muted);">Choisissez un cours ci-dessus et cliquez sur <strong>Démarrer</strong> pour lancer votre premier chronomètre !</div>
           </div>
         </div>
@@ -11658,7 +12092,8 @@ function renderLessonTrackerUI() {
       summaries.forEach(s => {
         const pct = Math.round((s.totalDurationSeconds / maxDuration) * 100);
         const lastDateFormatted = s.lastSessionDateStr ? formatDateFr(s.lastSessionDateStr) : '--';
-        const modPill = `<span class="session-module-pill ${s.moduleId === 'psychiatrie' ? 'mod-psy' : 'mod-pedia'}">${s.moduleTitle || (s.moduleId === 'psychiatrie' ? 'Psychiatrie' : 'Pédiatrie')}</span>`;
+        const modMeta = getModuleDisplayMeta(s.moduleId);
+        const modPill = `<span class="session-module-pill ${modMeta.pillClass}">${escapeHtml(s.moduleTitle || modMeta.title)}</span>`;
 
         tableHtml += `
           <tr>
@@ -11690,21 +12125,20 @@ function renderLessonTrackerUI() {
         `;
       });
 
-      tableHtml += `</tbody></table>`;
+      tableHtml += '</tbody></table>';
       summaryContainer.innerHTML = tableHtml;
     }
   }
 
-  // 2. Recent Sessions List (filtered by lessonRecentModuleFilter)
   const sessionsContainer = document.getElementById('lesson-sessions-list');
   const recentSessions = lessonTracker.getSessions(lessonRecentModuleFilter).slice(0, 15);
 
   if (sessionsContainer) {
     if (recentSessions.length === 0) {
-      const modMsg = lessonRecentModuleFilter === 'pediatrie' ? ' pour le module Pédiatrie' : (lessonRecentModuleFilter === 'psychiatrie' ? ' pour le module Psychiatrie' : '');
+      const modMsg = lessonRecentModuleFilter === 'all' ? '' : ` pour le module ${getModuleDisplayMeta(lessonRecentModuleFilter).title}`;
       sessionsContainer.innerHTML = `
         <div style="text-align:center;padding:16px;color:var(--text-dim);font-size:0.8rem;">
-          Aucune session enregistrée${modMsg}. L'historique des sessions apparaîtra ici après votre premier chronométrage.
+          Aucune session enregistrée${escapeHtml(modMsg)}. L'historique des sessions apparaîtra ici après votre premier chronométrage.
         </div>
       `;
     } else {
@@ -11713,15 +12147,14 @@ function renderLessonTrackerUI() {
         const dateFormatted = sess.dateStr ? formatDateFr(sess.dateStr) : '';
         const timeObj = sess.endTime ? new Date(sess.endTime) : null;
         const timeStr = timeObj ? timeObj.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '';
-        const sessModId = sess.moduleId || (typeof identifySessionModule === 'function' ? identifySessionModule(sess) : 'pediatrie');
-        const sessModTitle = (sessModId === 'psychiatrie') ? 'Psychiatrie' : 'Pédiatrie';
-        const sessModClass = (sessModId === 'psychiatrie') ? 'mod-psy' : 'mod-pedia';
+        const sessModId = sess.moduleId || identifySessionModule(sess);
+        const modMeta = getModuleDisplayMeta(sessModId);
 
         sessionsHtml += `
           <div class="lesson-session-row">
             <div class="session-left-meta">
               <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-                <span class="session-module-pill ${sessModClass}">${sessModTitle}</span>
+                <span class="session-module-pill ${modMeta.pillClass}">${escapeHtml(modMeta.title)}</span>
                 <span class="session-lesson-title">${escapeHtml(sess.lessonName)}</span>
               </div>
               <span class="session-date-time">${escapeHtml(dateFormatted)}${timeStr ? ' à ' + timeStr : ''}</span>
@@ -11737,22 +12170,27 @@ function renderLessonTrackerUI() {
       });
       sessionsContainer.innerHTML = sessionsHtml;
 
-      // Attach delete click handlers
       sessionsContainer.querySelectorAll('.btn-delete-session').forEach(btn => {
-        btn.onclick = (e) => {
+        btn.onclick = async (e) => {
           e.stopPropagation();
           const sessId = btn.dataset.sessionId;
-          if (confirm('Voulez-vous supprimer cette session de travail ?')) {
+          const ok = await showConfirmModal({
+            title: 'Supprimer la session ?',
+            message: 'Voulez-vous supprimer cette session de travail ?',
+            confirmLabel: 'Supprimer',
+            isDanger: true
+          });
+          if (ok) {
             lessonTracker.deleteSession(sessId);
             renderLessonTrackerUI();
-            firebaseSyncService.triggerAutoPush(true);
+            appState.firebaseSyncService?.triggerAutoPush(true);
+            showAppToast('🗑️ Session supprimée.');
           }
         };
       });
     }
   }
 
-  // Synchronize active classes on module filter pill groups
   document.querySelectorAll('#lesson-dist-module-filter .course-pill-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.mod === lessonDistModuleFilter);
   });
@@ -11766,20 +12204,13 @@ function renderLessonTrackerUI() {
     btn.classList.toggle('active', btn.dataset.mod === lessonRecentModuleFilter);
   });
 
-  // 3. Synchroniser la classe active sur tous les boutons du sélecteur de période des cours
   const rangeToggleEl = document.getElementById('stats-lesson-range-toggle');
   if (rangeToggleEl) {
     rangeToggleEl.querySelectorAll('.range-btn').forEach(btn => {
-      const r = btn.dataset.range;
-      if (r === currentLessonStatsRange) {
-        btn.classList.add('active');
-      } else {
-        btn.classList.remove('active');
-      }
+      btn.classList.toggle('active', btn.dataset.range === currentLessonStatsRange);
     });
   }
 
-  // Update Day Stepper for lessons
   const dayTextEl = document.getElementById('lesson-range-day-text');
   if (dayTextEl) {
     dayTextEl.textContent = (currentLessonStatsRange === 'today') ? getDayLabelForOffset(selectedLessonDayOffset) : "Aujourd'hui";
@@ -11789,11 +12220,21 @@ function renderLessonTrackerUI() {
     nextDayBtn.disabled = (selectedLessonDayOffset >= 0);
   }
 
-  // 4. Render Lesson Analytics, KPIs, Chart & Matrix
   renderLessonAnalytics(currentLessonStatsRange);
-
   updateLessonTimerTick();
   refreshLucide();
+}
+
+function bindModuleFilterPills(selector, onSelect) {
+  const pills = document.querySelectorAll(selector);
+  pills.forEach(btn => {
+    btn.onclick = () => {
+      pills.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      onSelect(btn.dataset.mod || 'all');
+      refreshLucide();
+    };
+  });
 }
 
 function setupLessonTrackerEventListeners() {
@@ -11805,7 +12246,7 @@ function setupLessonTrackerEventListeners() {
   function renderDropdown(filterText = '') {
     if (!dropdown || !dropdownItems) return;
     const cleanFilter = (filterText || '').trim().toLowerCase();
-    const matches = allChapters.filter(ch => {
+    const matches = appState.allChapters.filter(ch => {
       if (!cleanFilter) return true;
       return (ch.title || '').toLowerCase().includes(cleanFilter);
     });
@@ -11820,29 +12261,21 @@ function setupLessonTrackerEventListeners() {
       `;
     });
 
-    // Custom choice option if input has text
-    if (cleanFilter.length > 0) {
-      itemsHtml = `
-        <div class="lesson-dropdown-item custom-choice" data-chapter-id="" data-chapter-title="${escapeHtml(filterText.trim())}">
-          <span>✏️ Utiliser « <strong>${escapeHtml(filterText.trim())}</strong> »</span>
-          <span class="item-badge">Nom libre</span>
-        </div>
-      ` + itemsHtml;
-    }
-
-    if (!itemsHtml) {
-      itemsHtml = `
-        <div class="lesson-dropdown-item custom-choice" data-chapter-id="" data-chapter-title="${escapeHtml(filterText.trim())}">
-          <span>✏️ Utiliser « <strong>${escapeHtml(filterText.trim())}</strong> »</span>
-          <span class="item-badge">Nom libre</span>
-        </div>
-      `;
+    if (cleanFilter.length > 0 || !itemsHtml) {
+      const trimmed = (filterText || '').trim();
+      if (trimmed) {
+        itemsHtml = `
+          <div class="lesson-dropdown-item custom-choice" data-chapter-id="" data-chapter-title="${escapeHtml(trimmed)}">
+            <span>✏️ Utiliser « <strong>${escapeHtml(trimmed)}</strong> »</span>
+            <span class="item-badge">Nom libre</span>
+          </div>
+        ` + itemsHtml;
+      }
     }
 
     dropdownItems.innerHTML = itemsHtml;
-    dropdown.style.display = 'flex';
+    dropdown.style.display = itemsHtml ? 'flex' : 'none';
 
-    // Item click
     dropdownItems.querySelectorAll('.lesson-dropdown-item').forEach(item => {
       item.onclick = (e) => {
         e.stopPropagation();
@@ -11887,14 +12320,17 @@ function setupLessonTrackerEventListeners() {
     };
   }
 
-  // Close dropdown on outside click
-  document.addEventListener('click', (e) => {
-    if (dropdown && !dropdown.contains(e.target) && searchInput && e.target !== searchInput) {
-      dropdown.style.display = 'none';
-    }
-  });
+  if (!isLessonOutsideClickBound) {
+    isLessonOutsideClickBound = true;
+    document.addEventListener('click', (e) => {
+      const dd = document.getElementById('lesson-dropdown');
+      const si = document.getElementById('lesson-search-input');
+      if (dd && si && !dd.contains(e.target) && e.target !== si) {
+        dd.style.display = 'none';
+      }
+    });
+  }
 
-  // Offset Pills & Custom Offset Listeners
   const offsetPills = document.querySelectorAll('#lesson-offset-pills .offset-pill');
   offsetPills.forEach(pill => {
     pill.onclick = () => {
@@ -11933,7 +12369,6 @@ function setupLessonTrackerEventListeners() {
     };
   }
 
-  // Lesson Stats Range Toggle buttons & Day Stepper
   const lessonRangeToggle = document.getElementById('stats-lesson-range-toggle');
   const lessonCustomPicker = document.getElementById('custom-lesson-range-picker');
   const lessonCustomStartInput = document.getElementById('custom-lesson-date-start');
@@ -11993,15 +12428,10 @@ function setupLessonTrackerEventListeners() {
             const today = lessonTracker.getTodayDateStr();
             if (lessonCustomEndInput && !lessonCustomEndInput.value) lessonCustomEndInput.value = today;
             if (lessonCustomStartInput && !lessonCustomStartInput.value) {
-              const d = new Date();
-              d.setDate(d.getDate() - 7);
-              const y = d.getFullYear();
-              const m = String(d.getMonth() + 1).padStart(2, '0');
-              const day = String(d.getDate()).padStart(2, '0');
-              lessonCustomStartInput.value = `${y}-${m}-${day}`;
+              lessonCustomStartInput.value = getDateStrWithOffset(-7);
             }
-            customLessonStatsStart = lessonCustomStartInput.value;
-            customLessonStatsEnd = lessonCustomEndInput.value;
+            customLessonStatsStart = lessonCustomStartInput?.value || today;
+            customLessonStatsEnd = lessonCustomEndInput?.value || today;
             renderLessonTrackerUI();
           }
         } else {
@@ -12013,7 +12443,6 @@ function setupLessonTrackerEventListeners() {
     });
   }
 
-  // Mini-calendriers interactifs pour le sélecteur personnalisé de cours
   ['box-custom-lesson-date-start', 'box-custom-lesson-date-end'].forEach(boxId => {
     const box = document.getElementById(boxId);
     if (box) {
@@ -12035,7 +12464,7 @@ function setupLessonTrackerEventListeners() {
       customLessonStatsStart = lessonCustomStartInput?.value || '';
       customLessonStatsEnd = lessonCustomEndInput?.value || '';
       if (!customLessonStatsStart || !customLessonStatsEnd) {
-        alert('Veuillez sélectionner une date de début et une date de fin.');
+        showAppToast('Veuillez sélectionner une date de début et une date de fin.', { type: 'warning' });
         return;
       }
       renderLessonTrackerUI();
@@ -12043,7 +12472,6 @@ function setupLessonTrackerEventListeners() {
     };
   }
 
-  // Manual Session Modal Handlers
   const btnOpenManual = document.getElementById('btn-open-manual-session');
   const modalManual = document.getElementById('modal-manual-lesson-session');
   const btnCloseManual = document.getElementById('btn-close-manual-session-modal');
@@ -12063,7 +12491,7 @@ function setupLessonTrackerEventListeners() {
       if (manualClearBtn) manualClearBtn.style.display = manualLessonInput.value ? 'block' : 'none';
     }
     modalManual.style.display = 'flex';
-    refreshLucide();
+    refreshLucide(modalManual);
   }
 
   function closeManualSessionModal() {
@@ -12082,7 +12510,6 @@ function setupLessonTrackerEventListeners() {
     };
   }
 
-  // Preset pills
   const presetPills = document.querySelectorAll('#manual-presets-row .btn-preset-pill');
   presetPills.forEach(pill => {
     pill.onclick = () => {
@@ -12095,11 +12522,10 @@ function setupLessonTrackerEventListeners() {
     };
   });
 
-  // Manual session dropdown suggestions
   if (manualLessonInput && manualDropdown && manualDropdownItems) {
     function renderManualDropdown(filter = '') {
       const clean = (filter || '').trim().toLowerCase();
-      const matches = allChapters.filter(ch => !clean || ch.title.toLowerCase().includes(clean));
+      const matches = appState.allChapters.filter(ch => !clean || ch.title.toLowerCase().includes(clean));
       let itemsHtml = '';
       matches.slice(0, 15).forEach(ch => {
         itemsHtml += `
@@ -12137,12 +12563,11 @@ function setupLessonTrackerEventListeners() {
     }
   }
 
-  // Save manual session
   if (btnSaveManual) {
     btnSaveManual.onclick = () => {
       const lessonName = manualLessonInput?.value?.trim();
       if (!lessonName) {
-        alert('Veuillez renseigner le nom ou choisir une leçon.');
+        showAppToast('Veuillez renseigner le nom ou choisir une leçon.', { type: 'warning' });
         if (manualLessonInput) manualLessonInput.focus();
         return;
       }
@@ -12152,12 +12577,12 @@ function setupLessonTrackerEventListeners() {
       const durationSeconds = (hrs * 3600) + (mins * 60);
 
       if (durationSeconds < 60) {
-        alert('Veuillez entrer une durée d\'au moins 1 minute pour enregistrer la session.');
+        showAppToast("Veuillez entrer une durée d'au moins 1 minute pour enregistrer la session.", { type: 'warning' });
         return;
       }
 
       const dateStr = manualDateInput?.value || lessonTracker.getTodayDateStr();
-      const matchedCh = allChapters.find(c => c.title.toLowerCase() === lessonName.toLowerCase());
+      const matchedCh = appState.allChapters.find(c => c.title.toLowerCase() === lessonName.toLowerCase());
 
       const session = lessonTracker.addManualSession({
         lessonName,
@@ -12171,26 +12596,29 @@ function setupLessonTrackerEventListeners() {
         closeManualSessionModal();
         renderLessonTrackerUI();
         updateLessonTimerTick();
-        firebaseSyncService.triggerAutoPush(true);
-        showNotificationToast(`✅ Session de cours enregistrée : ${formatDuration(durationSeconds)} sur « ${lessonName} » !`);
+        appState.firebaseSyncService?.triggerAutoPush(true);
+        showAppToast(`✅ Session de cours enregistrée : ${formatDuration(durationSeconds)} sur « ${lessonName} » !`, { type: 'success' });
       }
     };
   }
 
-  // Action Buttons
   const btnStart = document.getElementById('btn-timer-start');
   if (btnStart) {
     btnStart.onclick = () => {
       const name = currentLessonSelected.name || searchInput?.value?.trim();
       if (!name) {
-        alert('Veuillez sélectionner ou taper le nom d\'une leçon avant de démarrer le chronomètre.');
+        showAppToast("Veuillez sélectionner ou taper le nom d'une leçon avant de démarrer le chronomètre.", { type: 'warning' });
         if (searchInput) searchInput.focus();
         return;
       }
       currentLessonSelected.name = name;
-      lessonTracker.startTimer(currentLessonSelected.name, currentLessonSelected.chapterId, currentLessonOffsetSeconds, currentLessonSelected.moduleId || getActiveModuleId());
-      
-      // Reset offset controls after starting
+      lessonTracker.startTimer(
+        currentLessonSelected.name,
+        currentLessonSelected.chapterId,
+        currentLessonOffsetSeconds,
+        currentLessonSelected.moduleId || getActiveModuleId()
+      );
+
       currentLessonOffsetSeconds = 0;
       const pills = document.querySelectorAll('#lesson-offset-pills .offset-pill');
       pills.forEach((p, idx) => p.classList.toggle('active', idx === 0));
@@ -12199,7 +12627,7 @@ function setupLessonTrackerEventListeners() {
 
       renderLessonTrackerUI();
       updateLessonTimerTick();
-      firebaseSyncService.triggerAutoPush(true);
+      appState.firebaseSyncService?.triggerAutoPush(true);
     };
   }
 
@@ -12209,7 +12637,7 @@ function setupLessonTrackerEventListeners() {
       lessonTracker.pauseTimer();
       renderLessonTrackerUI();
       updateLessonTimerTick();
-      firebaseSyncService.triggerAutoPush(true);
+      appState.firebaseSyncService?.triggerAutoPush(true);
     };
   }
 
@@ -12219,7 +12647,7 @@ function setupLessonTrackerEventListeners() {
       lessonTracker.resumeTimer();
       renderLessonTrackerUI();
       updateLessonTimerTick();
-      firebaseSyncService.triggerAutoPush(true);
+      appState.firebaseSyncService?.triggerAutoPush(true);
     };
   }
 
@@ -12230,9 +12658,10 @@ function setupLessonTrackerEventListeners() {
       if (session) {
         renderLessonTrackerUI();
         updateLessonTimerTick();
-        firebaseSyncService.triggerAutoPush(true);
+        appState.firebaseSyncService?.triggerAutoPush(true);
+        showAppToast(`✅ Session enregistrée : ${formatDuration(session.durationSeconds)} !`, { type: 'success' });
       } else {
-        alert('Session trop courte (moins de 1 seconde) : non enregistrée.');
+        showAppToast('Session trop courte (moins de 1 seconde) : non enregistrée.', { type: 'warning' });
         renderLessonTrackerUI();
         updateLessonTimerTick();
       }
@@ -12241,65 +12670,42 @@ function setupLessonTrackerEventListeners() {
 
   const btnCancel = document.getElementById('btn-timer-cancel');
   if (btnCancel) {
-    btnCancel.onclick = () => {
-      if (confirm('Voulez-vous vraiment annuler ce chronomètre sans enregistrer le temps ?')) {
+    btnCancel.onclick = async () => {
+      const ok = await showConfirmModal({
+        title: 'Annuler le chronomètre ?',
+        message: 'Voulez-vous vraiment annuler ce chronomètre sans enregistrer le temps ?',
+        confirmLabel: 'Annuler le chrono',
+        isDanger: true
+      });
+      if (ok) {
         lessonTracker.cancelTimer();
         renderLessonTrackerUI();
         updateLessonTimerTick();
-        firebaseSyncService.triggerAutoPush(true);
+        appState.firebaseSyncService?.triggerAutoPush(true);
       }
     };
   }
 
-  // Module filter buttons for Distribution (Top 10)
-  const distPills = document.querySelectorAll('#lesson-dist-module-filter .course-pill-btn');
-  distPills.forEach(btn => {
-    btn.onclick = () => {
-      distPills.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      lessonDistModuleFilter = btn.dataset.mod || 'all';
-      renderLessonDistribution(lessonDistModuleFilter);
-      refreshLucide();
-    };
+  bindModuleFilterPills('#lesson-dist-module-filter .course-pill-btn', (mod) => {
+    lessonDistModuleFilter = mod;
+    renderLessonDistribution(lessonDistModuleFilter);
   });
 
-  // Module filter buttons for Matrix (Programme)
-  const matrixPills = document.querySelectorAll('#lesson-matrix-module-filter .course-pill-btn');
-  matrixPills.forEach(btn => {
-    btn.onclick = () => {
-      matrixPills.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      lessonMatrixModuleFilter = btn.dataset.mod || 'all';
-      renderLessonChaptersMatrix(lessonMatrixModuleFilter);
-      refreshLucide();
-    };
+  bindModuleFilterPills('#lesson-matrix-module-filter .course-pill-btn', (mod) => {
+    lessonMatrixModuleFilter = mod;
+    renderLessonChaptersMatrix(lessonMatrixModuleFilter);
   });
 
-  // Module filter buttons for Summary Table
-  const summaryPills = document.querySelectorAll('#lesson-summary-module-filter .course-pill-btn');
-  summaryPills.forEach(btn => {
-    btn.onclick = () => {
-      summaryPills.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      lessonSummaryModuleFilter = btn.dataset.mod || 'all';
-      renderLessonTrackerUI();
-      refreshLucide();
-    };
+  bindModuleFilterPills('#lesson-summary-module-filter .course-pill-btn', (mod) => {
+    lessonSummaryModuleFilter = mod;
+    renderLessonTrackerUI();
   });
 
-  // Module filter buttons for Recent Sessions
-  const recentPills = document.querySelectorAll('#lesson-recent-module-filter .course-pill-btn');
-  recentPills.forEach(btn => {
-    btn.onclick = () => {
-      recentPills.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      lessonRecentModuleFilter = btn.dataset.mod || 'all';
-      renderLessonTrackerUI();
-      refreshLucide();
-    };
+  bindModuleFilterPills('#lesson-recent-module-filter .course-pill-btn', (mod) => {
+    lessonRecentModuleFilter = mod;
+    renderLessonTrackerUI();
   });
 
-  // Sub-navigation buttons (QCM vs Cours)
   const btnSubnavQcm = document.getElementById('btn-subnav-qcm');
   if (btnSubnavQcm) {
     btnSubnavQcm.onclick = () => switchStatsSubpage('qcm');
@@ -12310,171 +12716,221 @@ function setupLessonTrackerEventListeners() {
     btnSubnavLessons.onclick = () => switchStatsSubpage('lessons');
   }
 
-  // Header quick badge click
   const headerBadge = document.getElementById('active-lesson-header-badge');
   if (headerBadge) {
     headerBadge.onclick = () => {
-      switchView('stats');
+      navigateToView('stats');
       switchStatsSubpage('lessons');
     };
   }
+}
+
+
+// --- src/app.js ---
+// ============================================================================
+// PédiaDrill - Application Controller & Orchestration
+// ============================================================================
+
+// Instantiate cloud sync service & register globally on appState
+const firebaseSyncService = new FirebaseSyncService(
+  queueEngine,
+  (status, detail, user, lastSyncText) => {
+    updateGoogleAccountUI(status, detail, user, lastSyncText);
+  },
+  (_mergedState) => {
+    updateDashboardUI();
+    if (appState.currentView === 'notebook') renderNotebookUI();
+    if (appState.currentView === 'stats') renderStatsUI();
+    updateArenaDailyBadge();
+    updateModalLocalSummary();
+    renderLessonTrackerUI();
+    updateLessonTimerTick();
+    refreshLucide();
+  },
+  (newRemoteModuleId) => {
+    if (!newRemoteModuleId || newRemoteModuleId === getActiveModuleId()) return;
+    if (appState.currentView === 'arena' && !appState.isCurrentQuestionAnswered) {
+      showAppToast(`📡 Module ${newRemoteModuleId} activé sur un autre appareil.`);
+    } else {
+      switchActiveModule(newRemoteModuleId, true);
+    }
+  }
+);
+appState.firebaseSyncService = firebaseSyncService;
+
+// ============================================================================
+// VIEW NAVIGATION
+// ============================================================================
+function switchView(viewName) {
+  appState.currentView = viewName;
+  const views = getDomViews();
+  Object.keys(views).forEach(v => {
+    if (views[v]) {
+      views[v].style.display = (v === viewName) ? 'flex' : 'none';
+    }
+  });
+
+  if (viewName === 'dashboard') {
+    updateDashboardUI();
+  } else if (viewName === 'arena') {
+    loadNextArenaQuestion();
+  } else if (viewName === 'notebook') {
+    const searchVal = document.getElementById('notebook-search-input')?.value || '';
+    renderNotebookUI(searchVal);
+  } else if (viewName === 'stats') {
+    renderStatsUI();
+  }
+
+  const floatingAiBtn = document.getElementById('btn-arena-ai-chat');
+  const arenaChatbox = document.getElementById('arena-ai-chatbox');
+  if (floatingAiBtn) {
+    floatingAiBtn.style.display = (viewName === 'arena') ? 'flex' : 'none';
+  }
+  if (viewName !== 'arena' && arenaChatbox) {
+    arenaChatbox.style.display = 'none';
+    if (floatingAiBtn) floatingAiBtn.classList.remove('is-active');
+  }
+
+  if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }
+  refreshLucide();
+}
+
+// ============================================================================
+// NATIVE CAPACITOR HARDWARE BACK BUTTON (ANDROID)
+// ============================================================================
+let isCapacitorBackBound = false;
+
+function setupNativeCapacitorBackButton() {
+  if (isCapacitorBackBound || typeof window === 'undefined') return;
+  const capApp = window.Capacitor?.Plugins?.App;
+  if (!capApp || typeof capApp.addListener !== 'function') return;
+
+  isCapacitorBackBound = true;
+  capApp.addListener('backButton', () => {
+    const confirmModal = document.getElementById('modal-app-confirm');
+    if (confirmModal && confirmModal.style.display === 'flex') {
+      resolvePendingConfirmModal(false);
+      return;
+    }
+
+    const lightboxModal = document.getElementById('media-lightbox-modal');
+    if (lightboxModal && lightboxModal.style.display === 'flex') {
+      window.closeMediaLightbox?.();
+      return;
+    }
+
+    const chatbox = document.getElementById('arena-ai-chatbox');
+    if (chatbox && chatbox.style.display === 'flex') {
+      window.toggleArenaChat?.(false);
+      return;
+    }
+
+    const modals = getDomModals();
+    if (modals.clinicalSummary && modals.clinicalSummary.style.display === 'flex') {
+      window.closeClinicalCaseSummaryModal?.();
+      return;
+    }
+
+    if (modals.error && modals.error.style.display === 'flex') {
+      closeErrorModalAndContinue();
+      return;
+    }
+
+    const closeableModals = [modals.chapters, modals.sync, modals.settings, modals.update, modals.manualLesson];
+    const openModal = closeableModals.find(m => m && m.style.display === 'flex');
+    if (openModal) {
+      openModal.style.display = 'none';
+      return;
+    }
+
+    if (appState.currentView !== 'dashboard') {
+      switchView('dashboard');
+      return;
+    }
+
+    if (typeof capApp.exitApp === 'function') {
+      capApp.exitApp();
+    }
+  });
+}
+
+// ============================================================================
+// INITIALIZATION
+// ============================================================================
+function initApp() {
+  registerViewNavigator(switchView);
+  window.openSettingsFromAi = openSettingsModal;
+
+  queueEngine.setQuestions(appState.allQuestions, appState.allChapters);
+  appState.aiExplanationsCache = loadAiExplanationsCache();
+  scrubCorruptedAiExplanations();
+  studyTracker.seedFirstPassFromExistingStats(queueEngine.stats, queueEngine.getRawReasoningNotes());
+  updateDashboardUI();
+  setupEventListeners();
+  setupKeyboardShortcuts();
+  setupNativeCapacitorBackButton();
+  setupFirebaseService();
+  initLessonTracker();
+  refreshLucide();
+
+  if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').then((reg) => {
+      reg.addEventListener('updatefound', () => {
+        const installingWorker = reg.installing;
+        if (installingWorker) {
+          installingWorker.addEventListener('statechange', () => {
+            if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              console.log('[PediaDrill] Nouvelle mise à jour SW prête, rechargement...');
+              window.location.reload();
+            }
+          });
+        }
+      });
+    }).catch(err => {
+      console.warn('SW registration:', err);
+    });
+
+    let swRefreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!swRefreshing) {
+        swRefreshing = true;
+        window.location.reload();
+      }
+    });
+  }
+
+  setTimeout(() => {
+    if (typeof updateService !== 'undefined' && updateService) {
+      updateService.checkForUpdates(false);
+    }
+  }, 3000);
 }
 
 // ============================================================================
 // EVENT LISTENERS & KEYBOARD BINDINGS
 // ============================================================================
 function setupEventListeners() {
-  // Navigation
-  document.getElementById('btn-home-logo').onclick = () => switchView('dashboard');
-  document.getElementById('btn-leave-arena').onclick = () => switchView('dashboard');
-  document.getElementById('btn-leave-notebook').onclick = () => switchView('dashboard');
-  const btnLeaveStats = document.getElementById('btn-leave-stats');
-  if (btnLeaveStats) btnLeaveStats.onclick = () => switchView('dashboard');
+  const modals = getDomModals();
 
-  document.getElementById('btn-open-notebook').onclick = () => switchView('notebook');
-  document.getElementById('btn-open-notebook-icon').onclick = () => switchView('notebook');
+  const bindClick = (id, handler) => {
+    const el = document.getElementById(id);
+    if (el) el.onclick = handler;
+    return el;
+  };
 
-  const btnOpenStats = document.getElementById('btn-open-stats');
-  if (btnOpenStats) btnOpenStats.onclick = () => switchView('stats');
+  bindClick('btn-home-logo', () => switchView('dashboard'));
+  bindClick('btn-leave-arena', () => switchView('dashboard'));
+  bindClick('btn-leave-notebook', () => switchView('dashboard'));
+  bindClick('btn-leave-stats', () => switchView('dashboard'));
+  bindClick('btn-open-notebook', () => switchView('notebook'));
+  bindClick('btn-open-notebook-icon', () => switchView('notebook'));
+  bindClick('btn-open-stats', () => switchView('stats'));
+  bindClick('btn-open-stats-icon', () => switchView('stats'));
 
-  const btnOpenStatsIcon = document.getElementById('btn-open-stats-icon');
-  if (btnOpenStatsIcon) btnOpenStatsIcon.onclick = () => switchView('stats');
+  setupStatsEventListeners();
 
-  // Stats range toggle buttons & Day Stepper
-  const rangeToggle = document.getElementById('stats-range-toggle');
-  const customPicker = document.getElementById('custom-range-picker');
-  const customStartInput = document.getElementById('custom-date-start');
-  const customEndInput = document.getElementById('custom-date-end');
-  const btnApplyCustom = document.getElementById('btn-apply-custom-range');
-
-  const btnPrevDay = document.getElementById('btn-stats-prev-day');
-  if (btnPrevDay) {
-    btnPrevDay.onclick = (e) => {
-      e.stopPropagation();
-      selectedDayOffset--;
-      currentStatsRange = 'today';
-      rangeToggle?.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
-      document.getElementById('btn-range-day')?.classList.add('active');
-      if (customPicker) customPicker.style.display = 'none';
-      renderStatsUI();
-      refreshLucide();
-    };
-  }
-
-  const btnNextDay = document.getElementById('btn-stats-next-day');
-  if (btnNextDay) {
-    btnNextDay.onclick = (e) => {
-      e.stopPropagation();
-      if (selectedDayOffset < 0) {
-        selectedDayOffset++;
-        currentStatsRange = 'today';
-        rangeToggle?.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn-range-day')?.classList.add('active');
-        if (customPicker) customPicker.style.display = 'none';
-        renderStatsUI();
-        refreshLucide();
-      }
-    };
-  }
-
-  if (rangeToggle) {
-    rangeToggle.querySelectorAll('.range-btn').forEach(btn => {
-      btn.onclick = () => {
-        rangeToggle.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const r = btn.dataset.range || 'today';
-
-        if (r === 'today') {
-          if (currentStatsRange === 'today' && selectedDayOffset !== 0) {
-            // Re-cliquer sur le bouton alors qu'on est sur Hier réinitialise à Aujourd'hui
-            selectedDayOffset = 0;
-          }
-          currentStatsRange = 'today';
-        } else {
-          selectedDayOffset = 0; // Réinitialiser le décalage si on va vers 7j, 30j, tout
-          currentStatsRange = r;
-        }
-
-        if (r === 'custom') {
-          if (customPicker) {
-            customPicker.style.display = 'flex';
-            const today = studyTracker.getTodayDateStr();
-            if (customEndInput && !customEndInput.value) customEndInput.value = today;
-            if (customStartInput && !customStartInput.value) {
-              const d = new Date();
-              d.setDate(d.getDate() - 7);
-              const y = d.getFullYear();
-              const m = String(d.getMonth() + 1).padStart(2, '0');
-              const day = String(d.getDate()).padStart(2, '0');
-              customStartInput.value = `${y}-${m}-${day}`;
-            }
-            customStatsStart = customStartInput.value;
-            customStatsEnd = customEndInput.value;
-            renderStatsUI();
-          }
-        } else {
-          if (customPicker) customPicker.style.display = 'none';
-          renderStatsUI();
-        }
-        refreshLucide();
-      };
-    });
-  }
-
-  // Mini-calendriers interactifs pour le sélecteur personnalisé
-  ['box-custom-date-start', 'box-custom-date-end'].forEach(boxId => {
-    const box = document.getElementById(boxId);
-    if (box) {
-      box.addEventListener('click', (e) => {
-        const inp = box.querySelector('input[type="date"]');
-        if (inp && e.target !== inp) {
-          if (typeof inp.showPicker === 'function') {
-            try { inp.showPicker(); } catch (_) { inp.focus(); }
-          } else {
-            inp.focus();
-          }
-        }
-      });
-    }
-  });
-
-  if (btnApplyCustom) {
-    btnApplyCustom.onclick = () => {
-      customStatsStart = customStartInput?.value || '';
-      customStatsEnd = customEndInput?.value || '';
-      if (!customStatsStart || !customStatsEnd) {
-        alert('Veuillez sélectionner une date de début et une date de fin.');
-        return;
-      }
-      renderStatsUI();
-      refreshLucide();
-    };
-  }
-
-  // Course Questions Tracker (Pills mode & mini search)
-  const cmodeToggle = document.getElementById('course-tracker-mode-toggle');
-  if (cmodeToggle) {
-    cmodeToggle.querySelectorAll('.course-pill-btn').forEach(btn => {
-      btn.onclick = () => {
-        cmodeToggle.querySelectorAll('.course-pill-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        courseTrackerMode = btn.dataset.cmode || 'period';
-        renderStatsChapters(lastRenderedChapterTotals, lastRenderedPeriodLabel);
-        refreshLucide();
-      };
-    });
-  }
-
-  const courseSearchInput = document.getElementById('course-tracker-search');
-  if (courseSearchInput) {
-    courseSearchInput.oninput = (e) => {
-      courseTrackerSearchQuery = e.target.value;
-      renderStatsChapters(lastRenderedChapterTotals, lastRenderedPeriodLabel);
-      refreshLucide();
-    };
-  }
-
-  // Auto-pause timer when tab is hidden or phone goes to lock screen
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       studyTracker.pauseTimer();
@@ -12483,126 +12939,111 @@ function setupEventListeners() {
     }
   });
 
-  // Dashboard primary buttons
-  document.getElementById('btn-start-random').onclick = () => {
-    // If no chapters selected or reset requested
-    if (queueEngine.queue.length === 0) {
+  bindClick('btn-start-random', () => {
+    if (queueEngine.queue.length === 0 && (!queueEngine.selectedChapterIds || queueEngine.selectedChapterIds.length === 0)) {
       queueEngine.initSession([]);
     }
     switchView('arena');
-  };
+  });
 
-  document.getElementById('btn-open-chapters').onclick = openChaptersModal;
-  document.getElementById('btn-toggle-all-chapters').onclick = () => {
+  bindClick('btn-open-chapters', openChaptersModal);
+  bindClick('btn-toggle-all-chapters', () => {
     const items = document.querySelectorAll('.chapter-select-item input');
     const shouldCheck = Array.from(items).some(i => !i.checked);
     items.forEach(i => {
       i.checked = shouldCheck;
-      i.closest('.chapter-select-item').classList.toggle('checked', shouldCheck);
+      i.closest('.chapter-select-item')?.classList.toggle('checked', shouldCheck);
     });
-  };
-  document.getElementById('btn-apply-chapters').onclick = applyChapterSelection;
-  document.getElementById('btn-close-chapters-modal').onclick = () => {
-    modals.chapters.style.display = 'none';
-  };
+  });
+  bindClick('btn-apply-chapters', applyChapterSelection);
+  bindClick('btn-close-chapters-modal', () => {
+    if (modals.chapters) modals.chapters.style.display = 'none';
+  });
 
-  // Arena Actions
-  document.getElementById('btn-submit-answer').onclick = handleSubmitQcm;
-  document.getElementById('btn-submit-croq').onclick = handleSubmitCroq;
-  document.getElementById('btn-next-question').onclick = () => loadNextArenaQuestion();
+  bindClick('btn-submit-answer', handleSubmitQcm);
+  bindClick('btn-submit-croq', handleSubmitCroq);
+  bindClick('btn-next-question', () => loadNextArenaQuestion());
 
-  // History Navigation in Arena
-  const btnHistPrev = document.getElementById('btn-history-prev');
-  if (btnHistPrev) btnHistPrev.onclick = () => window.navigateHistoryPrev();
-  const btnHistNext = document.getElementById('btn-history-next');
-  if (btnHistNext) btnHistNext.onclick = () => window.navigateHistoryNext();
-  const btnHistResume = document.getElementById('btn-history-resume-action');
-  if (btnHistResume) btnHistResume.onclick = () => window.resumeActiveDrill();
+  bindClick('btn-history-prev', () => window.navigateHistoryPrev?.());
+  bindClick('btn-history-next', () => window.navigateHistoryNext?.());
+  bindClick('btn-history-resume-action', () => window.resumeActiveDrill?.());
 
+  bindClick('btn-continue-after-error', closeErrorModalAndContinue);
+  bindClick('btn-close-error-modal', closeErrorModalAndContinue);
 
-  // Error modal
-  document.getElementById('btn-continue-after-error').onclick = closeErrorModalAndContinue;
-  document.getElementById('btn-close-error-modal').onclick = closeErrorModalAndContinue;
+  const notebookSearchInput = document.getElementById('notebook-search-input');
+  if (notebookSearchInput) {
+    const debouncedSearch = debounce((val) => renderNotebookUI(val), 200);
+    notebookSearchInput.oninput = (e) => debouncedSearch(e.target.value);
+  }
 
-  // Notebook search, chapter filter & sorting controls
-  document.getElementById('notebook-search-input').oninput = (e) => {
-    renderNotebookUI(e.target.value);
-  };
   const notebookSortSelect = document.getElementById('notebook-sort-by');
   if (notebookSortSelect) {
     notebookSortSelect.onchange = (e) => {
-      notebookSortBy = e.target.value;
-      const searchVal = document.getElementById('notebook-search-input')?.value || '';
-      renderNotebookUI(searchVal);
+      setNotebookSortBy(e.target.value);
+      renderNotebookUI(notebookSearchInput?.value || '');
     };
   }
-  const btnSortOrder = document.getElementById('btn-toggle-sort-order');
-  if (btnSortOrder) {
-    btnSortOrder.onclick = () => {
-      notebookSortOrder = (notebookSortOrder === 'desc') ? 'asc' : 'desc';
-      updateSortOrderButtonUI();
-      const searchVal = document.getElementById('notebook-search-input')?.value || '';
-      renderNotebookUI(searchVal);
-    };
-  }
+
+  bindClick('btn-toggle-sort-order', () => {
+    toggleNotebookSortOrder();
+    renderNotebookUI(notebookSearchInput?.value || '');
+  });
+
   const btnViewChapter = document.getElementById('btn-view-mode-chapter');
   const btnViewFlat = document.getElementById('btn-view-mode-flat');
   if (btnViewChapter && btnViewFlat) {
     btnViewChapter.onclick = () => {
-      notebookViewMode = 'chapter';
+      setNotebookViewMode('chapter');
       btnViewChapter.classList.add('active');
       btnViewFlat.classList.remove('active');
-      const searchVal = document.getElementById('notebook-search-input')?.value || '';
-      renderNotebookUI(searchVal);
+      renderNotebookUI(notebookSearchInput?.value || '');
     };
     btnViewFlat.onclick = () => {
-      notebookViewMode = 'flat';
+      setNotebookViewMode('flat');
       btnViewFlat.classList.add('active');
       btnViewChapter.classList.remove('active');
-      const searchVal = document.getElementById('notebook-search-input')?.value || '';
-      renderNotebookUI(searchVal);
+      renderNotebookUI(notebookSearchInput?.value || '');
     };
   }
+
   const notebookChapFilter = document.getElementById('notebook-chapter-filter');
   if (notebookChapFilter) {
     notebookChapFilter.onchange = (e) => {
-      notebookSelectedChapter = e.target.value;
-      const searchVal = document.getElementById('notebook-search-input')?.value || '';
-      renderNotebookUI(searchVal);
+      setNotebookSelectedChapter(e.target.value);
+      renderNotebookUI(notebookSearchInput?.value || '');
     };
   }
 
-  // Chapters modal search
-  document.getElementById('chapters-search-input').oninput = (e) => {
-    const filter = e.target.value.toLowerCase();
-    document.querySelectorAll('.chapter-select-item').forEach(item => {
-      const title = item.querySelector('span').textContent.toLowerCase();
-      item.style.display = title.includes(filter) ? 'flex' : 'none';
-    });
-  };
+  const chaptersSearchInput = document.getElementById('chapters-search-input');
+  if (chaptersSearchInput) {
+    chaptersSearchInput.oninput = (e) => {
+      const filter = e.target.value.toLowerCase();
+      document.querySelectorAll('.chapter-select-item').forEach(item => {
+        const title = item.querySelector('span')?.textContent?.toLowerCase() || '';
+        item.style.display = title.includes(filter) ? 'flex' : 'none';
+      });
+    };
+  }
 
-  // Google Auth & Sync Modal Triggers
   const openSyncModal = () => {
     updateModalLocalSummary();
     const currentUser = firebaseSyncService.user;
     updateGoogleAccountUI(
-      firebaseSyncService.status, 
-      '', 
-      currentUser, 
+      firebaseSyncService.status,
+      '',
+      currentUser,
       currentUser ? firebaseSyncService.getLastSyncedText() : 'Non connecté'
     );
-    modals.sync.style.display = 'flex';
+    if (modals.sync) modals.sync.style.display = 'flex';
   };
 
-  const btnHeaderLogin = document.getElementById('btn-header-google-login');
-  if (btnHeaderLogin) btnHeaderLogin.onclick = openSyncModal;
+  bindClick('btn-header-google-login', openSyncModal);
+  bindClick('btn-open-user-profile', openSyncModal);
+  bindClick('btn-close-sync-modal', () => {
+    if (modals.sync) modals.sync.style.display = 'none';
+  });
 
-  const btnUserProfile = document.getElementById('btn-open-user-profile');
-  if (btnUserProfile) btnUserProfile.onclick = openSyncModal;
-
-  document.getElementById('btn-close-sync-modal').onclick = () => modals.sync.style.display = 'none';
-
-  // Modal Google Login Button
   const btnModalGoogleLogin = document.getElementById('btn-modal-google-login');
   if (btnModalGoogleLogin) {
     btnModalGoogleLogin.onclick = async () => {
@@ -12611,13 +13052,13 @@ function setupEventListeners() {
         if (panel) panel.style.display = 'flex';
         const chevron = document.getElementById('firebase-chevron');
         if (chevron) chevron.style.transform = 'rotate(180deg)';
-        alert('Veuillez renseigner les identifiants de votre projet Firebase dans le panneau ci-dessous pour connecter Google.');
+        showAppToast('Veuillez renseigner les identifiants de votre projet Firebase dans le panneau ci-dessous pour connecter Google.', { type: 'warning' });
         return;
       }
 
       btnModalGoogleLogin.disabled = true;
       btnModalGoogleLogin.innerHTML = '<span>Connexion Google en cours...</span>';
-      
+
       const res = await firebaseSyncService.signInWithGoogle();
       btnModalGoogleLogin.disabled = false;
       btnModalGoogleLogin.innerHTML = `
@@ -12632,27 +13073,31 @@ function setupEventListeners() {
 
       if (res.success && res.user) {
         updateDashboardUI();
-        if (currentView === 'notebook') renderNotebookUI();
-        alert(`Bienvenue ${res.user.displayName || res.user.email} ! Votre progression est désormais synchronisée en direct avec votre compte Google.`);
+        if (appState.currentView === 'notebook') renderNotebookUI(notebookSearchInput?.value || '');
+        showAppToast(`✅ Bienvenue ${res.user.displayName || res.user.email} ! Progression synchronisée avec Google.`, { type: 'success' });
       } else if (!res.success && res.error) {
-        alert(res.error);
+        showAppToast(`❌ ${res.error}`, { type: 'error' });
       }
     };
   }
 
-  // Modal Google Logout Button
   const btnGoogleLogout = document.getElementById('btn-google-logout');
   if (btnGoogleLogout) {
     btnGoogleLogout.onclick = async () => {
-      if (confirm('Voulez-vous vous déconnecter de votre compte Google sur cet appareil ? (Vos données locales restent conservées)')) {
+      const ok = await showConfirmModal({
+        title: 'Déconnexion Google',
+        message: 'Voulez-vous vous déconnecter de votre compte Google sur cet appareil ? (Vos données locales restent conservées)',
+        confirmLabel: 'Se déconnecter',
+        isDanger: true
+      });
+      if (ok) {
         await firebaseSyncService.signOut();
         updateDashboardUI();
-        alert('Déconnecté du compte Google.');
+        showAppToast('Déconnecté du compte Google.');
       }
     };
   }
 
-  // Modal Firestore Push Button
   const btnFirestorePush = document.getElementById('btn-firestore-push');
   if (btnFirestorePush) {
     btnFirestorePush.onclick = async () => {
@@ -12661,17 +13106,16 @@ function setupEventListeners() {
       const res = await firebaseSyncService.pushToFirestore();
       btnFirestorePush.disabled = false;
       btnFirestorePush.innerHTML = '<i data-lucide="upload-cloud"></i> <span>📤 Envoyer au Cloud</span>';
-      refreshLucide();
+      refreshLucide(btnFirestorePush);
       updateModalLocalSummary();
       if (res.success) {
-        alert('✅ Progression & notes de raisonnement sauvegardées sur votre compte Google Cloud !');
+        showAppToast('✅ Progression & notes de raisonnement sauvegardées sur Google Cloud !', { type: 'success' });
       } else {
-        alert('❌ ' + (res.error || 'Échec de sauvegarde'));
+        showAppToast('❌ ' + (res.error || 'Échec de sauvegarde'), { type: 'error' });
       }
     };
   }
 
-  // Modal Firestore Pull Button
   const btnFirestorePull = document.getElementById('btn-firestore-pull');
   if (btnFirestorePull) {
     btnFirestorePull.onclick = async () => {
@@ -12680,96 +13124,102 @@ function setupEventListeners() {
       const res = await firebaseSyncService.pullFromFirestore();
       btnFirestorePull.disabled = false;
       btnFirestorePull.innerHTML = '<i data-lucide="download-cloud"></i> <span>📥 Récupérer du Cloud</span>';
-      refreshLucide();
+      refreshLucide(btnFirestorePull);
       updateModalLocalSummary();
       if (res.success) {
         updateDashboardUI();
-        if (currentView === 'notebook') renderNotebookUI();
-        alert('✅ Progression et notes récupérées et fusionnées avec succès depuis Google Cloud !');
+        if (appState.currentView === 'notebook') renderNotebookUI(notebookSearchInput?.value || '');
+        showAppToast('✅ Progression et notes récupérées et fusionnées avec succès depuis Google Cloud !', { type: 'success' });
       } else {
-        alert('❌ ' + (res.error || 'Échec de récupération'));
+        showAppToast('❌ ' + (res.error || 'Échec de récupération'), { type: 'error' });
       }
     };
   }
 
-  // Toggle Firebase Configuration Panel
-  const btnToggleFb = document.getElementById('btn-toggle-firebase-config');
-  if (btnToggleFb) {
-    btnToggleFb.onclick = () => {
-      const panel = document.getElementById('firebase-config-panel');
-      if (!panel) return;
-      const isHidden = panel.style.display === 'none';
-      panel.style.display = isHidden ? 'flex' : 'none';
-      const chevron = document.getElementById('firebase-chevron');
-      if (chevron) chevron.style.transform = isHidden ? 'rotate(180deg)' : 'none';
+  bindClick('btn-toggle-firebase-config', () => {
+    const panel = document.getElementById('firebase-config-panel');
+    if (!panel) return;
+    const isHidden = panel.style.display === 'none';
+    panel.style.display = isHidden ? 'flex' : 'none';
+    const chevron = document.getElementById('firebase-chevron');
+    if (chevron) chevron.style.transform = isHidden ? 'rotate(180deg)' : 'none';
+  });
+
+  bindClick('btn-save-firebase-config', () => {
+    const config = {
+      apiKey: document.getElementById('fb-api-key')?.value?.trim() || '',
+      projectId: document.getElementById('fb-project-id')?.value?.trim() || '',
+      authDomain: document.getElementById('fb-auth-domain')?.value?.trim() || '',
+      appId: document.getElementById('fb-app-id')?.value?.trim() || ''
     };
-  }
 
-  // Save Firebase Configuration Button
-  const btnSaveFb = document.getElementById('btn-save-firebase-config');
-  if (btnSaveFb) {
-    btnSaveFb.onclick = () => {
-      const config = {
-        apiKey: document.getElementById('fb-api-key').value.trim(),
-        projectId: document.getElementById('fb-project-id').value.trim(),
-        authDomain: document.getElementById('fb-auth-domain').value.trim(),
-        appId: document.getElementById('fb-app-id').value.trim()
-      };
+    if (!config.apiKey || !config.projectId) {
+      showAppToast("Veuillez renseigner au minimum la clé API et l'ID de projet Firebase.", { type: 'warning' });
+      return;
+    }
 
-      if (!config.apiKey || !config.projectId) {
-        alert('Veuillez renseigner au minimum la clé API et l\'ID de projet Firebase.');
-        return;
-      }
+    firebaseSyncService.saveConfig(config);
+    showAppToast('✅ Configuration Firebase enregistrée et initialisée ! Vous pouvez maintenant vous connecter avec Google.', { type: 'success' });
+  });
 
-      firebaseSyncService.saveConfig(config);
-      alert('Configuration Firebase enregistrée et initialisée ! Vous pouvez maintenant vous connecter avec Google.');
-    };
-  }
-
-  document.getElementById('btn-export-json').onclick = () => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(queueEngine.exportState());
+  bindClick('btn-export-json', () => {
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(queueEngine.exportState());
     const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", `pediadrile_backup_${Date.now()}.json`);
+    downloadAnchor.setAttribute('href', dataStr);
+    downloadAnchor.setAttribute('download', `pediadrile_backup_${Date.now()}.json`);
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
-  };
+  });
 
-  document.getElementById('btn-import-json').onclick = () => {
-    document.getElementById('file-import-input').click();
-  };
-  document.getElementById('file-import-input').onchange = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const ok = queueEngine.importState(event.target.result);
-      if (ok) {
-        updateDashboardUI();
-        alert('Progression importée avec succès !');
-        modals.sync.style.display = 'none';
-      } else {
-        alert('Fichier JSON invalide.');
-      }
+  bindClick('btn-import-json', () => {
+    document.getElementById('file-import-input')?.click();
+  });
+
+  const fileImportInput = document.getElementById('file-import-input');
+  if (fileImportInput) {
+    fileImportInput.onchange = (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const ok = queueEngine.importState(event.target.result);
+        if (ok) {
+          updateDashboardUI();
+          showAppToast('✅ Progression importée avec succès !', { type: 'success' });
+          if (modals.sync) modals.sync.style.display = 'none';
+        } else {
+          showAppToast('❌ Fichier JSON invalide.', { type: 'error' });
+        }
+      };
+      reader.readAsText(file);
     };
-    reader.readAsText(file);
-  };
+  }
 
-  // Settings Modal
   const versionBadgeEl = document.getElementById('settings-current-app-version');
   if (versionBadgeEl && typeof CURRENT_APP_VERSION !== 'undefined') {
     versionBadgeEl.textContent = `v${CURRENT_APP_VERSION}`;
   }
 
-  const btnOpenSettings = document.getElementById('btn-open-settings');
-  if (btnOpenSettings) {
-    btnOpenSettings.onclick = openSettingsModal;
+  bindClick('btn-open-settings', openSettingsModal);
+  bindClick('btn-close-settings-modal', () => {
+    if (modals.settings) modals.settings.style.display = 'none';
+  });
+
+  const geminiKeyInput = document.getElementById('settings-gemini-key');
+  if (geminiKeyInput) {
+    geminiKeyInput.oninput = (e) => updateGeminiKeyCounterBadge(e.target.value);
   }
 
-  const btnCloseSettings = document.getElementById('btn-close-settings-modal');
-  if (btnCloseSettings) {
-    btnCloseSettings.onclick = () => modals.settings.style.display = 'none';
+  const toggleMaskBtn = document.getElementById('btn-toggle-gemini-key-mask');
+  if (toggleMaskBtn && geminiKeyInput) {
+    toggleMaskBtn.onclick = () => {
+      const masked = geminiKeyInput.classList.toggle('is-masked');
+      toggleMaskBtn.innerHTML = masked
+        ? '<i data-lucide="eye" style="width:13px;height:13px;"></i> <span>Afficher les clés</span>'
+        : '<i data-lucide="eye-off" style="width:13px;height:13px;"></i> <span>Masquer les clés</span>';
+      refreshLucide(toggleMaskBtn);
+    };
   }
 
   const examDateInput = document.getElementById('settings-exam-date');
@@ -12777,104 +13227,99 @@ function setupEventListeners() {
     examDateInput.oninput = (e) => updateSettingsCountdownPreview(e.target.value);
   }
 
-  const btnClearExamDate = document.getElementById('btn-clear-exam-date');
-  if (btnClearExamDate) {
-    btnClearExamDate.onclick = () => {
-      if (examDateInput) examDateInput.value = '';
-      updateSettingsCountdownPreview('');
-    };
-  }
+  bindClick('btn-clear-exam-date', () => {
+    if (examDateInput) examDateInput.value = '';
+    updateSettingsCountdownPreview('');
+  });
 
   const clinicalModeSelect = document.getElementById('settings-clinical-mode-select');
   if (clinicalModeSelect) {
     clinicalModeSelect.onchange = (e) => {
-      const badgeEl = document.getElementById('settings-clinical-mode-badge');
-      if (badgeEl) badgeEl.textContent = e.target.value === 'scroll' ? 'Déroulant' : 'Séquentiel';
+      setClinicalModePreference(e.target.value);
     };
   }
 
-  const btnSaveSettings = document.getElementById('btn-save-settings');
-  if (btnSaveSettings) {
-    btnSaveSettings.onclick = () => {
-      const key = document.getElementById('settings-gemini-key').value.trim();
-      geminiService.setApiKey(key);
+  bindClick('btn-save-settings', () => {
+    const rawKeyInput = document.getElementById('settings-gemini-key')?.value?.trim() || '';
+    geminiService.setApiKey(rawKeyInput);
+    updateGeminiKeyCounterBadge(rawKeyInput);
 
-      if (examDateInput) {
-        setExamDate(examDateInput.value);
-      }
+    if (examDateInput) {
+      setExamDate(examDateInput.value);
+    }
 
-      if (clinicalModeSelect) {
-        setClinicalModePreference(clinicalModeSelect.value);
-      }
+    if (clinicalModeSelect) {
+      setClinicalModePreference(clinicalModeSelect.value);
+    } else {
+      getClinicalModePreference();
+    }
 
-      if (typeof firebaseSyncService !== 'undefined' && firebaseSyncService) {
-        firebaseSyncService.pushProfileToFirestore();
-      }
+    try {
+      localStorage.setItem('pedia_settings_updated_at', String(Date.now()));
+    } catch {}
 
-      showAppToast('✅ Paramètres et date d\'examen enregistrés !');
-      modals.settings.style.display = 'none';
+    firebaseSyncService.pushProfileToFirestore();
 
-      updateDashboardUI();
-      updateArenaDailyBadge();
-      if (currentView === 'stats') renderStatsUI();
-    };
-  }
+    const keyCount = geminiService.getKeyCount();
+    const keyInfo = keyCount > 0 ? `${keyCount} clé${keyCount > 1 ? 's' : ''} Gemini` : 'Aucune clé Gemini';
+    showAppToast(`✅ Paramètres enregistrés (${keyInfo}) !`, { type: 'success' });
+    if (modals.settings) modals.settings.style.display = 'none';
 
-  // GitHub Releases Update Buttons
-  const btnCheckUpdates = document.getElementById('btn-check-updates-manual');
-  if (btnCheckUpdates) {
-    btnCheckUpdates.onclick = () => {
-      if (typeof updateService !== 'undefined' && updateService) {
-        updateService.checkForUpdates(true);
-      }
-    };
-  }
+    updateDashboardUI();
+    updateArenaDailyBadge();
+    if (appState.currentView === 'stats') renderStatsUI();
+  });
 
-  const btnCloseUpdateModal = document.getElementById('btn-close-update-modal');
-  if (btnCloseUpdateModal) {
-    btnCloseUpdateModal.onclick = () => {
-      if (typeof updateService !== 'undefined' && updateService) {
-        updateService.closeUpdateModal();
-      } else if (modals.update) {
-        modals.update.style.display = 'none';
-      }
-    };
-  }
+  bindClick('btn-check-updates-manual', () => {
+    updateService?.checkForUpdates(true);
+  });
 
-  const btnUpdateLater = document.getElementById('btn-update-later');
-  if (btnUpdateLater) {
-    btnUpdateLater.onclick = () => {
-      if (typeof updateService !== 'undefined' && updateService) {
-        updateService.closeUpdateModal();
-      } else if (modals.update) {
-        modals.update.style.display = 'none';
-      }
-    };
-  }
+  bindClick('btn-close-update-modal', () => {
+    if (updateService) updateService.closeUpdateModal();
+    else if (modals.update) modals.update.style.display = 'none';
+  });
 
-  // Modal backdrop click to close
+  bindClick('btn-update-later', () => {
+    if (updateService) updateService.closeUpdateModal();
+    else if (modals.update) modals.update.style.display = 'none';
+  });
+
   window.onclick = (e) => {
-    Object.values(modals).forEach(m => {
-      if (e.target === m) m.style.display = 'none';
+    const mMap = getDomModals();
+    [mMap.error, mMap.chapters, mMap.sync, mMap.settings, mMap.update].forEach(m => {
+      if (m && e.target === m) m.style.display = 'none';
     });
   };
 }
 
-// Keyboard shortcuts: 1-5, A-E, Enter, Space
+// ============================================================================
+// KEYBOARD SHORTCUTS
+// ============================================================================
 function setupKeyboardShortcuts() {
   window.addEventListener('keydown', (e) => {
-    // If media lightbox is open, Escape closes it
+    const confirmModal = document.getElementById('modal-app-confirm');
+    if (confirmModal && confirmModal.style.display === 'flex') {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        resolvePendingConfirmModal(false);
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        resolvePendingConfirmModal(true);
+      }
+      return;
+    }
+
     const lightboxModal = document.getElementById('media-lightbox-modal');
     if (lightboxModal && lightboxModal.style.display === 'flex') {
       if (e.key === 'Escape') {
         e.preventDefault();
-        window.closeMediaLightbox();
+        window.closeMediaLightbox?.();
         return;
       }
     }
 
-    // If error modal is open, Space or Enter closes it and continues
-    if (modals.error.style.display === 'flex') {
+    const modals = getDomModals();
+    if (modals.error && modals.error.style.display === 'flex') {
       if (e.key === ' ' || e.key === 'Enter') {
         e.preventDefault();
         closeErrorModalAndContinue();
@@ -12882,60 +13327,55 @@ function setupKeyboardShortcuts() {
       return;
     }
 
-    // If clinical summary modal is open, Space or Enter closes it and continues
-    const clinicalSummaryModal = document.getElementById('modal-clinical-case-summary');
-    if (clinicalSummaryModal && clinicalSummaryModal.style.display === 'flex') {
+    if (modals.clinicalSummary && modals.clinicalSummary.style.display === 'flex') {
       if (e.key === ' ' || e.key === 'Enter') {
         e.preventDefault();
-        window.closeClinicalCaseSummaryModal();
+        window.closeClinicalCaseSummaryModal?.();
       }
       return;
     }
 
-    // Ignore keyboard shortcuts if focus is in an input or textarea
     const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
-    if (activeTag === 'input' || activeTag === 'textarea') {
+    if (activeTag === 'input' || activeTag === 'textarea' || activeTag === 'select') {
       return;
     }
 
-    if (currentView === 'arena') {
-      if (isClinicalRunActive && clinicalRunState && clinicalRunState.mode === 'sequential') {
+    if (appState.currentView === 'arena') {
+      if (appState.isClinicalRunActive && appState.clinicalRunState && appState.clinicalRunState.mode === 'sequential') {
         if (e.key === 'ArrowLeft') {
           e.preventDefault();
-          window.navClinicalSequentialStep(-1);
+          window.navClinicalSequentialStep?.(-1);
           return;
-        } else if (e.key === 'ArrowRight') {
+        }
+        if (e.key === 'ArrowRight') {
           e.preventDefault();
-          window.navClinicalSequentialStep(1);
+          window.navClinicalSequentialStep?.(1);
           return;
         }
       }
 
-      // Navigation dans l'historique via les flèches du clavier
       if (e.key === 'ArrowLeft') {
-        if (answeredHistory.length > 0 && historyCursor < answeredHistory.length - 1) {
+        if (appState.answeredHistory.length > 0 && appState.historyCursor < appState.answeredHistory.length - 1) {
           e.preventDefault();
-          window.navigateHistoryPrev();
+          window.navigateHistoryPrev?.();
           return;
         }
       } else if (e.key === 'ArrowRight') {
-        if (historyCursor >= 0) {
+        if (appState.historyCursor >= 0) {
           e.preventDefault();
-          window.navigateHistoryNext();
+          window.navigateHistoryNext?.();
           return;
         }
       }
 
-      // En mode consultation d'historique, désactiver la sélection et permettre à Entrée de reprendre le drill
-      if (historyCursor >= 0) {
+      if (appState.historyCursor >= 0) {
         if (e.key === 'Enter') {
           e.preventDefault();
-          window.resumeActiveDrill();
+          window.resumeActiveDrill?.();
         }
         return;
       }
 
-      // Options 1-5 or A-E (mode drill actif uniquement)
       if (['1', '2', '3', '4', '5'].includes(e.key)) {
         e.preventDefault();
         selectOptionByIndex(parseInt(e.key, 10) - 1);
@@ -12944,16 +13384,17 @@ function setupKeyboardShortcuts() {
         const idx = e.key.toLowerCase().charCodeAt(0) - 97;
         selectOptionByIndex(idx);
       } else if (e.key === 's' || e.key === 'S') {
-        if (!isCurrentQuestionAnswered) {
+        if (!appState.isCurrentQuestionAnswered) {
           e.preventDefault();
-          window.snoozeCurrentQuestionForToday();
+          window.snoozeCurrentQuestionForToday?.();
         }
       } else if (e.key === 'Enter') {
         e.preventDefault();
-        // If success banner is showing, enter continues
-        if (document.getElementById('arena-success-banner').style.display === 'flex') {
+        const successBanner = document.getElementById('arena-success-banner');
+        const submitBtn = document.getElementById('btn-submit-answer');
+        if (successBanner && successBanner.style.display === 'flex') {
           loadNextArenaQuestion();
-        } else if (!document.getElementById('btn-submit-answer').disabled) {
+        } else if (submitBtn && !submitBtn.disabled) {
           handleSubmitQcm();
         }
       }
@@ -12961,260 +13402,11 @@ function setupKeyboardShortcuts() {
   });
 }
 
-// Start application safely whether DOM is loading or already loaded
-if (document.readyState === 'loading') {
-  window.addEventListener('DOMContentLoaded', initApp);
-} else {
-  initApp();
-}
-
-
-
-// ============================================================================
-// ARENA AI TUTOR CHAT CONTROLLER (AVEC PERSISTANCE PAR QUESTION)
-// ============================================================================
-let arenaChatHistory = [];
-let questionChatHistories = {}; // { [questionUid]: [ { role, text, modelUsed, timestamp }, ... ] }
-
-function renderExistingChatMessages() {
-  const listEl = document.getElementById('chatbox-messages-list');
-  if (!listEl) return;
-  listEl.innerHTML = '';
-  renderChatWelcome();
-  arenaChatHistory.forEach(msg => {
-    const bubble = document.createElement('div');
-    if (msg.role === 'user') {
-      bubble.className = 'chat-bubble bubble-user';
-      bubble.textContent = msg.text;
-    } else {
-      bubble.className = 'chat-bubble bubble-ai';
-      bubble.innerHTML = formatMedicalContent(msg.text);
-    }
-    listEl.appendChild(bubble);
-  });
-  listEl.scrollTop = listEl.scrollHeight;
-  refreshLucide();
-}
-
-window.toggleArenaChat = function(forceOpen = null) {
-  const chatbox = document.getElementById('arena-ai-chatbox');
-  const btn = document.getElementById('btn-arena-ai-chat');
-  if (!chatbox) return;
-
-  const isOpen = (forceOpen !== null) ? !forceOpen : (chatbox.style.display !== 'none');
-  if (isOpen) {
-    chatbox.style.display = 'none';
-    if (btn) btn.classList.remove('is-active');
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', initApp);
   } else {
-    chatbox.style.display = 'flex';
-    if (btn) btn.classList.add('is-active');
-    updateArenaChatContext();
-    if (arenaChatHistory.length === 0) {
-      renderChatWelcome();
-    } else {
-      renderExistingChatMessages();
-    }
-    const inputEl = document.getElementById('chatbox-text-input');
-    if (inputEl) setTimeout(() => inputEl.focus(), 150);
-  }
-  refreshLucide();
-};
-
-window.clearArenaChat = function() {
-  const effQ = getEffectiveArenaQuestion();
-  arenaChatHistory = [];
-  if (effQ && effQ.uid) {
-    delete questionChatHistories[effQ.uid];
-  }
-  renderChatWelcome();
-  const inputEl = document.getElementById('chatbox-text-input');
-  if (inputEl) inputEl.value = '';
-};
-
-window.sendChatPrompt = function(promptText) {
-  if (!promptText || !promptText.trim()) return;
-  const inputEl = document.getElementById('chatbox-text-input');
-  if (inputEl) inputEl.value = promptText;
-  executeSendMessage(promptText.trim());
-};
-
-window.handleChatSubmit = function(event) {
-  if (event) event.preventDefault();
-  const inputEl = document.getElementById('chatbox-text-input');
-  if (!inputEl) return;
-  const text = inputEl.value.trim();
-  if (!text) return;
-  inputEl.value = '';
-  executeSendMessage(text);
-};
-
-function updateArenaChatContext() {
-  const qTextEl = document.getElementById('chatbox-q-statement');
-  const ctxEl = document.getElementById('chatbox-current-context');
-  const effQ = getEffectiveArenaQuestion();
-  if (effQ) {
-    // Restore per-question chat history
-    arenaChatHistory = questionChatHistories[effQ.uid] ? [...questionChatHistories[effQ.uid]] : [];
-    const chatbox = document.getElementById('arena-ai-chatbox');
-    if (chatbox && chatbox.style.display !== 'none') {
-      if (arenaChatHistory.length > 0) {
-        renderExistingChatMessages();
-      } else {
-        renderChatWelcome();
-      }
-    }
-
-    const clinicalCtx = buildClinicalCaseContext(effQ);
-
-    if (qTextEl) {
-      if (clinicalCtx && clinicalCtx.isClinicalCase) {
-        const qStatement = effQ.question || effQ.statement || '';
-        qTextEl.textContent = `Cas Clinique (Q${clinicalCtx.currentNum}/${clinicalCtx.totalCount}) : ${qStatement.length > 70 ? qStatement.slice(0, 70) + '...' : qStatement}`;
-      } else {
-        const qText = effQ.question || effQ.statement || 'Question pédiatrique';
-        qTextEl.textContent = qText.length > 80 ? qText.slice(0, 80) + '...' : qText;
-      }
-    }
-    if (ctxEl) {
-      if (clinicalCtx && clinicalCtx.isClinicalCase) {
-        const prefixStr = clinicalCtx.casePrefix ? `Cas Clinique ${clinicalCtx.casePrefix}` : 'Cas Clinique';
-        ctxEl.innerHTML = `<span style="color:var(--cyan);font-weight:700;">${prefixStr}</span> • Question ${clinicalCtx.currentNum}/${clinicalCtx.totalCount} <span style="font-size:0.68rem;background:rgba(0,212,255,0.15);padding:1px 6px;border-radius:4px;color:var(--cyan);margin-left:4px;">Contexte Q1-${clinicalCtx.currentNum} actif</span>`;
-      } else {
-        const isHistory = historyCursor >= 0;
-        const isRevealed = isArenaChapterRevealed();
-        const blurClass = isRevealed ? 'is-revealed' : 'is-blurred';
-        const blurTitle = isRevealed 
-          ? 'Cours visible (Cliquer pour masquer)' 
-          : 'Cours masqué jusqu\'à ce que vous répondiez (Cliquer pour afficher)';
-        const histSuffix = isHistory ? ` (QCM -${historyCursor + 1})` : '';
-
-        ctxEl.innerHTML = `Pédiatrie — <span class="chatbox-chapter-blurred ${blurClass}" onclick="window.toggleArenaChapterTitle()" title="${blurTitle}">${escapeHtml(effQ.chapterTitle || 'Général')}</span>${histSuffix}`;
-      }
-    }
-  }
-}
-
-function renderChatWelcome() {
-  const listEl = document.getElementById('chatbox-messages-list');
-  if (!listEl) return;
-  const effQ = getEffectiveArenaQuestion();
-  const chapTitle = effQ ? (effQ.chapterTitle || 'Pédiatrie') : 'Pédiatrie';
-  const isHistory = historyCursor >= 0;
-  const isRevealed = isArenaChapterRevealed();
-  const blurClass = isRevealed ? 'is-revealed' : 'is-blurred';
-  const blurTitle = isRevealed 
-    ? 'Cours visible (Cliquer pour masquer)' 
-    : 'Cours masqué jusqu\'à ce que vous répondiez (Cliquer pour afficher)';
-
-  const clinicalCtx = effQ ? buildClinicalCaseContext(effQ) : null;
-
-  if (clinicalCtx && clinicalCtx.isClinicalCase) {
-    listEl.innerHTML = `
-      <div class="chat-bubble bubble-ai">
-        <p>👋 Bonjour ! Je suis votre <strong>Tuteur IA Pédiatrique</strong>.</p>
-        <p>🎯 <strong>Contexte Intégral du Cas Clinique Activé :</strong></p>
-        <p>J'ai sous les yeux l'énoncé complet du cas ainsi que l'évolution des <strong>questions 1 à ${clinicalCtx.currentNum} sur ${clinicalCtx.totalCount}</strong> avec leurs énoncés, propositions, réponses et explications.</p>
-        <p style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">
-          Posez-moi votre question sur ce dossier ou cliquez sur une suggestion rapide :
-        </p>
-      </div>
-    `;
-  } else {
-    listEl.innerHTML = `
-      <div class="chat-bubble bubble-ai">
-        <p>👋 Bonjour ! Je suis votre <strong>Tuteur IA Pédiatrique</strong>.</p>
-        <p>Je connais par cœur l'énoncé, le cas clinique, les propositions et la justification officielle de ce QCM ${isHistory ? '<strong>en cours de consultation</strong>' : ''} en <strong class="chatbox-chapter-blurred ${blurClass}" onclick="window.toggleArenaChapterTitle()" title="${blurTitle}">${escapeHtml(chapTitle)}</strong>.</p>
-        <p style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">
-          Posez-moi votre question directement ou cliquez sur une suggestion rapide :
-        </p>
-      </div>
-    `;
-  }
-}
-
-async function executeSendMessage(userText) {
-  const effQ = getEffectiveArenaQuestion();
-  if (!effQ) return;
-  const targetUid = effQ.uid;
-  const listEl = document.getElementById('chatbox-messages-list');
-  if (!listEl) return;
-
-  // 1. Add user bubble
-  arenaChatHistory.push({ role: 'user', text: userText, timestamp: Date.now() });
-  if (targetUid) {
-    questionChatHistories[targetUid] = [...arenaChatHistory];
-  }
-
-  const userBubble = document.createElement('div');
-  userBubble.className = 'chat-bubble bubble-user';
-  userBubble.textContent = userText;
-  listEl.appendChild(userBubble);
-  listEl.scrollTop = listEl.scrollHeight;
-
-  // 2. Add loading bubble
-  const loadingBubble = document.createElement('div');
-  loadingBubble.className = 'chat-bubble bubble-ai is-loading';
-  loadingBubble.id = 'chatbox-loading-indicator';
-  loadingBubble.innerHTML = `
-    <div class="typing-indicator"><span></span><span></span><span></span></div>
-    <span>Gemini Flash analyse ce QCM...</span>
-  `;
-  listEl.appendChild(loadingBubble);
-  listEl.scrollTop = listEl.scrollHeight;
-
-  // Disable controls while thinking
-  const sendBtn = document.getElementById('btn-chat-send');
-  const inputEl = document.getElementById('chatbox-text-input');
-  if (sendBtn) sendBtn.disabled = true;
-  if (inputEl) inputEl.disabled = true;
-
-  try {
-    const historyForAi = arenaChatHistory.slice(0, -1);
-    const clinicalContext = buildClinicalCaseContext(effQ);
-    const response = await geminiService.askAboutQuestion(effQ, historyForAi, userText, clinicalContext);
-
-    if (targetUid) {
-      if (!questionChatHistories[targetUid]) questionChatHistories[targetUid] = [];
-      questionChatHistories[targetUid].push({ role: 'ai', text: response.text, modelUsed: response.modelUsed, timestamp: Date.now() });
-    }
-
-    // ONLY append to DOM if student is STILL on targetUid!
-    const currentEffQ = getEffectiveArenaQuestion();
-    if (currentEffQ && currentEffQ.uid === targetUid) {
-      const existingLoader = document.getElementById('chatbox-loading-indicator');
-      if (existingLoader) existingLoader.remove();
-
-      arenaChatHistory = [...questionChatHistories[targetUid]];
-      const aiBubble = document.createElement('div');
-      aiBubble.className = 'chat-bubble bubble-ai';
-      aiBubble.innerHTML = formatMedicalContent(response.text);
-      listEl.appendChild(aiBubble);
-
-      const modelTag = document.getElementById('chatbox-model-tag');
-      if (modelTag && response.modelUsed) {
-        modelTag.textContent = response.modelUsed;
-      }
-    }
-  } catch (err) {
-    console.error('Chat error:', err);
-    const currentEffQ = getEffectiveArenaQuestion();
-    if (currentEffQ && currentEffQ.uid === targetUid) {
-      const existingLoader = document.getElementById('chatbox-loading-indicator');
-      if (existingLoader) existingLoader.remove();
-
-      const errBubble = document.createElement('div');
-      errBubble.className = 'chat-bubble bubble-ai';
-      errBubble.innerHTML = `⚠️ Erreur de réponse IA : <em>${escapeHtml(err.message)}</em>`;
-      listEl.appendChild(errBubble);
-    }
-  } finally {
-    if (sendBtn) sendBtn.disabled = false;
-    if (inputEl) {
-      inputEl.disabled = false;
-      inputEl.focus();
-    }
-    listEl.scrollTop = listEl.scrollHeight;
-    refreshLucide();
+    initApp();
   }
 }
 
