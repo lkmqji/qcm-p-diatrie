@@ -8,6 +8,16 @@ import { lessonTracker } from './services/lessonTracker.js';
 import { updateService, CURRENT_APP_VERSION } from './services/updateService.js';
 import { getActiveModuleId, setExamDate } from './services/moduleCatalog.js';
 import {
+  isHighlightTranslateEnabled,
+  setHighlightTranslateEnabled,
+  setHighlightTranslateLang
+} from './services/translateService.js';
+import {
+  initSelectionTranslator,
+  closeSelectionTranslatePopover,
+  isSelectionTranslatePopoverOpen
+} from './utils/selectionTranslator.js';
+import {
   appState,
   queueEngine,
   registerViewNavigator,
@@ -94,6 +104,7 @@ appState.firebaseSyncService = firebaseSyncService;
 // VIEW NAVIGATION
 // ============================================================================
 export function switchView(viewName) {
+  closeSelectionTranslatePopover();
   appState.currentView = viewName;
   const views = getDomViews();
   Object.keys(views).forEach(v => {
@@ -141,6 +152,11 @@ export function setupNativeCapacitorBackButton() {
 
   isCapacitorBackBound = true;
   capApp.addListener('backButton', () => {
+    if (isSelectionTranslatePopoverOpen()) {
+      closeSelectionTranslatePopover();
+      return;
+    }
+
     const confirmModal = document.getElementById('modal-app-confirm');
     if (confirmModal && confirmModal.style.display === 'flex') {
       resolvePendingConfirmModal(false);
@@ -204,6 +220,7 @@ export function initApp() {
   setupEventListeners();
   setupKeyboardShortcuts();
   setupNativeCapacitorBackButton();
+  initSelectionTranslator();
   setupFirebaseService();
   initLessonTracker();
   refreshLucide();
@@ -572,6 +589,34 @@ export function setupEventListeners() {
     };
   }
 
+  const translateToggleBtn = document.getElementById('btn-toggle-translate-enabled');
+  if (translateToggleBtn) {
+    translateToggleBtn.onclick = () => {
+      const nextState = !isHighlightTranslateEnabled();
+      setHighlightTranslateEnabled(nextState);
+      if (!nextState) {
+        closeSelectionTranslatePopover();
+      }
+      try {
+        localStorage.setItem('pedia_settings_updated_at', String(Date.now()));
+      } catch {}
+      firebaseSyncService.pushProfileToFirestore();
+      showAppToast(
+        nextState
+          ? '🌐 Traduction au surlignage activée.'
+          : '🔇 Traduction au surlignage désactivée.',
+        { type: nextState ? 'success' : 'info', durationMs: 2200 }
+      );
+    };
+  }
+
+  const translateLangSelect = document.getElementById('settings-translate-lang');
+  if (translateLangSelect) {
+    translateLangSelect.onchange = (e) => {
+      setHighlightTranslateLang(e.target.value);
+    };
+  }
+
   bindClick('btn-save-settings', () => {
     const rawKeyInput = document.getElementById('settings-gemini-key')?.value?.trim() || '';
     geminiService.setApiKey(rawKeyInput);
@@ -586,6 +631,11 @@ export function setupEventListeners() {
     } else {
       getClinicalModePreference();
     }
+
+    if (translateLangSelect) {
+      setHighlightTranslateLang(translateLangSelect.value);
+    }
+    setHighlightTranslateEnabled(isHighlightTranslateEnabled());
 
     try {
       localStorage.setItem('pedia_settings_updated_at', String(Date.now()));

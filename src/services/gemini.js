@@ -278,7 +278,9 @@ export class GeminiService {
    */
   async callWithFallback(prompt, systemInstruction = '', maxTokens = 2048) {
     if (!this.hasApiKeys()) {
-      throw new Error('NO_API_KEY_CONFIGURED: Aucune clé API Gemini configurée dans les Paramètres.');
+      const noKeyErr = new Error('NO_API_KEY_CONFIGURED: Aucune clé API Gemini configurée dans les Paramètres.');
+      noKeyErr.code = 'NO_API_KEY_CONFIGURED';
+      throw noKeyErr;
     }
 
     const errors = [];
@@ -819,6 +821,77 @@ Consignes pédagogiques strictes :
         modelUsed: "Secours Local Hors-Ligne"
       };
     }
+  }
+
+  /**
+   * Translate arbitrary highlighted medical text via Gemini Flash (manual fallback when Google Translate fails)
+   */
+  async translateWithGemini(text, targetLang = 'ar', question = null) {
+    const cleanText = String(text || '').trim();
+    if (!cleanText) {
+      throw new Error('Aucun texte à traduire.');
+    }
+
+    const langNames = {
+      ar: 'arabe (العربية)',
+      en: 'anglais',
+      fr: 'français',
+      de: 'allemand'
+    };
+    const langLabel = langNames[String(targetLang || 'ar').toLowerCase()] || 'arabe (العربية)';
+    const ctx = resolveAiModuleContext(question);
+
+    const systemInstruction = `Tu es un traducteur médical expert en ${ctx.specialtyTitle}.
+Traduis fidèlement le texte fourni vers la langue : ${langLabel}.
+Règles strictes :
+- Conserve l'exactitude terminologique médicale (et développe entre parenthèses les sigles médicaux si utile à la compréhension).
+- Retourne UNIQUEMENT la traduction directe, sans introduction ni formule de politesse.
+- N'utilise aucune balise LaTeX.`;
+
+    const prompt = `Texte médical à traduire en ${langLabel} :\n"""\n${cleanText}\n"""`;
+    const result = await this.callWithFallback(prompt, systemInstruction, 1500);
+    return {
+      translatedText: cleanLatexMath(result.text).trim(),
+      targetLang: String(targetLang || 'ar').toLowerCase(),
+      modelUsed: result.modelUsed,
+      provider: 'gemini'
+    };
+  }
+
+  /**
+   * Explain a highlighted medical term, abbreviation or phrase concisely using Gemini Flash
+   */
+  async explainMedicalTerm(text, targetLang = 'ar', question = null) {
+    const cleanText = String(text || '').trim();
+    if (!cleanText) {
+      throw new Error('Aucun terme médical à expliquer.');
+    }
+
+    const langNames = {
+      ar: 'arabe (العربية) avec équivalent médical français/international entre parenthèses si utile',
+      en: 'anglais',
+      fr: 'français',
+      de: 'allemand'
+    };
+    const langLabel = langNames[String(targetLang || 'ar').toLowerCase()] || 'français';
+    const ctx = resolveAiModuleContext(question);
+    const qSnippet = question
+      ? `Contexte QCM (${ctx.moduleName} - ${question.chapterTitle || ctx.defaultChapter}) : "${String(question.question || question.statement || '').slice(0, 260)}"`
+      : `Spécialité : ${ctx.moduleName}`;
+
+    const systemInstruction = `Tu es le ${ctx.tutorTitle} de PédiaDrill (${ctx.specialtyTitle}).
+Explique de façon claire, médicale et concise le terme, sigle ou passage sélectionné, en ${langLabel}.
+Règles strictes :
+- Va droit au but en 2 à 4 phrases courtes maximum (définition clinique + intérêt diagnostique ou piège fréquent si pertinent).
+- Pas d'introduction, pas de politesse, pas de syntaxe LaTeX.`;
+
+    const prompt = `${qSnippet}\n\nTerme ou passage sélectionné à expliquer :\n"${cleanText}"`;
+    const result = await this.callWithFallback(prompt, systemInstruction, 900);
+    return {
+      explanation: cleanLatexMath(result.text).trim(),
+      targetLang: String(targetLang || 'ar').toLowerCase(),
+      modelUsed: result.modelUsed
+    };
   }
 
 }

@@ -21,6 +21,12 @@ import { studyTracker } from '../services/studyTracker.js';
 import { lessonTracker } from '../services/lessonTracker.js';
 import { formatNumber, escapeHtml } from '../utils/formatters.js';
 import { refreshLucide, showAppToast } from '../utils/uiDialogs.js';
+import {
+  isHighlightTranslateEnabled,
+  setHighlightTranslateEnabled,
+  getHighlightTranslateLang,
+  setHighlightTranslateLang
+} from '../services/translateService.js';
 import { loadNextArenaQuestion, loadAiExplanationsCache } from './arenaView.js';
 import { renderNotebookUI, resetNotebookViewFilters } from './notebookView.js';
 import { renderStatsUI } from './statsView.js';
@@ -461,6 +467,9 @@ export function openSettingsModal() {
     const badgeEl = document.getElementById('settings-clinical-mode-badge');
     if (badgeEl) badgeEl.textContent = curMode === 'scroll' ? 'Déroulant' : 'Séquentiel';
   }
+
+  setHighlightTranslateEnabled(isHighlightTranslateEnabled());
+  setHighlightTranslateLang(getHighlightTranslateLang());
 
   updateActiveModuleBadge();
   renderModuleSelectorUI();

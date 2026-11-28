@@ -22,6 +22,7 @@ import {
   showAppToast,
   showConfirmModal
 } from '../utils/uiDialogs.js';
+import { hasActiveTextSelection } from '../utils/selectionTranslator.js';
 import { updateArenaDailyBadge } from './dashboardView.js';
 import { renderStatsUI } from './statsView.js';
 import {
@@ -1260,6 +1261,7 @@ export function renderClinicalScrollView() {
 }
 
 window.toggleClinicalScrollOption = function(qIdx, letter) {
+  if (hasActiveTextSelection()) return;
   const runState = appState.clinicalRunState;
   if (!appState.isClinicalRunActive || !runState) return;
   const subQ = runState.subQuestions[qIdx];

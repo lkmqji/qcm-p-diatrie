@@ -1,5 +1,5 @@
 # PédiaDrill — Master Product & Technical Context
-*Dernière mise à jour : 2026-11-24 21:24:00 CET*
+*Dernière mise à jour : 2026-11-28 19:15:00 CET*
 *Source unique de vérité technique et fonctionnelle du projet PédiaDrill.*
 
 ---
@@ -34,7 +34,7 @@ qcm-p-diatrie/
 │   └── MASTER_PRODUCT_TECHNICAL_CONTEXT.md # Contexte technique global (source unique de vérité)
 ├── android/                              # Projet natif Android Capacitor 8
 │   ├── app/
-│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 34, versionName 1.6.7)
+│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 35, versionName 1.6.8)
 │   │   ├── debug.keystore                # Keystore de signature unifié (local & CI/CD)
 │   │   ├── google-services.json          # Configuration Firebase Android (qcm-pediatr, com.pediadrill.app)
 │   │   └── src/main/
@@ -70,7 +70,8 @@ qcm-p-diatrie/
 │   ├── services/
 │   │   ├── moduleCatalog.js              # Référentiel du cursus (6 années, 46 modules, squelettes et dates + examDatesUpdatedAt)
 │   │   ├── storageScope.js               # Partitionnement transparent des données d'étude par module
-│   │   ├── gemini.js                     # Service IA Gemini Flash (multi-clés utilisateur, round-robin, circuit-breaker, contexte dynamique)
+│   │   ├── translateService.js           # Service de traduction Google directe sans cache persistant + préférences langue/activation
+│   │   ├── gemini.js                     # Service IA Gemini Flash (multi-clés utilisateur, round-robin, circuit-breaker, contexte dynamique, traduction/explication termes)
 │   │   ├── queueEngine.js                # Algorithme de répétition espacée (SRS), file active, heure locale et persistance
 │   │   ├── studyTracker.js               # Suivi du progrès journalier, chronométrage & sessions QCM
 │   │   ├── lessonTracker.js              # Chronomètre persistant et suivi du temps d'étude multi-modules par cours
@@ -80,6 +81,7 @@ qcm-p-diatrie/
 │   │   └── appState.js                   # État global partagé, instance queueEngine, navigation inter-vues et préférences
 │   ├── utils/
 │   │   ├── formatters.js                 # Formatage médical, nettoyage LaTeX, normalisation de dates, XSS escapeHtml & debounce
+│   │   ├── selectionTranslator.js        # Bulle flottante de traduction au surlignage (Desktop/Mobile), garde anti-clic QCM & bascule Gemini
 │   │   └── uiDialogs.js                  # Notifications Toast non-bloquantes, modale de confirmation (#modal-app-confirm), confettis & refreshLucide
 │   ├── views/
 │   │   ├── dashboardView.js              # Tableau de bord, sélecteur de modules, paramètres multi-clés Gemini & statut compte Google
@@ -88,7 +90,7 @@ qcm-p-diatrie/
 │   │   ├── notebookView.js               # Carnet de raisonnement IA avec pagination progressive (30 fiches) & sélection chapitres
 │   │   ├── statsView.js                  # Vue analytique QCM (7 KPIs, heatmap, courbe de vélocité, progression cours)
 │   │   └── lessonView.js                 # Suivi du temps par cours, chronomètre temps réel & matrice de couverture
-│   ├── app.js                            # Orchestrateur principal (742 lignes), cycle de vie, raccourcis clavier & bouton Retour Android
+│   ├── app.js                            # Orchestrateur principal, cycle de vie, raccourcis clavier & bouton Retour Android
 │   ├── app.bundle.js                     # Bundle JS client unifié (IIFE autonome assemblée par build-bundle.cjs)
 │   └── style.css                         # Feuille de styles principale (Design System sombre médical + animations réactives)
 ├── tests/                                # Suite de tests unitaires et d'intégration (`node --test`)
@@ -97,6 +99,7 @@ qcm-p-diatrie/
 │   ├── gemini.test.js                    # Tests sécurité (0 clé en dur), multi-clés, fail-fast, fallback CROQ, LaTeX
 │   ├── queueEngine.test.js               # Tests SRS, heure locale getTodayTracker, cas cliniques & snooze
 │   ├── syncAndCatalog.test.js            # Tests totaux Year 5, merge timestamps Firestore & LessonTracker multi-modules
+│   ├── translateService.test.js          # Tests traduction Google directe, découpage chunks longs, préférences, sync Firestore & garde sélection
 │   └── bundleAndViews.test.js            # Tests d'intégrité bundle, zéro alert/confirm, assets offline, backButton Android & pagination
 ├── vendor/                               # Miroir racine des vendors locaux pour déploiement direct Vercel
 ├── template.html                         # Structure HTML maîtresse avec CSS synchronisé et #modal-app-confirm
@@ -104,7 +107,7 @@ qcm-p-diatrie/
 ├── PediaDrill.apk                        # Exécutable natif Android produit à la racine
 ├── agentation.bundle.js                  # Outil d'annotation d'interface Agentation (inclus partout)
 ├── build.cjs                             # Script de copie vers vendor/ et dist/ (incluant agentation.bundle.js)
-├── build-bundle.cjs                      # Script d'assemblage (CSS, 18 modules ES -> IIFE, datasets src/data/*.js, index.html, dist/)
+├── build-bundle.cjs                      # Script d'assemblage (CSS, 20 modules ES -> IIFE, datasets src/data/*.js, index.html, dist/)
 ├── server.cjs                            # Serveur HTTP statique autonome pour le développement local
 ├── lancer-app.bat                        # Script batch de compilation et lancement local en 1 clic
 ├── start-local.bat                       # Alias pour lancer-app.bat
@@ -412,7 +415,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ### 3.9. Système de Mises à Jour Automatiques & GitHub Releases (`src/services/updateService.js` & CI/CD)
 - **Service d'Orchestration des Mises à Jour (`UpdateService`)** :
-  - Version déclarée : `CURRENT_APP_VERSION = '1.6.7'` synchronisée avec `package.json` et `build.gradle` (`versionCode 34`).
+  - Version déclarée : `CURRENT_APP_VERSION = '1.6.8'` synchronisée avec `package.json` et `build.gradle` (`versionCode 35`).
   - Comparaison sémantique universelle (`compareVersions`) ignorant les préfixes `v`.
   - Interrogation de l'API GitHub Releases (`https://api.github.com/repos/lkmqji/qcm-p-diatrie/releases/latest`) avec cooldown de 4 heures (`pedia_last_update_check_ts`).
   - Extraction de l'asset `.apk` direct (`PediaDrill.apk`). En environnement natif Android Capacitor, l'URL est ouverte via `_system` pour lancer le gestionnaire de téléchargement Android natif.
@@ -664,7 +667,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.6.7` (`versionCode 34`)
+- **Version native** : `versionName 1.6.8` (`versionCode 35`)
 - **Empreinte SHA-1 (Debug Keystore Gradle & GitHub Actions)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
 - **Empreinte SHA-256 (Debug Keystore Gradle & GitHub Actions)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
 - **Keystore unifié** : `android/app/debug.keystore` (Alias : `AndroidDebugKey`, mot de passe `android`, garantissant une empreinte cryptographique identique entre les compilations locales et la CI/CD GitHub Actions).
@@ -759,4 +762,14 @@ Dans le respect absolu de l'intégrité de l'application (zéro modification vis
 - **Fluidité visuelle (`0.14s`, `behavior: 'auto'`)** : Transitions CSS raccourcies à `0.14s`, micro-échelle tactile `:active { transform: scale(0.985) }` sur boutons et cartes d'options, et remplacement des défilements `behavior: 'smooth'` lents par `behavior: 'auto'`.
 - **Sécurité XSS & Rendu Markdown dans les propositions** : Utilisation systématique de `escapeHtml()` et `parseMarkdownInline()` dans le rendu des options QCM/Arène/Historique/Cas cliniques/Modale chapitres pour afficher correctement les inégalités médicales (`<`, `>`) sans casser le DOM.
 - **Modale de Confirmation Non-Bloquante (`#modal-app-confirm`, `showConfirmModal`)** : Utilise `.modal-content.confirm-modal-card` avec `z-index: 10500` (au-dessus des éléments flottants de l'arène), en-tête `.modal-title-group` et fermeture `.close-btn.btn-icon-close`, permettant notamment de quitter proprement un cas clinique en cours via `#btn-quit-clinical-run` (`teardownClinicalRunView` réinitialisant `isClinicalRunActive`, `clinicalRunState` et `isEvaluating`).
-- **Suite de Tests Automatisés (`npm test` -> `node --test tests/*.test.js`)** : 28 tests automatisés couvrant formatage/XSS, sécurité Gemini & multi-clés, algorithme SRS & fuseau local, fusion Firestore & chronomètre multi-modules, intégrité du bundle IIFE, pagination 30 fiches du Carnet, badge des questions à nettoyer en cas clinique, sortie du cas clinique après réponse à la 1ère question et bouton Retour Android.
+- **Suite de Tests Automatisés (`npm test` -> `node --test tests/*.test.js`)** : 36 tests automatisés couvrant formatage/XSS, sécurité Gemini & multi-clés, algorithme SRS & fuseau local, fusion Firestore & chronomètre multi-modules, traduction directe & préférences/sync, intégrité du bundle IIFE, pagination 30 fiches du Carnet, badge des questions à nettoyer en cas clinique, sortie du cas clinique après réponse à la 1ère question et bouton Retour Android.
+
+---
+
+### 3.12. Traduction Instantanée au Surlignage (`translateService.js` & `selectionTranslator.js`)
+- **Déclenchement universel sur les contenus médicaux** : Actif par défaut sur `#view-arena`, `#view-notebook`, `#modal-error`, `#modal-clinical-case-summary` et `#arena-ai-chatbox` (incluant énoncés, cas cliniques, options A–E grâce à `.option-text { user-select: text; }`, explications et réponses du Tuteur IA). Une garde `hasActiveTextSelection()` dans `arenaView.js` et `clinicalCaseView.js` empêche de cocher/décocher une proposition QCM lors d'un surlignage.
+- **Moteur Google Traduction direct sans cache persistant** : `translateWithGoogle()` interroge directement `https://translate.googleapis.com/translate_a/single` avec annulation par `AbortController` et découpage automatique en segments (`splitTextIntoTranslateChunks`) afin d'accepter les sélections de toute longueur sans troncature.
+- **4 Langues cibles** : Arabe (`ar`, défaut avec `dir="rtl"`), Anglais (`en`), Français (`fr`), Allemand (`de`), commutables en direct dans la bulle flottante `#selection-translate-popover` ou via les Paramètres.
+- **Résilience hors-ligne & Enrichissement Gemini IA** : En cas d'erreur réseau ou d'absence de connexion (`OFFLINE_ERROR`), la bulle affiche un message d'erreur explicite avec un bouton manuel **« Traduire avec Gemini IA »** (`geminiService.translateWithGemini`). Un bouton permanent **« 💡 Sens médical (IA) »** (`geminiService.explainMedicalTerm`) complète la traduction par une explication clinique contextualisée au module actif.
+- **Activation / Désactivation & Sync Cloud** : Le panneau Paramètres (`#modal-settings`) intègre le bouton `#btn-toggle-translate-enabled` (permettant d'activer ou désactiver la traduction au surlignage en 1 clic) et le sélecteur `#settings-translate-lang`, tous deux persistés en local (`pedia_translate_enabled`, `pedia_translate_lang`) et synchronisés via Firestore (`remoteProfile.settings.highlightTranslateEnabled`, `highlightTranslateLang`) selon `settingsUpdatedAt`.
+- **Ergonomie & Fermeture** : Bulle flottante positionnée près de la sélection sur Desktop et Mobile (bornée au viewport), zone de résultat scrollable (`max-height: 235px`), bouton Copier, et fermeture automatique au clic extérieur, touche `Échap`, bouton Retour matériel Android, changement de vue ou passage à la question suivante.

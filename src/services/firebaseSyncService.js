@@ -24,6 +24,12 @@ import {
   setAllExamDates,
   getExamDatesUpdatedAt
 } from './moduleCatalog.js';
+import {
+  isHighlightTranslateEnabled,
+  setHighlightTranslateEnabled,
+  getHighlightTranslateLang,
+  setHighlightTranslateLang
+} from './translateService.js';
 
 function getLocalDateStr() {
   const now = new Date();
@@ -504,6 +510,8 @@ export class FirebaseSyncService {
       const currentExamDates = typeof getAllExamDates === 'function' ? getAllExamDates() : {};
       const currentClinicalMode = localStorage.getItem('pedia_clinical_case_mode') || 'sequential';
       const currentGeminiKey = localStorage.getItem('pedia_gemini_key') || '';
+      const currentTranslateEnabled = typeof isHighlightTranslateEnabled === 'function' ? isHighlightTranslateEnabled() : true;
+      const currentTranslateLang = typeof getHighlightTranslateLang === 'function' ? getHighlightTranslateLang() : 'ar';
 
       const profileData = sanitizeForFirestore({
         activeModuleId: 'pediatrie',
@@ -512,7 +520,9 @@ export class FirebaseSyncService {
         examDatesUpdatedAt: Date.now(),
         settings: {
           clinicalCaseMode: currentClinicalMode,
-          geminiApiKey: currentGeminiKey
+          geminiApiKey: currentGeminiKey,
+          highlightTranslateEnabled: currentTranslateEnabled,
+          highlightTranslateLang: currentTranslateLang
         },
         settingsUpdatedAt: Date.now(),
         activeLessonTimer: legacyData.activeLessonTimer || null,
@@ -665,11 +675,28 @@ export class FirebaseSyncService {
         const canApplySettings = remoteSettingsTs === 0 || remoteSettingsTs >= localSettingsTs;
 
         if (canApplySettings) {
-          const { clinicalCaseMode, geminiApiKey } = remoteProfile.settings;
+          const {
+            clinicalCaseMode,
+            geminiApiKey,
+            highlightTranslateEnabled,
+            highlightTranslateLang
+          } = remoteProfile.settings;
           if (clinicalCaseMode) {
             const localMode = localStorage.getItem('pedia_clinical_case_mode');
             if (localMode !== clinicalCaseMode) {
               localStorage.setItem('pedia_clinical_case_mode', clinicalCaseMode);
+              uiNeedsRefresh = true;
+            }
+          }
+          if (typeof highlightTranslateEnabled === 'boolean' && typeof setHighlightTranslateEnabled === 'function') {
+            if (isHighlightTranslateEnabled() !== highlightTranslateEnabled) {
+              setHighlightTranslateEnabled(highlightTranslateEnabled);
+              uiNeedsRefresh = true;
+            }
+          }
+          if (typeof highlightTranslateLang === 'string' && highlightTranslateLang.trim() && typeof setHighlightTranslateLang === 'function') {
+            if (getHighlightTranslateLang() !== highlightTranslateLang.trim().toLowerCase()) {
+              setHighlightTranslateLang(highlightTranslateLang);
               uiNeedsRefresh = true;
             }
           }
@@ -898,6 +925,8 @@ export class FirebaseSyncService {
       const examDatesUpdatedAt = typeof getExamDatesUpdatedAt === 'function' ? getExamDatesUpdatedAt() : 0;
       const clinicalMode = localStorage.getItem('pedia_clinical_case_mode') || 'sequential';
       const geminiKey = localStorage.getItem('pedia_gemini_key') || '';
+      const highlightTranslateEnabled = typeof isHighlightTranslateEnabled === 'function' ? isHighlightTranslateEnabled() : true;
+      const highlightTranslateLang = typeof getHighlightTranslateLang === 'function' ? getHighlightTranslateLang() : 'ar';
       const settingsUpdatedAt = Number(localStorage.getItem('pedia_settings_updated_at') || 0);
 
       const profilePayload = sanitizeForFirestore({
@@ -907,7 +936,9 @@ export class FirebaseSyncService {
         examDatesUpdatedAt: examDatesUpdatedAt || Date.now(),
         settings: {
           clinicalCaseMode: clinicalMode,
-          geminiApiKey: geminiKey
+          geminiApiKey: geminiKey,
+          highlightTranslateEnabled,
+          highlightTranslateLang
         },
         settingsUpdatedAt: settingsUpdatedAt || Date.now(),
         activeLessonTimer: (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.getActiveTimer === 'function')

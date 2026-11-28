@@ -664,6 +664,283 @@ if (typeof window !== 'undefined') {
 }
 
 
+// --- src/services/translateService.js ---
+// ============================================================================
+// Service de Traduction Directe au Surlignage (Google Translate + Préférences)
+// ============================================================================
+
+const TRANSLATE_ENABLED_KEY = 'pedia_translate_enabled';
+const TRANSLATE_LANG_KEY = 'pedia_translate_lang';
+
+const SUPPORTED_TRANSLATE_LANGUAGES = [
+  { code: 'ar', label: 'Arabe', nativeLabel: 'العربية', flag: '🇩🇿', rtl: true },
+  { code: 'en', label: 'Anglais', nativeLabel: 'English', flag: '🇬🇧', rtl: false },
+  { code: 'fr', label: 'Français', nativeLabel: 'Français', flag: '🇫🇷', rtl: false },
+  { code: 'de', label: 'Allemand', nativeLabel: 'Deutsch', flag: '🇩🇪', rtl: false }
+];
+
+const DEFAULT_TRANSLATE_LANG = 'ar';
+
+/**
+ * Resolve metadata for a supported target language code.
+ */
+function getTranslateLanguageMeta(langCode) {
+  const normalized = String(langCode || '').trim().toLowerCase();
+  return (
+    SUPPORTED_TRANSLATE_LANGUAGES.find(lang => lang.code === normalized) ||
+    SUPPORTED_TRANSLATE_LANGUAGES[0]
+  );
+}
+
+/**
+ * Return whether highlight-to-translate is enabled (defaults to true).
+ */
+function isHighlightTranslateEnabled() {
+  try {
+    const raw = localStorage.getItem(TRANSLATE_ENABLED_KEY);
+    if (raw === null || raw === undefined || raw === '') return true;
+    return raw !== 'false' && raw !== '0';
+  } catch {
+    return true;
+  }
+}
+
+/**
+ * Persist highlight-to-translate enabled preference and synchronize settings UI if present.
+ */
+function setHighlightTranslateEnabled(enabled) {
+  const isEnabled = Boolean(enabled);
+  try {
+    localStorage.setItem(TRANSLATE_ENABLED_KEY, isEnabled ? 'true' : 'false');
+  } catch {}
+  if (typeof document !== 'undefined') {
+    const toggleBtn = document.getElementById('btn-toggle-translate-enabled');
+    const toggleBadge = document.getElementById('settings-translate-status-badge');
+    const toggleInput = document.getElementById('settings-translate-enabled');
+    if (toggleInput) {
+      toggleInput.checked = isEnabled;
+    }
+    if (toggleBtn) {
+      toggleBtn.setAttribute('aria-pressed', isEnabled ? 'true' : 'false');
+      toggleBtn.classList.toggle('is-active', isEnabled);
+      toggleBtn.classList.toggle('is-disabled', !isEnabled);
+      const labelEl = toggleBtn.querySelector('[data-translate-toggle-label]');
+      if (labelEl) {
+        labelEl.textContent = isEnabled
+          ? 'Traduction activée (Cliquer pour désactiver)'
+          : 'Traduction désactivée (Cliquer pour activer)';
+      }
+    }
+    if (toggleBadge) {
+      toggleBadge.textContent = isEnabled ? 'Activée' : 'Désactivée';
+      toggleBadge.classList.toggle('is-off', !isEnabled);
+    }
+  }
+  return isEnabled;
+}
+
+/**
+ * Return configured target translation language code (defaults to 'ar').
+ */
+function getHighlightTranslateLang() {
+  try {
+    const raw = String(localStorage.getItem(TRANSLATE_LANG_KEY) || '').trim().toLowerCase();
+    const match = SUPPORTED_TRANSLATE_LANGUAGES.find(l => l.code === raw);
+    return match ? match.code : DEFAULT_TRANSLATE_LANG;
+  } catch {
+    return DEFAULT_TRANSLATE_LANG;
+  }
+}
+
+/**
+ * Persist target translation language code (falls back to 'ar' if unsupported).
+ */
+function setHighlightTranslateLang(langCode) {
+  const normalized = String(langCode || '').trim().toLowerCase();
+  const match = SUPPORTED_TRANSLATE_LANGUAGES.find(l => l.code === normalized);
+  const cleanLang = match ? match.code : DEFAULT_TRANSLATE_LANG;
+  try {
+    localStorage.setItem(TRANSLATE_LANG_KEY, cleanLang);
+  } catch {}
+  if (typeof document !== 'undefined') {
+    const selectEl = document.getElementById('settings-translate-lang');
+    if (selectEl) selectEl.value = cleanLang;
+  }
+  return cleanLang;
+}
+
+/**
+ * Split arbitrarily long text into chunks under maxChunkLen on sentence/word boundaries.
+ */
+function splitTextIntoTranslateChunks(text, maxChunkLen = 900) {
+  const normalized = String(text || '').trim();
+  if (!normalized) return [];
+  if (normalized.length <= maxChunkLen) return [normalized];
+
+  const chunks = [];
+  let remaining = normalized;
+
+  while (remaining.length > maxChunkLen) {
+    const slice = remaining.slice(0, maxChunkLen);
+    let splitIdx = -1;
+
+    // Prefer splitting on newline or sentence boundary first, then whitespace
+    const sentenceMatches = [...slice.matchAll(/[\n.!?؛؟]+(?=\s|$)/g)];
+    if (sentenceMatches.length > 0) {
+      const last = sentenceMatches[sentenceMatches.length - 1];
+      if (last.index >= Math.floor(maxChunkLen * 0.35)) {
+        splitIdx = last.index + last[0].length;
+      }
+    }
+
+    if (splitIdx === -1) {
+      const lastSpace = slice.lastIndexOf(' ');
+      if (lastSpace >= Math.floor(maxChunkLen * 0.3)) {
+        splitIdx = lastSpace;
+      } else {
+        splitIdx = maxChunkLen;
+      }
+    }
+
+    const piece = remaining.slice(0, splitIdx).trim();
+    if (piece) chunks.push(piece);
+    remaining = remaining.slice(splitIdx).trim();
+  }
+
+  if (remaining) chunks.push(remaining);
+  return chunks;
+}
+
+function createTranslateError(code, message) {
+  const err = new Error(message);
+  err.code = code;
+  return err;
+}
+
+function parseGoogleTranslateResponse(payload) {
+  if (!Array.isArray(payload) || !Array.isArray(payload[0])) {
+    throw createTranslateError('INVALID_RESPONSE', 'Format de réponse Google Traduction invalide.');
+  }
+
+  const translatedText = payload[0]
+    .map(segment => (Array.isArray(segment) && typeof segment[0] === 'string' ? segment[0] : ''))
+    .join('')
+    .trim();
+
+  if (!translatedText) {
+    throw createTranslateError('EMPTY_TRANSLATION', 'Aucune traduction retournée.');
+  }
+
+  const detectedSourceLang = typeof payload[2] === 'string' ? payload[2].toLowerCase() : '';
+  return { translatedText, detectedSourceLang };
+}
+
+/**
+ * Translate arbitrary-length text directly via Google Translate without persistent local cache.
+ */
+async function translateWithGoogle(text, targetLang = getHighlightTranslateLang(), options = {}) {
+  const cleanText = String(text || '').trim();
+  if (!cleanText) {
+    throw createTranslateError('EMPTY_TEXT', 'Aucun texte sélectionné à traduire.');
+  }
+
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+    throw createTranslateError(
+      'OFFLINE_ERROR',
+      'Traduction indisponible hors-ligne. Vérifiez votre connexion Internet.'
+    );
+  }
+
+  if (typeof fetch !== 'function') {
+    throw createTranslateError('NETWORK_UNAVAILABLE', 'API réseau fetch indisponible.');
+  }
+
+  const langMeta = getTranslateLanguageMeta(targetLang);
+  const chunks = splitTextIntoTranslateChunks(cleanText, 900);
+  const timeoutMs = Number(options.timeoutMs) > 0 ? Number(options.timeoutMs) : 6500;
+  const externalSignal = options.signal || null;
+
+  const translatedParts = [];
+  let detectedSourceLang = '';
+
+  for (const chunk of chunks) {
+    const controller = typeof AbortController === 'function' ? new AbortController() : null;
+    let timeoutId = null;
+    let abortListener = null;
+
+    if (controller) {
+      if (externalSignal) {
+        if (externalSignal.aborted) {
+          throw createTranslateError('ABORTED', 'Traduction annulée.');
+        }
+        abortListener = () => controller.abort();
+        externalSignal.addEventListener('abort', abortListener, { once: true });
+      }
+      timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    }
+
+    const url =
+      `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(langMeta.code)}&dt=t&q=${encodeURIComponent(chunk)}`;
+
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        signal: controller ? controller.signal : undefined
+      });
+
+      if (!response || !response.ok) {
+        const status = response ? response.status : 0;
+        throw createTranslateError(
+          status === 429 ? 'RATE_LIMITED' : 'HTTP_ERROR',
+          status === 429
+            ? 'Limite temporaire Google Traduction atteinte.'
+            : `Erreur Google Traduction (HTTP ${status || 'inconnu'}).`
+        );
+      }
+
+      const data = await response.json();
+      const parsed = parseGoogleTranslateResponse(data);
+      translatedParts.push(parsed.translatedText);
+      if (!detectedSourceLang && parsed.detectedSourceLang) {
+        detectedSourceLang = parsed.detectedSourceLang;
+      }
+    } catch (err) {
+      if (err && err.name === 'AbortError') {
+        if (externalSignal && externalSignal.aborted) {
+          throw createTranslateError('ABORTED', 'Traduction annulée.');
+        }
+        throw createTranslateError('TIMEOUT_ERROR', 'Délai dépassé lors de la connexion à Google Traduction.');
+      }
+      if (err && err.code) {
+        throw err;
+      }
+      if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+        throw createTranslateError(
+          'OFFLINE_ERROR',
+          'Traduction indisponible hors-ligne. Vérifiez votre connexion Internet.'
+        );
+      }
+      throw createTranslateError(
+        'NETWORK_ERROR',
+        'Impossible de joindre Google Traduction pour le moment.'
+      );
+    } finally {
+      if (timeoutId) clearTimeout(timeoutId);
+      if (externalSignal && abortListener) {
+        externalSignal.removeEventListener('abort', abortListener);
+      }
+    }
+  }
+
+  return {
+    translatedText: translatedParts.join(' ').trim(),
+    detectedSourceLang,
+    targetLang: langMeta.code,
+    provider: 'google'
+  };
+}
+
+
 // --- src/services/gemini.js ---
 // Gemini API Service with User Multi-Key Pool, Round-Robin Rotation, Resilience Cascade & Local Fallback (100% Modèles Flash)
 
@@ -944,7 +1221,9 @@ class GeminiService {
    */
   async callWithFallback(prompt, systemInstruction = '', maxTokens = 2048) {
     if (!this.hasApiKeys()) {
-      throw new Error('NO_API_KEY_CONFIGURED: Aucune clé API Gemini configurée dans les Paramètres.');
+      const noKeyErr = new Error('NO_API_KEY_CONFIGURED: Aucune clé API Gemini configurée dans les Paramètres.');
+      noKeyErr.code = 'NO_API_KEY_CONFIGURED';
+      throw noKeyErr;
     }
 
     const errors = [];
@@ -1485,6 +1764,77 @@ Consignes pédagogiques strictes :
         modelUsed: "Secours Local Hors-Ligne"
       };
     }
+  }
+
+  /**
+   * Translate arbitrary highlighted medical text via Gemini Flash (manual fallback when Google Translate fails)
+   */
+  async translateWithGemini(text, targetLang = 'ar', question = null) {
+    const cleanText = String(text || '').trim();
+    if (!cleanText) {
+      throw new Error('Aucun texte à traduire.');
+    }
+
+    const langNames = {
+      ar: 'arabe (العربية)',
+      en: 'anglais',
+      fr: 'français',
+      de: 'allemand'
+    };
+    const langLabel = langNames[String(targetLang || 'ar').toLowerCase()] || 'arabe (العربية)';
+    const ctx = resolveAiModuleContext(question);
+
+    const systemInstruction = `Tu es un traducteur médical expert en ${ctx.specialtyTitle}.
+Traduis fidèlement le texte fourni vers la langue : ${langLabel}.
+Règles strictes :
+- Conserve l'exactitude terminologique médicale (et développe entre parenthèses les sigles médicaux si utile à la compréhension).
+- Retourne UNIQUEMENT la traduction directe, sans introduction ni formule de politesse.
+- N'utilise aucune balise LaTeX.`;
+
+    const prompt = `Texte médical à traduire en ${langLabel} :\n"""\n${cleanText}\n"""`;
+    const result = await this.callWithFallback(prompt, systemInstruction, 1500);
+    return {
+      translatedText: cleanLatexMath(result.text).trim(),
+      targetLang: String(targetLang || 'ar').toLowerCase(),
+      modelUsed: result.modelUsed,
+      provider: 'gemini'
+    };
+  }
+
+  /**
+   * Explain a highlighted medical term, abbreviation or phrase concisely using Gemini Flash
+   */
+  async explainMedicalTerm(text, targetLang = 'ar', question = null) {
+    const cleanText = String(text || '').trim();
+    if (!cleanText) {
+      throw new Error('Aucun terme médical à expliquer.');
+    }
+
+    const langNames = {
+      ar: 'arabe (العربية) avec équivalent médical français/international entre parenthèses si utile',
+      en: 'anglais',
+      fr: 'français',
+      de: 'allemand'
+    };
+    const langLabel = langNames[String(targetLang || 'ar').toLowerCase()] || 'français';
+    const ctx = resolveAiModuleContext(question);
+    const qSnippet = question
+      ? `Contexte QCM (${ctx.moduleName} - ${question.chapterTitle || ctx.defaultChapter}) : "${String(question.question || question.statement || '').slice(0, 260)}"`
+      : `Spécialité : ${ctx.moduleName}`;
+
+    const systemInstruction = `Tu es le ${ctx.tutorTitle} de PédiaDrill (${ctx.specialtyTitle}).
+Explique de façon claire, médicale et concise le terme, sigle ou passage sélectionné, en ${langLabel}.
+Règles strictes :
+- Va droit au but en 2 à 4 phrases courtes maximum (définition clinique + intérêt diagnostique ou piège fréquent si pertinent).
+- Pas d'introduction, pas de politesse, pas de syntaxe LaTeX.`;
+
+    const prompt = `${qSnippet}\n\nTerme ou passage sélectionné à expliquer :\n"${cleanText}"`;
+    const result = await this.callWithFallback(prompt, systemInstruction, 900);
+    return {
+      explanation: cleanLatexMath(result.text).trim(),
+      targetLang: String(targetLang || 'ar').toLowerCase(),
+      modelUsed: result.modelUsed
+    };
   }
 
 }
@@ -4248,6 +4598,8 @@ class FirebaseSyncService {
       const currentExamDates = typeof getAllExamDates === 'function' ? getAllExamDates() : {};
       const currentClinicalMode = localStorage.getItem('pedia_clinical_case_mode') || 'sequential';
       const currentGeminiKey = localStorage.getItem('pedia_gemini_key') || '';
+      const currentTranslateEnabled = typeof isHighlightTranslateEnabled === 'function' ? isHighlightTranslateEnabled() : true;
+      const currentTranslateLang = typeof getHighlightTranslateLang === 'function' ? getHighlightTranslateLang() : 'ar';
 
       const profileData = sanitizeForFirestore({
         activeModuleId: 'pediatrie',
@@ -4256,7 +4608,9 @@ class FirebaseSyncService {
         examDatesUpdatedAt: Date.now(),
         settings: {
           clinicalCaseMode: currentClinicalMode,
-          geminiApiKey: currentGeminiKey
+          geminiApiKey: currentGeminiKey,
+          highlightTranslateEnabled: currentTranslateEnabled,
+          highlightTranslateLang: currentTranslateLang
         },
         settingsUpdatedAt: Date.now(),
         activeLessonTimer: legacyData.activeLessonTimer || null,
@@ -4409,11 +4763,28 @@ class FirebaseSyncService {
         const canApplySettings = remoteSettingsTs === 0 || remoteSettingsTs >= localSettingsTs;
 
         if (canApplySettings) {
-          const { clinicalCaseMode, geminiApiKey } = remoteProfile.settings;
+          const {
+            clinicalCaseMode,
+            geminiApiKey,
+            highlightTranslateEnabled,
+            highlightTranslateLang
+          } = remoteProfile.settings;
           if (clinicalCaseMode) {
             const localMode = localStorage.getItem('pedia_clinical_case_mode');
             if (localMode !== clinicalCaseMode) {
               localStorage.setItem('pedia_clinical_case_mode', clinicalCaseMode);
+              uiNeedsRefresh = true;
+            }
+          }
+          if (typeof highlightTranslateEnabled === 'boolean' && typeof setHighlightTranslateEnabled === 'function') {
+            if (isHighlightTranslateEnabled() !== highlightTranslateEnabled) {
+              setHighlightTranslateEnabled(highlightTranslateEnabled);
+              uiNeedsRefresh = true;
+            }
+          }
+          if (typeof highlightTranslateLang === 'string' && highlightTranslateLang.trim() && typeof setHighlightTranslateLang === 'function') {
+            if (getHighlightTranslateLang() !== highlightTranslateLang.trim().toLowerCase()) {
+              setHighlightTranslateLang(highlightTranslateLang);
               uiNeedsRefresh = true;
             }
           }
@@ -4642,6 +5013,8 @@ class FirebaseSyncService {
       const examDatesUpdatedAt = typeof getExamDatesUpdatedAt === 'function' ? getExamDatesUpdatedAt() : 0;
       const clinicalMode = localStorage.getItem('pedia_clinical_case_mode') || 'sequential';
       const geminiKey = localStorage.getItem('pedia_gemini_key') || '';
+      const highlightTranslateEnabled = typeof isHighlightTranslateEnabled === 'function' ? isHighlightTranslateEnabled() : true;
+      const highlightTranslateLang = typeof getHighlightTranslateLang === 'function' ? getHighlightTranslateLang() : 'ar';
       const settingsUpdatedAt = Number(localStorage.getItem('pedia_settings_updated_at') || 0);
 
       const profilePayload = sanitizeForFirestore({
@@ -4651,7 +5024,9 @@ class FirebaseSyncService {
         examDatesUpdatedAt: examDatesUpdatedAt || Date.now(),
         settings: {
           clinicalCaseMode: clinicalMode,
-          geminiApiKey: geminiKey
+          geminiApiKey: geminiKey,
+          highlightTranslateEnabled,
+          highlightTranslateLang
         },
         settingsUpdatedAt: settingsUpdatedAt || Date.now(),
         activeLessonTimer: (typeof lessonTracker !== 'undefined' && lessonTracker && typeof lessonTracker.getActiveTimer === 'function')
@@ -4898,7 +5273,7 @@ class FirebaseSyncService {
 // Update Management Service for PédiaDrill
 // Checks GitHub Releases for new APK versions, notifies the user, and triggers direct download.
 
-const CURRENT_APP_VERSION = '1.6.7';
+const CURRENT_APP_VERSION = '1.6.8';
 const GITHUB_REPO = 'lkmqji/qcm-p-diatrie';
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
 const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours auto-check cooldown
@@ -5916,6 +6291,560 @@ function getDomModals() {
 }
 
 
+// --- src/utils/selectionTranslator.js ---
+// ============================================================================
+// Bulle Flottante de Traduction Instantanée au Surlignage (Desktop & Mobile)
+// ============================================================================
+
+const MEDICAL_CONTENT_SELECTORS = [
+  '#view-arena',
+  '#view-notebook',
+  '#modal-error',
+  '#modal-clinical-case-summary',
+  '#arena-ai-chatbox'
+];
+
+const EXCLUDED_SELECTION_SELECTORS = [
+  '.selection-translate-popover',
+  'input',
+  'textarea',
+  'select',
+  'button',
+  '[contenteditable="true"]',
+  '.chapter-title-badge.is-blurred',
+  '.chatbox-chapter-blurred.is-blurred',
+  '.arena-header',
+  '.arena-footer-actions',
+  '.arena-clinical-actions',
+  '.notebook-toolbar',
+  '.notebook-controls'
+];
+
+let isTranslatorInitialized = false;
+let popoverEl = null;
+let activeAbortController = null;
+let selectionDebounceTimer = null;
+let lastPointerUpAt = 0;
+
+const translatorState = {
+  isOpen: false,
+  selectedText: '',
+  targetLang: 'ar',
+  detectedSourceLang: '',
+  translatedText: '',
+  provider: 'google',
+  status: 'idle', // 'idle' | 'loading' | 'success' | 'error'
+  errorMessage: '',
+  aiStatus: 'idle', // 'idle' | 'loading' | 'success' | 'error'
+  aiText: '',
+  aiModelUsed: '',
+  aiErrorMessage: '',
+  anchorRect: null
+};
+
+/**
+ * Return true if the user currently has a non-empty text selection inside the document.
+ * Used as an accidental-click guard on interactive QCM option cards.
+ */
+function hasActiveTextSelection() {
+  if (typeof window === 'undefined' || typeof window.getSelection !== 'function') return false;
+  const sel = window.getSelection();
+  return Boolean(sel && !sel.isCollapsed && String(sel.toString() || '').trim().length > 0);
+}
+
+function isSelectionTranslatePopoverOpen() {
+  return Boolean(translatorState.isOpen && popoverEl && popoverEl.style.display !== 'none');
+}
+
+function closeSelectionTranslatePopover() {
+  if (activeAbortController) {
+    try { activeAbortController.abort(); } catch {}
+    activeAbortController = null;
+  }
+  translatorState.isOpen = false;
+  translatorState.selectedText = '';
+  translatorState.translatedText = '';
+  translatorState.status = 'idle';
+  translatorState.errorMessage = '';
+  translatorState.aiStatus = 'idle';
+  translatorState.aiText = '';
+  translatorState.aiErrorMessage = '';
+  translatorState.anchorRect = null;
+
+  if (popoverEl) {
+    popoverEl.style.display = 'none';
+  }
+}
+
+function getElementFromNode(node) {
+  if (!node) return null;
+  if (node.nodeType === 1) return node;
+  return node.parentElement || null;
+}
+
+function isSelectionInsideMedicalZone(selection) {
+  if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return false;
+  const range = selection.getRangeAt(0);
+  const startEl = getElementFromNode(range.startContainer);
+  const endEl = getElementFromNode(range.endContainer);
+  const commonEl = getElementFromNode(range.commonAncestorContainer);
+
+  const candidates = [startEl, endEl, commonEl].filter(Boolean);
+  if (candidates.length === 0) return false;
+
+  const isInMedicalContainer = candidates.some(el =>
+    MEDICAL_CONTENT_SELECTORS.some(sel => Boolean(el.closest && el.closest(sel)))
+  );
+  if (!isInMedicalContainer) return false;
+
+  const isExcluded = candidates.some(el =>
+    EXCLUDED_SELECTION_SELECTORS.some(sel => Boolean(el.closest && el.closest(sel)))
+  );
+  if (isExcluded) return false;
+
+  return true;
+}
+
+function getSelectionBoundingRect(selection) {
+  if (!selection || selection.rangeCount === 0) return null;
+  const range = selection.getRangeAt(0);
+  const rect = range.getBoundingClientRect();
+  if (rect && (rect.width > 0 || rect.height > 0)) {
+    return rect;
+  }
+  const clientRects = range.getClientRects ? range.getClientRects() : null;
+  if (clientRects && clientRects.length > 0) {
+    return clientRects[0];
+  }
+  return null;
+}
+
+function ensurePopoverElement() {
+  if (typeof document === 'undefined' || !document.body) return null;
+  if (popoverEl && document.body.contains(popoverEl)) return popoverEl;
+
+  const el = document.createElement('div');
+  el.id = 'selection-translate-popover';
+  el.className = 'selection-translate-popover';
+  el.setAttribute('role', 'dialog');
+  el.setAttribute('aria-label', 'Traduction instantanée');
+  el.style.display = 'none';
+
+  el.addEventListener('mousedown', (e) => e.stopPropagation());
+  el.addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
+  el.addEventListener('click', (e) => {
+    e.stopPropagation();
+    handlePopoverClick(e);
+  });
+
+  document.body.appendChild(el);
+  popoverEl = el;
+  return popoverEl;
+}
+
+function positionPopoverNearRect(rect) {
+  if (!popoverEl || !rect || typeof window === 'undefined') return;
+
+  const margin = 10;
+  const vw = window.innerWidth || 360;
+  const vh = window.innerHeight || 640;
+
+  popoverEl.style.display = 'flex';
+  popoverEl.style.visibility = 'hidden';
+  popoverEl.style.left = '0px';
+  popoverEl.style.top = '0px';
+
+  const popRect = popoverEl.getBoundingClientRect();
+  const popWidth = popRect.width || Math.min(360, vw - margin * 2);
+  const popHeight = popRect.height || 180;
+
+  const centerX = rect.left + rect.width / 2;
+  let left = Math.round(centerX - popWidth / 2);
+  left = Math.max(margin, Math.min(left, vw - popWidth - margin));
+
+  const spaceAbove = rect.top - margin;
+  const spaceBelow = vh - rect.bottom - margin;
+
+  let top;
+  if (spaceAbove >= popHeight + 8 || spaceAbove >= spaceBelow) {
+    top = Math.round(rect.top - popHeight - 10);
+    if (top < margin) top = Math.round(rect.bottom + 10);
+  } else {
+    top = Math.round(rect.bottom + 10);
+  }
+  top = Math.max(margin, Math.min(top, vh - popHeight - margin));
+
+  popoverEl.style.left = `${left}px`;
+  popoverEl.style.top = `${top}px`;
+  popoverEl.style.visibility = 'visible';
+}
+
+function renderPopover() {
+  const el = ensurePopoverElement();
+  if (!el || !translatorState.isOpen) return;
+
+  const langMeta = getTranslateLanguageMeta(translatorState.targetLang);
+  const dirAttr = langMeta.rtl ? 'rtl' : 'ltr';
+  const sourceBadge = translatorState.detectedSourceLang
+    ? `${escapeHtml(translatorState.detectedSourceLang.toUpperCase())} → ${escapeHtml(langMeta.code.toUpperCase())}`
+    : `AUTO → ${escapeHtml(langMeta.code.toUpperCase())}`;
+
+  const langButtonsHtml = SUPPORTED_TRANSLATE_LANGUAGES.map(lang => {
+    const activeClass = lang.code === langMeta.code ? 'is-active' : '';
+    return `<button type="button" class="translate-lang-chip ${activeClass}" data-translate-lang="${escapeHtml(lang.code)}" title="${escapeHtml(lang.label)}">${lang.flag} ${escapeHtml(lang.code.toUpperCase())}</button>`;
+  }).join('');
+
+  let bodyHtml = '';
+  if (translatorState.status === 'loading') {
+    bodyHtml = `
+      <div class="translate-popover-loading">
+        <span class="translate-spinner"></span>
+        <span>Traduction vers ${escapeHtml(langMeta.label)}...</span>
+      </div>
+    `;
+  } else if (translatorState.status === 'error') {
+    bodyHtml = `
+      <div class="translate-popover-error">
+        <div class="translate-error-msg">⚠️ ${escapeHtml(translatorState.errorMessage || 'Impossible de traduire pour le moment.')}</div>
+        <div class="translate-error-actions">
+          <button type="button" class="btn-translate-gemini-fallback" data-translate-action="fallback-gemini">
+            <i data-lucide="sparkles" style="width:13px;height:13px;"></i>
+            <span>Traduire avec Gemini IA</span>
+          </button>
+          <button type="button" class="btn-translate-retry" data-translate-action="retry-google">
+            <i data-lucide="refresh-cw" style="width:13px;height:13px;"></i>
+            <span>Réessayer</span>
+          </button>
+        </div>
+      </div>
+    `;
+  } else if (translatorState.status === 'success') {
+    const providerBadge = translatorState.provider === 'gemini'
+      ? `<span class="translate-provider-tag is-gemini">✨ Gemini Flash</span>`
+      : `<span class="translate-provider-tag">Google Traduction</span>`;
+    bodyHtml = `
+      <div class="translate-result-box" dir="${dirAttr}">
+        <div class="translate-result-text">${escapeHtml(translatorState.translatedText)}</div>
+      </div>
+      <div class="translate-result-meta">
+        ${providerBadge}
+      </div>
+    `;
+  }
+
+  let aiBoxHtml = '';
+  if (translatorState.aiStatus === 'loading') {
+    aiBoxHtml = `
+      <div class="translate-ai-explain-box">
+        <div class="translate-popover-loading" style="padding:6px 0;">
+          <span class="translate-spinner"></span>
+          <span>Analyse médicale Gemini en cours...</span>
+        </div>
+      </div>
+    `;
+  } else if (translatorState.aiStatus === 'success') {
+    aiBoxHtml = `
+      <div class="translate-ai-explain-box" dir="${dirAttr}">
+        <div class="translate-ai-explain-header">
+          <span>💡 Sens médical (${escapeHtml(translatorState.aiModelUsed || 'Gemini Flash')})</span>
+        </div>
+        <div class="translate-ai-explain-text">${parseMarkdownInline(translatorState.aiText)}</div>
+      </div>
+    `;
+  } else if (translatorState.aiStatus === 'error') {
+    const needsKey = translatorState.aiErrorMessage && translatorState.aiErrorMessage.includes('NO_API_KEY_CONFIGURED');
+    aiBoxHtml = `
+      <div class="translate-ai-explain-box is-error">
+        <div class="translate-error-msg">
+          ${needsKey
+            ? '🔑 Configurez une clé API Gemini dans les Paramètres pour activer le sens médical IA.'
+            : escapeHtml(translatorState.aiErrorMessage || 'Analyse médicale IA indisponible.')}
+        </div>
+        ${needsKey ? `<button type="button" class="btn-translate-open-settings" data-translate-action="open-settings">Ouvrir Paramètres</button>` : ''}
+      </div>
+    `;
+  }
+
+  const copyDisabled = translatorState.status !== 'success' || !translatorState.translatedText ? 'disabled' : '';
+
+  el.innerHTML = `
+    <div class="translate-popover-header">
+      <div class="translate-popover-title">
+        <span>🌐</span>
+        <span class="translate-direction-badge">${sourceBadge}</span>
+      </div>
+      <div class="translate-lang-switcher">${langButtonsHtml}</div>
+    </div>
+    <div class="translate-source-preview" title="${escapeHtml(translatorState.selectedText)}">
+      « ${escapeHtml(translatorState.selectedText)} »
+    </div>
+    <div class="translate-popover-body">
+      ${bodyHtml}
+      ${aiBoxHtml}
+    </div>
+    <div class="translate-popover-footer">
+      <button type="button" class="btn-translate-footer is-ai" data-translate-action="explain-ai">
+        <i data-lucide="sparkles" style="width:13px;height:13px;"></i>
+        <span>Sens médical (IA)</span>
+      </button>
+      <button type="button" class="btn-translate-footer" data-translate-action="copy" ${copyDisabled}>
+        <i data-lucide="copy" style="width:13px;height:13px;"></i>
+        <span>Copier</span>
+      </button>
+    </div>
+  `;
+
+  refreshLucide(el);
+  if (translatorState.anchorRect) {
+    positionPopoverNearRect(translatorState.anchorRect);
+  }
+}
+
+async function runGoogleTranslationForCurrentSelection() {
+  const text = translatorState.selectedText;
+  const targetLang = translatorState.targetLang;
+  if (!text) return;
+
+  if (activeAbortController) {
+    try { activeAbortController.abort(); } catch {}
+  }
+  activeAbortController = typeof AbortController === 'function' ? new AbortController() : null;
+
+  translatorState.status = 'loading';
+  translatorState.translatedText = '';
+  translatorState.detectedSourceLang = '';
+  translatorState.errorMessage = '';
+  translatorState.provider = 'google';
+  renderPopover();
+
+  try {
+    const res = await translateWithGoogle(text, targetLang, {
+      signal: activeAbortController ? activeAbortController.signal : undefined
+    });
+    if (!translatorState.isOpen || translatorState.selectedText !== text || translatorState.targetLang !== targetLang) {
+      return;
+    }
+    translatorState.status = 'success';
+    translatorState.translatedText = res.translatedText;
+    translatorState.detectedSourceLang = res.detectedSourceLang || '';
+    translatorState.provider = 'google';
+    renderPopover();
+  } catch (err) {
+    if (err && err.code === 'ABORTED') return;
+    if (!translatorState.isOpen || translatorState.selectedText !== text) return;
+    translatorState.status = 'error';
+    translatorState.errorMessage = (err && err.message) ? err.message : 'Traduction Google indisponible.';
+    renderPopover();
+  }
+}
+
+async function runGeminiTranslationFallback() {
+  const text = translatorState.selectedText;
+  const targetLang = translatorState.targetLang;
+  if (!text) return;
+
+  translatorState.status = 'loading';
+  translatorState.errorMessage = '';
+  renderPopover();
+
+  try {
+    const question = typeof getEffectiveArenaQuestion === 'function' ? getEffectiveArenaQuestion() : null;
+    const res = await geminiService.translateWithGemini(text, targetLang, question);
+    if (!translatorState.isOpen || translatorState.selectedText !== text) return;
+    translatorState.status = 'success';
+    translatorState.translatedText = res.translatedText;
+    translatorState.provider = 'gemini';
+    renderPopover();
+  } catch (err) {
+    if (!translatorState.isOpen) return;
+    translatorState.status = 'error';
+    const msg = String(err && err.message || '');
+    translatorState.errorMessage = msg.includes('NO_API_KEY_CONFIGURED')
+      ? 'Aucune clé API Gemini configurée (ajoutez-en une dans Paramètres).'
+      : (msg || 'Échec de la traduction Gemini.');
+    renderPopover();
+  }
+}
+
+async function runGeminiMedicalExplanation() {
+  const text = translatorState.selectedText;
+  const targetLang = translatorState.targetLang;
+  if (!text || translatorState.aiStatus === 'loading') return;
+
+  translatorState.aiStatus = 'loading';
+  translatorState.aiText = '';
+  translatorState.aiErrorMessage = '';
+  renderPopover();
+
+  try {
+    const question = typeof getEffectiveArenaQuestion === 'function' ? getEffectiveArenaQuestion() : null;
+    const res = await geminiService.explainMedicalTerm(text, targetLang, question);
+    if (!translatorState.isOpen || translatorState.selectedText !== text) return;
+    translatorState.aiStatus = 'success';
+    translatorState.aiText = res.explanation;
+    translatorState.aiModelUsed = res.modelUsed || 'Gemini Flash';
+    renderPopover();
+  } catch (err) {
+    if (!translatorState.isOpen) return;
+    translatorState.aiStatus = 'error';
+    translatorState.aiErrorMessage = String(err && err.message || 'Erreur lors de l’explication IA.');
+    renderPopover();
+  }
+}
+
+async function copyTranslatedText() {
+  const textToCopy = translatorState.translatedText;
+  if (!textToCopy) return;
+  try {
+    if (typeof navigator !== 'undefined' && navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+      await navigator.clipboard.writeText(textToCopy);
+    } else if (typeof document !== 'undefined') {
+      const ta = document.createElement('textarea');
+      ta.value = textToCopy;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+    }
+    showAppToast('📋 Traduction copiée !', { type: 'success', durationMs: 2000 });
+  } catch {
+    showAppToast('Impossible de copier dans le presse-papiers.', { type: 'warning', durationMs: 2500 });
+  }
+}
+
+function handlePopoverClick(e) {
+  const langBtn = e.target.closest('[data-translate-lang]');
+  if (langBtn) {
+    const newLang = langBtn.getAttribute('data-translate-lang');
+    const cleanLang = setHighlightTranslateLang(newLang);
+    if (translatorState.targetLang !== cleanLang || translatorState.status === 'error') {
+      translatorState.targetLang = cleanLang;
+      translatorState.aiStatus = 'idle';
+      translatorState.aiText = '';
+      runGoogleTranslationForCurrentSelection();
+    }
+    return;
+  }
+
+  const actionBtn = e.target.closest('[data-translate-action]');
+  if (!actionBtn) return;
+
+  const action = actionBtn.getAttribute('data-translate-action');
+  if (action === 'retry-google') {
+    runGoogleTranslationForCurrentSelection();
+  } else if (action === 'fallback-gemini') {
+    runGeminiTranslationFallback();
+  } else if (action === 'explain-ai') {
+    runGeminiMedicalExplanation();
+  } else if (action === 'copy') {
+    copyTranslatedText();
+  } else if (action === 'open-settings') {
+    closeSelectionTranslatePopover();
+    if (typeof window !== 'undefined' && typeof window.openSettingsFromAi === 'function') {
+      window.openSettingsFromAi();
+    }
+  }
+}
+
+function processCurrentSelection() {
+  if (!isHighlightTranslateEnabled()) {
+    closeSelectionTranslatePopover();
+    return;
+  }
+
+  if (typeof window === 'undefined' || typeof window.getSelection !== 'function') return;
+  const selection = window.getSelection();
+  if (!selection || selection.isCollapsed) return;
+
+  const selectedText = String(selection.toString() || '').replace(/\s+/g, ' ').trim();
+  if (!selectedText) return;
+
+  if (!isSelectionInsideMedicalZone(selection)) {
+    return;
+  }
+
+  const rect = getSelectionBoundingRect(selection);
+  if (!rect) return;
+
+  if (translatorState.isOpen && translatorState.selectedText === selectedText) {
+    translatorState.anchorRect = rect;
+    positionPopoverNearRect(rect);
+    return;
+  }
+
+  translatorState.isOpen = true;
+  translatorState.selectedText = selectedText;
+  translatorState.targetLang = getHighlightTranslateLang();
+  translatorState.aiStatus = 'idle';
+  translatorState.aiText = '';
+  translatorState.aiErrorMessage = '';
+  translatorState.anchorRect = rect;
+
+  runGoogleTranslationForCurrentSelection();
+}
+
+function initSelectionTranslator() {
+  if (isTranslatorInitialized || typeof document === 'undefined') return;
+  isTranslatorInitialized = true;
+
+  const onPointerRelease = () => {
+    lastPointerUpAt = Date.now();
+    setTimeout(processCurrentSelection, 20);
+  };
+
+  document.addEventListener('mouseup', onPointerRelease);
+  document.addEventListener('touchend', onPointerRelease, { passive: true });
+
+  document.addEventListener('selectionchange', () => {
+    if (!isHighlightTranslateEnabled()) return;
+    if (selectionDebounceTimer) clearTimeout(selectionDebounceTimer);
+    selectionDebounceTimer = setTimeout(() => {
+      selectionDebounceTimer = null;
+      // Avoid duplicate rapid trigger right after mouseup/touchend
+      if (Date.now() - lastPointerUpAt < 180) return;
+      const sel = typeof window !== 'undefined' && window.getSelection ? window.getSelection() : null;
+      if (!sel || sel.isCollapsed || !String(sel.toString() || '').trim()) {
+        return;
+      }
+      processCurrentSelection();
+    }, 340);
+  });
+
+  const handleOutsideInteraction = (e) => {
+    if (!isSelectionTranslatePopoverOpen()) return;
+    if (popoverEl && popoverEl.contains(e.target)) return;
+    // Allow new selection gestures to finish cleanly before deciding to close
+    setTimeout(() => {
+      if (!isSelectionTranslatePopoverOpen()) return;
+      const sel = typeof window !== 'undefined' && window.getSelection ? window.getSelection() : null;
+      const hasSel = sel && !sel.isCollapsed && String(sel.toString() || '').trim().length > 0;
+      if (!hasSel || !isSelectionInsideMedicalZone(sel)) {
+        closeSelectionTranslatePopover();
+      }
+    }, 10);
+  };
+
+  document.addEventListener('mousedown', handleOutsideInteraction);
+  document.addEventListener('touchstart', handleOutsideInteraction, { passive: true });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isSelectionTranslatePopoverOpen()) {
+      closeSelectionTranslatePopover();
+    }
+  });
+
+  if (typeof window !== 'undefined') {
+    window.addEventListener('resize', () => {
+      if (isSelectionTranslatePopoverOpen() && translatorState.anchorRect) {
+        positionPopoverNearRect(translatorState.anchorRect);
+      }
+    });
+  }
+}
+
+
 // --- src/views/dashboardView.js ---
 // ============================================================================
 // Dashboard, Sélecteur de Modules, Paramètres & Synchronisation Google UI
@@ -6356,6 +7285,9 @@ function openSettingsModal() {
     const badgeEl = document.getElementById('settings-clinical-mode-badge');
     if (badgeEl) badgeEl.textContent = curMode === 'scroll' ? 'Déroulant' : 'Séquentiel';
   }
+
+  setHighlightTranslateEnabled(isHighlightTranslateEnabled());
+  setHighlightTranslateLang(getHighlightTranslateLang());
 
   updateActiveModuleBadge();
   renderModuleSelectorUI();
@@ -7708,6 +8640,7 @@ function renderClinicalScrollView() {
 }
 
 window.toggleClinicalScrollOption = function(qIdx, letter) {
+  if (hasActiveTextSelection()) return;
   const runState = appState.clinicalRunState;
   if (!appState.isClinicalRunActive || !runState) return;
   const subQ = runState.subQuestions[qIdx];
@@ -9119,6 +10052,7 @@ window.unsnoozeAllSnoozedQuestions = function() {
 // QUIZ ARENA (QUESTION DISPLAY & SUBMISSION)
 // ============================================================================
 function loadNextArenaQuestion() {
+  closeSelectionTranslatePopover();
   appState.isCurrentQuestionAnswered = false;
   appState.historyCursor = -1;
   updateHistoryNavUI();
@@ -9283,6 +10217,7 @@ function renderOptionsList(options) {
     `;
 
     item.addEventListener('click', () => {
+      if (hasActiveTextSelection()) return;
       toggleOptionSelection(item);
     });
 
@@ -13111,6 +14046,7 @@ appState.firebaseSyncService = firebaseSyncService;
 // VIEW NAVIGATION
 // ============================================================================
 function switchView(viewName) {
+  closeSelectionTranslatePopover();
   appState.currentView = viewName;
   const views = getDomViews();
   Object.keys(views).forEach(v => {
@@ -13158,6 +14094,11 @@ function setupNativeCapacitorBackButton() {
 
   isCapacitorBackBound = true;
   capApp.addListener('backButton', () => {
+    if (isSelectionTranslatePopoverOpen()) {
+      closeSelectionTranslatePopover();
+      return;
+    }
+
     const confirmModal = document.getElementById('modal-app-confirm');
     if (confirmModal && confirmModal.style.display === 'flex') {
       resolvePendingConfirmModal(false);
@@ -13221,6 +14162,7 @@ function initApp() {
   setupEventListeners();
   setupKeyboardShortcuts();
   setupNativeCapacitorBackButton();
+  initSelectionTranslator();
   setupFirebaseService();
   initLessonTracker();
   refreshLucide();
@@ -13589,6 +14531,34 @@ function setupEventListeners() {
     };
   }
 
+  const translateToggleBtn = document.getElementById('btn-toggle-translate-enabled');
+  if (translateToggleBtn) {
+    translateToggleBtn.onclick = () => {
+      const nextState = !isHighlightTranslateEnabled();
+      setHighlightTranslateEnabled(nextState);
+      if (!nextState) {
+        closeSelectionTranslatePopover();
+      }
+      try {
+        localStorage.setItem('pedia_settings_updated_at', String(Date.now()));
+      } catch {}
+      firebaseSyncService.pushProfileToFirestore();
+      showAppToast(
+        nextState
+          ? '🌐 Traduction au surlignage activée.'
+          : '🔇 Traduction au surlignage désactivée.',
+        { type: nextState ? 'success' : 'info', durationMs: 2200 }
+      );
+    };
+  }
+
+  const translateLangSelect = document.getElementById('settings-translate-lang');
+  if (translateLangSelect) {
+    translateLangSelect.onchange = (e) => {
+      setHighlightTranslateLang(e.target.value);
+    };
+  }
+
   bindClick('btn-save-settings', () => {
     const rawKeyInput = document.getElementById('settings-gemini-key')?.value?.trim() || '';
     geminiService.setApiKey(rawKeyInput);
@@ -13603,6 +14573,11 @@ function setupEventListeners() {
     } else {
       getClinicalModePreference();
     }
+
+    if (translateLangSelect) {
+      setHighlightTranslateLang(translateLangSelect.value);
+    }
+    setHighlightTranslateEnabled(isHighlightTranslateEnabled());
 
     try {
       localStorage.setItem('pedia_settings_updated_at', String(Date.now()));

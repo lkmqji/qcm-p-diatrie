@@ -30,6 +30,7 @@ function cleanModuleCode(code) {
 const orderedSourceFiles = [
   ['src', 'services', 'moduleCatalog.js'],
   ['src', 'services', 'storageScope.js'],
+  ['src', 'services', 'translateService.js'],
   ['src', 'services', 'gemini.js'],
   ['src', 'services', 'queueEngine.js'],
   ['src', 'services', 'studyTracker.js'],
@@ -39,6 +40,7 @@ const orderedSourceFiles = [
   ['src', 'utils', 'formatters.js'],
   ['src', 'utils', 'uiDialogs.js'],
   ['src', 'state', 'appState.js'],
+  ['src', 'utils', 'selectionTranslator.js'],
   ['src', 'views', 'dashboardView.js'],
   ['src', 'views', 'clinicalCaseView.js'],
   ['src', 'views', 'arenaView.js'],

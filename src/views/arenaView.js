@@ -28,6 +28,10 @@ import {
   showAppToast,
   showConfirmModal
 } from '../utils/uiDialogs.js';
+import {
+  hasActiveTextSelection,
+  closeSelectionTranslatePopover
+} from '../utils/selectionTranslator.js';
 import { updateDashboardUI, updateArenaDailyBadge } from './dashboardView.js';
 import { renderStatsUI } from './statsView.js';
 import {
@@ -1015,6 +1019,7 @@ window.unsnoozeAllSnoozedQuestions = function() {
 // QUIZ ARENA (QUESTION DISPLAY & SUBMISSION)
 // ============================================================================
 export function loadNextArenaQuestion() {
+  closeSelectionTranslatePopover();
   appState.isCurrentQuestionAnswered = false;
   appState.historyCursor = -1;
   updateHistoryNavUI();
@@ -1179,6 +1184,7 @@ export function renderOptionsList(options) {
     `;
 
     item.addEventListener('click', () => {
+      if (hasActiveTextSelection()) return;
       toggleOptionSelection(item);
     });
 

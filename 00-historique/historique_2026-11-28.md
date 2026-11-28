@@ -25,3 +25,33 @@
 - **Contenu de la Release** : Séparation stricte des notes et fautes par module médical dans le Carnet de Raisonnement IA (`#view-notebook`), migration des données cross-modules, correctif d'isolation `QueueEngine.switchModule`, et ajout du sélecteur rapide de modules (`#notebook-module-nav`).
 - **Compilation & Synchronisation** : Bundle web recompilé (`build-bundle.cjs`), synchronisation Capacitor (`npx cap sync android`) et compilation APK Android (`PediaDrill.apk`) réussies.
 - **Déploiement** : Commit, tag `v1.6.7` et push vers GitHub (`main` + tag `v1.6.7`) pour déploiement continu Vercel et génération de la GitHub Release via GitHub Actions.
+
+---
+
+## 15:03:00 — Ajout de la Traduction Instantanée au Surlignage (Google Traduction + Enrichissement Gemini IA) & Bouton d'Activation dans les Options
+
+### Changements Effectués
+1. **Service de traduction directe (`src/services/translateService.js`)** :
+   - Implémentation de `translateWithGoogle` via appel direct `translate.googleapis.com/translate_a/single` sans cache offline persistant, avec découpage automatique (`splitTextIntoTranslateChunks`) pour les sélections longues sans limite de longueur et gestion des erreurs réseau / hors-ligne (`OFFLINE_ERROR`, `TIMEOUT_ERROR`, `AbortController`).
+   - Support des 4 langues configurables : **Arabe (`ar`, par défaut)**, **Anglais (`en`)**, **Français (`fr`)** et **Allemand (`de`)**, avec persistance `localStorage` (`pedia_translate_enabled`, `pedia_translate_lang`).
+2. **Enrichissement & secours manuel Gemini Flash (`src/services/gemini.js`)** :
+   - Ajout de `translateWithGemini(text, targetLang, question)` (bascule manuelle depuis la bulle en cas d'échec réseau Google) et `explainMedicalTerm(text, targetLang, question)` pour le bouton **« 💡 Sens médical (IA) »** contextualisé au module actif.
+   - Ajout de `err.code = 'NO_API_KEY_CONFIGURED'` dans `callWithFallback` lorsque l'utilisateur n'a pas configuré de clé Gemini.
+3. **Bulle flottante au surlignage & garde QCM (`src/utils/selectionTranslator.js`, `src/style.css`, `src/views/arenaView.js`, `src/views/clinicalCaseView.js`)** :
+   - Création du contrôleur `initSelectionTranslator()` actif sur les zones médicales (`#view-arena`, `#view-notebook`, `#modal-error`, `#modal-clinical-case-summary`, `#arena-ai-chatbox`), avec bulle flottante `#selection-translate-popover` positionnée dynamiquement sur Desktop & Mobile, affichage RTL automatique pour l'arabe, sélecteur de langue à la volée, bouton Copier, bouton « Sens médical (IA) », zone scrollable et fermeture automatique au clic extérieur / touche Échap / bouton Retour Android / changement de vue ou de question.
+   - Déblocage de la sélection de texte sur les propositions QCM (`.option-text { user-select: text; }`) avec garde anti-clic accidentel (`hasActiveTextSelection()`) dans `arenaView.js` et `clinicalCaseView.js`.
+4. **Bouton d'activation/désactivation dans les Options & Sync Firestore (`template.html`, `src/views/dashboardView.js`, `src/app.js`, `src/services/firebaseSyncService.js`)** :
+   - Ajout dans `#modal-settings` de la section **Traduction au Surlignage** avec le bouton `#btn-toggle-translate-enabled` (permettant d'activer/désactiver la fonctionnalité en 1 clic), le badge `#settings-translate-status-badge` et le sélecteur `#settings-translate-lang`.
+   - Synchronisation complète des préférences `highlightTranslateEnabled` et `highlightTranslateLang` via `remoteProfile.settings` et `settingsUpdatedAt` dans `firebaseSyncService.js`.
+5. **Assemblage & Tests (`build-bundle.cjs`, `tests/translateService.test.js`)** :
+   - Intégration de `translateService.js` et `selectionTranslator.js` dans `build-bundle.cjs` et création de la suite de tests `tests/translateService.test.js`.
+
+---
+
+## 19:16:00 — Release v1.6.8 (versionCode 35) : Déploiement Vercel & Publication GitHub Release
+
+### Changements Effectués
+- **Incrémentation de Version** : Passage de `1.6.7` (`versionCode 34`) à **`1.6.8`** (`versionCode 35`) dans `package.json`, `src/services/updateService.js`, `android/app/build.gradle`, `template.html` et `00-historique/MASTER_PRODUCT_TECHNICAL_CONTEXT.md`.
+- **Contenu de la Release** : Traduction instantanée au surlignage (Google Traduction direct en Arabe/Anglais/Français/Allemand sans limite de longueur + bulle flottante + bouton « Sens médical (IA) » et bascule manuelle Gemini Flash) et bouton d'activation/désactivation dans les Options avec synchronisation Firestore.
+- **Compilation & Synchronisation** : Bundle web recompilé (`build-bundle.cjs`), synchronisation Capacitor (`npx cap sync android`) et compilation APK Android (`PediaDrill.apk`) réussies.
+- **Déploiement** : Commit, tag `v1.6.8` et push vers GitHub (`main` + tag `v1.6.8`) pour déploiement Vercel et workflow GitHub Actions Release APK.
