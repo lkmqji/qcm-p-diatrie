@@ -1,16 +1,21 @@
 // Spaced Repetition Queue Engine with Dynamic Penalty & Mastery Thresholds
+import {
+  getActiveModuleId,
+  doesQuestionBelongToModule,
+  resolveModuleIdForQuestionUid
+} from './moduleCatalog.js';
 import { resolveStorageKey } from './storageScope.js';
 
-function getStorageKey() {
-  return typeof resolveStorageKey === 'function' ? resolveStorageKey('drill_state') : 'pedia_drill_state_v1';
+function getStorageKey(moduleId = null) {
+  return typeof resolveStorageKey === 'function' ? resolveStorageKey('drill_state', moduleId) : 'pedia_drill_state_v1';
 }
 
-function getReasoningKey() {
-  return typeof resolveStorageKey === 'function' ? resolveStorageKey('reasoning_notes') : 'pedia_drill_reasoning_notes_v1';
+function getReasoningKey(moduleId = null) {
+  return typeof resolveStorageKey === 'function' ? resolveStorageKey('reasoning_notes', moduleId) : 'pedia_drill_reasoning_notes_v1';
 }
 
-function getTodayTrackerKey() {
-  return typeof resolveStorageKey === 'function' ? resolveStorageKey('today_tracker') : 'pedia_today_tracker';
+function getTodayTrackerKey(moduleId = null) {
+  return typeof resolveStorageKey === 'function' ? resolveStorageKey('today_tracker', moduleId) : 'pedia_today_tracker';
 }
 
 /**
@@ -91,6 +96,7 @@ export function hydrateNote(note, questionsList = []) {
 
 export class QueueEngine {
   constructor(allQuestions = [], chapters = []) {
+    this.activeModuleId = getActiveModuleId();
     this.allQuestions = allQuestions;
     this.chapters = chapters;
     this.questionsMap = getQuestionsMap(allQuestions);
@@ -127,27 +133,39 @@ export class QueueEngine {
     }
   }
 
-  loadState() {
+  loadState(moduleId = null) {
     try {
-      this.sanitizeReasoningNotesStorage();
-      const saved = localStorage.getItem(getStorageKey());
+      const activeMod = moduleId || this.activeModuleId || getActiveModuleId();
+      this.activeModuleId = activeMod;
+      this.sanitizeReasoningNotesStorage(activeMod);
+      const saved = localStorage.getItem(getStorageKey(activeMod));
       if (saved) {
         const parsed = JSON.parse(saved);
-        this.stats = parsed.stats || {};
-        // Ensure all loaded targets respect the maximum threshold of 10
-        if (this.stats && typeof this.stats === 'object') {
-          Object.values(this.stats).forEach(st => {
-            if (st && typeof st === 'object' && typeof st.target === 'number' && st.target > 10) {
-              st.target = 10;
-            }
-          });
+        const rawStats = parsed.stats || {};
+        this.stats = {};
+        for (const [uid, st] of Object.entries(rawStats)) {
+          if (!doesQuestionBelongToModule(uid, activeMod)) continue;
+          if (st && typeof st === 'object') {
+            this.stats[uid] = {
+              ...st,
+              target: typeof st.target === 'number' && st.target > 10 ? 10 : (st.target || 3)
+            };
+          }
         }
-        this.queue = parsed.queue || [];
-        this.cursor = parsed.cursor || 0;
+        this.queue = Array.isArray(parsed.queue)
+          ? parsed.queue.filter(uid => doesQuestionBelongToModule(uid, activeMod))
+          : [];
+        this.cursor = Math.min(parsed.cursor || 0, Math.max(0, this.queue.length - 1));
         this.selectedChapterIds = parsed.selectedChapterIds || [];
         this.selectedChaptersUpdatedAt = parsed.selectedChaptersUpdatedAt || 0;
         this.totalMistakesCount = parsed.totalMistakesCount || 0;
-        this.snoozedQuestions = (parsed.snoozedQuestions && typeof parsed.snoozedQuestions === 'object') ? parsed.snoozedQuestions : {};
+        const rawSnoozed = (parsed.snoozedQuestions && typeof parsed.snoozedQuestions === 'object') ? parsed.snoozedQuestions : {};
+        this.snoozedQuestions = {};
+        for (const [uid, dateStr] of Object.entries(rawSnoozed)) {
+          if (doesQuestionBelongToModule(uid, activeMod)) {
+            this.snoozedQuestions[uid] = dateStr;
+          }
+        }
         this.cleanExpiredSnoozes();
       }
       this.autoHealNotesFromMistakes();
@@ -159,26 +177,22 @@ export class QueueEngine {
   /**
    * Automatically reconstructs baseline reasoning notes for any question
    * that was missed in training (mistakes >= 1) if no note currently exists in storage.
+   * Strictly scoped to the active module's questions.
    */
   autoHealNotesFromMistakes() {
     if (typeof localStorage === 'undefined') return;
     try {
-      const rawNotes = this.getRawReasoningNotes();
+      const activeMod = getActiveModuleId();
+      const rawNotes = this.getRawReasoningNotes(activeMod);
       const existingUids = new Set(rawNotes.map(n => n && n.questionUid).filter(Boolean));
       const healedNotes = [];
 
       for (const [uid, stat] of Object.entries(this.stats || {})) {
         if (!stat || !stat.mistakes || stat.mistakes <= 0) continue;
+        if (!doesQuestionBelongToModule(uid, activeMod)) continue;
         if (existingUids.has(uid)) continue;
 
-        let q = (this.questionsMap && this.questionsMap.get(uid)) || null;
-        if (!q && typeof window !== 'undefined') {
-          if (uid.startsWith('psy_') && window.PSY_QUESTIONS) {
-            q = window.PSY_QUESTIONS.find(x => x.uid === uid) || null;
-          } else if (window.PEDIA_QUESTIONS) {
-            q = window.PEDIA_QUESTIONS.find(x => x.uid === uid) || null;
-          }
-        }
+        const q = (this.questionsMap && this.questionsMap.get(uid)) || null;
         if (!q) continue;
 
         const isCroq = !!q.is_croq;
@@ -220,9 +234,9 @@ ${expText}`;
       }
 
       if (healedNotes.length > 0) {
-        console.log(`[QueueEngine] Auto-healed ${healedNotes.length} reasoning note(s) from recorded mistakes.`);
+        console.log(`[QueueEngine] Auto-healed ${healedNotes.length} reasoning note(s) for module ${activeMod}.`);
         const updated = [...healedNotes, ...rawNotes].slice(0, 500);
-        localStorage.setItem(getReasoningKey(), JSON.stringify(updated.map(n => slimNote(n))));
+        localStorage.setItem(getReasoningKey(activeMod), JSON.stringify(updated.map(n => slimNote(n))));
       }
     } catch (err) {
       console.warn('[QueueEngine] Auto-heal notes failed:', err);
@@ -232,9 +246,10 @@ ${expText}`;
   /**
    * Migrate and optimize any legacy bloated notes in localStorage to lean format
    */
-  sanitizeReasoningNotesStorage() {
+  sanitizeReasoningNotesStorage(moduleId = null) {
     try {
-      const raw = localStorage.getItem(getReasoningKey());
+      const targetMod = moduleId || this.activeModuleId || getActiveModuleId();
+      const raw = localStorage.getItem(getReasoningKey(targetMod));
       if (!raw) return;
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
@@ -242,7 +257,7 @@ ${expText}`;
         if (hasBloated) {
           console.log(`[Storage] Optimizing ${parsed.length} reasoning notes to lean format...`);
           const slimmed = parsed.map(n => slimNote(n));
-          localStorage.setItem(getReasoningKey(), JSON.stringify(slimmed));
+          localStorage.setItem(getReasoningKey(targetMod), JSON.stringify(slimmed));
         }
       }
     } catch (e) {
@@ -253,6 +268,7 @@ ${expText}`;
   saveState() {
     this._cachedMetrics = null;
     try {
+      const targetMod = this.activeModuleId || getActiveModuleId();
       const data = {
         stats: this.stats,
         queue: this.queue,
@@ -263,7 +279,7 @@ ${expText}`;
         snoozedQuestions: this.snoozedQuestions || {},
         lastUpdated: Date.now()
       };
-      localStorage.setItem(getStorageKey(), JSON.stringify(data));
+      localStorage.setItem(getStorageKey(targetMod), JSON.stringify(data));
     } catch (err) {
       console.warn("Failed to save state:", err);
     }
@@ -772,38 +788,79 @@ ${expText}`;
   }
 
   /**
-   * Save a reasoning note to the dedicated notebook in lean format
+   * Save a reasoning note to the dedicated notebook in lean format (scoped to note's module)
    */
   saveReasoningNote(noteData) {
     try {
-      const existing = this.getRawReasoningNotes();
+      const targetMod = resolveModuleIdForQuestionUid(noteData?.questionUid, getActiveModuleId());
+      const existing = this.getRawReasoningNotes(targetMod);
       const slimmed = slimNote(noteData);
       const updated = [slimmed, ...existing.filter(n => n.questionUid !== noteData.questionUid || n.id !== noteData.id)];
-      localStorage.setItem(getReasoningKey(), JSON.stringify(updated.slice(0, 500))); // Keep up to 500 notes
+      localStorage.setItem(getReasoningKey(targetMod), JSON.stringify(updated.slice(0, 500))); // Keep up to 500 notes
     } catch (err) {
       console.warn("Failed to save reasoning note:", err);
     }
   }
 
-  getRawReasoningNotes() {
+  getRawReasoningNotes(moduleId = null) {
     try {
-      const raw = localStorage.getItem(getReasoningKey());
+      const targetMod = moduleId || getActiveModuleId();
+      const raw = localStorage.getItem(getReasoningKey(targetMod));
       if (!raw) return [];
       const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed : [];
+      if (!Array.isArray(parsed)) return [];
+      return parsed.filter(n => n && typeof n === 'object' && (!n.questionUid || doesQuestionBelongToModule(n.questionUid, targetMod)));
     } catch {
       return [];
     }
   }
 
-  getReasoningNotes() {
+  getReasoningNotes(moduleId = null) {
     try {
-      this.autoHealNotesFromMistakes();
-      const rawNotes = this.getRawReasoningNotes();
-      const qMap = this.questionsMap || getQuestionsMap(this.allQuestions);
-      return rawNotes.map(n => hydrateNote(n, qMap));
+      const targetMod = moduleId || getActiveModuleId();
+      const activeMod = getActiveModuleId();
+      if (targetMod === activeMod) {
+        this.autoHealNotesFromMistakes();
+      }
+      const rawNotes = this.getRawReasoningNotes(targetMod);
+      let qListOrMap;
+      if (targetMod === activeMod) {
+        qListOrMap = this.questionsMap || getQuestionsMap(this.allQuestions);
+      } else if (typeof window !== 'undefined') {
+        qListOrMap = targetMod === 'psychiatrie' ? (window.PSY_QUESTIONS || []) : (window.PEDIA_QUESTIONS || []);
+      } else {
+        qListOrMap = [];
+      }
+      return rawNotes.map(n => hydrateNote(n, qListOrMap));
     } catch {
       return [];
+    }
+  }
+
+  getModuleMistakesCount(moduleId = null) {
+    try {
+      const targetMod = moduleId || getActiveModuleId();
+      const activeMod = getActiveModuleId();
+      let statsObj = null;
+      if (targetMod === activeMod) {
+        statsObj = this.stats || {};
+      } else if (typeof localStorage !== 'undefined') {
+        const raw = localStorage.getItem(getStorageKey(targetMod));
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          statsObj = (parsed && parsed.stats) || {};
+        }
+      }
+      if (!statsObj) return 0;
+      let sum = 0;
+      for (const [uid, st] of Object.entries(statsObj)) {
+        if (doesQuestionBelongToModule(uid, targetMod) && st && typeof st.mistakes === 'number') {
+          sum += st.mistakes;
+        }
+      }
+      return sum;
+    } catch {
+      return 0;
     }
   }
 
@@ -817,8 +874,9 @@ ${expText}`;
   deleteReasoningNotesByQuestionUid(questionUid) {
     if (!questionUid) return;
     try {
-      const notes = this.getRawReasoningNotes().filter(n => n.questionUid !== questionUid);
-      localStorage.setItem(getReasoningKey(), JSON.stringify(notes));
+      const targetMod = resolveModuleIdForQuestionUid(questionUid, getActiveModuleId());
+      const notes = this.getRawReasoningNotes(targetMod).filter(n => n.questionUid !== questionUid);
+      localStorage.setItem(getReasoningKey(targetMod), JSON.stringify(notes));
     } catch {}
   }
 
@@ -866,8 +924,9 @@ ${expText}`;
   /**
    * Switch active module dataset and reinitialize queue/stats
    */
-  switchModule(newQuestions, newChapters) {
+  switchModule(newQuestions, newChapters, newModuleId = null) {
     this.saveState();
+    this.activeModuleId = newModuleId || getActiveModuleId();
     this.allQuestions = newQuestions || [];
     this.chapters = newChapters || [];
     this.questionsMap = getQuestionsMap(this.allQuestions);
@@ -878,7 +937,7 @@ ${expText}`;
     this.totalMistakesCount = 0;
     this.selectedChapterIds = [];
     this.snoozedQuestions = {};
-    this.loadState();
+    this.loadState(this.activeModuleId);
     this.initSession(this.selectedChapterIds);
   }
 
@@ -909,14 +968,28 @@ ${expText}`;
   }
 
   /**
-   * Apply merged state object safely, ensuring notes are stored lean
+   * Apply merged state object safely, ensuring notes and stats are strictly scoped to the active module
    */
   applyMergedState(merged) {
     if (!merged || typeof merged !== 'object') return false;
     try {
-      if (merged.stats) this.stats = merged.stats;
-      if (Array.isArray(merged.queue)) this.queue = merged.queue;
-      if (typeof merged.cursor === 'number') this.cursor = merged.cursor;
+      const activeMod = getActiveModuleId();
+
+      if (merged.stats && typeof merged.stats === 'object') {
+        const scopedStats = {};
+        for (const [uid, st] of Object.entries(merged.stats)) {
+          if (doesQuestionBelongToModule(uid, activeMod)) {
+            scopedStats[uid] = st;
+          }
+        }
+        this.stats = scopedStats;
+      }
+      if (Array.isArray(merged.queue)) {
+        this.queue = merged.queue.filter(uid => doesQuestionBelongToModule(uid, activeMod));
+      }
+      if (typeof merged.cursor === 'number') {
+        this.cursor = Math.min(merged.cursor, Math.max(0, this.queue.length - 1));
+      }
       if (Array.isArray(merged.selectedChapterIds)) {
         const prevChapters = (this.selectedChapterIds || []).slice().sort().join(',');
         const newChapters = (merged.selectedChapterIds || []).slice().sort().join(',');
@@ -931,12 +1004,51 @@ ${expText}`;
       }
       if (typeof merged.totalMistakesCount === 'number') this.totalMistakesCount = merged.totalMistakesCount;
       if (merged.snoozedQuestions && typeof merged.snoozedQuestions === 'object') {
-        this.snoozedQuestions = { ...(this.snoozedQuestions || {}), ...merged.snoozedQuestions };
+        const combinedSnoozed = { ...(this.snoozedQuestions || {}), ...merged.snoozedQuestions };
+        this.snoozedQuestions = {};
+        for (const [uid, dateStr] of Object.entries(combinedSnoozed)) {
+          if (doesQuestionBelongToModule(uid, activeMod)) {
+            this.snoozedQuestions[uid] = dateStr;
+          }
+        }
         this.cleanExpiredSnoozes();
       }
       if (Array.isArray(merged.reasoningNotes)) {
-        const slimmed = merged.reasoningNotes.map(n => slimNote(n));
-        localStorage.setItem(getReasoningKey(), JSON.stringify(slimmed.slice(0, 500)));
+        const activeNotes = [];
+        const foreignNotesByMod = new Map();
+
+        merged.reasoningNotes.forEach(n => {
+          if (!n || typeof n !== 'object') return;
+          const slim = slimNote(n);
+          const targetMod = slim.questionUid
+            ? resolveModuleIdForQuestionUid(slim.questionUid, activeMod)
+            : activeMod;
+          if (targetMod === activeMod) {
+            activeNotes.push(slim);
+          } else {
+            if (!foreignNotesByMod.has(targetMod)) foreignNotesByMod.set(targetMod, []);
+            foreignNotesByMod.get(targetMod).push(slim);
+          }
+        });
+
+        localStorage.setItem(getReasoningKey(activeMod), JSON.stringify(activeNotes.slice(0, 500)));
+
+        // Safely rescue any cross-module notes from legacy remote snapshots into their own module storage
+        for (const [otherMod, notesList] of foreignNotesByMod.entries()) {
+          try {
+            const existingOther = this.getRawReasoningNotes(otherMod);
+            const existingKeys = new Set(existingOther.map(x => x.id || `${x.questionUid}_${x.timestamp}`));
+            const mergedOther = [...existingOther];
+            notesList.forEach(x => {
+              const key = x.id || `${x.questionUid}_${x.timestamp}`;
+              if (!existingKeys.has(key)) {
+                mergedOther.push(x);
+                existingKeys.add(key);
+              }
+            });
+            localStorage.setItem(getReasoningKey(otherMod), JSON.stringify(mergedOther.slice(0, 500)));
+          } catch {}
+        }
       }
       if (merged.todayTracker && typeof merged.todayTracker === 'object') {
         const currentTracker = this.getTodayTracker();

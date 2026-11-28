@@ -2338,13 +2338,122 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .notebook-view-title {
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: 1.08rem;
   color: var(--cyan);
+}
+
+.notebook-module-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.notebook-module-pills-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.notebook-module-pills-wrap::-webkit-scrollbar {
+  display: none;
+}
+
+.notebook-module-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  border-radius: var(--radius-full);
+  font-family: var(--font-heading);
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition);
+}
+
+.notebook-module-pill:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.notebook-module-pill.active {
+  background: rgba(0, 212, 255, 0.16);
+  border-color: rgba(0, 212, 255, 0.45);
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.16);
+}
+
+.notebook-module-pill-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--radius-full);
+  font-size: 0.68rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-dim);
+}
+
+.notebook-module-pill.active .notebook-module-pill-count {
+  background: rgba(0, 212, 255, 0.28);
+  color: var(--cyan);
+}
+
+.notebook-module-cycle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+  color: var(--cyan);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+
+.notebook-module-cycle-btn:hover {
+  background: rgba(0, 212, 255, 0.14);
+  border-color: rgba(0, 212, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.notebook-active-mod-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  margin-right: 6px;
+  border-radius: var(--radius-full);
+  background: rgba(0, 212, 255, 0.14);
+  border: 1px solid rgba(0, 212, 255, 0.35);
+  color: var(--cyan);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.text-rose-soft {
+  color: #fca5a5 !important;
 }
 
 /* Stats Top Bar Base */
@@ -3817,6 +3926,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
     gap: 8px;
     width: 100%;
   }
@@ -3824,6 +3934,22 @@ body {
   .notebook-view-title {
     font-size: 0.95rem;
     text-align: right;
+  }
+
+  .notebook-module-nav {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .notebook-module-pills-wrap {
+    flex: 1;
+  }
+
+  .notebook-module-pill {
+    flex: 1;
+    justify-content: center;
+    padding: 6px 10px;
+    font-size: 0.74rem;
   }
 
   .notebook-toolbar {
@@ -8857,6 +8983,7 @@ body {
           <div class="notebook-view-title">
             Carnet de Raisonnement IA
           </div>
+          <div class="notebook-module-nav" id="notebook-module-nav" aria-label="Navigation entre modules"></div>
         </div>
 
         <div class="notebook-toolbar">
@@ -9995,7 +10122,7 @@ body {
             <i data-lucide="github" style="width:16px;height:16px;color:var(--cyan);"></i>
             <span style="font-size:0.78rem;font-weight:700;color:var(--text-main);text-transform:uppercase;">Mises à Jour Application</span>
           </div>
-          <span class="badge" id="settings-current-app-version" style="background:rgba(0,212,255,0.15);color:var(--cyan);font-size:0.72rem;padding:3px 8px;border-radius:10px;font-weight:700;">v1.6.6</span>
+          <span class="badge" id="settings-current-app-version" style="background:rgba(0,212,255,0.15);color:var(--cyan);font-size:0.72rem;padding:3px 8px;border-radius:10px;font-weight:700;">v1.6.7</span>
         </div>
         <div style="font-size:0.75rem;color:var(--text-muted);line-height:1.45;" id="settings-update-status">
           Vérifie automatiquement les nouvelles versions et correctifs disponibles sur GitHub Releases.
@@ -10029,9 +10156,9 @@ body {
 
       <div class="update-version-banner">
         <div class="update-version-chips">
-          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.6.6</strong></span>
+          <span class="version-chip current">Actuelle : <strong id="update-modal-curr-version">v1.6.7</strong></span>
           <i data-lucide="arrow-right" style="width:14px;height:14px;color:var(--text-dim);"></i>
-          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.6.6</strong></span>
+          <span class="version-chip new">Nouvelle : <strong id="update-modal-new-version">v1.6.7</strong></span>
         </div>
         <div class="update-release-date" id="update-modal-date">Publiée sur GitHub Releases</div>
       </div>

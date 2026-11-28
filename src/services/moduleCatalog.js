@@ -178,6 +178,46 @@ export function getAllYearsWithModules() {
   }));
 }
 
+export function getAvailableModules() {
+  const activeId = getActiveModuleId();
+  const available = [];
+  for (const y of MEDICAL_YEARS) {
+    for (const m of y.modules) {
+      if (m.available) {
+        const shortTitle = m.title.split('&')[0].split('(')[0].trim();
+        available.push({
+          ...m,
+          shortTitle,
+          yearNumber: y.year,
+          yearTitle: y.title,
+          cycle: y.cycle,
+          isActive: m.id === activeId
+        });
+      }
+    }
+  }
+  return available;
+}
+
+export function resolveModuleIdForQuestionUid(questionUid, fallbackModuleId = null) {
+  if (questionUid && typeof questionUid === 'string') {
+    if (questionUid.startsWith('psy_')) {
+      return 'psychiatrie';
+    }
+    return 'pediatrie';
+  }
+  const fb = fallbackModuleId || getActiveModuleId();
+  return (fb === 'psychiatrie_5') ? 'psychiatrie' : fb;
+}
+
+export function doesQuestionBelongToModule(questionUid, moduleId = null) {
+  const targetMod = (moduleId === 'psychiatrie_5') ? 'psychiatrie' : (moduleId || getActiveModuleId());
+  if (!questionUid) {
+    return targetMod === 'pediatrie';
+  }
+  return resolveModuleIdForQuestionUid(questionUid, targetMod) === targetMod;
+}
+
 // Gestion de la date d'examen
 export function getExamDate(moduleId) {
   const targetId = moduleId || getActiveModuleId();
@@ -353,6 +393,9 @@ if (typeof window !== 'undefined') {
     findModuleById,
     getActiveModule,
     getAllYearsWithModules,
+    getAvailableModules,
+    resolveModuleIdForQuestionUid,
+    doesQuestionBelongToModule,
     getExamDate,
     setExamDate,
     getAllExamDates,

@@ -183,6 +183,46 @@ function getAllYearsWithModules() {
   }));
 }
 
+function getAvailableModules() {
+  const activeId = getActiveModuleId();
+  const available = [];
+  for (const y of MEDICAL_YEARS) {
+    for (const m of y.modules) {
+      if (m.available) {
+        const shortTitle = m.title.split('&')[0].split('(')[0].trim();
+        available.push({
+          ...m,
+          shortTitle,
+          yearNumber: y.year,
+          yearTitle: y.title,
+          cycle: y.cycle,
+          isActive: m.id === activeId
+        });
+      }
+    }
+  }
+  return available;
+}
+
+function resolveModuleIdForQuestionUid(questionUid, fallbackModuleId = null) {
+  if (questionUid && typeof questionUid === 'string') {
+    if (questionUid.startsWith('psy_')) {
+      return 'psychiatrie';
+    }
+    return 'pediatrie';
+  }
+  const fb = fallbackModuleId || getActiveModuleId();
+  return (fb === 'psychiatrie_5') ? 'psychiatrie' : fb;
+}
+
+function doesQuestionBelongToModule(questionUid, moduleId = null) {
+  const targetMod = (moduleId === 'psychiatrie_5') ? 'psychiatrie' : (moduleId || getActiveModuleId());
+  if (!questionUid) {
+    return targetMod === 'pediatrie';
+  }
+  return resolveModuleIdForQuestionUid(questionUid, targetMod) === targetMod;
+}
+
 // Gestion de la date d'examen
 function getExamDate(moduleId) {
   const targetId = moduleId || getActiveModuleId();
@@ -358,6 +398,9 @@ if (typeof window !== 'undefined') {
     findModuleById,
     getActiveModule,
     getAllYearsWithModules,
+    getAvailableModules,
+    resolveModuleIdForQuestionUid,
+    doesQuestionBelongToModule,
     getExamDate,
     setExamDate,
     getAllExamDates,
@@ -492,9 +535,121 @@ function migrateReasoningNotesBetweenModules() {
   }
 }
 
-// Run cross-module notes migration once at initialization
+function migrateStatsBetweenModules() {
+  if (typeof localStorage === 'undefined') return;
+  try {
+    const pediaStateKey = resolveStorageKey('drill_state', 'pediatrie');
+    const psyStateKey = resolveStorageKey('drill_state', 'psychiatrie');
+
+    let pediaState = null;
+    let psyState = null;
+    try { pediaState = JSON.parse(localStorage.getItem(pediaStateKey) || 'null'); } catch {}
+    try { psyState = JSON.parse(localStorage.getItem(psyStateKey) || 'null'); } catch {}
+
+    const mergeStatEntry = (targetStats, uid, incoming) => {
+      const existing = targetStats[uid];
+      if (!existing) {
+        targetStats[uid] = { ...incoming };
+      } else {
+        targetStats[uid] = {
+          current: Math.max(existing.current || 0, incoming.current || 0),
+          target: Math.min(10, Math.max(existing.target || 3, incoming.target || 3)),
+          mistakes: Math.max(existing.mistakes || 0, incoming.mistakes || 0),
+          done: !!(existing.done || incoming.done)
+        };
+      }
+    };
+
+    let pediaChanged = false;
+    let psyChanged = false;
+
+    if (pediaState && pediaState.stats && typeof pediaState.stats === 'object') {
+      const psyEntries = Object.entries(pediaState.stats).filter(([uid]) => !doesQuestionBelongToModule(uid, 'pediatrie'));
+      if (psyEntries.length > 0) {
+        if (!psyState || typeof psyState !== 'object') {
+          psyState = { stats: {}, queue: [], cursor: 0, selectedChapterIds: [], totalMistakesCount: 0, snoozedQuestions: {} };
+        }
+        if (!psyState.stats || typeof psyState.stats !== 'object') psyState.stats = {};
+
+        let migratedMistakes = 0;
+        psyEntries.forEach(([uid, st]) => {
+          if (st && typeof st === 'object') {
+            migratedMistakes += (st.mistakes || 0);
+            mergeStatEntry(psyState.stats, uid, st);
+          }
+          delete pediaState.stats[uid];
+        });
+        if (Array.isArray(pediaState.queue)) {
+          pediaState.queue = pediaState.queue.filter(uid => doesQuestionBelongToModule(uid, 'pediatrie'));
+        }
+        if (pediaState.snoozedQuestions && typeof pediaState.snoozedQuestions === 'object') {
+          Object.keys(pediaState.snoozedQuestions).forEach(uid => {
+            if (!doesQuestionBelongToModule(uid, 'pediatrie')) delete pediaState.snoozedQuestions[uid];
+          });
+        }
+        const scopedPediaMistakes = Object.values(pediaState.stats).reduce((s, st) => s + ((st && st.mistakes) || 0), 0);
+        if (typeof pediaState.totalMistakesCount === 'number' && migratedMistakes > 0) {
+          pediaState.totalMistakesCount = Math.max(scopedPediaMistakes, pediaState.totalMistakesCount - migratedMistakes);
+        }
+        const scopedPsyMistakes = Object.values(psyState.stats).reduce((s, st) => s + ((st && st.mistakes) || 0), 0);
+        psyState.totalMistakesCount = Math.max(psyState.totalMistakesCount || 0, scopedPsyMistakes);
+
+        pediaChanged = true;
+        psyChanged = true;
+      }
+    }
+
+    if (psyState && psyState.stats && typeof psyState.stats === 'object') {
+      const pediaEntries = Object.entries(psyState.stats).filter(([uid]) => !doesQuestionBelongToModule(uid, 'psychiatrie'));
+      if (pediaEntries.length > 0) {
+        if (!pediaState || typeof pediaState !== 'object') {
+          pediaState = { stats: {}, queue: [], cursor: 0, selectedChapterIds: [], totalMistakesCount: 0, snoozedQuestions: {} };
+        }
+        if (!pediaState.stats || typeof pediaState.stats !== 'object') pediaState.stats = {};
+
+        let migratedMistakes = 0;
+        pediaEntries.forEach(([uid, st]) => {
+          if (st && typeof st === 'object') {
+            migratedMistakes += (st.mistakes || 0);
+            mergeStatEntry(pediaState.stats, uid, st);
+          }
+          delete psyState.stats[uid];
+        });
+        if (Array.isArray(psyState.queue)) {
+          psyState.queue = psyState.queue.filter(uid => doesQuestionBelongToModule(uid, 'psychiatrie'));
+        }
+        if (psyState.snoozedQuestions && typeof psyState.snoozedQuestions === 'object') {
+          Object.keys(psyState.snoozedQuestions).forEach(uid => {
+            if (!doesQuestionBelongToModule(uid, 'psychiatrie')) delete psyState.snoozedQuestions[uid];
+          });
+        }
+        const scopedPsyMistakes = Object.values(psyState.stats).reduce((s, st) => s + ((st && st.mistakes) || 0), 0);
+        if (typeof psyState.totalMistakesCount === 'number' && migratedMistakes > 0) {
+          psyState.totalMistakesCount = Math.max(scopedPsyMistakes, psyState.totalMistakesCount - migratedMistakes);
+        }
+        const scopedPediaMistakes = Object.values(pediaState.stats).reduce((s, st) => s + ((st && st.mistakes) || 0), 0);
+        pediaState.totalMistakesCount = Math.max(pediaState.totalMistakesCount || 0, scopedPediaMistakes);
+
+        pediaChanged = true;
+        psyChanged = true;
+      }
+    }
+
+    if (pediaChanged && pediaState) {
+      localStorage.setItem(pediaStateKey, JSON.stringify(pediaState));
+    }
+    if (psyChanged && psyState) {
+      localStorage.setItem(psyStateKey, JSON.stringify(psyState));
+    }
+  } catch (err) {
+    console.warn('[storageScope] Error during stats cross-module migration:', err);
+  }
+}
+
+// Run cross-module notes and stats migration once at initialization
 if (typeof localStorage !== 'undefined') {
   migrateReasoningNotesBetweenModules();
+  migrateStatsBetweenModules();
 }
 
 if (typeof window !== 'undefined') {
@@ -503,7 +658,8 @@ if (typeof window !== 'undefined') {
     getScopedItem,
     setScopedItem,
     removeScopedItem,
-    migrateReasoningNotesBetweenModules
+    migrateReasoningNotesBetweenModules,
+    migrateStatsBetweenModules
   };
 }
 
@@ -1344,16 +1500,16 @@ if (typeof window !== 'undefined') {
 // --- src/services/queueEngine.js ---
 // Spaced Repetition Queue Engine with Dynamic Penalty & Mastery Thresholds
 
-function getStorageKey() {
-  return typeof resolveStorageKey === 'function' ? resolveStorageKey('drill_state') : 'pedia_drill_state_v1';
+function getStorageKey(moduleId = null) {
+  return typeof resolveStorageKey === 'function' ? resolveStorageKey('drill_state', moduleId) : 'pedia_drill_state_v1';
 }
 
-function getReasoningKey() {
-  return typeof resolveStorageKey === 'function' ? resolveStorageKey('reasoning_notes') : 'pedia_drill_reasoning_notes_v1';
+function getReasoningKey(moduleId = null) {
+  return typeof resolveStorageKey === 'function' ? resolveStorageKey('reasoning_notes', moduleId) : 'pedia_drill_reasoning_notes_v1';
 }
 
-function getTodayTrackerKey() {
-  return typeof resolveStorageKey === 'function' ? resolveStorageKey('today_tracker') : 'pedia_today_tracker';
+function getTodayTrackerKey(moduleId = null) {
+  return typeof resolveStorageKey === 'function' ? resolveStorageKey('today_tracker', moduleId) : 'pedia_today_tracker';
 }
 
 /**
@@ -1434,6 +1590,7 @@ function hydrateNote(note, questionsList = []) {
 
 class QueueEngine {
   constructor(allQuestions = [], chapters = []) {
+    this.activeModuleId = getActiveModuleId();
     this.allQuestions = allQuestions;
     this.chapters = chapters;
     this.questionsMap = getQuestionsMap(allQuestions);
@@ -1470,27 +1627,39 @@ class QueueEngine {
     }
   }
 
-  loadState() {
+  loadState(moduleId = null) {
     try {
-      this.sanitizeReasoningNotesStorage();
-      const saved = localStorage.getItem(getStorageKey());
+      const activeMod = moduleId || this.activeModuleId || getActiveModuleId();
+      this.activeModuleId = activeMod;
+      this.sanitizeReasoningNotesStorage(activeMod);
+      const saved = localStorage.getItem(getStorageKey(activeMod));
       if (saved) {
         const parsed = JSON.parse(saved);
-        this.stats = parsed.stats || {};
-        // Ensure all loaded targets respect the maximum threshold of 10
-        if (this.stats && typeof this.stats === 'object') {
-          Object.values(this.stats).forEach(st => {
-            if (st && typeof st === 'object' && typeof st.target === 'number' && st.target > 10) {
-              st.target = 10;
-            }
-          });
+        const rawStats = parsed.stats || {};
+        this.stats = {};
+        for (const [uid, st] of Object.entries(rawStats)) {
+          if (!doesQuestionBelongToModule(uid, activeMod)) continue;
+          if (st && typeof st === 'object') {
+            this.stats[uid] = {
+              ...st,
+              target: typeof st.target === 'number' && st.target > 10 ? 10 : (st.target || 3)
+            };
+          }
         }
-        this.queue = parsed.queue || [];
-        this.cursor = parsed.cursor || 0;
+        this.queue = Array.isArray(parsed.queue)
+          ? parsed.queue.filter(uid => doesQuestionBelongToModule(uid, activeMod))
+          : [];
+        this.cursor = Math.min(parsed.cursor || 0, Math.max(0, this.queue.length - 1));
         this.selectedChapterIds = parsed.selectedChapterIds || [];
         this.selectedChaptersUpdatedAt = parsed.selectedChaptersUpdatedAt || 0;
         this.totalMistakesCount = parsed.totalMistakesCount || 0;
-        this.snoozedQuestions = (parsed.snoozedQuestions && typeof parsed.snoozedQuestions === 'object') ? parsed.snoozedQuestions : {};
+        const rawSnoozed = (parsed.snoozedQuestions && typeof parsed.snoozedQuestions === 'object') ? parsed.snoozedQuestions : {};
+        this.snoozedQuestions = {};
+        for (const [uid, dateStr] of Object.entries(rawSnoozed)) {
+          if (doesQuestionBelongToModule(uid, activeMod)) {
+            this.snoozedQuestions[uid] = dateStr;
+          }
+        }
         this.cleanExpiredSnoozes();
       }
       this.autoHealNotesFromMistakes();
@@ -1502,26 +1671,22 @@ class QueueEngine {
   /**
    * Automatically reconstructs baseline reasoning notes for any question
    * that was missed in training (mistakes >= 1) if no note currently exists in storage.
+   * Strictly scoped to the active module's questions.
    */
   autoHealNotesFromMistakes() {
     if (typeof localStorage === 'undefined') return;
     try {
-      const rawNotes = this.getRawReasoningNotes();
+      const activeMod = getActiveModuleId();
+      const rawNotes = this.getRawReasoningNotes(activeMod);
       const existingUids = new Set(rawNotes.map(n => n && n.questionUid).filter(Boolean));
       const healedNotes = [];
 
       for (const [uid, stat] of Object.entries(this.stats || {})) {
         if (!stat || !stat.mistakes || stat.mistakes <= 0) continue;
+        if (!doesQuestionBelongToModule(uid, activeMod)) continue;
         if (existingUids.has(uid)) continue;
 
-        let q = (this.questionsMap && this.questionsMap.get(uid)) || null;
-        if (!q && typeof window !== 'undefined') {
-          if (uid.startsWith('psy_') && window.PSY_QUESTIONS) {
-            q = window.PSY_QUESTIONS.find(x => x.uid === uid) || null;
-          } else if (window.PEDIA_QUESTIONS) {
-            q = window.PEDIA_QUESTIONS.find(x => x.uid === uid) || null;
-          }
-        }
+        const q = (this.questionsMap && this.questionsMap.get(uid)) || null;
         if (!q) continue;
 
         const isCroq = !!q.is_croq;
@@ -1563,9 +1728,9 @@ ${expText}`;
       }
 
       if (healedNotes.length > 0) {
-        console.log(`[QueueEngine] Auto-healed ${healedNotes.length} reasoning note(s) from recorded mistakes.`);
+        console.log(`[QueueEngine] Auto-healed ${healedNotes.length} reasoning note(s) for module ${activeMod}.`);
         const updated = [...healedNotes, ...rawNotes].slice(0, 500);
-        localStorage.setItem(getReasoningKey(), JSON.stringify(updated.map(n => slimNote(n))));
+        localStorage.setItem(getReasoningKey(activeMod), JSON.stringify(updated.map(n => slimNote(n))));
       }
     } catch (err) {
       console.warn('[QueueEngine] Auto-heal notes failed:', err);
@@ -1575,9 +1740,10 @@ ${expText}`;
   /**
    * Migrate and optimize any legacy bloated notes in localStorage to lean format
    */
-  sanitizeReasoningNotesStorage() {
+  sanitizeReasoningNotesStorage(moduleId = null) {
     try {
-      const raw = localStorage.getItem(getReasoningKey());
+      const targetMod = moduleId || this.activeModuleId || getActiveModuleId();
+      const raw = localStorage.getItem(getReasoningKey(targetMod));
       if (!raw) return;
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
@@ -1585,7 +1751,7 @@ ${expText}`;
         if (hasBloated) {
           console.log(`[Storage] Optimizing ${parsed.length} reasoning notes to lean format...`);
           const slimmed = parsed.map(n => slimNote(n));
-          localStorage.setItem(getReasoningKey(), JSON.stringify(slimmed));
+          localStorage.setItem(getReasoningKey(targetMod), JSON.stringify(slimmed));
         }
       }
     } catch (e) {
@@ -1596,6 +1762,7 @@ ${expText}`;
   saveState() {
     this._cachedMetrics = null;
     try {
+      const targetMod = this.activeModuleId || getActiveModuleId();
       const data = {
         stats: this.stats,
         queue: this.queue,
@@ -1606,7 +1773,7 @@ ${expText}`;
         snoozedQuestions: this.snoozedQuestions || {},
         lastUpdated: Date.now()
       };
-      localStorage.setItem(getStorageKey(), JSON.stringify(data));
+      localStorage.setItem(getStorageKey(targetMod), JSON.stringify(data));
     } catch (err) {
       console.warn("Failed to save state:", err);
     }
@@ -2115,38 +2282,79 @@ ${expText}`;
   }
 
   /**
-   * Save a reasoning note to the dedicated notebook in lean format
+   * Save a reasoning note to the dedicated notebook in lean format (scoped to note's module)
    */
   saveReasoningNote(noteData) {
     try {
-      const existing = this.getRawReasoningNotes();
+      const targetMod = resolveModuleIdForQuestionUid(noteData?.questionUid, getActiveModuleId());
+      const existing = this.getRawReasoningNotes(targetMod);
       const slimmed = slimNote(noteData);
       const updated = [slimmed, ...existing.filter(n => n.questionUid !== noteData.questionUid || n.id !== noteData.id)];
-      localStorage.setItem(getReasoningKey(), JSON.stringify(updated.slice(0, 500))); // Keep up to 500 notes
+      localStorage.setItem(getReasoningKey(targetMod), JSON.stringify(updated.slice(0, 500))); // Keep up to 500 notes
     } catch (err) {
       console.warn("Failed to save reasoning note:", err);
     }
   }
 
-  getRawReasoningNotes() {
+  getRawReasoningNotes(moduleId = null) {
     try {
-      const raw = localStorage.getItem(getReasoningKey());
+      const targetMod = moduleId || getActiveModuleId();
+      const raw = localStorage.getItem(getReasoningKey(targetMod));
       if (!raw) return [];
       const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed : [];
+      if (!Array.isArray(parsed)) return [];
+      return parsed.filter(n => n && typeof n === 'object' && (!n.questionUid || doesQuestionBelongToModule(n.questionUid, targetMod)));
     } catch {
       return [];
     }
   }
 
-  getReasoningNotes() {
+  getReasoningNotes(moduleId = null) {
     try {
-      this.autoHealNotesFromMistakes();
-      const rawNotes = this.getRawReasoningNotes();
-      const qMap = this.questionsMap || getQuestionsMap(this.allQuestions);
-      return rawNotes.map(n => hydrateNote(n, qMap));
+      const targetMod = moduleId || getActiveModuleId();
+      const activeMod = getActiveModuleId();
+      if (targetMod === activeMod) {
+        this.autoHealNotesFromMistakes();
+      }
+      const rawNotes = this.getRawReasoningNotes(targetMod);
+      let qListOrMap;
+      if (targetMod === activeMod) {
+        qListOrMap = this.questionsMap || getQuestionsMap(this.allQuestions);
+      } else if (typeof window !== 'undefined') {
+        qListOrMap = targetMod === 'psychiatrie' ? (window.PSY_QUESTIONS || []) : (window.PEDIA_QUESTIONS || []);
+      } else {
+        qListOrMap = [];
+      }
+      return rawNotes.map(n => hydrateNote(n, qListOrMap));
     } catch {
       return [];
+    }
+  }
+
+  getModuleMistakesCount(moduleId = null) {
+    try {
+      const targetMod = moduleId || getActiveModuleId();
+      const activeMod = getActiveModuleId();
+      let statsObj = null;
+      if (targetMod === activeMod) {
+        statsObj = this.stats || {};
+      } else if (typeof localStorage !== 'undefined') {
+        const raw = localStorage.getItem(getStorageKey(targetMod));
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          statsObj = (parsed && parsed.stats) || {};
+        }
+      }
+      if (!statsObj) return 0;
+      let sum = 0;
+      for (const [uid, st] of Object.entries(statsObj)) {
+        if (doesQuestionBelongToModule(uid, targetMod) && st && typeof st.mistakes === 'number') {
+          sum += st.mistakes;
+        }
+      }
+      return sum;
+    } catch {
+      return 0;
     }
   }
 
@@ -2160,8 +2368,9 @@ ${expText}`;
   deleteReasoningNotesByQuestionUid(questionUid) {
     if (!questionUid) return;
     try {
-      const notes = this.getRawReasoningNotes().filter(n => n.questionUid !== questionUid);
-      localStorage.setItem(getReasoningKey(), JSON.stringify(notes));
+      const targetMod = resolveModuleIdForQuestionUid(questionUid, getActiveModuleId());
+      const notes = this.getRawReasoningNotes(targetMod).filter(n => n.questionUid !== questionUid);
+      localStorage.setItem(getReasoningKey(targetMod), JSON.stringify(notes));
     } catch {}
   }
 
@@ -2209,8 +2418,9 @@ ${expText}`;
   /**
    * Switch active module dataset and reinitialize queue/stats
    */
-  switchModule(newQuestions, newChapters) {
+  switchModule(newQuestions, newChapters, newModuleId = null) {
     this.saveState();
+    this.activeModuleId = newModuleId || getActiveModuleId();
     this.allQuestions = newQuestions || [];
     this.chapters = newChapters || [];
     this.questionsMap = getQuestionsMap(this.allQuestions);
@@ -2221,7 +2431,7 @@ ${expText}`;
     this.totalMistakesCount = 0;
     this.selectedChapterIds = [];
     this.snoozedQuestions = {};
-    this.loadState();
+    this.loadState(this.activeModuleId);
     this.initSession(this.selectedChapterIds);
   }
 
@@ -2252,14 +2462,28 @@ ${expText}`;
   }
 
   /**
-   * Apply merged state object safely, ensuring notes are stored lean
+   * Apply merged state object safely, ensuring notes and stats are strictly scoped to the active module
    */
   applyMergedState(merged) {
     if (!merged || typeof merged !== 'object') return false;
     try {
-      if (merged.stats) this.stats = merged.stats;
-      if (Array.isArray(merged.queue)) this.queue = merged.queue;
-      if (typeof merged.cursor === 'number') this.cursor = merged.cursor;
+      const activeMod = getActiveModuleId();
+
+      if (merged.stats && typeof merged.stats === 'object') {
+        const scopedStats = {};
+        for (const [uid, st] of Object.entries(merged.stats)) {
+          if (doesQuestionBelongToModule(uid, activeMod)) {
+            scopedStats[uid] = st;
+          }
+        }
+        this.stats = scopedStats;
+      }
+      if (Array.isArray(merged.queue)) {
+        this.queue = merged.queue.filter(uid => doesQuestionBelongToModule(uid, activeMod));
+      }
+      if (typeof merged.cursor === 'number') {
+        this.cursor = Math.min(merged.cursor, Math.max(0, this.queue.length - 1));
+      }
       if (Array.isArray(merged.selectedChapterIds)) {
         const prevChapters = (this.selectedChapterIds || []).slice().sort().join(',');
         const newChapters = (merged.selectedChapterIds || []).slice().sort().join(',');
@@ -2274,12 +2498,51 @@ ${expText}`;
       }
       if (typeof merged.totalMistakesCount === 'number') this.totalMistakesCount = merged.totalMistakesCount;
       if (merged.snoozedQuestions && typeof merged.snoozedQuestions === 'object') {
-        this.snoozedQuestions = { ...(this.snoozedQuestions || {}), ...merged.snoozedQuestions };
+        const combinedSnoozed = { ...(this.snoozedQuestions || {}), ...merged.snoozedQuestions };
+        this.snoozedQuestions = {};
+        for (const [uid, dateStr] of Object.entries(combinedSnoozed)) {
+          if (doesQuestionBelongToModule(uid, activeMod)) {
+            this.snoozedQuestions[uid] = dateStr;
+          }
+        }
         this.cleanExpiredSnoozes();
       }
       if (Array.isArray(merged.reasoningNotes)) {
-        const slimmed = merged.reasoningNotes.map(n => slimNote(n));
-        localStorage.setItem(getReasoningKey(), JSON.stringify(slimmed.slice(0, 500)));
+        const activeNotes = [];
+        const foreignNotesByMod = new Map();
+
+        merged.reasoningNotes.forEach(n => {
+          if (!n || typeof n !== 'object') return;
+          const slim = slimNote(n);
+          const targetMod = slim.questionUid
+            ? resolveModuleIdForQuestionUid(slim.questionUid, activeMod)
+            : activeMod;
+          if (targetMod === activeMod) {
+            activeNotes.push(slim);
+          } else {
+            if (!foreignNotesByMod.has(targetMod)) foreignNotesByMod.set(targetMod, []);
+            foreignNotesByMod.get(targetMod).push(slim);
+          }
+        });
+
+        localStorage.setItem(getReasoningKey(activeMod), JSON.stringify(activeNotes.slice(0, 500)));
+
+        // Safely rescue any cross-module notes from legacy remote snapshots into their own module storage
+        for (const [otherMod, notesList] of foreignNotesByMod.entries()) {
+          try {
+            const existingOther = this.getRawReasoningNotes(otherMod);
+            const existingKeys = new Set(existingOther.map(x => x.id || `${x.questionUid}_${x.timestamp}`));
+            const mergedOther = [...existingOther];
+            notesList.forEach(x => {
+              const key = x.id || `${x.questionUid}_${x.timestamp}`;
+              if (!existingKeys.has(key)) {
+                mergedOther.push(x);
+                existingKeys.add(key);
+              }
+            });
+            localStorage.setItem(getReasoningKey(otherMod), JSON.stringify(mergedOther.slice(0, 500)));
+          } catch {}
+        }
       }
       if (merged.todayTracker && typeof merged.todayTracker === 'object') {
         const currentTracker = this.getTodayTracker();
@@ -4635,7 +4898,7 @@ class FirebaseSyncService {
 // Update Management Service for PédiaDrill
 // Checks GitHub Releases for new APK versions, notifies the user, and triggers direct download.
 
-const CURRENT_APP_VERSION = '1.6.6';
+const CURRENT_APP_VERSION = '1.6.7';
 const GITHUB_REPO = 'lkmqji/qcm-p-diatrie';
 const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`;
 const UPDATE_CHECK_INTERVAL_MS = 4 * 60 * 60 * 1000; // 4 hours auto-check cooldown
@@ -5564,7 +5827,8 @@ const appState = {
   arenaChatHistory: [],
   questionChatHistories: {},
   firebaseSyncService: null,
-  switchViewHandler: null
+  switchViewHandler: null,
+  switchModuleHandler: null
 };
 
 const queueEngine = new QueueEngine(appState.allQuestions, appState.allChapters);
@@ -5576,6 +5840,16 @@ function registerViewNavigator(fn) {
 function navigateToView(viewName) {
   if (typeof appState.switchViewHandler === 'function') {
     appState.switchViewHandler(viewName);
+  }
+}
+
+function registerModuleSwitcher(fn) {
+  appState.switchModuleHandler = typeof fn === 'function' ? fn : null;
+}
+
+function switchToModule(moduleId, fromRemote = false) {
+  if (typeof appState.switchModuleHandler === 'function') {
+    appState.switchModuleHandler(moduleId, fromRemote);
   }
 }
 
@@ -5825,7 +6099,7 @@ function switchActiveModule(moduleId, fromRemote = false) {
   appState.questionsMap = new Map(appState.allQuestions.map(q => [q.uid, q]));
   appState.chaptersMap = new Map(appState.allChapters.map(c => [c.id, c]));
 
-  queueEngine.switchModule(appState.allQuestions, appState.allChapters);
+  queueEngine.switchModule(appState.allQuestions, appState.allChapters, mod.id);
   if (studyTracker && typeof studyTracker.reloadForModule === 'function') {
     studyTracker.reloadForModule();
   }
@@ -9948,7 +10222,7 @@ function groupNotesByChapterAndQuestion(notes) {
 
       const primary = attempts[0];
       const isCroq = primary.isCroq || (primary.correctAnswer && primary.correctAnswer.length > 50) || (primary.userAnswer && primary.userAnswer.length > 30);
-      const stats = queueEngine.getQuestionStats(primary.questionUid);
+      const stats = (queueEngine.stats && queueEngine.stats[primary.questionUid]) || null;
       const totalMistakes = Math.max(attempts.length, (stats ? stats.mistakes : 0));
       const latestTimestamp = attempts[0]?.timestamp || 0;
       const latestScore = (attempts[0]?.score !== null && attempts[0]?.score !== undefined) ? attempts[0].score : (isCroq ? 0 : null);
@@ -10078,23 +10352,96 @@ function appendNotebookPaginationButton(container, renderedCount, totalQuestions
   container.appendChild(wrap);
 }
 
+function renderNotebookModuleNav() {
+  const navEl = document.getElementById('notebook-module-nav');
+  if (!navEl) return;
+
+  const availableModules = getAvailableModules();
+  const activeModId = getActiveModuleId();
+
+  if (availableModules.length === 0) {
+    navEl.innerHTML = '';
+    return;
+  }
+
+  const pillsHtml = availableModules.map(mod => {
+    const isActive = mod.id === activeModId;
+    const modNotesCount = queueEngine.getRawReasoningNotes(mod.id).length;
+    const modMistakesCount = queueEngine.getModuleMistakesCount(mod.id);
+    const titleTooltip = `${mod.title} : ${modNotesCount} note${modNotesCount > 1 ? 's' : ''}, ${modMistakesCount} faute${modMistakesCount > 1 ? 's' : ''}`;
+    return `
+      <button type="button"
+        class="notebook-module-pill ${isActive ? 'active' : ''}"
+        data-notebook-module="${escapeHtml(mod.id)}"
+        title="${escapeHtml(titleTooltip)}"
+        aria-pressed="${isActive ? 'true' : 'false'}">
+        <span class="notebook-module-pill-name">${escapeHtml(mod.shortTitle)}</span>
+        <span class="notebook-module-pill-count">${modNotesCount}</span>
+      </button>
+    `;
+  }).join('');
+
+  const cycleBtnHtml = availableModules.length > 1 ? `
+    <button type="button"
+      class="notebook-module-cycle-btn"
+      id="btn-notebook-cycle-module"
+      title="Basculer rapidement vers le module suivant"
+      aria-label="Basculer vers le module suivant">
+      <i data-lucide="arrow-left-right" style="width:13px;height:13px;"></i>
+    </button>
+  ` : '';
+
+  navEl.innerHTML = `
+    <div class="notebook-module-pills-wrap">
+      ${pillsHtml}
+    </div>
+    ${cycleBtnHtml}
+  `;
+
+  navEl.querySelectorAll('[data-notebook-module]').forEach(btn => {
+    btn.onclick = () => {
+      const targetModId = btn.getAttribute('data-notebook-module');
+      if (targetModId && targetModId !== getActiveModuleId()) {
+        switchToModule(targetModId);
+      }
+    };
+  });
+
+  const cycleBtn = document.getElementById('btn-notebook-cycle-module');
+  if (cycleBtn) {
+    cycleBtn.onclick = () => {
+      const currentIdx = availableModules.findIndex(m => m.id === getActiveModuleId());
+      const nextMod = availableModules[(currentIdx + 1) % availableModules.length];
+      if (nextMod && nextMod.id !== getActiveModuleId()) {
+        switchToModule(nextMod.id);
+      }
+    };
+  }
+
+  refreshLucide(navEl);
+}
+
 function renderNotebookUI(filterText = '', options = {}) {
   if (!options || !options.preserveLimit) {
     notebookVisibleLimit = NOTEBOOK_PAGE_SIZE;
   }
 
+  renderNotebookModuleNav();
+
   const container = document.getElementById('notebook-notes-list');
   if (!container) return;
 
-  const allNotes = queueEngine.getReasoningNotes();
   const activeModId = getActiveModuleId();
+  const activeMod = getActiveModule();
+  const activeModTitle = activeMod ? activeMod.title : 'Module';
+  const activeModShort = activeMod ? activeMod.title.split('&')[0].split('(')[0].trim() : 'Module';
+
+  const allNotes = queueEngine.getReasoningNotes(activeModId)
+    .filter(n => n && (!n.questionUid || doesQuestionBelongToModule(n.questionUid, activeModId)));
   const defaultChapter = resolveDefaultChapterForModule();
 
   const getNoteChap = (n) => {
     if (n.chapterTitle) return n.chapterTitle;
-    if (n.questionUid && n.questionUid.startsWith('psy_') && activeModId !== 'psychiatrie') {
-      return resolveAiModuleContext({ uid: n.questionUid }).defaultChapter;
-    }
     return defaultChapter;
   };
 
@@ -10149,8 +10496,8 @@ function renderNotebookUI(filterText = '', options = {}) {
       <div style="text-align:center;padding:40px;color:var(--text-dim);">
         <i data-lucide="book-marked" style="width:36px;height:36px;margin:0 auto 10px;display:block;"></i>
         ${filterText || notebookSelectedChapter
-          ? 'Aucune note ne correspond à vos filtres actuels.'
-          : 'Aucune note de raisonnement pour le moment. Vos futures erreurs seront automatiquement analysées et regroupées ici par cours !'}
+          ? `Aucune note ne correspond à vos filtres actuels dans le module <strong>${escapeHtml(activeModShort)}</strong>.`
+          : `Aucune note ni faute enregistrée pour le module <strong>${escapeHtml(activeModTitle)}</strong> pour le moment. Vos futures erreurs dans ce module seront automatiquement analysées et regroupées ici !`}
       </div>
     `;
     refreshLucide(views.notebook);
@@ -10160,12 +10507,14 @@ function renderNotebookUI(filterText = '', options = {}) {
   const groupedChapters = groupNotesByChapterAndQuestion(filtered);
   const totalQuestions = groupedChapters.reduce((sum, g) => sum + g.totalQuestions, 0);
   const totalNotes = groupedChapters.reduce((sum, g) => sum + g.totalNotes, 0);
+  const totalMistakesSum = groupedChapters.reduce((sum, g) => sum + g.chapterTotalMistakes, 0);
 
   if (summaryBar) {
     summaryBar.style.display = 'flex';
     summaryBar.innerHTML = `
       <span class="notebook-stat-summary">
-        <strong>${totalQuestions}</strong> question${totalQuestions > 1 ? 's' : ''} (${totalNotes} analyse${totalNotes > 1 ? 's' : ''}) • Tri : <strong class="text-cyan">${getSortSummaryLabel()}</strong>
+        <span class="notebook-active-mod-badge">${escapeHtml(activeModShort)}</span>
+        <strong>${totalQuestions}</strong> question${totalQuestions > 1 ? 's' : ''} (${totalNotes} analyse${totalNotes > 1 ? 's' : ''} • <strong class="text-rose-soft">${totalMistakesSum}</strong> faute${totalMistakesSum > 1 ? 's' : ''}) • Tri : <strong class="text-cyan">${getSortSummaryLabel()}</strong>
       </span>
       <button class="notebook-toggle-all-btn" onclick="window.toggleAllChapters()" title="Tout replier ou tout déplier">
         <i data-lucide="chevrons-up-down" style="width:14px;height:14px;"></i>
@@ -12861,6 +13210,7 @@ function setupNativeCapacitorBackButton() {
 // ============================================================================
 function initApp() {
   registerViewNavigator(switchView);
+  registerModuleSwitcher(switchActiveModule);
   window.openSettingsFromAi = openSettingsModal;
 
   queueEngine.setQuestions(appState.allQuestions, appState.allChapters);

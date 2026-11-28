@@ -204,7 +204,7 @@ export function switchActiveModule(moduleId, fromRemote = false) {
   appState.questionsMap = new Map(appState.allQuestions.map(q => [q.uid, q]));
   appState.chaptersMap = new Map(appState.allChapters.map(c => [c.id, c]));
 
-  queueEngine.switchModule(appState.allQuestions, appState.allChapters);
+  queueEngine.switchModule(appState.allQuestions, appState.allChapters, mod.id);
   if (studyTracker && typeof studyTracker.reloadForModule === 'function') {
     studyTracker.reloadForModule();
   }

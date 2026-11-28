@@ -11,6 +11,7 @@ import {
   appState,
   queueEngine,
   registerViewNavigator,
+  registerModuleSwitcher,
   getClinicalModePreference,
   setClinicalModePreference,
   getDomViews,
@@ -192,6 +193,7 @@ export function setupNativeCapacitorBackButton() {
 // ============================================================================
 export function initApp() {
   registerViewNavigator(switchView);
+  registerModuleSwitcher(switchActiveModule);
   window.openSettingsFromAi = openSettingsModal;
 
   queueEngine.setQuestions(appState.allQuestions, appState.allChapters);

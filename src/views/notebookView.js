@@ -4,10 +4,16 @@
 import {
   appState,
   queueEngine,
+  switchToModule,
   getDomViews,
   getDomModals
 } from '../state/appState.js';
-import { getActiveModuleId } from '../services/moduleCatalog.js';
+import {
+  getActiveModuleId,
+  getActiveModule,
+  getAvailableModules,
+  doesQuestionBelongToModule
+} from '../services/moduleCatalog.js';
 import { resolveAiModuleContext } from '../services/gemini.js';
 import {
   escapeHtml,
@@ -274,7 +280,7 @@ function groupNotesByChapterAndQuestion(notes) {
 
       const primary = attempts[0];
       const isCroq = primary.isCroq || (primary.correctAnswer && primary.correctAnswer.length > 50) || (primary.userAnswer && primary.userAnswer.length > 30);
-      const stats = queueEngine.getQuestionStats(primary.questionUid);
+      const stats = (queueEngine.stats && queueEngine.stats[primary.questionUid]) || null;
       const totalMistakes = Math.max(attempts.length, (stats ? stats.mistakes : 0));
       const latestTimestamp = attempts[0]?.timestamp || 0;
       const latestScore = (attempts[0]?.score !== null && attempts[0]?.score !== undefined) ? attempts[0].score : (isCroq ? 0 : null);
@@ -404,23 +410,96 @@ function appendNotebookPaginationButton(container, renderedCount, totalQuestions
   container.appendChild(wrap);
 }
 
+export function renderNotebookModuleNav() {
+  const navEl = document.getElementById('notebook-module-nav');
+  if (!navEl) return;
+
+  const availableModules = getAvailableModules();
+  const activeModId = getActiveModuleId();
+
+  if (availableModules.length === 0) {
+    navEl.innerHTML = '';
+    return;
+  }
+
+  const pillsHtml = availableModules.map(mod => {
+    const isActive = mod.id === activeModId;
+    const modNotesCount = queueEngine.getRawReasoningNotes(mod.id).length;
+    const modMistakesCount = queueEngine.getModuleMistakesCount(mod.id);
+    const titleTooltip = `${mod.title} : ${modNotesCount} note${modNotesCount > 1 ? 's' : ''}, ${modMistakesCount} faute${modMistakesCount > 1 ? 's' : ''}`;
+    return `
+      <button type="button"
+        class="notebook-module-pill ${isActive ? 'active' : ''}"
+        data-notebook-module="${escapeHtml(mod.id)}"
+        title="${escapeHtml(titleTooltip)}"
+        aria-pressed="${isActive ? 'true' : 'false'}">
+        <span class="notebook-module-pill-name">${escapeHtml(mod.shortTitle)}</span>
+        <span class="notebook-module-pill-count">${modNotesCount}</span>
+      </button>
+    `;
+  }).join('');
+
+  const cycleBtnHtml = availableModules.length > 1 ? `
+    <button type="button"
+      class="notebook-module-cycle-btn"
+      id="btn-notebook-cycle-module"
+      title="Basculer rapidement vers le module suivant"
+      aria-label="Basculer vers le module suivant">
+      <i data-lucide="arrow-left-right" style="width:13px;height:13px;"></i>
+    </button>
+  ` : '';
+
+  navEl.innerHTML = `
+    <div class="notebook-module-pills-wrap">
+      ${pillsHtml}
+    </div>
+    ${cycleBtnHtml}
+  `;
+
+  navEl.querySelectorAll('[data-notebook-module]').forEach(btn => {
+    btn.onclick = () => {
+      const targetModId = btn.getAttribute('data-notebook-module');
+      if (targetModId && targetModId !== getActiveModuleId()) {
+        switchToModule(targetModId);
+      }
+    };
+  });
+
+  const cycleBtn = document.getElementById('btn-notebook-cycle-module');
+  if (cycleBtn) {
+    cycleBtn.onclick = () => {
+      const currentIdx = availableModules.findIndex(m => m.id === getActiveModuleId());
+      const nextMod = availableModules[(currentIdx + 1) % availableModules.length];
+      if (nextMod && nextMod.id !== getActiveModuleId()) {
+        switchToModule(nextMod.id);
+      }
+    };
+  }
+
+  refreshLucide(navEl);
+}
+
 export function renderNotebookUI(filterText = '', options = {}) {
   if (!options || !options.preserveLimit) {
     notebookVisibleLimit = NOTEBOOK_PAGE_SIZE;
   }
 
+  renderNotebookModuleNav();
+
   const container = document.getElementById('notebook-notes-list');
   if (!container) return;
 
-  const allNotes = queueEngine.getReasoningNotes();
   const activeModId = getActiveModuleId();
+  const activeMod = getActiveModule();
+  const activeModTitle = activeMod ? activeMod.title : 'Module';
+  const activeModShort = activeMod ? activeMod.title.split('&')[0].split('(')[0].trim() : 'Module';
+
+  const allNotes = queueEngine.getReasoningNotes(activeModId)
+    .filter(n => n && (!n.questionUid || doesQuestionBelongToModule(n.questionUid, activeModId)));
   const defaultChapter = resolveDefaultChapterForModule();
 
   const getNoteChap = (n) => {
     if (n.chapterTitle) return n.chapterTitle;
-    if (n.questionUid && n.questionUid.startsWith('psy_') && activeModId !== 'psychiatrie') {
-      return resolveAiModuleContext({ uid: n.questionUid }).defaultChapter;
-    }
     return defaultChapter;
   };
 
@@ -475,8 +554,8 @@ export function renderNotebookUI(filterText = '', options = {}) {
       <div style="text-align:center;padding:40px;color:var(--text-dim);">
         <i data-lucide="book-marked" style="width:36px;height:36px;margin:0 auto 10px;display:block;"></i>
         ${filterText || notebookSelectedChapter
-          ? 'Aucune note ne correspond à vos filtres actuels.'
-          : 'Aucune note de raisonnement pour le moment. Vos futures erreurs seront automatiquement analysées et regroupées ici par cours !'}
+          ? `Aucune note ne correspond à vos filtres actuels dans le module <strong>${escapeHtml(activeModShort)}</strong>.`
+          : `Aucune note ni faute enregistrée pour le module <strong>${escapeHtml(activeModTitle)}</strong> pour le moment. Vos futures erreurs dans ce module seront automatiquement analysées et regroupées ici !`}
       </div>
     `;
     refreshLucide(views.notebook);
@@ -486,12 +565,14 @@ export function renderNotebookUI(filterText = '', options = {}) {
   const groupedChapters = groupNotesByChapterAndQuestion(filtered);
   const totalQuestions = groupedChapters.reduce((sum, g) => sum + g.totalQuestions, 0);
   const totalNotes = groupedChapters.reduce((sum, g) => sum + g.totalNotes, 0);
+  const totalMistakesSum = groupedChapters.reduce((sum, g) => sum + g.chapterTotalMistakes, 0);
 
   if (summaryBar) {
     summaryBar.style.display = 'flex';
     summaryBar.innerHTML = `
       <span class="notebook-stat-summary">
-        <strong>${totalQuestions}</strong> question${totalQuestions > 1 ? 's' : ''} (${totalNotes} analyse${totalNotes > 1 ? 's' : ''}) • Tri : <strong class="text-cyan">${getSortSummaryLabel()}</strong>
+        <span class="notebook-active-mod-badge">${escapeHtml(activeModShort)}</span>
+        <strong>${totalQuestions}</strong> question${totalQuestions > 1 ? 's' : ''} (${totalNotes} analyse${totalNotes > 1 ? 's' : ''} • <strong class="text-rose-soft">${totalMistakesSum}</strong> faute${totalMistakesSum > 1 ? 's' : ''}) • Tri : <strong class="text-cyan">${getSortSummaryLabel()}</strong>
       </span>
       <button class="notebook-toggle-all-btn" onclick="window.toggleAllChapters()" title="Tout replier ou tout déplier">
         <i data-lucide="chevrons-up-down" style="width:14px;height:14px;"></i>

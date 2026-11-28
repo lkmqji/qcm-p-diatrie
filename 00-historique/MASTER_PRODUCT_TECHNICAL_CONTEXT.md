@@ -34,7 +34,7 @@ qcm-p-diatrie/
 │   └── MASTER_PRODUCT_TECHNICAL_CONTEXT.md # Contexte technique global (source unique de vérité)
 ├── android/                              # Projet natif Android Capacitor 8
 │   ├── app/
-│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 33, versionName 1.6.6)
+│   │   ├── build.gradle                  # Configuration de compilation Android (versionCode 34, versionName 1.6.7)
 │   │   ├── debug.keystore                # Keystore de signature unifié (local & CI/CD)
 │   │   ├── google-services.json          # Configuration Firebase Android (qcm-pediatr, com.pediadrill.app)
 │   │   └── src/main/
@@ -271,13 +271,19 @@ Lorsqu'une réponse est incorrecte (dans la modale d'erreur ou dans le carnet) :
 
 ---
 
-### 3.7. Carnet de Raisonnement IA : Tri Multi-Critères, Auto-Guérison & Multi-Modules (`view-notebook`)
-- **Isolation Étanche & Migration Cross-Modules (`migrateReasoningNotesBetweenModules`)** :
-  - Chaque module dispose de sa propre clé de stockage isolée (`pedia_drill_reasoning_notes_v1` pour la Pédiatrie, `mod_psychiatrie_reasoning_notes` pour la Psychiatrie, etc.).
-  - Au démarrage de l'application, un moteur de migration rétroactive rapatrie automatiquement toute note égarée dans la clé legacy vers son module d'appartenance respectif (ex: notes `psy_...` rapatriées vers la psychiatrie), sans aucune perte de données.
+### 3.7. Carnet de Raisonnement IA : Tri Multi-Critères, Auto-Guérison, Isolation Strictement Scopée & Navigation Inter-Modules (`view-notebook`)
+- **Isolation Étanche des Notes & Statistiques par Module (`moduleCatalog.js`, `storageScope.js`, `queueEngine.js`)** :
+  - Chaque module dispose de sa propre clé de stockage isolée (`pedia_drill_reasoning_notes_v1` / `pedia_drill_state_v1` pour la Pédiatrie, `mod_psychiatrie_reasoning_notes` / `mod_psychiatrie_drill_state` pour la Psychiatrie, etc.).
+  - Utilitaires `resolveModuleIdForQuestionUid`, `doesQuestionBelongToModule` et `getAvailableModules` dans `src/services/moduleCatalog.js` déterminent l'appartenance exacte de chaque question/note.
+  - `QueueEngine` mémorise `this.activeModuleId` afin que `saveState()` et `switchModule(newQuestions, newChapters, newModuleId)` sauvegardent toujours l'ancien module dans sa propre clé avant de charger le nouveau module (éliminant toute fuite d'état/fautes lors de l'appel à `setActiveModuleId` avant `switchModule`).
+  - Au démarrage de l'application (`migrateReasoningNotesBetweenModules` + `migrateStatsBetweenModules`), toute note ou statistique de faute égarée dans un autre module est migrée proprement vers son module d'appartenance sans perte de données.
+  - `autoHealNotesFromMistakes()`, `getRawReasoningNotes(moduleId)`, `getReasoningNotes(moduleId)`, `getModuleMistakesCount(moduleId)` et `applyMergedState(merged)` filtrent strictement par module : seules les notes et fautes du module sélectionné apparaissent dans le carnet, tout en sauvant les éventuelles notes d'un autre module issues d'un snapshot Firestore hérité vers leur propre stockage local.
+- **Navigation Rapide Inter-Modules dans la Barre Supérieure (`#notebook-module-nav`)** :
+  - `renderNotebookModuleNav()` dans `src/views/notebookView.js` affiche des boutons pilules compacts (`.notebook-module-pill`) pour chaque module disponible avec son compteur de notes dédié, ainsi qu'un petit bouton de bascule rapide `#btn-notebook-cycle-module` (`arrow-left-right`).
+  - Le clic sur une pilule ou sur le bouton de bascule déclenche `switchToModule(modId)` (enregistré dans `src/state/appState.js`) et recharge instantanément le Carnet de Raisonnement avec uniquement les cours, notes et fautes du module sélectionné.
 - **Moteur d'Auto-Guérison des Notes d'Erreurs (`autoHealNotesFromMistakes`)** :
-  - Si une question a été manquée lors des séries d'entraînement (`stats[uid].mistakes >= 1`) mais que la note IA n'avait pas pu être enregistrée (saut de modal, coupure réseau, timeout), `QueueEngine` reconstruit automatiquement une note clinique de base complète à partir de l'énoncé, de l'explication officielle et de la réponse type de la base de données.
-  - Garantit que **100% des questions manquées par l'étudiant dans n'importe quel module apparaissent immédiatement dans son Carnet de Raisonnement**, avec possibilité de relancer une analyse approfondie Gemini Flash à tout moment.
+  - Si une question du module actif a été manquée lors des séries d'entraînement (`stats[uid].mistakes >= 1`) mais que la note IA n'avait pas pu être enregistrée (saut de modal, coupure réseau, timeout), `QueueEngine` reconstruit automatiquement une note clinique de base complète à partir de l'énoncé, de l'explication officielle et de la réponse type de la base de données du module actif uniquement.
+  - Garantit que **100% des questions manquées par l'étudiant dans le module sélectionné apparaissent immédiatement dans son Carnet de Raisonnement**, avec possibilité de relancer une analyse approfondie Gemini Flash à tout moment.
 - **Réinitialisation Dynamique des Filtres (`switchActiveModule`)** :
   - Lors du passage d'un module à un autre, le filtre de chapitre mémorisé (`notebookSelectedChapter`), la valeur du sélecteur `#notebook-chapter-filter` et le champ de recherche `#notebook-search-input` sont automatiquement réinitialisés, évitant de masquer les notes du nouveau module.
 - **Hydratation Multi-Modules Sécurisée (`hydrateNote`)** :
@@ -301,7 +307,7 @@ Lorsqu'une réponse est incorrecte (dans la modale d'erreur ou dans le carnet) :
 - **Barre de recherche, debounce & pagination progressive (`notebookView.js`)** :
   - Recherche instantanée avec debounce de `200 ms` (`debounce(..., 200)`) sur énoncés, propositions, explications et raisonnements IA.
   - Pagination progressive (`NOTEBOOK_PAGE_SIZE = 30`) affichant au maximum 30 fiches au chargement initial (modes Par cours et Liste continue) avec bouton `.btn-notebook-load-more` (*« Charger les N fiches suivantes »*) afin d'éviter la saturation DOM lorsque des centaines d'erreurs sont cumulées.
-  - Synthèse `#notebook-summary-bar` reflétant le nombre de questions, d'analyses et le rappel du tri actif.
+  - Synthèse `#notebook-summary-bar` reflétant le module actif (`.notebook-active-mod-badge`), le nombre de questions, d'analyses, le cumul de fautes du module et le rappel du tri actif.
 
 ---
 
@@ -406,7 +412,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 
 ### 3.9. Système de Mises à Jour Automatiques & GitHub Releases (`src/services/updateService.js` & CI/CD)
 - **Service d'Orchestration des Mises à Jour (`UpdateService`)** :
-  - Version déclarée : `CURRENT_APP_VERSION = '1.6.6'` synchronisée avec `package.json` et `build.gradle` (`versionCode 33`).
+  - Version déclarée : `CURRENT_APP_VERSION = '1.6.7'` synchronisée avec `package.json` et `build.gradle` (`versionCode 34`).
   - Comparaison sémantique universelle (`compareVersions`) ignorant les préfixes `v`.
   - Interrogation de l'API GitHub Releases (`https://api.github.com/repos/lkmqji/qcm-p-diatrie/releases/latest`) avec cooldown de 4 heures (`pedia_last_update_check_ts`).
   - Extraction de l'asset `.apk` direct (`PediaDrill.apk`). En environnement natif Android Capacitor, l'URL est ouverte via `_system` pour lancer le gestionnaire de téléchargement Android natif.
@@ -658,7 +664,7 @@ La vue dédiée `view-stats` offre un tableau de bord analytique complet :
 ### 6.1. Configuration Capacitor (`capacitor.config.json`) & Android
 - **Package Id** : `com.pediadrill.app`
 - **Nom de l'application** : `PédiaDrill`
-- **Version native** : `versionName 1.6.6` (`versionCode 33`)
+- **Version native** : `versionName 1.6.7` (`versionCode 34`)
 - **Empreinte SHA-1 (Debug Keystore Gradle & GitHub Actions)** : `87:31:A9:DF:46:90:4F:A3:3C:C0:79:DC:45:C5:BD:69:95:0B:A2:76`
 - **Empreinte SHA-256 (Debug Keystore Gradle & GitHub Actions)** : `98:3A:55:73:39:BC:3B:5F:0C:BC:6C:3F:33:60:DF:E6:06:59:96:0C:74:BC:A0:BC:CB:50:D0:41:80:EF:C9:6E`
 - **Keystore unifié** : `android/app/debug.keystore` (Alias : `AndroidDebugKey`, mot de passe `android`, garantissant une empreinte cryptographique identique entre les compilations locales et la CI/CD GitHub Actions).

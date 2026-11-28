@@ -40,7 +40,8 @@ export const appState = {
   arenaChatHistory: [],
   questionChatHistories: {},
   firebaseSyncService: null,
-  switchViewHandler: null
+  switchViewHandler: null,
+  switchModuleHandler: null
 };
 
 export const queueEngine = new QueueEngine(appState.allQuestions, appState.allChapters);
@@ -52,6 +53,16 @@ export function registerViewNavigator(fn) {
 export function navigateToView(viewName) {
   if (typeof appState.switchViewHandler === 'function') {
     appState.switchViewHandler(viewName);
+  }
+}
+
+export function registerModuleSwitcher(fn) {
+  appState.switchModuleHandler = typeof fn === 'function' ? fn : null;
+}
+
+export function switchToModule(moduleId, fromRemote = false) {
+  if (typeof appState.switchModuleHandler === 'function') {
+    appState.switchModuleHandler(moduleId, fromRemote);
   }
 }
 

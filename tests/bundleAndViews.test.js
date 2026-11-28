@@ -499,3 +499,73 @@ test('Clinical case run can be quit cleanly via confirm modal after answering th
   assert.equal(templateHtml.includes('id="modal-app-confirm" style="display:none;z-index:10500;"'), true);
   assert.equal(templateHtml.includes('<div class="modal-content confirm-modal-card">'), true);
 });
+
+test('Notebook separates notes & mistakes strictly per module and renders module navigation buttons', async () => {
+  const templateHtml = fs.readFileSync(path.join(ROOT_DIR, 'template.html'), 'utf8');
+  assert.equal(templateHtml.includes('id="notebook-module-nav"'), true, 'template.html must expose #notebook-module-nav');
+
+  const { sandbox, elementsById } = buildMockBrowserContext();
+  globalThis.document = sandbox.document;
+  globalThis.localStorage = sandbox.localStorage;
+  globalThis.window = sandbox.window;
+
+  const { setActiveModuleId } = await import('../src/services/moduleCatalog.js');
+  const { appState, queueEngine } = await import('../src/state/appState.js');
+  const { renderNotebookUI } = await import('../src/views/notebookView.js');
+
+  // Seed mixed notes in both storages + mistakes in both modules
+  localStorage.setItem('pedia_drill_reasoning_notes_v1', JSON.stringify([
+    { id: 'np1', questionUid: 'ch_1_1', reasoningNote: 'Note pediatrie 1', timestamp: 2000 },
+    { id: 'np_stray', questionUid: 'psy_ch_1_1', reasoningNote: 'Stray psy note', timestamp: 1500 }
+  ]));
+  localStorage.setItem('mod_psychiatrie_reasoning_notes', JSON.stringify([
+    { id: 'ns1', questionUid: 'psy_ch_1_1', reasoningNote: 'Note psychiatrie 1', timestamp: 3000 },
+    { id: 'ns_stray', questionUid: 'ch_1_1', reasoningNote: 'Stray pedia note', timestamp: 1000 }
+  ]));
+  localStorage.setItem('pedia_drill_state_v1', JSON.stringify({
+    stats: { 'ch_1_1': { target: 5, current: 0, mistakes: 2, done: false } },
+    queue: ['ch_1_1']
+  }));
+  localStorage.setItem('mod_psychiatrie_drill_state', JSON.stringify({
+    stats: { 'psy_ch_1_1': { target: 6, current: 0, mistakes: 3, done: false } },
+    queue: ['psy_ch_1_1']
+  }));
+
+  // 1) Active module: Pédiatrie -> only Pédiatrie note & 2 fautes appear
+  setActiveModuleId('pediatrie');
+  appState.allQuestions = sandbox.PEDIA_QUESTIONS;
+  appState.allChapters = sandbox.PEDIA_CHAPTERS;
+  appState.questionsMap = new Map(sandbox.PEDIA_QUESTIONS.map(q => [q.uid, q]));
+  queueEngine.allQuestions = sandbox.PEDIA_QUESTIONS;
+  queueEngine.chapters = sandbox.PEDIA_CHAPTERS;
+  queueEngine.questionsMap = appState.questionsMap;
+  queueEngine.loadState();
+
+  renderNotebookUI('');
+  const listEl = elementsById.get('notebook-notes-list');
+  const summaryEl = elementsById.get('notebook-summary-bar');
+  const navEl = elementsById.get('notebook-module-nav');
+
+  const renderedPediaHtml = listEl.children.map(c => c.innerHTML).join('\n');
+  assert.equal(renderedPediaHtml.includes('Note pediatrie 1'), true, 'Pedia note must appear in pediatrie mode');
+  assert.equal(renderedPediaHtml.includes('Stray psy note'), false, 'Stray psy note must NOT appear in pediatrie mode');
+  assert.equal(summaryEl.innerHTML.includes('Pédiatrie'), true);
+  assert.equal(summaryEl.innerHTML.includes('2</strong> faute'), true, 'Only pediatrie mistakes (2) should appear');
+  assert.equal(navEl.innerHTML.includes('data-notebook-module="pediatrie"'), true);
+  assert.equal(navEl.innerHTML.includes('data-notebook-module="psychiatrie"'), true);
+  assert.equal(navEl.innerHTML.includes('btn-notebook-cycle-module'), true);
+
+  // 2) Active module: Psychiatrie -> only Psychiatrie note & 3 fautes appear
+  setActiveModuleId('psychiatrie');
+  appState.allQuestions = sandbox.PSY_QUESTIONS;
+  appState.allChapters = sandbox.PSY_CHAPTERS;
+  appState.questionsMap = new Map(sandbox.PSY_QUESTIONS.map(q => [q.uid, q]));
+  queueEngine.switchModule(sandbox.PSY_QUESTIONS, sandbox.PSY_CHAPTERS);
+
+  renderNotebookUI('');
+  const renderedPsyHtml = listEl.children.map(c => c.innerHTML).join('\n');
+  assert.equal(renderedPsyHtml.includes('Note psychiatrie 1'), true, 'Psy note must appear in psychiatrie mode');
+  assert.equal(renderedPsyHtml.includes('Stray pedia note'), false, 'Stray pedia note must NOT appear in psychiatrie mode');
+  assert.equal(summaryEl.innerHTML.includes('Psychiatrie'), true);
+  assert.equal(summaryEl.innerHTML.includes('3</strong> faute'), true, 'Only psychiatrie mistakes (3) should appear');
+});
